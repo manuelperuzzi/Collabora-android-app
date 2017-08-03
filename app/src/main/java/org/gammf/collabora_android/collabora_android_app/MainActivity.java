@@ -15,18 +15,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Calendar calendar = Calendar.getInstance();
-        Intent intent1 = new Intent(MainActivity.this, AlarmReceiver.class);
+
         AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-        calendar.set(Calendar.YEAR, 2017);
-        calendar.set(Calendar.MONTH, 7);
-        calendar.set(Calendar.DAY_OF_MONTH, 3);
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 12);
-        calendar.set(Calendar.SECOND, 0);
-        Log.v("DEBUG    ",calendar.getTime().toString());
-        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+        Calendar firstTry = Calendar.getInstance();
+        firstTry.set(Calendar.YEAR, 2017);
+        firstTry.set(Calendar.MONTH, 7);
+        firstTry.set(Calendar.DAY_OF_MONTH, 3);
+        firstTry.set(Calendar.HOUR_OF_DAY, 12);
+        firstTry.set(Calendar.MINUTE, 59);
+        firstTry.set(Calendar.SECOND, 0);
+
+        Calendar secondTry = Calendar.getInstance();
+        secondTry.set(Calendar.YEAR, 2017);
+        secondTry.set(Calendar.MONTH, 7);
+        secondTry.set(Calendar.DAY_OF_MONTH, 3);
+        secondTry.set(Calendar.HOUR_OF_DAY, 13);
+        secondTry.set(Calendar.MINUTE, 00);
+        secondTry.set(Calendar.SECOND, 0);
+
+        setAllarm(am,"First Event",firstTry);
+        setAllarm(am,"Second Event",secondTry);
 
     }
+
+    private void setAllarm(AlarmManager allarm, String message, Calendar timeToSpawn){
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent.putExtra("title",message);
+        final int _id = (int) System.currentTimeMillis();// pendingIntend MUST have different id if we want multiple allarms to set
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        allarm.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
+    }
 }
+
+
