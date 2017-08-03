@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Collabora-android-app</string>
+    <string name="app_name">Collabora</string>
+    <string name="title_activity_all_notes">AllNotes</string>
 </resources>
