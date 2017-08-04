@@ -19,20 +19,28 @@ public class Utility {
 
     public static final String PREFS_NAME = "CollaboraPrefs";
 
-    public void setAlarm(Context context, AlarmManager alarm, String message, Calendar timeToSpawn){
+    /***
+     * Set an alarm notification at given time, with the given information.
+     * @param context Activity when set the alarm
+     * @param message message to show on notification
+     * @param timeToSpawn exact time when spawn the notification
+     */
+    public void setAlarm(Context context, String message, Calendar timeToSpawn){
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
         Intent intent = new Intent(context , AlarmBroadcastReceiver.class);
-        intent.putExtra("title",message);
 
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(getDate(timeToSpawn.getTimeInMillis(), "dd/MM/yyyy hh:mm"), message);
-        Log.d("DEBUG", getDate(timeToSpawn.getTimeInMillis(), "dd/MM/yyyy hh:mm"));
         editor.apply();
 
-        final int _id = (int) System.currentTimeMillis();// pendingIntend MUST have different id if we want multiple allarms to set
+        // pendingIntend MUST have different id if we want multiple allarms to set
+        final int _id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
-            alarm.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
+            am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
         }
     }
 
@@ -42,7 +50,7 @@ public class Utility {
      * @param dateFormat Date format
      * @return String representing date in specified format
      */
-    private static String getDate(long milliSeconds, String dateFormat)
+    public static String getDate(long milliSeconds, String dateFormat)
     {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.ITALIAN);
