@@ -34,14 +34,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        Log.d("DEBUG", String.valueOf(intent.getExtras().getLong("time")));
 
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(intent.getExtras().getString("title")+ " -- "+ utility.getDate(intent.getExtras().getLong("time"), "dd/MM/yyyy hh:mm"))
-                .setContentText("Events To be Performed")
+                .setContentText("Insert here Note content")
                 .setSound(alarmSound)
-                .setAutoCancel(true).setWhen(when)
+                .setAutoCancel(true)
+                .setWhen(when)
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
         notificationManager.notify( (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE), mNotifyBuilder.build());

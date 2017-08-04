@@ -48,6 +48,7 @@ public class BootService extends IntentService {
 
         utility.setAlarm(this,"First Event",firstTry);
         utility.setAlarm(this,"Second Event",secondTry);
+        utility.deleteAlarm(this,secondTry);
 
     }
 
