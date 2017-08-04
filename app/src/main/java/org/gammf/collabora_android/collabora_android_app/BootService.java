@@ -1,26 +1,34 @@
 package org.gammf.collabora_android.collabora_android_app;
 
 import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by Federico on 04/08/2017.
+ */
 
+public class BootService extends IntentService {
+
+    public static final String PREFS_NAME = "CollaboraPrefs";
+
+    public BootService() {
+        super("BootService");
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void onHandleIntent(Intent intent) {
 
-        AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
+        // reset here all allarms
+
+        AlarmManager am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
         Utility utility = new Utility();
 
         Calendar firstTry = Calendar.getInstance();
@@ -43,6 +51,5 @@ public class MainActivity extends AppCompatActivity {
         utility.setAlarm(this,am,"Second Event",secondTry);
 
     }
+
 }
-
-

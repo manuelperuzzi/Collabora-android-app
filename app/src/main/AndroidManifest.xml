@@ -3,7 +3,7 @@
     package="org.gammf.collabora_android.collabora_android_app">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -20,7 +20,17 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".AlarmReceiver" android:enabled="true" android:exported="false">
+        <!--<receiver android:name=".AlarmBroadcastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>-->
+
+        <receiver android:name=".AlarmBroadcastReceiver"/>
+
+        <service android:name=".BootService"/>
+
+        <receiver android:name=".RestartAlarmReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
