@@ -2,7 +2,6 @@ package org.gammf.collabora_android.collabora_android_app;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.admin.SystemUpdateInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +11,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Federico on 03/08/2017.
@@ -24,13 +19,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
-    public static final String PREFS_NAME = "CollaboraPrefs";
+    //public static final String PREFS_NAME = "CollaboraPrefs";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Utility utility = new Utility();
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        //SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -39,11 +34,11 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Log.d("DEBUG", String.valueOf(intent.getExtras().getLong("time")));
 
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
-                //.setContentTitle(intent.getExtras().getString("title"))
-                .setContentTitle(prefs.getString(utility.getDate(System.currentTimeMillis(), "dd/MM/yyyy hh:mm"),"ERRORONE"))
+                .setContentTitle(intent.getExtras().getString("title")+ " -- "+ utility.getDate(intent.getExtras().getLong("time"), "dd/MM/yyyy hh:mm"))
                 .setContentText("Events To be Performed")
                 .setSound(alarmSound)
                 .setAutoCancel(true).setWhen(when)

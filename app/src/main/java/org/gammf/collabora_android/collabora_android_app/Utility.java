@@ -10,6 +10,7 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Federico on 04/08/2017.
@@ -30,6 +31,9 @@ public class Utility {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context , AlarmBroadcastReceiver.class);
+        intent.putExtra("title",message);
+        intent.putExtra("time",timeToSpawn.getTimeInMillis());
+        Log.d("DEBUGGO", String.valueOf(timeToSpawn.getTimeInMillis()));
 
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -37,11 +41,12 @@ public class Utility {
         editor.apply();
 
         // pendingIntend MUST have different id if we want multiple allarms to set
+        Random rnd = new Random();
         final int _id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
-            am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
-        }
+        //if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
+        am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
+        //}
     }
 
     /**
@@ -50,7 +55,7 @@ public class Utility {
      * @param dateFormat Date format
      * @return String representing date in specified format
      */
-    public static String getDate(long milliSeconds, String dateFormat)
+    public String getDate(long milliSeconds, String dateFormat)
     {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.ITALIAN);
@@ -60,4 +65,6 @@ public class Utility {
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
     }
+
+
 }

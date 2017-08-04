@@ -35,7 +35,7 @@ public class BootService extends IntentService {
         firstTry.set(Calendar.MONTH, 7);
         firstTry.set(Calendar.DAY_OF_MONTH, 4);
         firstTry.set(Calendar.HOUR_OF_DAY, 10);
-        firstTry.set(Calendar.MINUTE, 20);
+        firstTry.set(Calendar.MINUTE, 53);
         firstTry.set(Calendar.SECOND, 0);
 
         Calendar secondTry = Calendar.getInstance();
@@ -43,7 +43,7 @@ public class BootService extends IntentService {
         secondTry.set(Calendar.MONTH, 7);
         secondTry.set(Calendar.DAY_OF_MONTH, 4);
         secondTry.set(Calendar.HOUR_OF_DAY, 10);
-        secondTry.set(Calendar.MINUTE, 21);
+        secondTry.set(Calendar.MINUTE, 54);
         secondTry.set(Calendar.SECOND, 0);
 
         utility.setAlarm(this,"First Event",firstTry);

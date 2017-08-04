@@ -17,17 +17,17 @@ public class MainActivity extends AppCompatActivity {
         firstTry.set(Calendar.YEAR, 2017);
         firstTry.set(Calendar.MONTH, 7);
         firstTry.set(Calendar.DAY_OF_MONTH, 4);
-        firstTry.set(Calendar.HOUR_OF_DAY, 10);
-        firstTry.set(Calendar.MINUTE, 20);
-        firstTry.set(Calendar.SECOND, 0);
+        firstTry.set(Calendar.HOUR_OF_DAY, 11);
+        firstTry.set(Calendar.MINUTE, 28);
+        firstTry.set(Calendar.SECOND, 30);
 
         Calendar secondTry = Calendar.getInstance();
         secondTry.set(Calendar.YEAR, 2017);
         secondTry.set(Calendar.MONTH, 7);
         secondTry.set(Calendar.DAY_OF_MONTH, 4);
-        secondTry.set(Calendar.HOUR_OF_DAY, 10);
-        secondTry.set(Calendar.MINUTE, 21);
-        secondTry.set(Calendar.SECOND, 0);
+        secondTry.set(Calendar.HOUR_OF_DAY, 11);
+        secondTry.set(Calendar.MINUTE, 29);
+        secondTry.set(Calendar.SECOND, 20);
 
         utility.setAlarm(this,"First Event",firstTry);
         utility.setAlarm(this,"Second Event",secondTry);
