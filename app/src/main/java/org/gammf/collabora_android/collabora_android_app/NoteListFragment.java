@@ -49,12 +49,6 @@ public class NoteListFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Toast.makeText(getActivity(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                .beginTransaction();
-        Fragment profileFragment = new newFragment();//the fragment you want to show
-        profileFragment.setArguments(savedInstanceState);
-        fragmentTransaction.replace(R.id.id_fragment, profileFragment);//R.id.content_frame is the layout you want to replace
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+
     }
 }
