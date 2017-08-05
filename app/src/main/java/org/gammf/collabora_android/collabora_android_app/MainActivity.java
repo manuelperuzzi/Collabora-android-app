@@ -1,23 +1,16 @@
 package org.gammf.collabora_android.collabora_android_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +27,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     ArrayList<String> personallistItem = new ArrayList<String>();
-    ArrayList<String> listItem = new ArrayList<String>();
+    ArrayList<String> projectlistItem = new ArrayList<String>();
+
+    private static final int REQUEST_CODE = 1;
+    private static final String LIST_TYPE = "listtype";
+    private static final String LIST_NAME = "listname";
+    private static final String LIST_DESCRIPTION = "listdescription";
+    CustomListAdapter personalAdapter;
+    CustomListAdapter projectAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +46,16 @@ public class MainActivity extends AppCompatActivity {
             personallistItem.add(s);
         }
 
-        final ListView listView =(ListView) findViewById(R.id.listView);
+        final ListView projectListView =(ListView) findViewById(R.id.listView);
         for(String s : itemName){
-            listItem.add(s);
+            projectlistItem.add(s);
         }
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItem);
-        listView.setAdapter(adapter);
+        //projectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, projectlistItem);
+        projectAdapter = new CustomListAdapter(this, projectlistItem);
+        projectListView.setAdapter(projectAdapter);
 
-        final CustomListAdapter personalAdapter=new CustomListAdapter(this, personallistItem);
+        personalAdapter=new CustomListAdapter(this, personallistItem);
         personallistView.setAdapter(personalAdapter);
 
         personallistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        projectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id){
                 // recupero il titolo memorizzato nella riga tramite l'ArrayAdapter
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             /*    Toast.makeText(MainActivity.this, "Hai cliccato su: " + titoloriga,
                         Toast.LENGTH_SHORT).show();
 */
-                Intent myIntent = new Intent(MainActivity.this, NotesActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, ProjectActivity.class);
                 myIntent.putExtra("position", pos); //Optional parameters
                 myIntent.putExtra("title", titoloriga);
                 MainActivity.this.startActivity(myIntent);
@@ -87,11 +88,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                personallistItem.add("New List");
-                personalAdapter.notifyDataSetChanged();
-                Snackbar.make(view, "Lista Aggiunta :P", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-
+                Intent i = new Intent(MainActivity.this, AddListActivity.class);
+                i.putExtra("type", "personallist");
+                startActivityForResult(i, REQUEST_CODE);
             }
         });
 
@@ -99,60 +98,40 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
-                listItem.add("New Item");
-                adapter.notifyDataSetChanged();
-                Snackbar.make(view, "Nota Aggiunta :P", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
+                Intent myIntent = new Intent(MainActivity.this, AddListActivity.class);
+                myIntent.putExtra("type", "projectlist"); //Optional parameters
+                startActivityForResult(myIntent, REQUEST_CODE);
             }
         });
-/*
-        Button btnApri = (Button) findViewById(R.id.btnNoteList);
-        btnApri.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(MainActivity.this, NotesActivity.class);
-                //myIntent.putExtra("key", value); //Optional parameters
-                MainActivity.this.startActivity(myIntent);
-            }
 
-        });
-        */
+
     }
 
-    public static boolean setListViewHeightBasedOnItems(ListView listView) {
-
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter != null) {
-
-            int numberOfItems = listAdapter.getCount();
-
-            // Get total height of all items.
-            int totalItemsHeight = 0;
-            for (int itemPos = 0; itemPos < numberOfItems; itemPos++) {
-                View item = listAdapter.getView(itemPos, null, listView);
-                float px = 500 * (listView.getResources().getDisplayMetrics().density);
-                item.measure(View.MeasureSpec.makeMeasureSpec((int)px, View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                totalItemsHeight += item.getMeasuredHeight();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (REQUEST_CODE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    String listType = data.getStringExtra(LIST_TYPE);
+                    String listName = data.getStringExtra(LIST_NAME);
+                    String listDescription = data.getStringExtra(LIST_DESCRIPTION);
+                    addNewList(listType, listName, listDescription);
+                }
+                break;
             }
-
-            // Get total height of all item dividers.
-            int totalDividersHeight = listView.getDividerHeight() *
-                    (numberOfItems - 1);
-            // Get padding
-            int totalPadding = listView.getPaddingTop() + listView.getPaddingBottom();
-
-            // Set list height.
-            ViewGroup.LayoutParams params = listView.getLayoutParams();
-            params.height = totalItemsHeight + totalDividersHeight + totalPadding;
-            listView.setLayoutParams(params);
-            listView.requestLayout();
-            return true;
-
-        } else {
-            return false;
         }
+    }
 
+
+    private void addNewList(String listType, String listName, String listDescription){
+        if(listType.equals("personallist")) {
+            personalAdapter.addList( listName, listDescription);
+            personalAdapter.notifyDataSetChanged();
+        }else if(listType.equals("projectlist")){
+            projectAdapter.addList( listName, listDescription);
+            projectAdapter.notifyDataSetChanged();
+        }
     }
 }

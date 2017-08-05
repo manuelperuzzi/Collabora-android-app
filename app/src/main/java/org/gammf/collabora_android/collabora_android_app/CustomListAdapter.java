@@ -18,6 +18,7 @@ public class CustomListAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final ArrayList<String> itemname;
+    private final ArrayList<String> itemdescription;
 
     public CustomListAdapter(Activity context, ArrayList<String> itemname) {
         super(context, R.layout.list_item, itemname);
@@ -25,6 +26,10 @@ public class CustomListAdapter extends ArrayAdapter<String> {
 
         this.context=context;
         this.itemname=itemname;
+        this.itemdescription = new ArrayList<String>();
+        for(String s : itemname){
+            this.itemdescription.add("Description "+s);
+        }
     }
 
     public View getView(int position, View view, ViewGroup parent) {
@@ -35,8 +40,13 @@ public class CustomListAdapter extends ArrayAdapter<String> {
         TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
         txtTitle.setText(itemname.get(position));
-        extratxt.setText("Description "+itemname.get(position));
+        extratxt.setText(itemdescription.get(position));
         return rowView;
 
     };
+
+    public void addList(String listName, String listDescription){
+        itemname.add(listName);
+        itemdescription.add(listDescription);
+    }
 }

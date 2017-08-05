@@ -81,7 +81,7 @@
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnAddNotes"
+        app:layout_constraintTop_toTopOf="@+id/btnAddList"
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@android:drawable/ic_input_add"
         android:layout_marginTop="8dp"
