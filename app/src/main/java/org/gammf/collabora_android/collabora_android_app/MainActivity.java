@@ -61,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
         personallistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id) {
-                final String titoloriga = (String) adattatore.getItemAtPosition(pos);
-               Toast.makeText(MainActivity.this, "Hai cliccato su: " + titoloriga,
-                        Toast.LENGTH_SHORT).show();
+                final String listName = (String) adattatore.getItemAtPosition(pos);
+                Intent myIntent = new Intent(MainActivity.this, PersonalListActivity.class);
+                myIntent.putExtra(LIST_NAME, listName);
+                MainActivity.this.startActivity(myIntent);
             }
         });
 
