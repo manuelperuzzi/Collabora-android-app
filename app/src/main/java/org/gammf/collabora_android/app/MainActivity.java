@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
