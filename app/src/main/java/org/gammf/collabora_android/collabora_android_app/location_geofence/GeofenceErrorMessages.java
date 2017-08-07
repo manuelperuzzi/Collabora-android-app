@@ -12,7 +12,7 @@ import org.gammf.collabora_android.collabora_android_app.R;
  * Geofence error codes mapped to error messages.
  * Created by Federico on 07/08/2017.
  */
-class GeofenceErrorMessages {
+public class GeofenceErrorMessages {
     /**
      * Prevents instantiation.
      */
