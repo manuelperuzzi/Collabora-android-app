@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">Collabora-android-app</string>
+    <string name="app_name">Collabora</string>
+    <string name="title_activity_all_notes">AllNotes</string>
+    <string-array name="planets">
+        <item>Sun</item>
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="title_activity_add_note">AddNoteActivity</string>
 </resources>
