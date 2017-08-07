@@ -11,8 +11,10 @@ public class SimpleNoteBuilderTest {
 
     @Test
     public void buildANote() {
-        Note n = new SimpleNoteBuilder("userID").setTitle("title").setContent("content").buildNote();
-        assertEquals(n.getUserID(),"userID");
+        Note n = new SimpleNoteBuilder("username").setTitle("title")
+                                                  .setContent("content")
+                                                  .buildNote();
+        assertEquals(n.getUsername(),"username");
         assertEquals(n.getTitle(),"title");
         assertEquals(n.getContent(),"content");
     }
