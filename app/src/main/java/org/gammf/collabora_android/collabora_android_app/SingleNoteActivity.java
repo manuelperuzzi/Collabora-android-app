@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SingleNoteActivity extends AppCompatActivity {
 
+    String noteName, noteDescription;
     TextView title,description;
     private static final String NOTE_NAME = "notename";
     private static final String NOTE_DESC = "notedesc";
@@ -38,7 +40,7 @@ public class SingleNoteActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(SingleNoteActivity.this, EditNoteActivity.class);
                 myIntent.putExtra(NOTE_NAME, intentTitle);
                 myIntent.putExtra(NOTE_DESC, intentDesc);
-                SingleNoteActivity.this.startActivity(myIntent);
+                startActivityForResult(myIntent, REQUEST_CODE);
             }
         });
     }
@@ -49,10 +51,15 @@ public class SingleNoteActivity extends AppCompatActivity {
         switch(requestCode) {
             case (REQUEST_CODE) : {
                 if (resultCode == Activity.RESULT_OK) {
-                    String noteName = data.getStringExtra(NEW_NAME);
-                    String noteDescription = data.getStringExtra(NEW_DESC);
-                    title.setText(noteName);
-                    description.setText(noteDescription);
+                    noteName = data.getStringExtra(NEW_NAME);
+                    noteDescription = data.getStringExtra(NEW_DESC);
+                    SingleNoteActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            title.setText(noteName);
+                            description.setText(noteDescription);
+                        }
+                    });
                 }
                 break;
             }

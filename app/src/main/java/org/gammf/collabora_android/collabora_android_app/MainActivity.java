@@ -88,16 +88,10 @@ public class MainActivity extends AppCompatActivity {
         projectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id){
-                // recupero il titolo memorizzato nella riga tramite l'ArrayAdapter
-                final String titoloriga = (String) adattatore.getItemAtPosition(pos);
-            /*    Toast.makeText(MainActivity.this, "Hai cliccato su: " + titoloriga,
-                        Toast.LENGTH_SHORT).show();
-*/
-                Intent myIntent = new Intent(MainActivity.this, SingleNoteActivity.class);
-                myIntent.putExtra("position", pos); //Optional parameters
-                myIntent.putExtra("title", titoloriga);
+                final String listName = (String) adattatore.getItemAtPosition(pos);
+                Intent myIntent = new Intent(MainActivity.this, SingleListActivity.class);
+                myIntent.putExtra(LIST_NAME, listName);
                 MainActivity.this.startActivity(myIntent);
-
             }
         });
 

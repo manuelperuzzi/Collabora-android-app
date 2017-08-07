@@ -1,6 +1,8 @@
 package org.gammf.collabora_android.collabora_android_app;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,9 +14,14 @@ import java.util.ArrayList;
 
 public class SingleListActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 1;
     private static final String LIST_NAME = "listname";
     private static final String NOTE_NAME = "notename";
     private static final String NOTE_DESC = "notedesc";
+
+    private static final String ADD_NOTENAME = "notenameadded";
+    private static final String ADD_NOTEDESC = "notedescadded";
+
     ArrayList<String> projectlistItem = new ArrayList<String>();
     CustomListAdapter noteListAdapter;
     String[] itemName = new String[]{
@@ -53,5 +60,35 @@ public class SingleListActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btnAddNewNotes);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent myIntent = new Intent(SingleListActivity.this, AddListActivity.class);
+                myIntent.putExtra("type", "newnote"); //Optional parameters
+                startActivityForResult(myIntent, REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (REQUEST_CODE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    String listName = data.getStringExtra(ADD_NOTENAME);
+                    String listDescription = data.getStringExtra(ADD_NOTEDESC);
+                    addNewList(listName, listDescription);
+                }
+                break;
+            }
+        }
+    }
+
+    private void addNewList(String listName, String listDescription){
+        noteListAdapter.addList(listName, listDescription);
+        noteListAdapter.notifyDataSetChanged();
     }
 }

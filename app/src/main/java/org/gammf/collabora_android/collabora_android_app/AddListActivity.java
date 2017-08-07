@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class AddListActivity extends AppCompatActivity {
@@ -15,6 +16,9 @@ public class AddListActivity extends AppCompatActivity {
     private static final String LIST_NAME = "listname";
     private static final String LIST_DESCRIPTION = "listdescription";
 
+    private static final String ADD_NOTENAME = "notenameadded";
+    private static final String ADD_NOTEDESC = "notedescadded";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +27,14 @@ public class AddListActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         this.listType = intent.getStringExtra("type");
 
-        final TextView txtListName = (TextView) findViewById(R.id.txtListName);
-        final TextView txtListDescription = (TextView) findViewById(R.id.txtListDescription);
+        final TextView lblTitleAddListActivity = (TextView) findViewById(R.id.lblTitleAddListActivity);
+        if (listType.equals("newnote")) {
+            lblTitleAddListActivity.setText("Add New Note");
+        }else{
+            lblTitleAddListActivity.setText("Add New List");
+        }
+        final EditText txtListName = (EditText) findViewById(R.id.txtListName);
+        final EditText txtListDescription = (EditText) findViewById(R.id.txtListDescription);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btnAddList);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +53,12 @@ public class AddListActivity extends AppCompatActivity {
                     resultIntent.putExtra(LIST_TYPE, "projectlist");
                     resultIntent.putExtra(LIST_NAME, txtListName.getText().toString());
                     resultIntent.putExtra(LIST_DESCRIPTION, txtListDescription.getText().toString());
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                }else if(listType.equals("newnote")){
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra(ADD_NOTENAME, txtListName.getText().toString());
+                    resultIntent.putExtra(ADD_NOTEDESC, txtListDescription.getText().toString());
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 }
