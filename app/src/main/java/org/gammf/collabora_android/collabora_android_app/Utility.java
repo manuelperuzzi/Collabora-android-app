@@ -42,9 +42,9 @@ public class Utility {
         final int _id = (int) System.currentTimeMillis();
         Log.d("DEBUG ID START", String.valueOf(_id));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        //if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
-        am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
-        //}
+        if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
+            am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
+        }
     }
 
 
