@@ -16,11 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ProjectActivity">
+        <activity android:name=".SingleNoteActivity">
         </activity>
         <activity android:name=".AddListActivity">
         </activity>
-        <activity android:name=".PersonalListActivity">
+        <activity android:name=".SingleListActivity">
+        </activity>
+        <activity android:name=".EditNoteActivity">
         </activity>
     </application>
 

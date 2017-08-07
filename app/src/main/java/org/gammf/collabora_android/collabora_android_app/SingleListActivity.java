@@ -10,22 +10,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class PersonalListActivity extends AppCompatActivity {
+public class SingleListActivity extends AppCompatActivity {
 
     private static final String LIST_NAME = "listname";
+    private static final String NOTE_NAME = "notename";
+    private static final String NOTE_DESC = "notedesc";
     ArrayList<String> projectlistItem = new ArrayList<String>();
     CustomListAdapter noteListAdapter;
     String[] itemName = new String[]{
-            "Nota 1",
-            "Nota 2",
-            "Nota 3",
-            "Nota 4"
+            "Latte",
+            "Farina 00",
+            "Biscotti",
+            "Insalata"
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_list);
+        setContentView(R.layout.activity_single_list);
 
         final Intent intent = getIntent();
         String listName = intent.getStringExtra(LIST_NAME);
@@ -43,10 +45,11 @@ public class PersonalListActivity extends AppCompatActivity {
         noteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id) {
-                final String listName = (String) adattatore.getItemAtPosition(pos);
-                Intent myIntent = new Intent(PersonalListActivity.this, PersonalListActivity.class);
-                myIntent.putExtra(LIST_NAME, listName);
-                PersonalListActivity.this.startActivity(myIntent);
+                Intent myIntent = new Intent(SingleListActivity.this, SingleNoteActivity.class);
+                final String itemClicked = (String) adattatore.getItemAtPosition(pos);
+                myIntent.putExtra(NOTE_NAME, itemClicked);
+                myIntent.putExtra(NOTE_DESC, "Description "+itemClicked);
+                SingleListActivity.this.startActivity(myIntent);
             }
         });
 

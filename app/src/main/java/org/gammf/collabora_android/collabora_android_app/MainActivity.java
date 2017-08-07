@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
             projectlistItem.add(s);
         }
 
-        //projectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, projectlistItem);
         projectAdapter = new CustomListAdapter(this, projectlistItem);
         projectListView.setAdapter(projectAdapter);
 
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id) {
                 final String listName = (String) adattatore.getItemAtPosition(pos);
-                Intent myIntent = new Intent(MainActivity.this, PersonalListActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, SingleListActivity.class);
                 myIntent.putExtra(LIST_NAME, listName);
                 MainActivity.this.startActivity(myIntent);
             }
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             /*    Toast.makeText(MainActivity.this, "Hai cliccato su: " + titoloriga,
                         Toast.LENGTH_SHORT).show();
 */
-                Intent myIntent = new Intent(MainActivity.this, ProjectActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, SingleNoteActivity.class);
                 myIntent.putExtra("position", pos); //Optional parameters
                 myIntent.putExtra("title", titoloriga);
                 MainActivity.this.startActivity(myIntent);
