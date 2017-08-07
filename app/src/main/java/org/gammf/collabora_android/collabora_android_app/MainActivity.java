@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
         // Add the geofences to be monitored by geofencing service.
+        Log.d(TAG, String.valueOf(mGeofenceList));
         builder.addGeofences(mGeofenceList);
 
         // Return a GeofencingRequest.
