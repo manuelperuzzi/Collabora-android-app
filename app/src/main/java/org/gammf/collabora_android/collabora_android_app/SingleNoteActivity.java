@@ -10,8 +10,12 @@ import android.widget.TextView;
 
 public class SingleNoteActivity extends AppCompatActivity {
 
+    TextView title,description;
     private static final String NOTE_NAME = "notename";
     private static final String NOTE_DESC = "notedesc";
+    private static final String NEW_NAME = "newname";
+    private static final String NEW_DESC = "newdesc";
+    private static final int REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final Bundle s = savedInstanceState;
@@ -21,10 +25,10 @@ public class SingleNoteActivity extends AppCompatActivity {
         final String intentTitle = intent.getStringExtra(NOTE_NAME);
         final String intentDesc = intent.getStringExtra(NOTE_DESC);
 
-        TextView title = (TextView) findViewById(R.id.txtNoteName);
+        title = (TextView) findViewById(R.id.txtNoteName);
         title.setText(intentTitle);
 
-        TextView description = (TextView) findViewById(R.id.txtNoteDescription);
+        description = (TextView) findViewById(R.id.txtNoteDescription);
         description.setText(intentDesc);
 
         ImageButton btnEditNote = (ImageButton) findViewById(R.id.btnEditNote);
@@ -37,5 +41,21 @@ public class SingleNoteActivity extends AppCompatActivity {
                 SingleNoteActivity.this.startActivity(myIntent);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (REQUEST_CODE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    String noteName = data.getStringExtra(NEW_NAME);
+                    String noteDescription = data.getStringExtra(NEW_DESC);
+                    title.setText(noteName);
+                    description.setText(noteDescription);
+                }
+                break;
+            }
+        }
     }
 }
