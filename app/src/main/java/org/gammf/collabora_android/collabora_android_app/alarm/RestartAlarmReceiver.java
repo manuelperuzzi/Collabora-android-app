@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.gammf.collabora_android.collabora_android_app.BootService;
+
 /**
  *
  * Created by Federico on 04/08/2017.

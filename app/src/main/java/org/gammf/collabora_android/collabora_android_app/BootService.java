@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.alarm;
+package org.gammf.collabora_android.collabora_android_app;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -19,7 +19,6 @@ import java.util.Locale;
 
 public class BootService extends IntentService {
 
-    public static final String PREFS_NAME = "CollaboraPrefs";
 
     public BootService() {
         super("BootService");

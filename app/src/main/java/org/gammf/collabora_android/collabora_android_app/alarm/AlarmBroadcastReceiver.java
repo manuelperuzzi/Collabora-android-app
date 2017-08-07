@@ -23,13 +23,10 @@ import java.util.Date;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
-    //public static final String PREFS_NAME = "CollaboraPrefs";
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Utility utility = new Utility();
-        //SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

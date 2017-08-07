@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.geofences;
+package org.gammf.collabora_android.collabora_android_app.location_geofence;
 
 import android.content.Context;
 import android.content.res.Resources;

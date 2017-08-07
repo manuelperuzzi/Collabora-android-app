@@ -11,7 +11,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //simple examples, 2 set and 1 delete to test.
         Utility utility = new Utility();
 

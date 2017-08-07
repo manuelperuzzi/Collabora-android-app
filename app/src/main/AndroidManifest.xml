@@ -23,13 +23,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".AlarmBroadcastReceiver"/>
+        <receiver android:name=".alarm.AlarmBroadcastReceiver"/>
 
         <service android:name=".BootService"/>
 
-        <service android:name=".geofences.GeofenceTransitionsIntentService"/>
+        <service android:name=".location_geofence.GeofenceTransitionsIntentService"/>
 
-        <receiver android:name=".RestartAlarmReceiver" android:enabled="true" android:exported="false">
+        <receiver android:name=".alarm.RestartAlarmReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

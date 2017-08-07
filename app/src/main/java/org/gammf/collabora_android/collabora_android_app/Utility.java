@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.gammf.collabora_android.collabora_android_app.alarm.AlarmBroadcastReceiver;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
