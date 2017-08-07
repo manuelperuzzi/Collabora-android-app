@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         //simple examples, 2 set and 1 delete to test.
         Utility utility = new Utility();
 
@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity {
         utility.setAlarm(this,"First Event",firstTry);
         utility.setAlarm(this,"Second Event",secondTry);
         utility.deleteAlarm(this,secondTry);
-        
+
+
+        */
     }
 
     @Override
