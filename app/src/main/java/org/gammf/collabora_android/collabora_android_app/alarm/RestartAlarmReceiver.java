@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.collabora_android_app.alarm;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
