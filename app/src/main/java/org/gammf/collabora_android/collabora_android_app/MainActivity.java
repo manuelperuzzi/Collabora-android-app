@@ -54,49 +54,22 @@ public class MainActivity extends AppCompatActivity {
         utility.deleteAlarm(this,secondTry);
         */
 
-        // Get the UI widgets.
         this.geoManager = new GeofenceManager(this);
-        this.geoManager.addGeofenceToList("nota1",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofenceToList("nota2",new LatLng(44.159825, 12.430086));
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         if (!checkPermissions()) {
             requestPermissions();
-        } else {
-            this.geoManager.performPendingGeofenceTask();
         }
+        this.geoManager.addGeofence("nota1",new LatLng(44.261746, 12.338030));
+        this.geoManager.addGeofence("nota2",new LatLng(44.159825, 12.430086));
+
+        this.geoManager.removeGeofence("nota2");
     }
 
-    /**
-     * Adds geofences, which sets alerts to be notified when the device enters or exits one of the
-     * specified geofences. Handles the success or failure results returned by addGeofences().
-     */
-    public void addGeofencesButtonHandler(View view) {
-        if (!checkPermissions()) {
-            this.geoManager.setGeofenceTask("ADD");
-            requestPermissions();
-            return;
-        }
-        this.geoManager.addGeofences();
-    }
-
-   /**
-     * Removes geofences, which stops further notifications when the device enters or exits
-     * previously registered geofences.
-     */
-    public void removeGeofencesButtonHandler(View view) {
-        if (!checkPermissions()) {
-            this.geoManager.setGeofenceTask("REMOVE");
-            requestPermissions();
-            return;
-        }
-        this.geoManager.removeGeofences("nota2");
-    }
     /**
      * Shows a {@link Snackbar}.
      *
@@ -160,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "Permission granted.");
-                this.geoManager.performPendingGeofenceTask();
             } else {
                 showSnackbar(R.string.permission_denied_explanation, R.string.settings,
                         new View.OnClickListener() {
@@ -177,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
-                this.geoManager.setGeofenceTask("NONE");
             }
         }
     }

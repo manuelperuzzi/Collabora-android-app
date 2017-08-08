@@ -33,18 +33,10 @@ public class GeofenceManager implements OnCompleteListener<Void> {
 
     private static final String TAG = "GeofenceManagerDEBUG";
 
-    /**
-     * Tracks whether the user requested to add or remove geofences, or to do neither.
-     */
-    private enum PendingGeofenceTask {
-        ADD, REMOVE, NONE
-    }
-
     private Context context;
     private GeofencingClient mGeofencingClient;
     private ArrayList<Geofence> mGeofenceList;
     private PendingIntent mGeofencePendingIntent;
-    private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
 
     public GeofenceManager(Context context){
 
@@ -53,7 +45,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
 
-        // Initially set the PendingIntent used in addGeofences() and removeGeofences() to null.
+        // Initially set the PendingIntent used in addGeofence() and removeGeofence() to null.
         mGeofencePendingIntent = null;
 
         mGeofencingClient = LocationServices.getGeofencingClient(context);
@@ -64,7 +56,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      * Builds and returns a GeofencingRequest. Specifies the list of geofences to be monitored.
      * Also specifies how the geofence notifications are initially triggered.
      */
-    private GeofencingRequest getGeofencingRequest() {
+    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
         // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
@@ -73,21 +65,20 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
         // Add the geofences to be monitored by geofencing service.
-        Log.d(TAG, String.valueOf(mGeofenceList));
-        builder.addGeofences(mGeofenceList);
+        Log.d(TAG, String.valueOf(geofence));
+        builder.addGeofence(geofence);
 
         // Return a GeofencingRequest.
         return builder.build();
     }
 
     /**
-     * Runs when the result of calling {@link #addGeofences()} }
+     * Runs when the result of calling of addGeofence
      * is available.
      * @param task the resulting Task, containing either a result or error.
      */
     @Override
     public void onComplete(@NonNull Task<Void> task) {
-        mPendingGeofenceTask = PendingGeofenceTask.NONE;
         if (task.isSuccessful()) {
             updateGeofencesAdded(!getGeofencesAdded());
 
@@ -116,11 +107,11 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         }
         Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // addGeofences() and removeGeofences().
+        // addGeofences() and removeGeofence().
         return PendingIntent.getService(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public void addGeofenceToList(String noteID, LatLng coordinates ) {
+    /*public void addGeofenceToList(String noteID, LatLng coordinates ) {
         mGeofenceList.add(new Geofence.Builder()
                 // Set the request ID of the geofence. USE NOTE ID
                 .setRequestId(noteID)
@@ -141,15 +132,36 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 // Create the geofence.
                 .build());
 
-    }
+    }*/
 
     /**
      * Adds geofences. This method should be called after the user has granted the location
      * permission.
      */
     @SuppressWarnings("MissingPermission")
-    public void addGeofences() {
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+    public void addGeofence(String noteID, LatLng coordinates) {
+
+        Geofence geofence = new Geofence.Builder()
+                // Set the request ID of the geofence. USE NOTE ID
+                .setRequestId(noteID)
+
+                // Set the circular region of this geofence.
+                .setCircularRegion(
+                        coordinates.latitude,
+                        coordinates.longitude,
+                        Constants.GEOFENCE_RADIUS_IN_METERS
+                )
+
+                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+
+                // Set the transition types of interest. Alerts are only generated for these
+                // transition. We track entry and exit transitions in this sample.
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+
+                // Create the geofence.
+                .build();
+
+        mGeofencingClient.addGeofences(getGeofencingRequest(geofence), getGeofencePendingIntent())
                 .addOnCompleteListener(this);
     }
 
@@ -174,39 +186,13 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     }
 
     /**
-     * Performs the geofencing task that was pending until location permission was granted.
-     */
-    public void performPendingGeofenceTask() {
-        if (mPendingGeofenceTask == PendingGeofenceTask.ADD) {
-            addGeofences();
-        } else if (mPendingGeofenceTask == PendingGeofenceTask.REMOVE) {
-            //removeGeofences();
-        }
-    }
-
-    /**
      * Removes geofences. This method should be called after the user has granted the location
      * permission.
      */
-    public void removeGeofences(String idNote) {
+    public void removeGeofence(String idNote) {
         List<String> tmp = new ArrayList<>();
         tmp.add(idNote);
         mGeofencingClient.removeGeofences(tmp).addOnCompleteListener(this);
-    }
-
-
-    public void setGeofenceTask(String action){
-        switch(action){
-            case "ADD":
-                this.mPendingGeofenceTask = PendingGeofenceTask.ADD;
-                break;
-            case "REMOVE":
-                this.mPendingGeofenceTask = PendingGeofenceTask.REMOVE;
-                break;
-            case "NONE":
-                this.mPendingGeofenceTask = PendingGeofenceTask.NONE;
-                break;
-        }
     }
 
 }
