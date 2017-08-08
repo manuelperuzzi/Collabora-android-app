@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
 
-        this.geoManager.addGeofence("nota1",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("nota2",new LatLng(44.159825, 12.430086));
+        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
+        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
 
-        this.geoManager.removeGeofence("nota2");
+        //this.geoManager.removeGeofence("id2");
     }
 
     /**

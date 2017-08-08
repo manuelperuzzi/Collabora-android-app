@@ -83,12 +83,15 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      *
      * @return A PendingIntent for the IntentService that handles geofence transitions.
      */
-    private PendingIntent getGeofencePendingIntent() {
+    private PendingIntent getGeofencePendingIntent(String noteID, String contentToDisplay) {
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
-        return PendingIntent.getService(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra(noteID ,contentToDisplay);
+        final int _id = (int) System.currentTimeMillis();
+        Log.d("INTENT PRIMA", noteID + " - "+ contentToDisplay);
+        return PendingIntent.getService(this.context, _id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -96,7 +99,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      * permission.
      */
     @SuppressWarnings("MissingPermission")
-    public void addGeofence(String noteID, LatLng coordinates) {
+    public void addGeofence(String noteID, String contentToDisplay, LatLng coordinates) {
         Geofence geofence = new Geofence.Builder()
                 // Set the request ID of the geofence. USE NOTE ID
                 .setRequestId(noteID)
@@ -118,7 +121,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 // Create the geofence.
                 .build();
 
-        mGeofencingClient.addGeofences(getGeofencingRequest(geofence), getGeofencePendingIntent())
+        mGeofencingClient.addGeofences(getGeofencingRequest(geofence), getGeofencePendingIntent(noteID,contentToDisplay))
                 .addOnCompleteListener(this);
     }
 

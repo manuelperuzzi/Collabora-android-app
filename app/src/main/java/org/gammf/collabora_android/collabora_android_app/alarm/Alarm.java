@@ -6,20 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import org.gammf.collabora_android.collabora_android_app.alarm.AlarmBroadcastReceiver;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import static org.gammf.collabora_android.collabora_android_app.Constants.PREFS_NAME;
 
 /**
  * Created by Federico on 04/08/2017.
  */
 
 public class Alarm {
-
-    public static final String PREFS_NAME = "CollaboraPrefs";
 
     /***
      * Set an alarm notification at given time, with the given information.
