@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         //simple examples, 2 set and 1 delete to test.
         /*
-        Utility utility = new Utility();
+        Alarm utility = new Alarm();
 
         Calendar firstTry = Calendar.getInstance();
         firstTry.set(Calendar.YEAR, 2017);
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         if (!checkPermissions()) {
             requestPermissions();
         }
+
         this.geoManager.addGeofence("nota1",new LatLng(44.261746, 12.338030));
         this.geoManager.addGeofence("nota2",new LatLng(44.159825, 12.430086));
 

@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.collabora_android_app.alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,7 +17,7 @@ import java.util.Locale;
  * Created by Federico on 04/08/2017.
  */
 
-public class Utility {
+public class Alarm {
 
     public static final String PREFS_NAME = "CollaboraPrefs";
 

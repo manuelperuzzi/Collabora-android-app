@@ -3,7 +3,6 @@ package org.gammf.collabora_android.collabora_android_app.location_geofence;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -21,9 +20,7 @@ import org.gammf.collabora_android.collabora_android_app.Constants;
 import org.gammf.collabora_android.collabora_android_app.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Federico on 08/08/2017.
@@ -35,21 +32,16 @@ public class GeofenceManager implements OnCompleteListener<Void> {
 
     private Context context;
     private GeofencingClient mGeofencingClient;
-    private ArrayList<Geofence> mGeofenceList;
     private PendingIntent mGeofencePendingIntent;
 
     public GeofenceManager(Context context){
 
         this.context = context;
 
-        // Empty list for storing geofences.
-        mGeofenceList = new ArrayList<>();
-
         // Initially set the PendingIntent used in addGeofence() and removeGeofence() to null.
         mGeofencePendingIntent = null;
 
         mGeofencingClient = LocationServices.getGeofencingClient(context);
-
     }
 
     /**
@@ -58,17 +50,9 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      */
     private GeofencingRequest getGeofencingRequest(Geofence geofence) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
-        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
-        // is already inside that geofence.
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-
-        // Add the geofences to be monitored by geofencing service.
         Log.d(TAG, String.valueOf(geofence));
         builder.addGeofence(geofence);
-
-        // Return a GeofencingRequest.
         return builder.build();
     }
 
@@ -86,7 +70,6 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                     R.string.geofences_removed;
             Toast.makeText(this.context, this.context.getString(messageId), Toast.LENGTH_SHORT).show();
         } else {
-            // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this.context, task.getException());
             Log.w(TAG, errorMessage);
         }
@@ -101,38 +84,12 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      * @return A PendingIntent for the IntentService that handles geofence transitions.
      */
     private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // addGeofences() and removeGeofence().
         return PendingIntent.getService(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
-
-    /*public void addGeofenceToList(String noteID, LatLng coordinates ) {
-        mGeofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. USE NOTE ID
-                .setRequestId(noteID)
-
-                // Set the circular region of this geofence.
-                .setCircularRegion(
-                        coordinates.latitude,
-                        coordinates.longitude,
-                        Constants.GEOFENCE_RADIUS_IN_METERS
-                )
-
-                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-
-                // Set the transition types of interest. Alerts are only generated for these
-                // transition. We track entry and exit transitions in this sample.
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-
-                // Create the geofence.
-                .build());
-
-    }*/
 
     /**
      * Adds geofences. This method should be called after the user has granted the location
@@ -140,7 +97,6 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      */
     @SuppressWarnings("MissingPermission")
     public void addGeofence(String noteID, LatLng coordinates) {
-
         Geofence geofence = new Geofence.Builder()
                 // Set the request ID of the geofence. USE NOTE ID
                 .setRequestId(noteID)
@@ -152,6 +108,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                         Constants.GEOFENCE_RADIUS_IN_METERS
                 )
 
+                //1 year...maybe to change
                 .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
 
                 // Set the transition types of interest. Alerts are only generated for these
@@ -166,6 +123,15 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     }
 
     /**
+     * Removes geofence
+     */
+    public void removeGeofence(String idNote) {
+        List<String> tmp = new ArrayList<>();
+        tmp.add(idNote);
+        mGeofencingClient.removeGeofences(tmp).addOnCompleteListener(this);
+    }
+
+    /**
      * Returns true if geofences were added, otherwise false.
      */
     private boolean getGeofencesAdded() {
@@ -174,7 +140,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     }
 
     /**
-     * Stores whether geofences were added ore removed in {@link SharedPreferences};
+     * Stores whether geofences were added ore removed in SharedPreferences;
      *
      * @param added Whether geofences were added or removed.
      */
@@ -183,16 +149,6 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 .edit()
                 .putBoolean(Constants.GEOFENCES_ADDED_KEY, added)
                 .apply();
-    }
-
-    /**
-     * Removes geofences. This method should be called after the user has granted the location
-     * permission.
-     */
-    public void removeGeofence(String idNote) {
-        List<String> tmp = new ArrayList<>();
-        tmp.add(idNote);
-        mGeofencingClient.removeGeofences(tmp).addOnCompleteListener(this);
     }
 
 }
