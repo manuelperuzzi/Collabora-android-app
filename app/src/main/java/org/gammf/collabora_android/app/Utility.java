@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

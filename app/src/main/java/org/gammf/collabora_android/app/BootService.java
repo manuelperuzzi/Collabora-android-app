@@ -1,15 +1,9 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.app;
 
-import android.app.AlarmManager;
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Created by Federico on 04/08/2017.
