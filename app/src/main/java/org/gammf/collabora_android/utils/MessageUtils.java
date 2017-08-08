@@ -33,7 +33,7 @@ public class MessageUtils {
 
     private static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
         final JSONObject jsn = new JSONObject();
-        jsn.put("username", message.getUsername()).put("target", message.getTarget()).put("type", message.getUpdateType());
+        jsn.put("user", message.getUsername()).put("target", message.getTarget()).put("messageType", message.getUpdateType());
         if(message.getTarget() == UpdateMessageTarget.NOTE) {
             jsn.put("note", NoteUtils.noteToJSON(((NoteUpdateMessage)message).getNote()));
         }
