@@ -1,6 +1,8 @@
 package org.gammf.collabora_android.utils;
 
+import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,16 +23,13 @@ public class NoteUtils {
         if(note.getUsername() != null) {
             jsn.put("userID", note.getUsername());
         }
-        if(note.getTitle() != null) {
-            jsn.put("title", note.getTitle());
-        }
         if(note.getContent() != null) {
             jsn.put("content", note.getContent());
         }
-        if(note.getLatitude() != null && note.getLongitude() != null) {
+        if(note.getLocation() != null) {
             final JSONObject location = new JSONObject();
-            location.put("latitude", note.getLatitude());
-            location.put("longitude", note.getLongitude());
+            location.put("latitude", note.getLocation().getLatitude());
+            location.put("longitude", note.getLocation().getLongitude());
             jsn.put("location", location);
         }
         if(note.getExpirationDate() != null) {
@@ -38,8 +37,8 @@ public class NoteUtils {
         }
         if(note.getState() != null) {
             final JSONObject state = new JSONObject();
-            state.put("definition", note.getState());
-            state.put("username", note.getStateResponsible());
+            state.put("definition", note.getState().getCurrentState());
+            state.put("username", note.getState().getCurrentResponsible());
             jsn.put("state", state);
         }
         if(note.getPreviousNotes() != null) {
@@ -53,24 +52,19 @@ public class NoteUtils {
         if(jsn.has("id")) {
             builder.setNoteID(jsn.getString("id"));
         }
-        if(jsn.has("title")) {
-            builder.setTitle(jsn.getString("title"));
-        }
         if(jsn.has("content")) {
             builder.setContent(jsn.getString("content"));
         }
         if(jsn.has("location")) {
             final JSONObject location = (JSONObject)jsn.get("location");
-            builder.setLatitude(location.getDouble("latitude"));
-            builder.setLongitude(location.getDouble("longitude"));
+            builder.setLocation(new NoteLocation(location.getDouble("latitude"), location.getDouble("longitude")));
         }
         if(jsn.has("expiration")) {
             builder.setExpirationDate((Date)jsn.get("expiration"));
         }
         if(jsn.has("state")) {
             final JSONObject state = (JSONObject)jsn.get("state");
-            builder.setState(state.getString("definition"));
-            builder.setStateResponsible(state.getString("username"));
+            builder.setState(new NoteState(state.getString("definition"),state.getString("username")));
         }
         if(jsn.has("previousNotes")) {
             builder.setPreviousNotes((List<String>)jsn.get("previousNotes"));

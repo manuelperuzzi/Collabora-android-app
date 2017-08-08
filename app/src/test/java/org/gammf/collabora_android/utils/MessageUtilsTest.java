@@ -4,7 +4,9 @@ import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.communication.update.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,10 +25,8 @@ public class MessageUtilsTest {
         Note note = new SimpleNoteBuilder("fone")
                 .setContent("this is a test")
                 .setExpirationDate(new Date(772408800000L))
-                .setState("created")
-                .setStateResponsible("fone")
-                .setLatitude(44.24)
-                .setLongitude(53.21)
+                .setState(new NoteState("created", "fone"))
+                .setLocation(new NoteLocation(44.24,53.21))
                 .buildNote();
         Message message = new ConcreteNoteUpdateMessage("fone", note, UpdateMessageType.CREATION);
         try {

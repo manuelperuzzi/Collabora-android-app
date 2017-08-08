@@ -11,13 +11,10 @@ import java.util.List;
 public class SimpleNoteBuilder implements NoteBuilder {
     private final String username;
     private String noteID;
-    private String title;
     private String content;
-    private Double latitude;
-    private Double longitude;
+    private Location location;
     private Date expirationDate;
-    private String state;
-    private String stateResponsible;
+    private State state;
     private List<String> previousNotes;
 
     public SimpleNoteBuilder(final String username) {
@@ -31,11 +28,6 @@ public class SimpleNoteBuilder implements NoteBuilder {
         return this;
     }
 
-    @Override
-    public NoteBuilder setTitle(String title) {
-        this.title = title;
-        return this;
-    }
 
     @Override
     public NoteBuilder setContent(String content) {
@@ -44,16 +36,11 @@ public class SimpleNoteBuilder implements NoteBuilder {
     }
 
     @Override
-    public NoteBuilder setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public NoteBuilder setLocation(Location location) {
+        this.location = location;
         return this;
     }
 
-    @Override
-    public NoteBuilder setLongitude(Double longitude) {
-        this.longitude = longitude;
-        return this;
-    }
 
     @Override
     public NoteBuilder setExpirationDate(Date expirationDate) {
@@ -62,14 +49,8 @@ public class SimpleNoteBuilder implements NoteBuilder {
     }
 
     @Override
-    public NoteBuilder setState(String state) {
+    public NoteBuilder setState(State state) {
         this.state = state;
-        return this;
-    }
-
-    @Override
-    public NoteBuilder setStateResponsible(String stateResponsible) {
-        this.stateResponsible = stateResponsible;
         return this;
     }
 
@@ -83,13 +64,10 @@ public class SimpleNoteBuilder implements NoteBuilder {
     public Note buildNote() {
         return new SimpleNote(this.noteID,
                               this.username,
-                              this.title,
                               this.content,
-                              this.latitude,
-                              this.longitude,
+                              this.location,
                               this.expirationDate,
                               this.state,
-                              this.stateResponsible,
                               previousNotes != null ? new ArrayList<>(previousNotes) : null);
     }
 }

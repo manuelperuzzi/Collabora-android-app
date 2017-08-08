@@ -9,13 +9,10 @@ import java.util.List;
 
 public interface NoteBuilder {
     NoteBuilder setNoteID(String noteID);
-    NoteBuilder setTitle(String title);
     NoteBuilder setContent(String content);
-    NoteBuilder setLatitude(Double latitude);
-    NoteBuilder setLongitude(Double longitude);
+    NoteBuilder setLocation(Location location);
     NoteBuilder setExpirationDate(Date expirationDate);
-    NoteBuilder setState(String state);
-    NoteBuilder setStateResponsible(String stateResponsible);
+    NoteBuilder setState(State state);
     NoteBuilder setPreviousNotes(List<String> previousNotes);
     Note buildNote();
 }

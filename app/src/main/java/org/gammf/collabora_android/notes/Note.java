@@ -10,14 +10,10 @@ import java.util.List;
 public interface Note {
     String getNoteID();
     String getUsername();
-    String getTitle();
     String getContent();
-    Double getLatitude();
-    Double getLongitude();
+    Location getLocation();
     Date getExpirationDate();
-    String getState();
-    String getStateResponsible();
+    State getState();
     List<String> getPreviousNotes();
-    void modifyTitle(String newTitle);
     void modifyContent(String newContent);
 }

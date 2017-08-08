@@ -1,5 +1,6 @@
 package org.gammf.collabora_android.utils;
 
+import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.json.JSONException;
@@ -21,9 +22,7 @@ public class NoteUtilsTest {
     @Test
     public void testNoteToJSON() {
         Note note = new SimpleNoteBuilder("id")
-                .setTitle("myTitle")
-                .setLatitude(45.24)
-                .setLongitude(44.21)
+                .setLocation(new NoteLocation(45.24,44.21))
                 .setExpirationDate(new Date(772408800000L))
                 .setPreviousNotes(new ArrayList<String>(Arrays.asList("test", "test2")))
                 .buildNote();
@@ -47,9 +46,8 @@ public class NoteUtilsTest {
             obj.put("username", "username").put("title", "someTitle").put("state", state);
             Note note = NoteUtils.jsonToNote(obj);
             assertEquals(note.getUsername(), "username");
-            assertEquals(note.getTitle(), "someTitle");
-            assertEquals(note.getState(), "doing");
-            assertEquals(note.getStateResponsible(), "fone");
+            assertEquals(note.getState().getCurrentState(), "doing");
+            assertEquals(note.getState().getCurrentResponsible(), "fone");
             assertNull(note.getContent());
             assertNull(note.getPreviousNotes());
         } catch (JSONException e) {
