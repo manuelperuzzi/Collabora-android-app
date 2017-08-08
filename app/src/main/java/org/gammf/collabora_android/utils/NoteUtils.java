@@ -21,7 +21,7 @@ public class NoteUtils {
             jsn.put("id", note.getNoteID());
         }
         if(note.getUsername() != null) {
-            jsn.put("userID", note.getUsername());
+            jsn.put("user", note.getUsername());
         }
         if(note.getContent() != null) {
             jsn.put("content", note.getContent());
@@ -38,7 +38,7 @@ public class NoteUtils {
         if(note.getState() != null) {
             final JSONObject state = new JSONObject();
             state.put("definition", note.getState().getCurrentState());
-            state.put("username", note.getState().getCurrentResponsible());
+            state.put("user", note.getState().getCurrentResponsible());
             jsn.put("state", state);
         }
         if(note.getPreviousNotes() != null) {
@@ -48,7 +48,7 @@ public class NoteUtils {
     }
 
     public static Note jsonToNote(final JSONObject jsn) throws JSONException{
-        final SimpleNoteBuilder builder = new SimpleNoteBuilder(jsn.getString("username"));
+        final SimpleNoteBuilder builder = new SimpleNoteBuilder(jsn.getString("user"));
         if(jsn.has("id")) {
             builder.setNoteID(jsn.getString("id"));
         }
@@ -64,7 +64,7 @@ public class NoteUtils {
         }
         if(jsn.has("state")) {
             final JSONObject state = (JSONObject)jsn.get("state");
-            builder.setState(new NoteState(state.getString("definition"),state.getString("username")));
+            builder.setState(new NoteState(state.getString("definition"),state.getString("user")));
         }
         if(jsn.has("previousNotes")) {
             builder.setPreviousNotes((List<String>)jsn.get("previousNotes"));

@@ -28,7 +28,7 @@ public class NoteUtilsTest {
                 .buildNote();
         try {
             JSONObject obj = NoteUtils.noteToJSON(note);
-            assertEquals(obj.getString("userID"), "id");
+            assertEquals(obj.getString("user"), "id");
             assertEquals(obj.getString("title"), "myTitle");
             assertEquals(((Date)obj.get("expiration")).getTime(), 772408800000L);
             assertEquals((List<String>)obj.get("previousNotes"), Arrays.asList("test", "test2"));
@@ -42,8 +42,8 @@ public class NoteUtilsTest {
         JSONObject obj = new JSONObject();
         JSONObject state = new JSONObject();
         try {
-            state.put("definition", "doing").put("username", "fone");
-            obj.put("username", "username").put("title", "someTitle").put("state", state);
+            state.put("definition", "doing").put("user", "fone");
+            obj.put("user", "username").put("title", "someTitle").put("state", state);
             Note note = NoteUtils.jsonToNote(obj);
             assertEquals(note.getUsername(), "username");
             assertEquals(note.getState().getCurrentState(), "doing");
