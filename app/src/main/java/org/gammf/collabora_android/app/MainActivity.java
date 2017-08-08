@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
+        intent.putExtra("username", "fone");
+        startService(intent);
 
         TabHost host = (TabHost)findViewById(R.id.tabHostLists);
         host.setup();

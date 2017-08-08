@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -43,7 +44,7 @@ public class SubscriberService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.queueName = QUEUE_PREFIX + intent.getStringExtra("username");
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void setupConnectionFactory() {
@@ -52,6 +53,7 @@ public class SubscriberService extends Service {
             factory.setHost(BROKER_ADDRESS);
         } catch (final Exception e) {
             //TO-DO
+            Log.i("SubscriberService", "Huh?");
         }
     }
 
@@ -74,13 +76,14 @@ public class SubscriberService extends Service {
             });
         } catch(Exception e) {
             //TO-DO
+            Log.i("SubscriberService", "Huh??");
         }
     }
 
     private void sendNotification(String message) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(SubscriberService.this);
         builder.setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("Publish")
+                .setContentTitle("Notification")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setVibrate(new long[] { 100, 200, 400, 200, 400 })

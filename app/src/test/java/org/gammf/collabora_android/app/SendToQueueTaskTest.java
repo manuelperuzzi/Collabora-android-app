@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class SendToQueueTaskTest {
     @Test
     public void testService() {
-        Note note = new SimpleNoteBuilder("fone").setTitle("hello").setContent("some content").buildNote();
+        Note note = new SimpleNoteBuilder("fone").setContent("some content").buildNote();
         Message message = new ConcreteNoteUpdateMessage("fone", note, UpdateMessageType.CREATION);
         new SendToQueueTask().execute(message);
     }

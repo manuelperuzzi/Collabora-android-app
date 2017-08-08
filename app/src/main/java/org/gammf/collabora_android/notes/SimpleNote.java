@@ -10,34 +10,25 @@ import java.util.List;
 public class SimpleNote implements Note {
     private String noteID;
     private String username;
-    private String title;
     private String content;
-    private Double latitude;
-    private Double longitude;
+    private Location location;
     private Date expirationDate;
-    private String state;
-    private String stateResponsible;
+    private State state;
     private final List<String> previousNotes;
 
     SimpleNote(final String noteID,
                final String username,
-               final String title,
                final String content,
-               final Double latitude,
-               final Double longitude,
+               final Location location,
                final Date expirationDate,
-               final String state,
-               final String stateResponsible,
+               final State state,
                final List<String> previousNotes) {
         this.noteID = noteID;
         this.username = username;
-        this.title = title;
         this.content = content;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.location = location;
         this.expirationDate = expirationDate;
         this.state = state;
-        this.stateResponsible = stateResponsible;
         this.previousNotes = previousNotes;
     }
 
@@ -53,23 +44,13 @@ public class SimpleNote implements Note {
     }
 
     @Override
-    public String getTitle() {
-        return this.title;
-    }
-
-    @Override
     public String getContent() {
         return this.content;
     }
 
     @Override
-    public Double getLatitude() {
-        return this.latitude;
-    }
-
-    @Override
-    public Double getLongitude() {
-        return this.longitude;
+    public Location getLocation() {
+        return this.location;
     }
 
     @Override
@@ -78,23 +59,13 @@ public class SimpleNote implements Note {
     }
 
     @Override
-    public String getState() {
+    public State getState() {
         return this.state;
-    }
-
-    @Override
-    public String getStateResponsible() {
-        return this.stateResponsible;
     }
 
     @Override
     public List<String> getPreviousNotes() {
         return this.previousNotes;
-    }
-
-    @Override
-    public void modifyTitle(String newTitle) {
-        this.title = newTitle;
     }
 
     @Override

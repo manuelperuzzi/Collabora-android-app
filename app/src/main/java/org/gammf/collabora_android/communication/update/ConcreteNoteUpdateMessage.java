@@ -10,12 +10,12 @@ import org.gammf.collabora_android.notes.Note;
 public class ConcreteNoteUpdateMessage implements NoteUpdateMessage {
     private final String username;
     private final Note note;
-    private final UpdateMessageType type;
+    private final UpdateMessageType updateType;
 
-    public ConcreteNoteUpdateMessage(final String username, final Note note, final UpdateMessageType type) {
+    public ConcreteNoteUpdateMessage(final String username, final Note note, final UpdateMessageType updateType) {
         this.username = username;
         this.note = note;
-        this.type = type;
+        this.updateType = updateType;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ConcreteNoteUpdateMessage implements NoteUpdateMessage {
 
     @Override
     public UpdateMessageType getUpdateType() {
-        return this.type;
+        return this.updateType;
     }
 
     @Override
