@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.alarm;
+package org.gammf.collabora_android.app.alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.gammf.collabora_android.collabora_android_app.Constants.PREFS_NAME;
+import static org.gammf.collabora_android.app.Constants.PREFS_NAME;
 
 /**
  * Created by Federico on 04/08/2017.

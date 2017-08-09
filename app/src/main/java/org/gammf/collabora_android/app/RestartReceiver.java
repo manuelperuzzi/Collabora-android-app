@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.app;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.gammf.collabora_android.collabora_android_app.BootService;
+import org.gammf.collabora_android.app.BootService;
 
 /**
  * BroadcastReceiver called when device is rebooted

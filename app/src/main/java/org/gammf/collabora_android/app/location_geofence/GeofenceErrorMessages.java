@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.location_geofence;
+package org.gammf.collabora_android.app.location_geofence;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.GeofenceStatusCodes;
 
-import org.gammf.collabora_android.collabora_android_app.R;
+import org.gammf.collabora_android.app.R;
 
 /**
  * Geofence error codes mapped to error messages.

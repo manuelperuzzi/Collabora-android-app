@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.alarm;
+package org.gammf.collabora_android.app.alarm;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,8 +9,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import org.gammf.collabora_android.collabora_android_app.MainActivity;
-import org.gammf.collabora_android.collabora_android_app.R;
+import org.gammf.collabora_android.app.MainActivity;
+import org.gammf.collabora_android.app.R;
 
 import java.util.Date;
 

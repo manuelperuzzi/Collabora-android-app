@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.location_geofence;
+package org.gammf.collabora_android.app.location_geofence;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,8 +16,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.gammf.collabora_android.collabora_android_app.Constants;
-import org.gammf.collabora_android.collabora_android_app.R;
+import org.gammf.collabora_android.app.Constants;
+import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
 
             int messageId = getGeofencesAdded() ? R.string.geofences_added :
                     R.string.geofences_removed;
-            Toast.makeText(this.context, this.context.getString(messageId), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.context, this.context.getString(messageId), Toast.LENGTH_SHORT).show();
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(this.context, task.getException());
             Log.w(TAG, errorMessage);

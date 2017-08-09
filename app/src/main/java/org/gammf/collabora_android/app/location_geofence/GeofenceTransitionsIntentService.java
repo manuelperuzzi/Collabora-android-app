@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collabora_android_app.location_geofence;
+package org.gammf.collabora_android.app.location_geofence;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -15,8 +15,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
-import org.gammf.collabora_android.collabora_android_app.MainActivity;
-import org.gammf.collabora_android.collabora_android_app.R;
+import org.gammf.collabora_android.app.MainActivity;
+import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
 import java.util.List;

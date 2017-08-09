@@ -1,9 +1,9 @@
-package org.gammf.collabora_android.collabora_android_app;
+package org.gammf.collabora_android.app;
 
 import android.app.IntentService;
 import android.content.Intent;
 
-import org.gammf.collabora_android.collabora_android_app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 /**
  * Service that manage rebooting procedure
