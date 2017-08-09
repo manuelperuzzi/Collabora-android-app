@@ -13,9 +13,7 @@ public class Constants {
 
     private Constants() {
     }
-
-    public static final String TAG = MainActivity.class.getSimpleName();
-
+    
     public static final String PREFS_NAME = "CollaboraPrefs";
 
     private static final String PACKAGE_NAME = "com.google.android.gms.location.Geofence";
