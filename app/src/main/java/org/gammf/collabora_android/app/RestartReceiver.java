@@ -6,14 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.gammf.collabora_android.app.BootService;
+
 /**
- *
+ * BroadcastReceiver called when device is rebooted
  * Created by Federico on 04/08/2017.
  */
 
-public class RestartAlarmReceiver extends BroadcastReceiver {
+public class RestartReceiver extends BroadcastReceiver {
 
-    public static final String TAG = "RestartAlarmReceiver";
+    public static final String TAG = "RestartReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

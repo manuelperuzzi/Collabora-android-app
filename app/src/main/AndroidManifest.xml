@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
 
     <application
         android:allowBackup="true"
@@ -12,14 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="org.gammf.collabora_android.app.MainActivity">
+
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
+        <receiver android:name=".alarm.AlarmBroadcastReceiver"/>
         <service android:name=".SubscriberService"/>
 
         <activity android:name=".SingleNoteActivity">
@@ -31,17 +34,11 @@
         <activity android:name=".EditNoteActivity">
         </activity>
 
-        <!--<receiver android:name=".AlarmBroadcastReceiver" android:enabled="true" android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>-->
-
-        <receiver android:name=".AlarmBroadcastReceiver"/>
-
         <service android:name=".BootService"/>
 
-        <receiver android:name=".RestartAlarmReceiver" android:enabled="true" android:exported="false">
+        <service android:name=".location_geofence.GeofenceTransitionsIntentService"/>
+
+        <receiver android:name=".RestartReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

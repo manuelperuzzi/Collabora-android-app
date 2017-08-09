@@ -3,15 +3,16 @@ package org.gammf.collabora_android.app;
 import android.app.IntentService;
 import android.content.Intent;
 
-import java.util.Calendar;
+import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 /**
+ * Service that manage rebooting procedure
  * Created by Federico on 04/08/2017.
  */
 
 public class BootService extends IntentService {
 
-    public static final String PREFS_NAME = "CollaboraPrefs";
+    private GeofenceManager geoManager;
 
     public BootService() {
         super("BootService");
@@ -20,9 +21,10 @@ public class BootService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        // reset here all allarms
+        // reset here all allarms and all geofences...
         //take from db or saved locally collection...
-        Utility utility = new Utility();
+
+        /*Alarm utility = new Alarm();
 
         Calendar firstTry = Calendar.getInstance();
         firstTry.set(Calendar.YEAR, 2017);
@@ -44,6 +46,13 @@ public class BootService extends IntentService {
         utility.setAlarm(this,"Second Event",secondTry);
         utility.deleteAlarm(this,secondTry);
 
+
+        this.geoManager = new GeofenceManager(this);
+        this.geoManager.addGeofence("nota1",new LatLng(44.261746, 12.338030));
+        this.geoManager.addGeofence("nota2",new LatLng(44.159825, 12.430086));
+        this.geoManager.removeGeofence("nota2");
+
+        */
     }
 
 }
