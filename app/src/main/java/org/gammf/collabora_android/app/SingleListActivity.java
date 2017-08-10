@@ -5,10 +5,19 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.NoteUtils;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -81,6 +90,14 @@ public class SingleListActivity extends AppCompatActivity {
                     String listName = data.getStringExtra(ADD_NOTENAME);
                     String listDescription = data.getStringExtra(ADD_NOTEDESC);
                     addNewList(listName, listDescription);
+                    Log.i("MainActivity", "starting async task");
+                    Note newNote = new SimpleNoteBuilder("fone").setContent(data.getStringExtra("notedescadded"))
+                                                                .setState(new NoteState("created", "fone"))
+                                                                .buildNote();
+                    try {
+                        Log.i("Note to be sent:", NoteUtils.noteToJSON(newNote).toString());
+                    } catch (JSONException e) {}
+                    new SendToQueueTask().execute(new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION));
                 }
                 break;
             }

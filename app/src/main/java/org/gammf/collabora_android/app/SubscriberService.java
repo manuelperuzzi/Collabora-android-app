@@ -27,17 +27,17 @@ import java.io.IOException;
 
 public class SubscriberService extends Service {
 
-    private static final String BROKER_ADDRESS = "192.168.1.125";
+    private static final String BROKER_ADDRESS = "192.168.0.16";
     private static final String EXCHANGE_NAME = "notifications";
     private static final String QUEUE_PREFIX = "notify.";
 
-    private final ConnectionFactory factory = new ConnectionFactory();
+    private ConnectionFactory factory;
     private String queueName;
+    private Thread subscriberThread;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        this.setupConnectionFactory();
         this.subscribe();
     }
 
@@ -47,37 +47,36 @@ public class SubscriberService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void setupConnectionFactory() {
-        try {
-            factory.setAutomaticRecoveryEnabled(false);
-            factory.setHost(BROKER_ADDRESS);
-        } catch (final Exception e) {
-            //TO-DO
-            Log.i("SubscriberService", "Huh?");
-        }
-    }
-
     private void subscribe() {
-        try {
-            final Connection connection = factory.newConnection();
-            final Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
-            channel.queueDeclare(this.queueName, true, false, false, null);
-            channel.queueBind(this.queueName, EXCHANGE_NAME, "notify.collaborationID");
-
-            channel.basicConsume(this.queueName, false, new DefaultConsumer(channel) {
-                @Override
-                public void handleDelivery(String consumerTag, Envelope envelope,
-                                           AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    String message = new String(body, "UTF-8");
-                    sendNotification(message);
-                    channel.basicAck(envelope.getDeliveryTag(), false);
+        this.subscriberThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    factory = new ConnectionFactory();
+                    factory.setHost(BROKER_ADDRESS);
+                    final Connection connection = factory.newConnection();
+                    final Channel channel = connection.createChannel();
+                    channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
+                    channel.queueDeclare(queueName, true, false, false, null);
+                    channel.queueBind(queueName, EXCHANGE_NAME, "fone");
+                    channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
+                        @Override
+                        public void handleDelivery(String consumerTag, Envelope envelope,
+                                                   AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            String message = new String(body, "UTF-8");
+                            Log.i("Subscriber Thread", "I received a Message");
+                            sendNotification(message);
+                            channel.basicAck(envelope.getDeliveryTag(), false);
+                        }
+                    });
+                } catch(Exception e) {
+                    //TO-DO
+                    e.printStackTrace();
                 }
-            });
-        } catch(Exception e) {
-            //TO-DO
-            Log.i("SubscriberService", "Huh??");
-        }
+            }
+        });
+        this.subscriberThread.start();
+        Log.i("Subscriber Service", "Thread started");
     }
 
     private void sendNotification(String message) {
