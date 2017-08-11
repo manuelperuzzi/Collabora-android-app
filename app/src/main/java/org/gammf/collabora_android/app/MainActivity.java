@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TabHost;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Registration on firabase topic
+        FirebaseMessaging.getInstance().subscribeToTopic("group-mulino");
 
         final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
         intent.putExtra("username", "fone");
