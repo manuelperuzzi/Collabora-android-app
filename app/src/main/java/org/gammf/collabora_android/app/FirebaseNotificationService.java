@@ -8,7 +8,7 @@ import com.google.firebase.messaging.RemoteMessage;
 /**
  * Created by mperuzzi on 11/08/17.
  */
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+public class FirebaseNotificationService extends FirebaseMessagingService {
 
     private static final String TAG = "FCM Service";
 

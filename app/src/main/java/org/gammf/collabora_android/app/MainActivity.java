@@ -64,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Registration on firabase topic
-        FirebaseMessaging.getInstance().subscribeToTopic("group-mulino");
-
         final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
         intent.putExtra("username", "fone");
         startService(intent);

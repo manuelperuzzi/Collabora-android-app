@@ -43,7 +43,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".FirebaseNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
