@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.notes;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -9,10 +10,9 @@ import java.util.List;
 
 public interface Note {
     String getNoteID();
-    String getUsername();
     String getContent();
     Location getLocation();
-    Date getExpirationDate();
+    DateTime getExpirationDate();
     State getState();
     List<String> getPreviousNotes();
     void modifyContent(String newContent);

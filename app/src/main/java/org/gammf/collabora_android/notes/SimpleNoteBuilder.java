@@ -1,7 +1,8 @@
 package org.gammf.collabora_android.notes;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,16 +10,15 @@ import java.util.List;
  */
 
 public class SimpleNoteBuilder implements NoteBuilder {
-    private final String username;
     private String noteID;
     private String content;
     private Location location;
-    private Date expirationDate;
+    private DateTime expirationDate;
     private State state;
     private List<String> previousNotes;
 
-    public SimpleNoteBuilder(final String username) {
-        this.username = username;
+    public SimpleNoteBuilder(final String content) {
+        this.content = content;
     }
 
 
@@ -30,12 +30,6 @@ public class SimpleNoteBuilder implements NoteBuilder {
 
 
     @Override
-    public NoteBuilder setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    @Override
     public NoteBuilder setLocation(Location location) {
         this.location = location;
         return this;
@@ -43,7 +37,7 @@ public class SimpleNoteBuilder implements NoteBuilder {
 
 
     @Override
-    public NoteBuilder setExpirationDate(Date expirationDate) {
+    public NoteBuilder setExpirationDate(DateTime expirationDate) {
         this.expirationDate = expirationDate;
         return this;
     }
@@ -63,7 +57,6 @@ public class SimpleNoteBuilder implements NoteBuilder {
     @Override
     public Note buildNote() {
         return new SimpleNote(this.noteID,
-                              this.username,
                               this.content,
                               this.location,
                               this.expirationDate,
