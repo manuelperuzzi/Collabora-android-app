@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".gui.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,15 +27,6 @@
         <receiver android:name=".alarm.AlarmBroadcastReceiver"/>
 
         <service android:name=".SubscriberService"/>
-
-        <activity android:name=".SingleNoteActivity">
-        </activity>
-        <activity android:name=".AddListActivity">
-        </activity>
-        <activity android:name=".SingleListActivity">
-        </activity>
-        <activity android:name=".EditNoteActivity">
-        </activity>
 
         <service android:name=".BootService"/>
         <service android:name=".location_geofence.GeofenceTransitionsIntentService"/>

@@ -1,52 +1,46 @@
-package org.gammf.collabora_android.app;
+package org.gammf.collabora_android.app.gui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TabHost;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.gammf.collabora_android.app.BuildConfig;
+import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    String[] personalitemName = new String[]{
-            "Lista della spesa",
-            "Lista verdura"
-    };
+    private ListView mDrawerList;
+    private ArrayList<DataModel> drawerItem;
+    private DrawerItemCustomAdapter adapter;
 
-    String[] itemName = new String[]{
-            "Progetto 1",
-            "Progetto 2",
-            "Progetto 3",
-            "Progetto 4"
-    };
-
-    ArrayList<String> personallistItem = new ArrayList<String>();
-    ArrayList<String> projectlistItem = new ArrayList<String>();
-
-    private static final int REQUEST_CODE = 1;
-    private static final String LIST_TYPE = "listtype";
-    private static final String LIST_NAME = "listname";
-    private static final String LIST_DESCRIPTION = "listdescription";
-    CustomListAdapter personalAdapter;
-    CustomListAdapter projectAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private GeofenceManager geoManager;
@@ -55,84 +49,45 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        drawerItem = new ArrayList<DataModel>();
+        drawerItem.add(new DataModel(R.drawable.connect, "Connect"));
+        drawerItem.add(new DataModel(R.drawable.fixtures, "Fixtures"));
+        drawerItem.add(new DataModel(R.drawable.table, "Table"));
+        adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Button btnAddCollaborations = (Button) findViewById(R.id.btnAddCollaborations);
+        btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                adapter.add(new DataModel(R.drawable.connect, "New Collaborations"));
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+
 
         final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
         intent.putExtra("username", "fone");
         startService(intent);
-
-        TabHost host = (TabHost)findViewById(R.id.tabHostLists);
-        host.setup();
-
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Tab One");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Personal List");
-        host.addTab(spec);
-
-        //Tab 2
-        spec = host.newTabSpec("Tab Two");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Project");
-        host.addTab(spec);
-
-
-        final ListView personallistView =(ListView) findViewById(R.id.personallistView);
-        for(String s : personalitemName){
-            personallistItem.add(s);
-        }
-
-        final ListView projectListView =(ListView) findViewById(R.id.listView);
-        for(String s : itemName){
-            projectlistItem.add(s);
-        }
-
-        projectAdapter = new CustomListAdapter(this, projectlistItem);
-        projectListView.setAdapter(projectAdapter);
-
-        personalAdapter=new CustomListAdapter(this, personallistItem);
-        personallistView.setAdapter(personalAdapter);
-
-        personallistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id) {
-                final String listName = (String) adattatore.getItemAtPosition(pos);
-                Intent myIntent = new Intent(MainActivity.this, SingleListActivity.class);
-                myIntent.putExtra(LIST_NAME, listName);
-                MainActivity.this.startActivity(myIntent);
-            }
-        });
-
-        projectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id){
-                final String listName = (String) adattatore.getItemAtPosition(pos);
-                Intent myIntent = new Intent(MainActivity.this, SingleListActivity.class);
-                myIntent.putExtra(LIST_NAME, listName);
-                MainActivity.this.startActivity(myIntent);
-            }
-        });
-
-        FloatingActionButton personalfab = (FloatingActionButton) findViewById(R.id.btnAddPersonalNotes);
-        personalfab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(MainActivity.this, AddListActivity.class);
-                i.putExtra("type", "personallist");
-                startActivityForResult(i, REQUEST_CODE);
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btnAddNotes);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent myIntent = new Intent(MainActivity.this, AddListActivity.class);
-                myIntent.putExtra("type", "projectlist"); //Optional parameters
-                startActivityForResult(myIntent, REQUEST_CODE);
-            }
-        });
 
         this.geoManager = new GeofenceManager(this);
 
@@ -164,6 +119,103 @@ public class MainActivity extends AppCompatActivity {
         */
     }
 
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final DataModel listName = (DataModel) parent.getItemAtPosition(position);
+            selectItem(position, listName.getName());
+        }
+
+    }
+
+    private void selectItem(int position, String itemName) {
+
+        Fragment fragment = null;
+        Bundle fragmentArgument = new Bundle();
+        fragment = new ConnectFragment();
+        fragmentArgument.putString("collabName", itemName);
+
+        fragment.setArguments(fragmentArgument);
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            setTitle(itemName);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+
+
+        } else {
+            Log.e("MainActivity", "Error in creating fragment");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+/*
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+*/
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+
+
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -180,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        /*
         switch(requestCode) {
             case (REQUEST_CODE) : {
                 if (resultCode == Activity.RESULT_OK) {
@@ -191,17 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-    }
-
-
-    private void addNewList(String listType, String listName, String listDescription){
-        if(listType.equals("personallist")) {
-            personalAdapter.addList( listName, listDescription);
-            personalAdapter.notifyDataSetChanged();
-        }else if(listType.equals("projectlist")){
-            projectAdapter.addList( listName, listDescription);
-            projectAdapter.notifyDataSetChanged();
-        }
+        */
     }
 
     /**
