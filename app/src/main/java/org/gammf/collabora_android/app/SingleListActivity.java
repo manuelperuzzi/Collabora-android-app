@@ -91,9 +91,8 @@ public class SingleListActivity extends AppCompatActivity {
                     String listDescription = data.getStringExtra(ADD_NOTEDESC);
                     addNewList(listName, listDescription);
                     Log.i("MainActivity", "starting async task");
-                    Note newNote = new SimpleNoteBuilder("fone").setContent(data.getStringExtra("notedescadded"))
-                                                                .setState(new NoteState("created", "fone"))
-                                                                .buildNote();
+                    Note newNote = new SimpleNoteBuilder(data.getStringExtra("notedescadded")).setState(new NoteState("created", "fone"))
+                                                                                              .buildNote();
                     try {
                         Log.i("Note to be sent:", NoteUtils.noteToJSON(newNote).toString());
                     } catch (JSONException e) {}

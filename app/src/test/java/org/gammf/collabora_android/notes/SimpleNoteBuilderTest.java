@@ -11,10 +11,8 @@ public class SimpleNoteBuilderTest {
 
     @Test
     public void buildANote() {
-        Note n = new SimpleNoteBuilder("username").setContent("content")
-                                                  .setLocation(new NoteLocation(42.22, 55.23))
-                                                  .buildNote();
-        assertEquals(n.getUsername(),"username");
+        Note n = new SimpleNoteBuilder("content").setLocation(new NoteLocation(42.22, 55.23))
+                                                 .buildNote();
         assertEquals(n.getContent(),"content");
         assertEquals(n.getLocation().getLatitude(), 42.22, 0.000001);
         assertEquals(n.getLocation().getLongitude(), 55.23, 0.000001);

@@ -19,6 +19,15 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
+import org.gammf.collabora_android.communication.notification.NotificationMessage;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.MessageUtils;
+import org.gammf.collabora_android.utils.NoteUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 /**
@@ -27,7 +36,7 @@ import java.io.IOException;
 
 public class SubscriberService extends Service {
 
-    private static final String BROKER_ADDRESS = "192.168.0.16";
+    private static final String BROKER_ADDRESS = "192.168.1.125";
     private static final String EXCHANGE_NAME = "notifications";
     private static final String QUEUE_PREFIX = "notify.";
 
@@ -52,25 +61,34 @@ public class SubscriberService extends Service {
             @Override
             public void run() {
                 try {
+                    Log.i("Subscriber Thread", "setupping connection");
                     factory = new ConnectionFactory();
                     factory.setHost(BROKER_ADDRESS);
                     final Connection connection = factory.newConnection();
                     final Channel channel = connection.createChannel();
                     channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
                     channel.queueDeclare(queueName, true, false, false, null);
-                    channel.queueBind(queueName, EXCHANGE_NAME, "fone");
+                    channel.queueBind(queueName, EXCHANGE_NAME, "maffone");
                     channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope,
                                                    AMQP.BasicProperties properties, byte[] body) throws IOException {
                             String message = new String(body, "UTF-8");
-                            Log.i("Subscriber Thread", "I received a Message");
+                            try {
+                                JSONObject jsn = new JSONObject(new String(body, "UTF-8"));
+                                Message m = MessageUtils.jsonToMessage(jsn);
+                                Note n = ((ConcreteNotificationMessage)m).getNote();
+                            } catch (Exception e) {
+                                Log.i("Subscriber Thread", "problem");
+                                e.printStackTrace();
+                            }
                             sendNotification(message);
                             channel.basicAck(envelope.getDeliveryTag(), false);
                         }
                     });
+                    Log.i("Subscriber Thread", "all ok");
                 } catch(Exception e) {
-                    //TO-DO
+                    Log.i("Subscriber Thread", "SomeThing went wrong");
                     e.printStackTrace();
                 }
             }

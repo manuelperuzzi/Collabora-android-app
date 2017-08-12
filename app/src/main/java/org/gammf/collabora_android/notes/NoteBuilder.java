@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.notes;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -9,9 +10,8 @@ import java.util.List;
 
 public interface NoteBuilder {
     NoteBuilder setNoteID(String noteID);
-    NoteBuilder setContent(String content);
     NoteBuilder setLocation(Location location);
-    NoteBuilder setExpirationDate(Date expirationDate);
+    NoteBuilder setExpirationDate(DateTime expirationDate);
     NoteBuilder setState(State state);
     NoteBuilder setPreviousNotes(List<String> previousNotes);
     Note buildNote();
