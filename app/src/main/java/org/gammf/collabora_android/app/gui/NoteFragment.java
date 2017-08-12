@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.gammf.collabora_android.app.R;
 
 /**
- * Created by anupamchugh on 10/12/15.
+ * Created by @MattiaOriani on 12/08/2017
  */
 public class NoteFragment extends Fragment {
 

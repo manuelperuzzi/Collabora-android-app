@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
 /**
- * Created by anupamchugh on 10/12/15.
+ * Created by @MattiaOriani on 12/08/2017
  */
 public class DataModel {
 

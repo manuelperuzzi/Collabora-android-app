@@ -17,9 +17,9 @@ import org.gammf.collabora_android.app.R;
 import java.util.ArrayList;
 
 /**
- * Created by anupamchugh on 10/12/15.
+ * Created by @MattiaOriani on 12/08/2017
  */
-public class ConnectFragment extends Fragment {
+public class CollaborationFragment extends Fragment {
 
     Bundle arguments;
     TextView label;
@@ -27,7 +27,7 @@ public class ConnectFragment extends Fragment {
     ListView notesList;
     ArrayList<DataModel> drawerItem;
 
-    public ConnectFragment() {
+    public CollaborationFragment() {
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ConnectFragment extends Fragment {
         drawerItem.add(new DataModel(R.drawable.table, "Table"));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, drawerItem);
         notesList.setAdapter(adapter);
-        notesList.setOnItemClickListener(new ConnectFragment.DrawerItemClickListener());
+        notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
 
 
         return rootView;
@@ -83,7 +83,7 @@ public class ConnectFragment extends Fragment {
             FragmentManager fragmentManager2 = getFragmentManager();
             FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
             fragmentTransaction2.addToBackStack("xyz");
-            fragmentTransaction2.hide(ConnectFragment.this);
+            fragmentTransaction2.hide(CollaborationFragment.this);
             //fragmentTransaction2.add(android.R.id.content, fragment);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();

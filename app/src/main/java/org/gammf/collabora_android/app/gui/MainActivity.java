@@ -34,6 +34,9 @@ import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 import java.util.ArrayList;
 
+/**
+ * Created by @MattiaOriani on 12/08/2017
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,9 +58,9 @@ public class MainActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.connect, "Connect"));
-        drawerItem.add(new DataModel(R.drawable.fixtures, "Fixtures"));
-        drawerItem.add(new DataModel(R.drawable.table, "Table"));
+        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 1"));
+        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 2"));
+        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 3"));
         adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         Bundle fragmentArgument = new Bundle();
-        fragment = new ConnectFragment();
+        fragment = new CollaborationFragment();
         fragmentArgument.putString("collabName", itemName);
 
         fragment.setArguments(fragmentArgument);
