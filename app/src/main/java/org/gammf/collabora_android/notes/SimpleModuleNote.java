@@ -57,4 +57,24 @@ public class SimpleModuleNote implements ModuleNote {
     public String getModuleId() {
         return moduleId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleModuleNote that = (SimpleModuleNote) o;
+
+        if (!note.equals(that.note)) return false;
+        return moduleId.equals(that.moduleId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = note.hashCode();
+        result = 31 * result + moduleId.hashCode();
+        return result;
+    }
+
 }
