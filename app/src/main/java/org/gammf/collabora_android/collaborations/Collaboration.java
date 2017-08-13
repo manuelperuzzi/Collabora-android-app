@@ -32,6 +32,13 @@ public interface Collaboration {
     List<CollaborationMember> getAllMembers();
 
     /**
+     * Checks if the given user is a member of the collaboration.
+     * @param username the identifier of the user.
+     * @return true if the user is a member of the collaboration, false otherwise.
+     */
+    boolean containsMember(String username);
+
+    /**
      * Returns a member of the collaboration identified by its user id.
      * @param username the identifier of the user.
      * @return the requested member.
@@ -57,6 +64,13 @@ public interface Collaboration {
      * @return a list containing each note of the collaboration.
      */
     List<Note> getAllNotes();
+
+    /**
+     * Checks if the given note belongs to the collaboration.
+     * @param noteId the identifier of the note.
+     * @return true if the note belongs to the collaboration, false otherwise.
+     */
+    boolean containsNote(String noteId);
 
     /**
      * Returns a note identified by its id.
