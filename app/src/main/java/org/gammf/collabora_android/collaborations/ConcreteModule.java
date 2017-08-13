@@ -48,6 +48,16 @@ public class ConcreteModule implements Module {
     }
 
     @Override
+    public boolean containsNote(final String noteId) {
+        for (final ModuleNote mn: notes) {
+            if (mn.getNoteID().equals(noteId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public ModuleNote getNote(final String noteId) throws NoSuchElementException {
         for (final ModuleNote mn: notes) {
             if (mn.getNoteID().equals(noteId)) {

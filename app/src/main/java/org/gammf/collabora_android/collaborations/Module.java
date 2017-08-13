@@ -33,6 +33,13 @@ public interface Module {
     Set<ModuleNote> getAllNotes();
 
     /**
+     * Checks if the module contains a certain note.
+     * @param noteId the identifier of the note.
+     * @return true if the note is in the module, false otherwise.
+     */
+    boolean containsNote(String noteId);
+
+    /**
      * Returns a note identified by its id.
      * @param noteId the identifier of the requested note.
      * @return the requested note.
