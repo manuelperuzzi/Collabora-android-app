@@ -3,8 +3,8 @@ package org.gammf.collabora_android.collaborations;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * @author Manuel Peruzzi
@@ -30,7 +30,7 @@ public interface Module {
     /**
      * @return a list containing each note of the module.
      */
-    List<ModuleNote> getAllNotes();
+    Set<ModuleNote> getAllNotes();
 
     /**
      * Returns a note identified by its id.
