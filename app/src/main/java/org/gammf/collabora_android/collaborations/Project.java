@@ -15,6 +15,13 @@ public interface Project extends Collaboration {
     List<Module> getAllModules();
 
     /**
+     * Checks if the given module belongs to the collaboration.
+     * @param moduleId the identifier of the module.
+     * @return true if the module belongs to the collaboration, otherwise false.
+     */
+    boolean containsModule(String moduleId);
+
+    /**
      * Returns a module identified by its id.
      * @param moduleId the identifier of the requested module.
      * @return the requested module.
