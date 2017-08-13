@@ -57,11 +57,11 @@ public interface Module {
     /**
      * @return the definition of the module state.
      */
-    ModuleStateDefinition getStateDefinition();
+    String getStateDefinition();
 
     /**
      * @param stateDefinition the definition of the module state.
      */
-    void setStateDefinition(ModuleStateDefinition stateDefinition);
+    void setStateDefinition(String stateDefinition);
 
 }
