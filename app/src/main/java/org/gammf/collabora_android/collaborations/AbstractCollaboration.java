@@ -122,4 +122,26 @@ public abstract class AbstractCollaboration implements Collaboration {
         return false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractCollaboration that = (AbstractCollaboration) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!members.equals(that.members)) return false;
+        return notes.equals(that.notes);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + members.hashCode();
+        result = 31 * result + notes.hashCode();
+        return result;
+    }
 }

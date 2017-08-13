@@ -48,6 +48,31 @@ public class SimpleUser implements User {
         return birthday;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleUser that = (SimpleUser) o;
+
+        if (!username.equals(that.username)) return false;
+        if (!email.equals(that.email)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!surname.equals(that.surname)) return false;
+        return birthday.equals(that.birthday);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + surname.hashCode();
+        result = 31 * result + birthday.hashCode();
+        return result;
+    }
+
     /**
      * @author Manuel Peruzzi
      * This nested class is used as a builder to create an object of type SimpleUser

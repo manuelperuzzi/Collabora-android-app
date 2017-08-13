@@ -45,4 +45,22 @@ public class CollaborationMember implements User {
         return accessRight;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CollaborationMember that = (CollaborationMember) o;
+
+        if (!user.equals(that.user)) return false;
+        return accessRight == that.accessRight;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = user.hashCode();
+        result = 31 * result + accessRight.hashCode();
+        return result;
+    }
 }

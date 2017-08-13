@@ -92,4 +92,28 @@ public class ConcreteModule implements Module {
     public void setStateDefinition(final String stateDefinition) {
         this.state = stateDefinition;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ConcreteModule that = (ConcreteModule) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!description.equals(that.description)) return false;
+        if (!notes.equals(that.notes)) return false;
+        return state.equals(that.state);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + notes.hashCode();
+        result = 31 * result + state.hashCode();
+        return result;
+    }
+
 }
