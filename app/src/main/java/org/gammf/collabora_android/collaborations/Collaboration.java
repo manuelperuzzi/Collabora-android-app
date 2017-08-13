@@ -2,8 +2,8 @@ package org.gammf.collabora_android.collaborations;
 
 import org.gammf.collabora_android.notes.Note;
 
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * @author Manuel Peruzzi
@@ -29,7 +29,7 @@ public interface Collaboration {
     /**
      * @return a list containing each member of the collaboration.
      */
-    List<CollaborationMember> getAllMembers();
+    Set<CollaborationMember> getAllMembers();
 
     /**
      * Checks if the given user is a member of the collaboration.
@@ -63,7 +63,7 @@ public interface Collaboration {
     /**
      * @return a list containing each note of the collaboration.
      */
-    List<Note> getAllNotes();
+    Set<Note> getAllNotes();
 
     /**
      * Checks if the given note belongs to the collaboration.
