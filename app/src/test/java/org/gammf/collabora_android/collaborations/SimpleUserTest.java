@@ -7,7 +7,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by mperuzzi on 12/08/17.
+ * @author Manuel Peruzzi
+ * Simple tests for simple user class.
  */
 public class SimpleUserTest {
 
