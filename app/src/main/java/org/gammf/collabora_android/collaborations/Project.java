@@ -1,7 +1,9 @@
 package org.gammf.collabora_android.collaborations;
 
-import java.util.List;
+import org.gammf.collabora_android.notes.Note;
+
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * @author Manuel Peruzzi
@@ -12,7 +14,7 @@ public interface Project extends Collaboration {
     /**
      * @return a list containing each module of the collaboration.
      */
-    List<Module> getAllModules();
+    Set<Module> getAllModules();
 
     /**
      * Checks if the given module belongs to the collaboration.
@@ -42,5 +44,13 @@ public interface Project extends Collaboration {
      * @return true if the module was in the collaboration, false otherwise.
      */
     boolean removeModule(String moduleId);
+
+    /**
+     * Adds a note to the specified module in the collaboration.
+     * @param note the note to be added to the module.
+     * @param moduleId the identifier of the module.
+     * @return true if the note has been successfully inserted, false otherwise.
+     */
+    boolean addNote(Note note, String moduleId);
 
 }
