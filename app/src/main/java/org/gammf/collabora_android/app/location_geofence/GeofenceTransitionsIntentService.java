@@ -15,7 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
-import org.gammf.collabora_android.app.MainActivity;
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;

@@ -19,6 +19,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessage;

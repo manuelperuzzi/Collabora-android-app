@@ -42,8 +42,8 @@ public class SingleListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_list);
+       super.onCreate(savedInstanceState);
+     /*   setContentView(R.layout.activity_single_list);
 
         final Intent intent = getIntent();
         String listName = intent.getStringExtra(LIST_NAME);
@@ -61,7 +61,7 @@ public class SingleListActivity extends AppCompatActivity {
         noteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adattatore, final View componente, int pos, long id) {
-                Intent myIntent = new Intent(SingleListActivity.this, SingleNoteActivity.class);
+               Intent myIntent = new Intent(SingleListActivity.this, SingleNoteActivity.class);
                 final String itemClicked = (String) adattatore.getItemAtPosition(pos);
                 myIntent.putExtra(NOTE_NAME, itemClicked);
                 myIntent.putExtra(NOTE_DESC, "Description "+itemClicked);
@@ -74,11 +74,12 @@ public class SingleListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent myIntent = new Intent(SingleListActivity.this, AddListActivity.class);
-                myIntent.putExtra("type", "newnote"); //Optional parameters
-                startActivityForResult(myIntent, REQUEST_CODE);
+              //  Intent myIntent = new Intent(SingleListActivity.this, AddListActivity.class);
+              //  myIntent.putExtra("type", "newnote"); //Optional parameters
+              //  startActivityForResult(myIntent, REQUEST_CODE);
             }
         });
+        */
     }
 
     @Override
