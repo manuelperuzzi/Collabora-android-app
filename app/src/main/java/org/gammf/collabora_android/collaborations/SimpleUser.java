@@ -56,20 +56,20 @@ public class SimpleUser implements User {
         SimpleUser that = (SimpleUser) o;
 
         if (!username.equals(that.username)) return false;
-        if (!email.equals(that.email)) return false;
-        if (!name.equals(that.name)) return false;
-        if (!surname.equals(that.surname)) return false;
-        return birthday.equals(that.birthday);
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (surname != null ? !surname.equals(that.surname) : that.surname != null) return false;
+        return birthday != null ? birthday.equals(that.birthday) : that.birthday == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = username.hashCode();
-        result = 31 * result + email.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + surname.hashCode();
-        result = 31 * result + birthday.hashCode();
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
         return result;
     }
 
