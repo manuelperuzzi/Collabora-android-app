@@ -9,12 +9,12 @@ import java.util.List;
  */
 
 public class SimpleNote implements Note {
-    private String noteID;
+    private final String noteID;
     private String content;
     private Location location;
     private DateTime expirationDate;
     private State state;
-    private final List<String> previousNotes;
+    private List<String> previousNotes;
 
     SimpleNote(final String noteID,
                final String content,
@@ -67,6 +67,26 @@ public class SimpleNote implements Note {
     }
 
     @Override
+    public void modifyLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public void modifyExpirationDate(DateTime expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public void modifyState(State state) {
+        this.state = state;
+    }
+
+    @Override
+    public void modifyPreviousNotes(List<String> previousNotes) {
+        this.previousNotes = previousNotes;
+    }
+
+    @Override
     public String toString() {
         return "Simple note {" +
                 (this.noteID != null ? "\n\tid: " + this.noteID : "") +
@@ -76,5 +96,34 @@ public class SimpleNote implements Note {
                 (this.state != null ? "\n\tstate: {current state: " + this.state.getCurrentState() + ", responsible: " + this.state.getCurrentResponsible() + "}" : "") +
                 (this.getPreviousNotes() != null ? "previous notes: " + this.previousNotes : "") + "\n}";
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleNote that = (SimpleNote) o;
+
+        if (noteID != null ? !noteID.equals(that.noteID) : that.noteID != null) return false;
+        if (!content.equals(that.content)) return false;
+        if (location != null ? !location.equals(that.location) : that.location != null)
+            return false;
+        if (expirationDate != null ? !expirationDate.equals(that.expirationDate) : that.expirationDate != null)
+            return false;
+        if (state != null ? !state.equals(that.state) : that.state != null) return false;
+        return previousNotes != null ? previousNotes.equals(that.previousNotes) : that.previousNotes == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = noteID != null ? noteID.hashCode() : 0;
+        result = 31 * result + content.hashCode();
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (expirationDate != null ? expirationDate.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (previousNotes != null ? previousNotes.hashCode() : 0);
+        return result;
     }
 }

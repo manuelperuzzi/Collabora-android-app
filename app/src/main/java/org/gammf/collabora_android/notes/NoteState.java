@@ -9,8 +9,12 @@ public class NoteState implements State {
     private String state;
     private String responsibleUsername;
 
-    public NoteState(final String state, final String responsibleUsername) {
+    public NoteState(final String state) {
         this.state = state;
+    }
+
+    public NoteState(final String state, final String responsibleUsername) {
+        this(state);
         this.responsibleUsername = responsibleUsername;
     }
 
