@@ -70,15 +70,21 @@ public class CollaborationUtils {
         return json;
     }
 
-    public Collaboration jsonToCollaboration(final JSONObject json) throws JSONException {
+    public static Collaboration jsonToCollaboration(final JSONObject json) throws JSONException {
         final String id = json.getString("id");
         final String name = json.getString("name");
-        final CollaborationType type = CollaborationType.valueOf(json.getString("collaborationName"));
+        final CollaborationType type = CollaborationType.valueOf(json.getString("collaborationType"));
 
         final Collaboration collaboration;
         switch (type) {
             case PROJECT:
                 collaboration = new ConcreteProject(id, name);
+                if (json.has("modules")) {
+                    final JSONArray jModules = json.getJSONArray("modules");
+                    for (int i = 0; i < jModules.length(); i++) {
+                        ((Project)collaboration).addModule(ModulesUtils.jsonToModule(jModules.getJSONObject(i)));
+                    }
+                }
                 break;
             case GROUP:
             default:
