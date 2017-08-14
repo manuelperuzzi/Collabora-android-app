@@ -33,7 +33,7 @@ public class CollaborationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_connect, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
         Bundle bundle = getArguments();
         collabname =  bundle.getString("collabName");
 
