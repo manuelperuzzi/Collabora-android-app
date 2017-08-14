@@ -19,6 +19,10 @@ import org.gammf.collabora_android.app.R;
  * create an instance of this fragment.
  */
 public class CreateNoteFragment extends Fragment {
+
+
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,7 +32,7 @@ public class CreateNoteFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+  //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
         // Required empty public constructor
@@ -68,7 +72,7 @@ public class CreateNoteFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
         return rootView;
     }
-
+/*
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -92,7 +96,7 @@ public class CreateNoteFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -103,8 +107,12 @@ public class CreateNoteFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
+/*
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    */
 }

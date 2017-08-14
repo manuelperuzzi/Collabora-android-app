@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,7 @@ public class CollaborationFragment extends Fragment {
 
     Bundle arguments;
     TextView label;
+    FloatingActionButton btnAddNote;
     String collabname;
     ListView notesList;
     ArrayList<DataModel> drawerItem;
@@ -37,15 +39,6 @@ public class CollaborationFragment extends Fragment {
         Bundle bundle = getArguments();
         collabname =  bundle.getString("collabName");
 
-
-     /*   Handler txtsettext = new Handler(Looper.getMainLooper());
-        txtsettext.post(new Runnable() {
-            public void run() {
-                label.setText(collabname);
-            }
-        });
-*/
-
         notesList = (ListView) rootView.findViewById(R.id.notesListView);
 
         drawerItem = new ArrayList<DataModel>();
@@ -56,6 +49,19 @@ public class CollaborationFragment extends Fragment {
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
 
+        btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
+        btnAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment newNoteFragment = null;
+                Bundle fragmentArgument = new Bundle();
+                newNoteFragment = new CreateNoteFragment();
+                fragmentArgument.putString("collabName", collabname);
+
+                newNoteFragment.setArguments(fragmentArgument);
+                changeFragment(newNoteFragment);
+            }
+        });
 
         return rootView;
     }
@@ -72,12 +78,17 @@ public class CollaborationFragment extends Fragment {
 
     private void selectItem(int position, String itemName) {
 
-        Fragment fragment = null;
+        Fragment openNoteFragment = null;
         Bundle fragmentArgument = new Bundle();
-        fragment = new NoteFragment();
-        fragmentArgument.putString("collabName", "Ciao");
+        openNoteFragment = new NoteFragment();
+        fragmentArgument.putString("collabName", collabname);
 
-        fragment.setArguments(fragmentArgument);
+        openNoteFragment.setArguments(fragmentArgument);
+        changeFragment(openNoteFragment);
+    }
+
+
+    private void changeFragment(Fragment fragment){
         if (fragment != null) {
 
             FragmentManager fragmentManager2 = getFragmentManager();
@@ -87,17 +98,6 @@ public class CollaborationFragment extends Fragment {
             //fragmentTransaction2.add(android.R.id.content, fragment);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
-
-            /*
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(itemName);
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-*/
 
         } else {
             Log.e("MainActivity", "Error in creating fragment");
