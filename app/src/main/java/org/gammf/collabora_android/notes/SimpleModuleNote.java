@@ -74,6 +74,11 @@ public class SimpleModuleNote implements ModuleNote {
     }
 
     @Override
+    public Note getNote() {
+        return note;
+    }
+
+    @Override
     public String getModuleId() {
         return moduleId;
     }
