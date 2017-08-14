@@ -1,23 +1,32 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.utils;
 
+import org.gammf.collabora_android.collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.Project;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.users.AccessRight;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.users.SimpleUser;
+import org.joda.time.DateTime;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Member;
 
 import static org.junit.Assert.*;
 
 /**
- * @author Manuel Peruzzi
- * Simple tests for the project implementation of a collaboration.
+ * @author ManuelPeruzzi
+ * Simple tests for the collaboration/json conversion.
  */
-public class ConcreteProjectTest {
+public class CollaborationUtilsTest {
 
     private Project project;
+    private CollaborationMember member;
     private Note singleNote;
     private Module firstModule;
     private Module secondModule;
@@ -29,6 +38,15 @@ public class ConcreteProjectTest {
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
 
+        member = new CollaborationMember(
+                new SimpleUser.Builder()
+                        .username("myUsername")
+                        .email("myEmail@gmail.com")
+                        .name("myName")
+                        .surname("mySurname")
+                        .birthday(new DateTime(1994, 3, 7, 0, 0))
+                        .build(), AccessRight.ADMIN);
+        project.addMember(member);
         singleNote = new SimpleNoteBuilder("SingleNote")
                 .setNoteID("singleNoteId")
                 .buildNote();
@@ -55,41 +73,15 @@ public class ConcreteProjectTest {
     }
 
     @Test
-    public void getAllModules() throws Exception {
-        assertEquals(2, project.getAllModules().size());
-    }
-
-    @Test
-    public void getModule() throws Exception {
-        assertEquals(firstModule, project.getModule(firstModule.getId()));
-    }
-
-    @Test
-    public void removeModule() throws Exception {
-        assertTrue(project.containsModule(secondModule.getId()));
-        assertTrue(project.removeModule(secondModule.getId()));
-        assertFalse(project.containsModule(secondModule.getId()));
-    }
-
-    @Test
-    public void getAllNotes() throws Exception {
-        assertEquals(4, project.getAllNotes().size());
-    }
-
-    @Test
-    public void getNote() throws Exception {
-        assertEquals(singleNote, project.getNote(singleNote.getNoteID()));
-        final ModuleNote mn = new SimpleModuleNote(firstNote, firstModule.getId());
-        assertEquals(mn, project.getNote(firstNote.getNoteID()));
-    }
-
-    @Test
-    public void removeNote() throws Exception {
-        assertTrue(project.removeNote(singleNote.getNoteID()));
-        assertFalse(project.containsNote(singleNote.getNoteID()));
-
-        assertTrue(project.removeNote(thirdNote.getNoteID()));
-        assertFalse(project.containsNote(thirdNote.getNoteID()));
+    public void collaborationToJson() throws Exception {
+        final JSONObject json = CollaborationUtils.collaborationToJson(project);
+        System.out.println("[CollaborationUtilsTest]: " + json);
+        final Project collaboration = (Project) CollaborationUtils.jsonToCollaboration(json);
+        //assertEquals(project, collaboration);
+        assertEquals(member, collaboration.getMember(member.getUsername()));
+        //assertEquals(firstModule, collaboration.getModule(firstModule.getId()));
+        //assertEquals(singleNote, collaboration.getNote(singleNote.getNoteID()));
+        //assertEquals(thirdNote, collaboration.getNote(thirdNote.getNoteID()));
     }
 
 }
