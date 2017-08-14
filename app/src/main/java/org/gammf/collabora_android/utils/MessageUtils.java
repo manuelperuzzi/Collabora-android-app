@@ -4,7 +4,6 @@ import android.util.Log;
 
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
-import org.gammf.collabora_android.communication.notification.NotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessageType;
 import org.gammf.collabora_android.communication.update.NoteUpdateMessage;
 import org.gammf.collabora_android.communication.update.UpdateMessage;
@@ -17,34 +16,7 @@ import org.json.JSONObject;
  */
 
 public class MessageUtils {
-    public static JSONObject messageToJSON(final Message message) throws JSONException {
-        switch (message.getMessageType()) {
-            case UPDATE:
-                return updateMessageToJSON((UpdateMessage)message);
-            case NOTIFICATION:
-                return notificationMessageToJSON((NotificationMessage)message);
-            case COLLABORATION:
-                //TO-DO
-                return null;
-        }
-        return new JSONObject();
-    }
-
-    public static Message jsonToMessage(final JSONObject jsn) throws JSONException {
-        //I suppose that jsn can't contain an updateMessage
-        jsn.has("messageType");
-        if(jsn.has("messageType")) {
-            return  new ConcreteNotificationMessage(jsn.getString("user"),
-                                                    NoteUtils.jsonToNote((JSONObject)jsn.get("note")),
-                                                    NotificationMessageType.valueOf(jsn.getString("messageType")));
-        } else {
-            //TO-DO
-            //the message is a collaboration message
-            return null;
-        }
-    }
-
-    private static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
+    public static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
         final JSONObject jsn = new JSONObject();
         jsn.put("user", message.getUsername()).put("target", message.getTarget()).put("messageType", message.getUpdateType().toString());
         switch (message.getTarget()) {
@@ -52,23 +24,28 @@ public class MessageUtils {
                 jsn.put("note", NoteUtils.noteToJSON(((NoteUpdateMessage)message).getNote()));
                 break;
             case MODULE:
-                //TO-DO
+                //TODO
                 break;
             case COLLABORATION:
-                //TO-DO
+                //TODO
                 break;
             case MEMBER:
-                //TO-DO
+                //TODO
                 break;
         }
         return jsn;
     }
 
-    private static JSONObject notificationMessageToJSON(final NotificationMessage message) throws JSONException {
-        final JSONObject jsn = new JSONObject();
-        return jsn.put("user", message.getUsername())
-                  .put("messageType", message.getNotificationType().toString())
-                  .put("note", NoteUtils.noteToJSON((message).getNote()));
+    public static Message jsonToMessage(final JSONObject jsn) throws JSONException {
+        //if messageType is present, jsn is a notification message
+        if(jsn.has("messageType")) {
+            return  new ConcreteNotificationMessage(jsn.getString("user"),
+                                                    NoteUtils.jsonToNote((JSONObject)jsn.get("note")),
+                                                    NotificationMessageType.valueOf(jsn.getString("messageType")));
+        } else {
+            //TODO
+            //the message is a collaboration message
+            return null;
+        }
     }
-
 }
