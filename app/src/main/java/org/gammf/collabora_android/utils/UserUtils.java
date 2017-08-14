@@ -29,7 +29,7 @@ public class UserUtils {
         json.put("surname", user.getSurname());
         json.put("birthday", user.getBirthday());
         if (user instanceof CollaborationMember) {
-            json.put("right", ((CollaborationMember) user).getAccessRight());
+            json.put("right", ((CollaborationMember) user).getAccessRight().name());
         }
 
         return json;
