@@ -4,6 +4,7 @@ import org.gammf.collabora_android.collaborations.ConcreteProject;
 import org.gammf.collabora_android.collaborations.Project;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
@@ -77,11 +78,15 @@ public class CollaborationUtilsTest {
         final JSONObject json = CollaborationUtils.collaborationToJson(project);
         System.out.println("[CollaborationUtilsTest]: " + json);
         final Project collaboration = (Project) CollaborationUtils.jsonToCollaboration(json);
-        //assertEquals(project, collaboration);
-        assertEquals(member, collaboration.getMember(member.getUsername()));
-        //assertEquals(firstModule, collaboration.getModule(firstModule.getId()));
-        //assertEquals(singleNote, collaboration.getNote(singleNote.getNoteID()));
-        //assertEquals(thirdNote, collaboration.getNote(thirdNote.getNoteID()));
+        assertEquals(project.getId(), collaboration.getId());
+        assertEquals(project.getName(), collaboration.getName());
+        assertEquals(project.getMember(member.getUsername()), collaboration.getMember(member.getUsername()));
+        assertEquals(project.getModule(firstModule.getId()), collaboration.getModule(firstModule.getId()));
+        assertEquals(project.getModule(secondModule.getId()), collaboration.getModule(secondModule.getId()));
+        assertEquals(project.getNote(singleNote.getNoteID()), collaboration.getNote(singleNote.getNoteID()));
+        assertEquals(project.getNote(firstNote.getNoteID()), collaboration.getNote(firstNote.getNoteID()));
+        assertEquals(project.getNote(secondNote.getNoteID()), collaboration.getNote(secondNote.getNoteID()));
+        assertEquals(project.getNote(thirdNote.getNoteID()), collaboration.getNote(thirdNote.getNoteID()));
     }
 
 }
