@@ -1,5 +1,6 @@
 package org.gammf.collabora_android.collaborations;
 
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 
 import java.util.Collections;

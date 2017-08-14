@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.users;
 
 /**
  * @author Manuel Peruzzi

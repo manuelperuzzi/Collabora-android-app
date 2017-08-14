@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.modules;
 
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;

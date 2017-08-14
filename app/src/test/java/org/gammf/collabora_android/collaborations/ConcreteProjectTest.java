@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
+import org.gammf.collabora_android.modules.ConcreteModule;
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
@@ -85,7 +87,7 @@ public class ConcreteProjectTest {
     public void removeNote() throws Exception {
         assertTrue(project.removeNote(singleNote.getNoteID()));
         assertFalse(project.containsNote(singleNote.getNoteID()));
-        
+
         assertTrue(project.removeNote(thirdNote.getNoteID()));
         assertFalse(project.containsNote(thirdNote.getNoteID()));
     }

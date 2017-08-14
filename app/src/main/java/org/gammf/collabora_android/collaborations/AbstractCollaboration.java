@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.Collections;
 import java.util.HashSet;

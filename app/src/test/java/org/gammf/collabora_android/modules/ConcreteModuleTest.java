@@ -1,16 +1,14 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.modules;
 
+import org.gammf.collabora_android.modules.ConcreteModule;
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
-import org.gammf.collabora_android.notes.SimpleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 

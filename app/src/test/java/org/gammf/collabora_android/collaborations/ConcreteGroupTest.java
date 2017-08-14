@@ -2,6 +2,10 @@ package org.gammf.collabora_android.collaborations;
 
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.users.AccessRight;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.users.SimpleUser;
+import org.gammf.collabora_android.users.User;
 import org.junit.Before;
 import org.junit.Test;
 
