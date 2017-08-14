@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.notes;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -9,22 +10,19 @@ import java.util.List;
 
 public class SimpleNote implements Note {
     private String noteID;
-    private String username;
     private String content;
     private Location location;
-    private Date expirationDate;
+    private DateTime expirationDate;
     private State state;
     private final List<String> previousNotes;
 
     SimpleNote(final String noteID,
-               final String username,
                final String content,
                final Location location,
-               final Date expirationDate,
+               final DateTime expirationDate,
                final State state,
                final List<String> previousNotes) {
         this.noteID = noteID;
-        this.username = username;
         this.content = content;
         this.location = location;
         this.expirationDate = expirationDate;
@@ -39,11 +37,6 @@ public class SimpleNote implements Note {
     }
 
     @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
     public String getContent() {
         return this.content;
     }
@@ -54,7 +47,7 @@ public class SimpleNote implements Note {
     }
 
     @Override
-    public Date getExpirationDate() {
+    public DateTime getExpirationDate() {
         return this.expirationDate;
     }
 
@@ -71,5 +64,17 @@ public class SimpleNote implements Note {
     @Override
     public void modifyContent(String newContent) {
         this.content = newContent;
+    }
+
+    @Override
+    public String toString() {
+        return "Simple note {" +
+                (this.noteID != null ? "\n\tid: " + this.noteID : "") +
+                (this.content != null ? "\n\tcontent: " + this.content : "") +
+                (this.location != null ? "\n\tlocation: {latitude: " + this.location.getLatitude() + ", longitude: " + this.location.getLongitude()+ "}" : "") +
+                (this.expirationDate != null ? "\n\texpiration date: " + this.expirationDate : "") +
+                (this.state != null ? "\n\tstate: {current state: " + this.state.getCurrentState() + ", responsible: " + this.state.getCurrentResponsible() + "}" : "") +
+                (this.getPreviousNotes() != null ? "previous notes: " + this.previousNotes : "") + "\n}";
+
     }
 }

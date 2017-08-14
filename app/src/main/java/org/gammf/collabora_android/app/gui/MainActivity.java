@@ -26,11 +26,19 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.NoteUtils;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -236,6 +244,7 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         /*
+        Log.i("MainActivity", "onActivityResult");
         switch(requestCode) {
             case (REQUEST_CODE) : {
                 if (resultCode == Activity.RESULT_OK) {
