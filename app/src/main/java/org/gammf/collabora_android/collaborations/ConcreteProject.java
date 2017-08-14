@@ -98,7 +98,7 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
         if (note instanceof ModuleNote) {
             for (final Module m: modules) {
                 if (m.getId().equals(((ModuleNote) note).getModuleId())) {
-                    return m.addNote(note);
+                    return m.addNote(((ModuleNote) note).getNote());
                 }
             }
         }
