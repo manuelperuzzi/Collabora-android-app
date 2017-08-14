@@ -16,4 +16,8 @@ public interface Note {
     State getState();
     List<String> getPreviousNotes();
     void modifyContent(String newContent);
+    void modifyLocation(Location location);
+    void modifyExpirationDate(DateTime expirationDate);
+    void modifyState(State state);
+    void modifyPreviousNotes(List<String> previousNotes);
 }

@@ -40,7 +40,9 @@ public class NoteUtils {
         if(note.getState() != null) {
             final JSONObject state = new JSONObject();
             state.put("definition", note.getState().getCurrentState());
-            state.put("responsible", note.getState().getCurrentResponsible());
+            if(note.getState().getCurrentResponsible() != null) {
+                state.put("responsible", note.getState().getCurrentResponsible());
+            }
             jsn.put("state", state);
         }
         if(note.getPreviousNotes() != null) {
@@ -63,7 +65,8 @@ public class NoteUtils {
         }
         if(jsn.has("state")) {
             final JSONObject state = (JSONObject)jsn.get("state");
-            builder.setState(new NoteState(state.getString("definition"),state.getString("responsible")));
+            builder.setState(state.has("responsible") ? new NoteState(state.getString("definition"),state.getString("responsible"))
+                                                      : new NoteState(state.getString("definition")));
         }
         if(jsn.has("previousNotes")) {
             final List<String> previousNotes = new ArrayList<>();

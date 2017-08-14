@@ -5,6 +5,7 @@ import org.gammf.collabora_android.communication.notification.ConcreteNotificati
 import org.gammf.collabora_android.communication.notification.NotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessageType;
 import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.UpdateMessage;
 import org.gammf.collabora_android.communication.update.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.UpdateMessageType;
 import org.gammf.collabora_android.notes.NoteLocation;
@@ -38,26 +39,14 @@ public class MessageUtilsTest {
 
     @Test
     public void testMessageToJSON() {
-        Message message = new ConcreteNoteUpdateMessage("fone", this.note, UpdateMessageType.CREATION);
+        UpdateMessage message = new ConcreteNoteUpdateMessage("fone", this.note, UpdateMessageType.CREATION);
         try {
-            JSONObject jsn = MessageUtils.messageToJSON(message);
+            JSONObject jsn = MessageUtils.updateMessageToJSON(message);
             System.out.println("[MessageUtilsTest]: Update message is ->" + jsn.toString());
             JSONObject noteJSON = (JSONObject)jsn.get("note");
             assertEquals(((JSONObject)noteJSON.get("location")).getDouble("latitude"), 44.24, 0.00001);
             assertEquals(noteJSON.get("content"), "this is a test");
             assertEquals(jsn.get("target"), UpdateMessageTarget.NOTE);
-        } catch (JSONException e) {
-            fail();
-        }
-
-        Message message2 = new ConcreteNotificationMessage("fonefone", this.note, NotificationMessageType.NOTE_CREATED);
-        try {
-            JSONObject jsn = MessageUtils.messageToJSON(message2);
-            System.out.println("[MessageUtilsTest]: Notification message is ->" + jsn.toString());
-            JSONObject noteJSON = (JSONObject)jsn.get("note");
-            assertEquals(((JSONObject)noteJSON.get("location")).getDouble("latitude"), 44.24, 0.00001);
-            assertEquals(noteJSON.get("content"), "this is a test");
-            assertEquals(NotificationMessageType.valueOf(jsn.getString("messageType")), NotificationMessageType.NOTE_CREATED);
         } catch (JSONException e) {
             fail();
         }
