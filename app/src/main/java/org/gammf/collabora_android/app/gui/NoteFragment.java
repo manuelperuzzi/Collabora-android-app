@@ -13,14 +13,12 @@ import android.widget.ProgressBar;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -57,7 +55,7 @@ implements OnMapReadyCallback{
         collabname =  bundle.getString("collabName");
 
         contentNote = rootView.findViewById(R.id.contentNote);
-        contentNote.setText("Content Note");
+        contentNote.setText("Content note will be there, scrivo qualcosa per farlo andare su due linee");
 
         progressBarState = rootView.findViewById(R.id.progressBarState);
         lblState = rootView.findViewById(R.id.lblState);
@@ -90,7 +88,6 @@ implements OnMapReadyCallback{
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.collaboration_icon))
-                    .anchor(0.0f, 1.0f)
                     .position(new LatLng(44.1390945, 12.2429281)));
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -99,13 +96,26 @@ implements OnMapReadyCallback{
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             MapsInitializer.initialize(this.getActivity());
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(new LatLng(44.1390945, 12.2429281));
-            LatLngBounds bounds = builder.build();
-            int padding = 0;
-            // Updates the location and zoom of the MapView
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            googleMap.moveCamera(cameraUpdate);
+
+            LatLng italy = new LatLng(42.50, 12.50);
+            LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            // Move the camera instantly to Italy with a zoom of 15.
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
+            // Zoom in, animating the camera.
+            googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(coordinates)      // Sets the center of the map to Mountain View
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+
         }
     }
     private void setStateProgressBar(String state){
