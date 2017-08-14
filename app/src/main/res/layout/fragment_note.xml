@@ -15,14 +15,15 @@
         android:layout_marginTop="86dp"
         android:gravity="center_horizontal"
         android:text="Connect"
-        android:textSize="45dp"
+        android:textSize="24sp"
         android:textStyle="bold"/>
 
     <TextClock
         android:id="@+id/expiration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBarState"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/mapViewLocation"
         android:layout_alignParentStart="true"/>
 
     <ProgressBar
@@ -30,26 +31,27 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
         android:layout_below="@+id/lblState"
         android:layout_alignParentStart="true"/>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapViewLocation"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="17dp"
-        android:layout_below="@+id/expiration"
+        android:layout_height="200dp"
+        android:layout_below="@+id/progressBarState"
         android:layout_alignParentStart="true"/>
 
     <TextView
         android:id="@+id/lblState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/contentNote"
+        android:layout_marginEnd="34dp"
         android:text="Doing"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/contentNote"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="34dp"/>
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/lblResponsible"
@@ -59,7 +61,8 @@
         android:layout_below="@+id/contentNote"
         android:layout_marginStart="11dp"
         android:text="Responsible"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
 
 
 </RelativeLayout>
