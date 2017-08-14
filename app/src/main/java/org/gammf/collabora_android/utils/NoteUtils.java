@@ -2,9 +2,11 @@ package org.gammf.collabora_android.utils;
 
 import android.util.Log;
 
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -46,6 +48,9 @@ public class NoteUtils {
         if(note.getPreviousNotes() != null) {
             jsn.put("previousNotes", note.getPreviousNotes());
         }
+        if(note instanceof ModuleNote) {
+            jsn.put("module", ((ModuleNote) note).getModuleId());
+        }
         return jsn;
     }
 
@@ -73,6 +78,12 @@ public class NoteUtils {
             }
             builder.setPreviousNotes(previousNotes);
         }
-        return builder.buildNote();
+        final Note note = builder.buildNote();
+
+        if (jsn.has("module")) {
+            return new SimpleModuleNote(note, jsn.getString("module"));
+        }
+
+        return note;
     }
 }
