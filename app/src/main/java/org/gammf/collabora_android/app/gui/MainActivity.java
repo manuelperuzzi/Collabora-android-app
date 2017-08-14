@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 1"));
-        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 2"));
-        drawerItem.add(new DataModel(R.drawable.collaborations_icon, "Collaboration 3"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 1"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 2"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 3"));
         adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                adapter.add(new DataModel(R.drawable.connect, "New Collaborations"));
+                adapter.add(new DataModel(R.drawable.collaboration_icon, "New Collaborations"));
                 adapter.notifyDataSetChanged();
             }
         });
