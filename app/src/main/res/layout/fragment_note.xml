@@ -7,7 +7,7 @@
 
 
     <TextView
-        android:id="@+id/titleFragmentNote"
+        android:id="@+id/contentNote"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -18,22 +18,48 @@
         android:textSize="45dp"
         android:textStyle="bold"/>
 
-    <TextView
-        android:layout_width="fill_parent"
+    <TextClock
+        android:id="@+id/expiration"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:gravity="center_horizontal"
-        android:text="Edit fragment_connect.xml to change the appearance"
-        android:id="@+id/subtitleFragmentNote"
-        android:layout_below="@+id/titleFragmentNote"
+        android:layout_below="@+id/progressBarState"
         android:layout_alignParentStart="true"/>
 
-    <ListView
-        android:id="@+id/notesListView"
+    <ProgressBar
+        android:id="@+id/progressBarState"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblState"
+        android:layout_alignParentStart="true"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="17dp"
+        android:layout_below="@+id/expiration"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:id="@+id/lblState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Doing"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_below="@+id/contentNote"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="34dp"/>
+
+    <TextView
+        android:id="@+id/lblResponsible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/subtitleFragmentNote"/>
+        android:layout_below="@+id/contentNote"
+        android:layout_marginStart="11dp"
+        android:text="Responsible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
 
 </RelativeLayout>
