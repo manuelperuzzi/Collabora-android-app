@@ -46,12 +46,4 @@ public interface Project extends Collaboration {
      */
     boolean removeModule(String moduleId);
 
-    /**
-     * Adds a note to the specified module in the collaboration.
-     * @param note the note to be added to the module.
-     * @param moduleId the identifier of the module.
-     * @return true if the note has been successfully inserted, false otherwise.
-     */
-    boolean addNote(Note note, String moduleId);
-
 }

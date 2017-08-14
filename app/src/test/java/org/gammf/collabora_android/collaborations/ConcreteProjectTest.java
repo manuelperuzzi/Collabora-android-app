@@ -51,7 +51,7 @@ public class ConcreteProjectTest {
         thirdNote = new SimpleNoteBuilder("ThirdNote")
                 .setNoteID("thirdNoteId")
                 .buildNote();
-        project.addNote(thirdNote, firstModule.getId());
+        project.addNote(new SimpleModuleNote(thirdNote, firstModule.getId()));
     }
 
     @Test
