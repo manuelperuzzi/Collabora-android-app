@@ -33,8 +33,6 @@ import org.gammf.collabora_android.app.R;
 public class NoteFragment extends Fragment
 implements OnMapReadyCallback{
 
-    private static final double LAT = 32.084;
-    private static final double LON = 34.8878;
     TextView contentNote;
     String collabname;
     ProgressBar progressBarState;
