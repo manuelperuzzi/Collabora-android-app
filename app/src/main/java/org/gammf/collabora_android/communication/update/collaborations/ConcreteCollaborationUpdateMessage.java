@@ -16,7 +16,7 @@ public class ConcreteCollaborationUpdateMessage extends AbstractUpdateMessage
 
     public ConcreteCollaborationUpdateMessage(final String username, final Collaboration collaboration,
                                               final UpdateMessageType updateType) {
-        super(username, updateType);
+        super(username, updateType, collaboration.getId());
         this.collaboration = collaboration;
     }
 

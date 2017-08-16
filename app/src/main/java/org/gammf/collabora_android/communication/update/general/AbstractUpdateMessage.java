@@ -10,10 +10,12 @@ public abstract class AbstractUpdateMessage implements UpdateMessage {
 
     private final String username;
     private final UpdateMessageType updateType;
+    private final String collaborationId;
 
-    protected AbstractUpdateMessage(final String username, final UpdateMessageType updateType) {
+    protected AbstractUpdateMessage(final String username, final UpdateMessageType updateType, final String collaborationId) {
         this.username = username;
         this.updateType = updateType;
+        this.collaborationId = collaborationId;
     }
 
     @Override
@@ -29,6 +31,11 @@ public abstract class AbstractUpdateMessage implements UpdateMessage {
     @Override
     public UpdateMessageType getUpdateType() {
         return updateType;
+    }
+
+    @Override
+    public String getCollaborationId() {
+        return collaborationId;
     }
 
 }

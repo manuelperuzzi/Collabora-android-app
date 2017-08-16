@@ -92,7 +92,7 @@ public class SingleListActivity extends AppCompatActivity {
                     try {
                         Log.i("Note to be sent:", NoteUtils.noteToJSON(newNote).toString());
                     } catch (JSONException e) {}
-                    new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION));
+                    //new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION));
                 }
                 break;
             }

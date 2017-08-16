@@ -28,7 +28,8 @@ public class MessageUtils {
         final JSONObject jsn = new JSONObject();
         jsn.put("user", message.getUsername())
                 .put("target", message.getTarget().name())
-                .put("messageType", message.getUpdateType().name());
+                .put("messageType", message.getUpdateType().name())
+                .put("collaborationId", message.getCollaborationId());
         switch (message.getTarget()) {
             case NOTE:
                 jsn.put("note", NoteUtils.noteToJSON(((NoteUpdateMessage)message).getNote()));
@@ -49,12 +50,13 @@ public class MessageUtils {
     public static UpdateMessage jsonToUpdateMessage(final JSONObject json) throws JSONException{
         final String username = json.getString("user");
         final UpdateMessageType updateType = UpdateMessageType.valueOf(json.getString("messageType"));
+        final String collaborationId = json.getString("collaborationId");
 
         final UpdateMessageTarget target = UpdateMessageTarget.valueOf(json.getString("target"));
         switch (target) {
             case NOTE:
                 final Note note = NoteUtils.jsonToNote(json.getJSONObject("note"));
-                return new ConcreteNoteUpdateMessage(username, note, updateType);
+                return new ConcreteNoteUpdateMessage(username, note, updateType, collaborationId);
             case COLLABORATION:
                 try {
                     final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(
@@ -65,7 +67,7 @@ public class MessageUtils {
                 }
             case MODULE:
                 final Module module = ModulesUtils.jsonToModule(json.getJSONObject("module"));
-                return new ConcreteModuleUpdateMessage(username, module, updateType);
+                return new ConcreteModuleUpdateMessage(username, module, updateType, collaborationId);
             case MEMBER:
                 throw new JSONException("JSON message not parsable! Member case is not handled yet.");
             default:
@@ -73,16 +75,4 @@ public class MessageUtils {
         }
     }
 
-    public static Message jsonToMessage(final JSONObject jsn) throws JSONException {
-        //if messageType is present, jsn is a notification message
-        if(jsn.has("messageType")) {
-            return  new ConcreteNotificationMessage(jsn.getString("user"),
-                                                    NoteUtils.jsonToNote((JSONObject)jsn.get("note")),
-                                                    NotificationMessageType.valueOf(jsn.getString("messageType")));
-        } else {
-            //TODO
-            //the message is a collaboration message
-            return null;
-        }
-    }
 }

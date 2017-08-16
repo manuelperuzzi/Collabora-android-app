@@ -12,8 +12,9 @@ import org.gammf.collabora_android.notes.Note;
 public class ConcreteNoteUpdateMessage extends AbstractUpdateMessage implements NoteUpdateMessage {
     private final Note note;
 
-    public ConcreteNoteUpdateMessage(final String username, final Note note, final UpdateMessageType updateType) {
-        super(username, updateType);
+    public ConcreteNoteUpdateMessage(final String username, final Note note,
+                                     final UpdateMessageType updateType, final String collaborationId) {
+        super(username, updateType, collaborationId);
         this.note = note;
     }
 

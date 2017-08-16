@@ -14,7 +14,7 @@ public class SendMessageToServerTaskTest {
     @Test
     public void testService() {
         Note note = new SimpleNoteBuilder("some content").buildNote();
-        UpdateMessage message = new ConcreteNoteUpdateMessage("fone", note, UpdateMessageType.CREATION);
+        UpdateMessage message = new ConcreteNoteUpdateMessage("fone", note, UpdateMessageType.CREATION, "collaborationId");
         new SendMessageToServerTask().execute(message);
     }
 }

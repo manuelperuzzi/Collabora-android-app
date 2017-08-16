@@ -77,7 +77,7 @@ public class SubscriberService extends Service {
                             String message = new String(body, "UTF-8");
                             try {
                                 JSONObject jsn = new JSONObject(new String(body, "UTF-8"));
-                                Message m = MessageUtils.jsonToMessage(jsn);
+                                Message m = MessageUtils.jsonToUpdateMessage(jsn);
                                 Note n = ((ConcreteNotificationMessage)m).getNote();
                             } catch (Exception e) {
                                 Log.i("Subscriber Thread", "problem");

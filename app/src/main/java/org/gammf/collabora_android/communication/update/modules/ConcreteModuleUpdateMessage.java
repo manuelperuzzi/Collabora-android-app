@@ -13,8 +13,9 @@ public class ConcreteModuleUpdateMessage extends AbstractUpdateMessage implement
 
     private final Module module;
 
-    public ConcreteModuleUpdateMessage(final String username, final Module module, final UpdateMessageType updateType) {
-        super(username, updateType);
+    public ConcreteModuleUpdateMessage(final String username, final Module module,
+                                       final UpdateMessageType updateType, final String collaborationId) {
+        super(username, updateType, collaborationId);
         this.module = module;
     }
 

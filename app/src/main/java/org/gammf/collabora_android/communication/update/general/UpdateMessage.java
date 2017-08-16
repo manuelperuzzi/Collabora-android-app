@@ -11,4 +11,5 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTyp
 public interface UpdateMessage extends Message {
     UpdateMessageType getUpdateType();
     UpdateMessageTarget getTarget();
+    String getCollaborationId();
 }
