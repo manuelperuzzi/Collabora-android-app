@@ -1,25 +1,39 @@
 package org.gammf.collabora_android.app.gui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +43,7 @@ import java.util.List;
  * Use the {@link CreateNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateNoteFragment extends Fragment {
+public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,8 +53,9 @@ public class CreateNoteFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private PlaceAutocompleteFragment autocompleteFragment;
 
-  //  private OnFragmentInteractionListener mListener;
+    //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
         // Required empty public constructor
@@ -80,37 +95,64 @@ public class CreateNoteFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+        autocompleteFragment = (PlaceAutocompleteFragment)
                 getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        final Switch switcherToDo = rootView.findViewById(R.id.switchToDo);
+        final Switch switcherDoing = rootView.findViewById(R.id.switchDoing);
+        final Switch switcherDone = rootView.findViewById(R.id.switchDone);
+        switcherToDo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i("error", "Place: " + place.getName());
-                Log.i("error", "Place: " + place.getLatLng());
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("error", "An error occurred: " + status);
+            public void onClick(View view) {
+                //Your code
+                if(switcherToDo.isChecked() == true) {
+                    switcherDoing.setChecked(false);
+                    switcherDone.setChecked(false);
+                    switcherToDo.setChecked(true);
+                }else{
+                    switcherToDo.setChecked(false);
+                }
             }
         });
+                switcherDoing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        switcherToDo.setChecked(false);
+                        switcherDone.setChecked(false);
+                        switcherDoing.setChecked(true);
+                    }
+                });
+        switcherDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switcherToDo.setChecked(false);
+                switcherDoing.setChecked(false);
+                switcherDone.setChecked(true);
 
-        Spinner spinner2 = (Spinner) rootView.findViewById(R.id.spinnerSetState);
-        List<String> list = new ArrayList<String>();
-        list.add("To-do");
-        list.add("Doing");
-        list.add("Done");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner2.setAdapter(dataAdapter);
-
-
+            }
+        });
         return rootView;
     }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        // TODO: Get info about the selected place.
+        Log.i(TAG, "Place: " + place.getName());
+
+        String placeDetailsStr = place.getName()+"";
+              /*  + "\n"
+                + place.getId() + "\n"
+                + place.getLatLng().toString() + "\n"
+                + place.getAddress() + "\n"
+                + place.getAttributions();*/
+    }
+
+    @Override
+    public void onError(Status status) {
+        Log.i(TAG, "An error occurred: " + status);
+    }
+
 /*
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

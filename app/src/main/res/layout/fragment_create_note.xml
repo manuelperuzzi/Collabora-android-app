@@ -1,12 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/lblInsertContent"
+        android:id="@+id/lblFragmentTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -18,45 +19,37 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         tools:text="Create a new note"/>
 
-    <Spinner
-        android:id="@+id/spinnerSetState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="10dp"
-        android:layout_below="@+id/txtInsertContent"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textView3"/>
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Set state"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Set state"
-        android:layout_alignBottom="@+id/spinnerSetState"
-        android:layout_alignStart="@+id/lblInsertContent"/>
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_alignStart="@+id/textView10"
+        android:layout_marginStart="11dp"/>
 
     <EditText
         android:id="@+id/txtInsertContent"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/lblInsertContent"
-        android:layout_below="@+id/lblInsertContent"
+        android:layout_alignStart="@+id/lblFragmentTitle"
+        android:layout_below="@+id/lblFragmentTitle"
         android:layout_marginTop="22dp"
         android:layout_marginEnd="10dp"
         android:ems="10"
         android:inputType="textMultiLine"/>
 
     <TextView
-        android:id="@+id/lblINsertContent"
+        android:id="@+id/lblInsertContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/txtInsertContent"
-        android:layout_below="@+id/lblInsertContent"
-        android:text="TextView"
+        android:layout_below="@+id/lblFragmentTitle"
+        android:text="Insert content note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Insert content note"/>
 
@@ -67,28 +60,26 @@
         android:ems="10"
         android:inputType="date"
         android:layout_below="@+id/textView8"
-        android:layout_alignStart="@+id/textView8"/>
+        android:layout_alignParentEnd="true"/>
 
     <EditText
         android:id="@+id/timeExpirationNewNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/dateExpirationNewNote"
-        android:layout_alignBottom="@+id/dateExpirationNewNote"
-        android:layout_toEndOf="@+id/dateExpirationNewNote"
-        android:layout_marginEnd="10dp"
         android:ems="10"
-        android:inputType="time"/>
+        android:inputType="time"
+        android:layout_below="@+id/textView9"
+        android:layout_alignStart="@+id/textView9"/>
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
         android:text="Date Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/spinnerSetState"
-        android:layout_alignStart="@+id/textView3"/>
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignEnd="@+id/textView9"/>
 
     <TextView
         android:id="@+id/textView9"
@@ -96,29 +87,55 @@
         android:layout_height="wrap_content"
         android:text="Time Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignBaseline="@+id/textView8"
-        android:layout_alignBottom="@+id/textView8"
-        android:layout_toEndOf="@+id/dateExpirationNewNote"/>
+        android:layout_below="@+id/dateExpirationNewNote"
+        android:layout_alignStart="@+id/dateExpirationNewNote"/>
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location"
+        android:layout_marginTop="9dp"
+        android:text="Search a location for your note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/dateExpirationNewNote"
-        android:layout_toStartOf="@+id/spinnerSetState"/>
+        android:layout_below="@+id/txtInsertContent"
+        android:layout_alignStart="@+id/txtInsertContent"/>
 
     <fragment
         android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_marginTop="9dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
         android:layout_below="@+id/textView10"
         android:layout_alignParentStart="true"/>
+
+    <Switch
+        android:id="@+id/switchToDo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView9"
+        android:layout_alignStart="@+id/textView3"
+        android:switchPadding="20dp"
+        android:text="To-do"
+        />
+
+    <Switch
+        android:id="@+id/switchDoing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/switchToDo"
+        android:layout_below="@+id/textView9"
+        android:switchPadding="20dp"
+        android:text="Doing"/>
+
+    <Switch
+        android:id="@+id/switchDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/switchDoing"
+        android:layout_below="@+id/timeExpirationNewNote"
+        android:switchPadding="20dp"
+        android:text="Done"/>
+
 
 </RelativeLayout>
