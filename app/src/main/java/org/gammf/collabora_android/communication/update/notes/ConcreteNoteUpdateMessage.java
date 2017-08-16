@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.communication.update.notes;
 
-import org.gammf.collabora_android.communication.common.MessageType;
+import org.gammf.collabora_android.communication.update.general.AbstractUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
@@ -9,35 +9,17 @@ import org.gammf.collabora_android.notes.Note;
  * Created by Alfredo on 08/08/2017.
  */
 
-public class ConcreteNoteUpdateMessage implements NoteUpdateMessage {
-    private final String username;
+public class ConcreteNoteUpdateMessage extends AbstractUpdateMessage implements NoteUpdateMessage {
     private final Note note;
-    private final UpdateMessageType updateType;
 
     public ConcreteNoteUpdateMessage(final String username, final Note note, final UpdateMessageType updateType) {
-        this.username = username;
+        super(username, updateType);
         this.note = note;
-        this.updateType = updateType;
-    }
-
-    @Override
-    public MessageType getMessageType() {
-        return MessageType.UPDATE;
-    }
-
-    @Override
-    public UpdateMessageType getUpdateType() {
-        return this.updateType;
     }
 
     @Override
     public UpdateMessageTarget getTarget() {
         return UpdateMessageTarget.NOTE;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
     }
 
     @Override
