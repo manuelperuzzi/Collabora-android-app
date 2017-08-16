@@ -45,7 +45,7 @@ public class MessageUtils {
     }
 
     public static UpdateMessage jsonToUpdateMessage(final JSONObject json) throws JSONException{
-        final String username = json.getString("username");
+        final String username = json.getString("user");
         final UpdateMessageType updateType = UpdateMessageType.valueOf(json.getString("messageType"));
 
         final UpdateMessageTarget target = UpdateMessageTarget.valueOf(json.getString("target"));
