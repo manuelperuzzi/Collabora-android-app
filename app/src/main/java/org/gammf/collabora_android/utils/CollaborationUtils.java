@@ -8,7 +8,6 @@ import org.gammf.collabora_android.collaborations.Group;
 import org.gammf.collabora_android.collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.users.AccessRight;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.User;
 import org.json.JSONArray;
@@ -70,7 +69,8 @@ public class CollaborationUtils {
         return json;
     }
 
-    public static Collaboration jsonToCollaboration(final JSONObject json) throws JSONException {
+    public static Collaboration jsonToCollaboration(final JSONObject json)
+            throws JSONException, MandatoryFieldMissingException {
         final String id = json.getString("id");
         final String name = json.getString("name");
         final CollaborationType type = CollaborationType.valueOf(json.getString("collaborationType"));

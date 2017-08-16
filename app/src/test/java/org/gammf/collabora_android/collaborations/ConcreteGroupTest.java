@@ -2,7 +2,7 @@ package org.gammf.collabora_android.collaborations;
 
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.gammf.collabora_android.users.AccessRight;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
@@ -27,11 +27,13 @@ public class ConcreteGroupTest {
         group = new ConcreteGroup("collaborationId", "collaborationName");
         firstUser = new SimpleUser.Builder()
                 .username("peru")
+                .email("manuel.peruzzi@studio.unibo.it")
                 .surname("Peruzzi")
                 .name("Manuel")
                 .build();
         secondUser = new SimpleUser.Builder()
                 .username("maffone")
+                .email("alfredo.maffi@studio.unibo.it")
                 .build();
         final CollaborationMember fm = new CollaborationMember(firstUser, AccessRight.ADMIN);
         final CollaborationMember sm = new CollaborationMember(secondUser, AccessRight.READ);
@@ -78,7 +80,7 @@ public class ConcreteGroupTest {
         final Note n = new SimpleNoteBuilder("myNote")
                 .setNoteID("myNoteId")
                 .buildNote();
-        //assertEquals(n, group.getNote(n.getNoteID()));
+        assertEquals(n, group.getNote(n.getNoteID()));
     }
 
     @Test

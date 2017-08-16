@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.users.AccessRight;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
@@ -41,7 +40,7 @@ public class UserUtils {
      * @return a user built from the json message.
      * @throws JSONException if the conversion went wrong.
      */
-    public static User jsonToUser(final JSONObject json) throws JSONException {
+    public static User jsonToUser(final JSONObject json) throws JSONException, MandatoryFieldMissingException {
         final SimpleUser.Builder userBuilder = new SimpleUser.Builder();
 
         userBuilder.username(json.getString("username"));

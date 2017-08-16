@@ -4,19 +4,15 @@ import org.gammf.collabora_android.collaborations.ConcreteProject;
 import org.gammf.collabora_android.collaborations.Project;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.gammf.collabora_android.users.AccessRight;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.lang.reflect.Member;
 
 import static org.junit.Assert.*;
 
