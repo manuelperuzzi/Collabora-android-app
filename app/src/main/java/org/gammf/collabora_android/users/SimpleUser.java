@@ -81,7 +81,7 @@ public class SimpleUser implements User {
     public static class Builder {
 
         private String username;
-        private String email;
+        private String email = "";
         private String name = "";
         private String surname = "";
         private DateTime birthday = new DateTime();
@@ -114,8 +114,6 @@ public class SimpleUser implements User {
         public SimpleUser build() throws MandatoryFieldMissingException {
             if (username == null) {
                 throw new MandatoryFieldMissingException("username", "SimpleUser");
-            } else if (email == null) {
-                throw new MandatoryFieldMissingException("email", "SimpleUser");
             }
             return new SimpleUser(username, email, name, surname, birthday);
         }
