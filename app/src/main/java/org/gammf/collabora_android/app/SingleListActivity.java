@@ -2,17 +2,12 @@ package org.gammf.collabora_android.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;

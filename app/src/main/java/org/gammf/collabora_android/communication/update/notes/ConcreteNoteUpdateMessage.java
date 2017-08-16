@@ -1,6 +1,8 @@
-package org.gammf.collabora_android.communication.update;
+package org.gammf.collabora_android.communication.update.notes;
 
 import org.gammf.collabora_android.communication.common.MessageType;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
 
 /**

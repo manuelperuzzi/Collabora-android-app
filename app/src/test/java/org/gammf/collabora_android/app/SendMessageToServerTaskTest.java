@@ -1,8 +1,8 @@
 package org.gammf.collabora_android.app;
 
-import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Test;

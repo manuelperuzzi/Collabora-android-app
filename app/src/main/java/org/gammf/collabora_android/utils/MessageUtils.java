@@ -1,12 +1,10 @@
 package org.gammf.collabora_android.utils;
 
-import android.util.Log;
-
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessageType;
-import org.gammf.collabora_android.communication.update.NoteUpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessage;
+import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;

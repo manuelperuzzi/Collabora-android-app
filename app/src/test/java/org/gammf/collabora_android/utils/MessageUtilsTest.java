@@ -1,13 +1,12 @@
 package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessage;
 import org.gammf.collabora_android.communication.notification.NotificationMessageType;
-import org.gammf.collabora_android.communication.update.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessageTarget;
-import org.gammf.collabora_android.communication.update.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
@@ -17,8 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
 
 import static org.junit.Assert.*;
 
