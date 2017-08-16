@@ -7,6 +7,7 @@ import org.gammf.collabora_android.collaborations.ConcreteProject;
 import org.gammf.collabora_android.collaborations.Group;
 import org.gammf.collabora_android.collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.User;
@@ -107,7 +108,12 @@ public class CollaborationUtils {
         if (json.has("notes")) {
             final JSONArray jNotes = json.getJSONArray("notes");
             for (int i = 0; i < jNotes.length(); i++) {
-                collaboration.addNote(NoteUtils.jsonToNote(jNotes.getJSONObject(i)));
+                final Note note = NoteUtils.jsonToNote(jNotes.getJSONObject(i));
+                if (note instanceof ModuleNote) {
+                    ((Project)collaboration).addNote(note, ((ModuleNote) note).getModuleId());
+                } else {
+                    collaboration.addNote(NoteUtils.jsonToNote(jNotes.getJSONObject(i)));
+                }
             }
         }
 

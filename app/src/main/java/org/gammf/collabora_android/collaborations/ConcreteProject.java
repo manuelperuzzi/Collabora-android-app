@@ -94,16 +94,27 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
     }
 
     @Override
+    public boolean addNote(final Note note, final String moduleId) {
+        for (final Module m: modules) {
+            if (m.getId().equals(moduleId)) {
+                return m.addNote(note);
+            }
+        }
+        return false;
+    }
+
+    /*@Override
     public boolean addNote(final Note note) {
         if (note instanceof ModuleNote) {
+            final ModuleNote mn = (ModuleNote) note;
             for (final Module m: modules) {
-                if (m.getId().equals(((ModuleNote) note).getModuleId())) {
-                    return m.addNote(((ModuleNote) note).getNote());
+                if (m.getId().equals(mn.getModuleId())) {
+                    return m.addNote(mn.getNote());
                 }
             }
         }
         return super.addNote(note);
-    }
+    }*/
 
     @Override
     public boolean removeNote(final String noteId) {
