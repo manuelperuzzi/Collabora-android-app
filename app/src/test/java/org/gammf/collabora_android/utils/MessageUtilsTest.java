@@ -43,7 +43,7 @@ public class MessageUtilsTest {
             JSONObject noteJSON = (JSONObject)jsn.get("note");
             assertEquals(((JSONObject)noteJSON.get("location")).getDouble("latitude"), 44.24, 0.00001);
             assertEquals(noteJSON.get("content"), "this is a test");
-            assertEquals(jsn.get("target"), UpdateMessageTarget.NOTE);
+            assertEquals(jsn.get("target"), UpdateMessageTarget.NOTE.name());
         } catch (JSONException e) {
             fail();
         }

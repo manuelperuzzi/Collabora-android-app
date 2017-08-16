@@ -26,7 +26,9 @@ import org.json.JSONObject;
 public class MessageUtils {
     public static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
         final JSONObject jsn = new JSONObject();
-        jsn.put("user", message.getUsername()).put("target", message.getTarget()).put("messageType", message.getUpdateType().toString());
+        jsn.put("user", message.getUsername())
+                .put("target", message.getTarget().name())
+                .put("messageType", message.getUpdateType().name());
         switch (message.getTarget()) {
             case NOTE:
                 jsn.put("note", NoteUtils.noteToJSON(((NoteUpdateMessage)message).getNote()));
