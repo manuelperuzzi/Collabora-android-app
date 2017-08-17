@@ -58,7 +58,7 @@
             android:background="@android:color/white"
             android:paddingStart="10dp"
             android:text="ADD COLLABORATION"
-            android:textAlignment="textStart"/>
+            android:textAlignment="textEnd"/>
 
     </LinearLayout>
     </android.support.design.widget.NavigationView>

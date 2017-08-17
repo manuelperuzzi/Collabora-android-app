@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -15,21 +15,21 @@
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="70dp"
-        android:text="@string/hello_blank_fragment"
+        android:text="Create a new note"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        tools:text="Create a new note"/>
+        />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView10"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="10dp"
         android:text="Set state"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Set state"
-        android:layout_marginTop="19dp"
-        android:layout_below="@+id/place_autocomplete_fragment"
-        android:layout_alignStart="@+id/textView10"
-        android:layout_marginStart="11dp"/>
+        tools:text="Set state"/>
 
     <EditText
         android:id="@+id/txtInsertContent"
@@ -38,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/lblFragmentTitle"
         android:layout_below="@+id/lblFragmentTitle"
-        android:layout_marginTop="22dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginTop="22dp"
         android:ems="10"
         android:inputType="textMultiLine"/>
 
@@ -53,23 +53,25 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Insert content note"/>
 
-    <EditText
-        android:id="@+id/dateExpirationNewNote"
+    <TextView
+        android:id="@+id/txtDateSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date"
-        android:layout_below="@+id/textView8"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignBottom="@+id/btnSetDateExpiration"
+        android:layout_alignStart="@+id/textView8"
+        android:text="--/--/----"
+        android:textSize="22sp"/>
 
-    <EditText
-        android:id="@+id/timeExpirationNewNote"
+    <TextView
+        android:id="@+id/txtTimeSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="time"
+        android:text="--:--"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="22sp"
         android:layout_below="@+id/textView9"
-        android:layout_alignStart="@+id/textView9"/>
+        android:layout_alignStart="@+id/textView9"
+        android:layout_marginTop="8dp"/>
 
     <TextView
         android:id="@+id/textView8"
@@ -77,9 +79,8 @@
         android:layout_height="wrap_content"
         android:text="Date Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignEnd="@+id/textView9"/>
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toStartOf="@+id/btnAddNote"/>
 
     <TextView
         android:id="@+id/textView9"
@@ -87,55 +88,103 @@
         android:layout_height="wrap_content"
         android:text="Time Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/dateExpirationNewNote"
-        android:layout_alignStart="@+id/dateExpirationNewNote"/>
+        android:layout_below="@+id/txtDateSelected"
+        android:layout_alignStart="@+id/txtDateSelected"
+        android:layout_marginTop="11dp"/>
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_below="@+id/txtInsertContent"
         android:layout_marginTop="9dp"
         android:text="Search a location for your note"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/txtInsertContent"
-        android:layout_alignStart="@+id/txtInsertContent"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <fragment
         android:id="@+id/place_autocomplete_fragment"
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_below="@+id/textView10"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView10"/>
 
-    <Switch
-        android:id="@+id/switchToDo"
+
+    <RadioGroup
+        android:id="@+id/radioGroupNoteState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView9"
         android:layout_alignStart="@+id/textView3"
-        android:switchPadding="20dp"
-        android:text="To-do"
-        />
+        android:layout_below="@+id/textView3">
 
-    <Switch
-        android:id="@+id/switchDoing"
+        <RadioButton
+            android:id="@+id/radioButtonToDo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView3"
+            android:layout_below="@+id/textView3"
+            android:layout_marginTop="5dp"
+            android:text="To-do"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+
+        <RadioButton
+            android:id="@+id/radioButtonDoing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/radioButtonToDo"
+            android:layout_below="@+id/radioButtonToDo"
+            android:layout_marginTop="5dp"
+            android:text="Doing"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+
+        <RadioButton
+            android:id="@+id/radioButtonDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/radioButtonDoing"
+            android:layout_below="@+id/radioButtonDoing"
+            android:layout_marginTop="5dp"
+            android:text="Done"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+    </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/btnAddNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/switchToDo"
-        android:layout_below="@+id/textView9"
-        android:switchPadding="20dp"
-        android:text="Doing"/>
+        android:layout_alignEnd="@+id/txtInsertContent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="22dp"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        android:text="Add Note"
+        app:srcCompat="@drawable/oksign64"/>/>
 
-    <Switch
-        android:id="@+id/switchDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/switchDoing"
-        android:layout_below="@+id/timeExpirationNewNote"
-        android:switchPadding="20dp"
-        android:text="Done"/>
+    <ImageButton
+        android:id="@+id/btnSetDateExpiration"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/textView9"
+        android:backgroundTint="@android:color/white"
+        android:cropToPadding="false"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/calendar48"/>
 
+    <ImageButton
+        android:id="@+id/btnSetTimeExpiration"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@+id/txtTimeSelected"
+        android:layout_alignStart="@+id/btnSetDateExpiration"
+        android:adjustViewBounds="false"
+        android:backgroundTint="@android:color/white"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/time48"/>
 
 </RelativeLayout>

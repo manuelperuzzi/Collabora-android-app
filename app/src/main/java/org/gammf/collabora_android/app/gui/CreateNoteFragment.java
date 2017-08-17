@@ -1,8 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,11 +11,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -29,8 +33,10 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 import org.gammf.collabora_android.app.R;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -54,6 +60,13 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private String mParam1;
     private String mParam2;
     private PlaceAutocompleteFragment autocompleteFragment;
+    private RadioGroup radioGroupNoteState;
+    private RadioButton radioButtonToDo, radioButtonDoing, radioButtonDone;
+    private String noteState = "";
+    private Calendar calendar;
+    private Time clock;
+    private TextView dateView, timeView;
+    private int year, month, day, hour, minute;
 
     //  private OnFragmentInteractionListener mListener;
 
@@ -99,37 +112,55 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                 getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
-        final Switch switcherToDo = rootView.findViewById(R.id.switchToDo);
-        final Switch switcherDoing = rootView.findViewById(R.id.switchDoing);
-        final Switch switcherDone = rootView.findViewById(R.id.switchDone);
-        switcherToDo.setOnClickListener(new View.OnClickListener() {
+        radioGroupNoteState = rootView.findViewById(R.id.radioGroupNoteState);
+        radioButtonToDo = rootView.findViewById(R.id.radioButtonToDo);
+        radioButtonDoing = rootView.findViewById(R.id.radioButtonDoing);
+        radioButtonDone = rootView.findViewById(R.id.radioButtonDone);
+        ImageButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Your code
-                if(switcherToDo.isChecked() == true) {
-                    switcherDoing.setChecked(false);
-                    switcherDone.setChecked(false);
-                    switcherToDo.setChecked(true);
-                }else{
-                    switcherToDo.setChecked(false);
+                int selectedId = radioGroupNoteState.getCheckedRadioButtonId();
+                if(selectedId == radioButtonToDo.getId()) {
+                    noteState = "To-do";
+                    Log.e("",noteState);
+                }else if (selectedId == radioButtonDoing.getId()){
+                    noteState = "Doing";
+                    Log.e("",noteState);
+                }else if(selectedId == radioButtonDone.getId()){
+                    noteState = "Done";
+                    Log.e("",noteState);
                 }
             }
         });
-                switcherDoing.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        switcherToDo.setChecked(false);
-                        switcherDone.setChecked(false);
-                        switcherDoing.setChecked(true);
-                    }
-                });
-        switcherDone.setOnClickListener(new View.OnClickListener() {
+        dateView = rootView.findViewById(R.id.txtDateSelected);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        showDate(year, month+1, day);
+
+        timeView = rootView.findViewById(R.id.txtTimeSelected);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String strTime = sdf.format(calendar.getTime());
+        timeView.setText(strTime);
+
+
+        ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnSetDateExpiration);
+        btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switcherToDo.setChecked(false);
-                switcherDoing.setChecked(false);
-                switcherDone.setChecked(true);
+                new DatePickerDialog(getActivity(),
+                        myDateListener, year, month, day).show();
+            }
+        });
 
+        ImageButton btnSetTimeExpiration = rootView.findViewById(R.id.btnSetTimeExpiration);
+        btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TimePickerDialog(getActivity(),
+                        myTimeListener, hour, minute, true).show();
             }
         });
         return rootView;
@@ -153,6 +184,32 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         Log.i(TAG, "An error occurred: " + status);
     }
 
+    private DatePickerDialog.OnDateSetListener myDateListener = new
+            DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker arg0,
+                                      int arg1, int arg2, int arg3) {
+                    // TODO Auto-generated method stub
+                    // arg1 = year
+                    // arg2 = month
+                    // arg3 = day
+                    showDate(arg1, arg2+1, arg3);
+                }
+            };
+    private TimePickerDialog.OnTimeSetListener myTimeListener = new
+            TimePickerDialog.OnTimeSetListener(){
+                @Override
+                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                    showTime(hour,minute);
+                }
+            };
+    private void showDate(int year, int month, int day) {
+        dateView.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+    private void showTime(int hour, int minute){
+        timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
+    }
 /*
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
