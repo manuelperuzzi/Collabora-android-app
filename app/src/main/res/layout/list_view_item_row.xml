@@ -22,7 +22,9 @@
         android:layout_toRightOf="@+id/imageViewIcon"
         android:paddingRight="10dp"
         android:text="Item Name"
-        android:textAppearance="@style/?android:attr/textAppearanceListItemSmall"
-        />
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:typeface="normal"/>
 
 </RelativeLayout>
