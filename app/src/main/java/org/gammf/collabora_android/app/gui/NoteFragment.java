@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
@@ -40,7 +41,8 @@ implements OnMapReadyCallback{
     TextView lblResponsible;
     MapView mapView;
     GoogleMap googleMap;
-    TextClock expiration;
+    CameraPosition cameraPosition;
+    TextView expiration;
 
     public NoteFragment() {
     }
@@ -85,13 +87,13 @@ implements OnMapReadyCallback{
     private void setUpMap(){
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.collaboration_icon))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
                     .position(new LatLng(44.1390945, 12.2429281)));
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             MapsInitializer.initialize(this.getActivity());
 
@@ -104,14 +106,20 @@ implements OnMapReadyCallback{
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
             // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-            CameraPosition cameraPosition = new CameraPosition.Builder()
+            cameraPosition = new CameraPosition.Builder()
                     .target(coordinates)      // Sets the center of the map to Mountain View
                     .zoom(17)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    return false;
+                }
+            });
 
 
         }
