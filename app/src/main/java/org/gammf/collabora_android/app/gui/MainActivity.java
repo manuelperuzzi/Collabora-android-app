@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Button btnAddCollaborations = (Button) findViewById(R.id.btnAddCollaborations);
+        ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
         btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
 
             @Override
