@@ -26,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
+        android:paddingStart="5dp"
         android:text="Set state"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Set state"
@@ -82,8 +83,9 @@
         android:layout_height="wrap_content"
         android:text="Date Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_toStartOf="@+id/btnAddNote"/>
+        android:paddingStart="5dp"
+        android:layout_alignTop="@+id/imageView2"
+        android:layout_toEndOf="@+id/imageView2"/>
 
     <TextView
         android:id="@+id/textView9"
@@ -101,6 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtInsertContent"
         android:layout_marginTop="9dp"
+        android:paddingStart="5dp"
         android:text="Search a location for your note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_toEndOf="@+id/imageView5"/>
@@ -149,24 +152,19 @@
             android:layout_marginTop="5dp"
             android:text="Done"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-    </RadioGroup><![CDATA[
-
-    />
-
-    ]]>
+    </RadioGroup>
 
     <ImageButton
         android:id="@+id/btnSetDateExpiration"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_alignTop="@+id/textView8"
-        android:layout_marginStart="8dp"
-        android:layout_toEndOf="@+id/textView9"
         android:backgroundTint="@android:color/white"
         android:cropToPadding="false"
         android:elevation="5dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/calendar48"/>
+        app:srcCompat="@drawable/calendar48"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_toEndOf="@+id/textView8"/>
 
     <ImageButton
         android:id="@+id/btnSetTimeExpiration"
@@ -196,44 +194,41 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_marginStart="25dp"
+        android:layout_toEndOf="@+id/textView3"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/expirationtime32"
-        android:layout_alignTop="@+id/textView8"
-        android:layout_toStartOf="@+id/textView8"
-        android:layout_alignBottom="@+id/textView8"/>
+        app:srcCompat="@drawable/expirationtime32"/>
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/state32"
-        android:layout_above="@+id/radioGroupNoteState"
-        android:layout_alignStart="@+id/imageView5"
         android:layout_alignTop="@+id/textView3"
-        android:layout_toStartOf="@+id/textView10"/>
+        android:layout_alignStart="@+id/imageView5"/>
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/location32"
-        android:layout_alignBottom="@+id/place_autocomplete_fragment"
-        android:layout_alignStart="@+id/txtInsertContent"
-        android:layout_alignTop="@+id/textView10"/>
+        android:layout_alignTop="@+id/textView10"
+        android:layout_alignStart="@+id/txtInsertContent"/>
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/note_icon"
         android:layout_alignTop="@+id/lblInsertContent"
         android:layout_alignStart="@+id/txtInsertContent"
         android:layout_alignBottom="@+id/lblInsertContent"
-        android:layout_toStartOf="@+id/radioGroupNoteState"/>
+        android:layout_toStartOf="@+id/textView10"/>
 
 </RelativeLayout>
