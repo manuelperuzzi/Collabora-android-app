@@ -12,11 +12,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="65dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginEnd="10dp"
         android:text="Create a new note"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         />
 
     <TextView
@@ -50,6 +52,7 @@
         android:layout_alignStart="@+id/txtInsertContent"
         android:layout_below="@+id/lblFragmentTitle"
         android:text="Insert content note"
+        android:layout_marginTop="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Insert content note"/>
 
@@ -102,14 +105,12 @@
         android:text="Search a location for your note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-    <fragment
+    <FrameLayout
         android:id="@+id/place_autocomplete_fragment"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textView10"/>
-
 
     <RadioGroup
         android:id="@+id/radioGroupNoteState"
@@ -147,17 +148,11 @@
             android:layout_marginTop="5dp"
             android:text="Done"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-    </RadioGroup>
+    </RadioGroup><![CDATA[
 
-    <ImageButton
-        android:id="@+id/btnAddNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/txtInsertContent"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="22dp"
-        android:elevation="5dp"
-        app:srcCompat="@drawable/oksign64"/>/>
+    />
+
+    ]]>
 
     <ImageButton
         android:id="@+id/btnSetDateExpiration"
@@ -183,5 +178,19 @@
         android:elevation="5dp"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/time48"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnAddNote"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/txtInsertContent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="29dp"
+        android:layout_marginEnd="28dp"
+        android:clickable="true"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/checkmark48"/>
 
 </RelativeLayout>

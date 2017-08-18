@@ -36,8 +36,6 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
-        Bundle bundle = getArguments();
-        collabname =  bundle.getString("collabName");
 
         notesList = (ListView) rootView.findViewById(R.id.notesListView);
 
@@ -49,6 +47,17 @@ public class CollaborationFragment extends Fragment {
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
 
+        Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
+        if(getValue)
+        {
+            //VALUE RECEIVED FROM DRAWER SELECTION
+            collabname =  getArguments().getString("collabName");
+        }
+        else
+        {
+            //VALUE RECEIVED FROM FRAGMENT CREATE NOTE
+            drawerItem.add(new DataModel(R.drawable.note_icon, "New Note"));
+        }
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,13 +100,14 @@ public class CollaborationFragment extends Fragment {
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
 
-            FragmentManager fragmentManager2 = getFragmentManager();
+            FragmentManager fragmentManager2 = getActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
             fragmentTransaction2.addToBackStack("xyz");
             fragmentTransaction2.hide(CollaborationFragment.this);
             //fragmentTransaction2.add(android.R.id.content, fragment);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
+
 
         } else {
             Log.e("MainActivity", "Error in creating fragment");

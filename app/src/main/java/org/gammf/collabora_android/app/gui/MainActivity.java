@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity
         Bundle fragmentArgument = new Bundle();
         fragment = new CollaborationFragment();
         fragmentArgument.putString("collabName", itemName);
+        fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
 
         fragment.setArguments(fragmentArgument);
         if (fragment != null) {

@@ -3,7 +3,10 @@ package org.gammf.collabora_android.app.gui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -59,7 +62,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private PlaceAutocompleteFragment autocompleteFragment;
+    private SupportPlaceAutocompleteFragment autocompleteFragment;
     private RadioGroup radioGroupNoteState;
     private RadioButton radioButtonToDo, radioButtonDoing, radioButtonDone;
     private String noteState = "";
@@ -108,15 +111,18 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
 
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment = new SupportPlaceAutocompleteFragment();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
+        ft.commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
         radioGroupNoteState = rootView.findViewById(R.id.radioGroupNoteState);
         radioButtonToDo = rootView.findViewById(R.id.radioButtonToDo);
         radioButtonDoing = rootView.findViewById(R.id.radioButtonDoing);
         radioButtonDone = rootView.findViewById(R.id.radioButtonDone);
-        ImageButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +137,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                     noteState = "Done";
                     Log.e("",noteState);
                 }
+                addNote();
+
             }
         });
         dateView = rootView.findViewById(R.id.txtDateSelected);
@@ -166,6 +174,16 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         return rootView;
     }
 
+    private void addNote(){
+        CollaborationFragment collabFragment = new CollaborationFragment ();
+        Bundle args = new Bundle();
+        args.putBoolean("BOOLEAN_VALUE",false);
+        collabFragment.setArguments(args);
+/*
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();*/
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
+    }
     @Override
     public void onPlaceSelected(Place place) {
         // TODO: Get info about the selected place.
