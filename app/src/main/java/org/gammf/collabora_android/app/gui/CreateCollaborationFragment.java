@@ -6,8 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.gammf.collabora_android.collabora_android_app.R;
+import org.gammf.collabora_android.app.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +59,9 @@ public class CreateCollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_collaboration, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_collaboration, container, false);
+
+        return rootView;
     }
 
 }

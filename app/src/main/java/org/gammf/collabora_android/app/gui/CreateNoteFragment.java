@@ -122,6 +122,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         radioButtonToDo = rootView.findViewById(R.id.radioButtonToDo);
         radioButtonDoing = rootView.findViewById(R.id.radioButtonDoing);
         radioButtonDone = rootView.findViewById(R.id.radioButtonDone);
+        radioButtonToDo.setChecked(true);
         FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override

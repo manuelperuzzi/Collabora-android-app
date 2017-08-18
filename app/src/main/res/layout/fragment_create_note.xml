@@ -25,13 +25,12 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView10"
-        android:layout_below="@+id/place_autocomplete_fragment"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="9dp"
         android:text="Set state"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Set state"/>
+        tools:text="Set state"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_toEndOf="@+id/imageView3"/>
 
     <EditText
         android:id="@+id/txtInsertContent"
@@ -49,10 +48,11 @@
         android:id="@+id/lblInsertContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/txtInsertContent"
         android:layout_below="@+id/lblFragmentTitle"
-        android:text="Insert content note"
         android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/imageView7"
+        android:paddingStart="5dp"
+        android:text="Insert content note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Insert content note"/>
 
@@ -99,11 +99,11 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/txtInsertContent"
         android:layout_below="@+id/txtInsertContent"
         android:layout_marginTop="9dp"
         android:text="Search a location for your note"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_toEndOf="@+id/imageView5"/>
 
     <FrameLayout
         android:id="@+id/place_autocomplete_fragment"
@@ -116,8 +116,9 @@
         android:id="@+id/radioGroupNoteState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_below="@+id/textView3">
+        android:layout_marginStart="14dp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/imageView3">
 
         <RadioButton
             android:id="@+id/radioButtonToDo"
@@ -190,7 +191,49 @@
         android:clickable="true"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
-        app:fabSize="mini"
+        app:fabSize="normal"
         app:srcCompat="@drawable/checkmark48"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/expirationtime32"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_toStartOf="@+id/textView8"
+        android:layout_alignBottom="@+id/textView8"/>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/state32"
+        android:layout_above="@+id/radioGroupNoteState"
+        android:layout_alignStart="@+id/imageView5"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toStartOf="@+id/textView10"/>
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/location32"
+        android:layout_alignBottom="@+id/place_autocomplete_fragment"
+        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_alignTop="@+id/textView10"/>
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/note_icon"
+        android:layout_alignTop="@+id/lblInsertContent"
+        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_alignBottom="@+id/lblInsertContent"
+        android:layout_toStartOf="@+id/radioGroupNoteState"/>
 
 </RelativeLayout>
