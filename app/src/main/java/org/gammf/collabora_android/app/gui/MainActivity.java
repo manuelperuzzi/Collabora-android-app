@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 1"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 2"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 3"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
         adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity
 
         }else if(sender instanceof CreateCollaborationFragment) {
             //bisogna aggiungere la nuova collab alla lista
-            adapter.add(new DataModel(R.drawable.collaboration_icon, collabname));
+            adapter.add(new DataModel(R.drawable.collaboration32, collabname));
             adapter.notifyDataSetChanged();
         }
 

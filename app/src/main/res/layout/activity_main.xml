@@ -52,14 +52,14 @@
                 android:id="@+id/btnAddCollaborations"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@android:color/background_light"
                 android:cropToPadding="false"
                 android:paddingEnd="5dp"
                 android:tint="@color/colorPrimary"
-                app:srcCompat="@android:drawable/ic_menu_add"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"/>
+                app:srcCompat="@android:drawable/ic_input_add"/>
 
         </RelativeLayout>
 

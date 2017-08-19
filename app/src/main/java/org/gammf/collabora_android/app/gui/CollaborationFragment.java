@@ -77,9 +77,9 @@ public class CollaborationFragment extends Fragment {
         notesList = (ListView) rootView.findViewById(R.id.notesListView);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Connect"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Fixtures"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Table"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Connect"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Fixtures"));
+        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Table"));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, drawerItem);
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());

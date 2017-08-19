@@ -8,32 +8,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Selection;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
@@ -42,9 +30,7 @@ import org.gammf.collabora_android.app.R;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -113,7 +99,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
-        txtContentNote = rootView.findViewById(R.id.txtInsertContent);
+        txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();
@@ -151,14 +137,14 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
             }
         });
-        dateView = rootView.findViewById(R.id.txtDateSelected);
+        dateView = rootView.findViewById(R.id.txtNewDateSelected);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         showDate(year, month+1, day);
 
-        timeView = rootView.findViewById(R.id.txtTimeSelected);
+        timeView = rootView.findViewById(R.id.txtNewTimeSelected);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String strTime = sdf.format(calendar.getTime());
         timeView.setText(strTime);

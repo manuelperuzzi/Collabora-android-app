@@ -7,7 +7,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
-        android:id="@+id/txtInsertContent"
+        android:id="@+id/txtNoteContent"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         tools:text="Insert content note"/>
 
     <TextView
-        android:id="@+id/txtDateSelected"
+        android:id="@+id/txtNewDateSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/btnSetDateExpiration"
@@ -69,7 +69,7 @@
         android:textSize="18sp"/>
 
     <TextView
-        android:id="@+id/txtTimeSelected"
+        android:id="@+id/txtNewTimeSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--:--"
@@ -95,8 +95,8 @@
         android:layout_height="wrap_content"
         android:text="Time Expiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/txtDateSelected"
-        android:layout_alignStart="@+id/txtDateSelected"
+        android:layout_below="@+id/txtNewDateSelected"
+        android:layout_alignStart="@+id/txtNewDateSelected"
         android:layout_marginTop="11dp"/>
 
     <TextView
@@ -171,7 +171,7 @@
         android:id="@+id/btnSetTimeExpiration"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_alignBottom="@+id/txtTimeSelected"
+        android:layout_alignBottom="@+id/txtNewTimeSelected"
         android:layout_alignStart="@+id/btnSetDateExpiration"
         android:adjustViewBounds="false"
         android:backgroundTint="@android:color/white"
@@ -183,7 +183,7 @@
         android:id="@+id/btnAddNote"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_alignEnd="@+id/txtInsertContent"
+        android:layout_alignEnd="@+id/txtNoteContent"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="30dp"
@@ -218,8 +218,8 @@
         android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/location32"
-        android:layout_below="@+id/txtInsertContent"
-        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_below="@+id/txtNoteContent"
+        android:layout_alignStart="@+id/txtNoteContent"
         android:layout_marginTop="14dp"/>
 
     <ImageView
@@ -229,7 +229,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/note_icon"
         android:layout_alignTop="@+id/lblInsertContent"
-        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_alignStart="@+id/txtNoteContent"
         android:layout_alignBottom="@+id/lblInsertContent"
         android:layout_toStartOf="@+id/textView10"/>
 
