@@ -22,7 +22,6 @@ public class ConcreteProjectTest {
     private Module firstModule;
     private Module secondModule;
     private Note firstNote;
-    private Note secondNote;
     private Note thirdNote;
 
     @Before
@@ -42,7 +41,7 @@ public class ConcreteProjectTest {
         project.addModule(firstModule);
 
         secondModule = new ConcreteModule("secondModuleId", "SecondModule", "toDo");
-        secondNote = new SimpleNoteBuilder("SecondNote")
+        final Note secondNote = new SimpleNoteBuilder("SecondNote")
                 .setNoteID("secondNoteId")
                 .buildNote();
         secondModule.addNote(secondNote);

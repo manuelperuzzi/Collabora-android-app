@@ -1,5 +1,6 @@
 package org.gammf.collabora_android.users;
 
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.joda.time.DateTime;
 
 /**
@@ -80,10 +81,10 @@ public class SimpleUser implements User {
     public static class Builder {
 
         private String username;
-        private String email;
-        private String name;
-        private String surname;
-        private DateTime birthday;
+        private String email = "";
+        private String name = "";
+        private String surname = "";
+        private DateTime birthday = new DateTime();
 
         public Builder username(final String username) {
             this.username = username;
@@ -110,7 +111,10 @@ public class SimpleUser implements User {
             return this;
         }
 
-        public SimpleUser build() {
+        public SimpleUser build() throws MandatoryFieldMissingException {
+            if (username == null) {
+                throw new MandatoryFieldMissingException("username", "SimpleUser");
+            }
             return new SimpleUser(username, email, name, surname, birthday);
         }
 

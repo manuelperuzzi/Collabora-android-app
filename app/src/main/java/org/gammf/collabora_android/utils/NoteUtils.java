@@ -2,9 +2,11 @@ package org.gammf.collabora_android.utils;
 
 import android.util.Log;
 
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -40,11 +42,16 @@ public class NoteUtils {
         if(note.getState() != null) {
             final JSONObject state = new JSONObject();
             state.put("definition", note.getState().getCurrentState());
-            state.put("responsible", note.getState().getCurrentResponsible());
+            if(note.getState().getCurrentResponsible() != null) {
+                state.put("responsible", note.getState().getCurrentResponsible());
+            }
             jsn.put("state", state);
         }
         if(note.getPreviousNotes() != null) {
             jsn.put("previousNotes", note.getPreviousNotes());
+        }
+        if(note instanceof ModuleNote) {
+            jsn.put("module", ((ModuleNote) note).getModuleId());
         }
         return jsn;
     }
@@ -63,7 +70,8 @@ public class NoteUtils {
         }
         if(jsn.has("state")) {
             final JSONObject state = (JSONObject)jsn.get("state");
-            builder.setState(new NoteState(state.getString("definition"),state.getString("responsible")));
+            builder.setState(state.has("responsible") ? new NoteState(state.getString("definition"),state.getString("responsible"))
+                                                      : new NoteState(state.getString("definition")));
         }
         if(jsn.has("previousNotes")) {
             final List<String> previousNotes = new ArrayList<>();
@@ -73,6 +81,12 @@ public class NoteUtils {
             }
             builder.setPreviousNotes(previousNotes);
         }
-        return builder.buildNote();
+        final Note note = builder.buildNote();
+
+        if (jsn.has("module")) {
+            return new SimpleModuleNote(note, jsn.getString("module"));
+        }
+
+        return note;
     }
 }

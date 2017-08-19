@@ -54,6 +54,31 @@ public class SimpleModuleNote implements ModuleNote {
     }
 
     @Override
+    public void modifyLocation(Location location) {
+        this.note.modifyLocation(location);
+    }
+
+    @Override
+    public void modifyExpirationDate(DateTime expirationDate) {
+        this.note.modifyExpirationDate(expirationDate);
+    }
+
+    @Override
+    public void modifyState(State state) {
+        this.note.modifyState(state);
+    }
+
+    @Override
+    public void modifyPreviousNotes(List<String> previousNotes) {
+        this.note.modifyPreviousNotes(previousNotes);
+    }
+
+    @Override
+    public Note getNote() {
+        return note;
+    }
+
+    @Override
     public String getModuleId() {
         return moduleId;
     }
@@ -76,5 +101,4 @@ public class SimpleModuleNote implements ModuleNote {
         result = 31 * result + moduleId.hashCode();
         return result;
     }
-
 }

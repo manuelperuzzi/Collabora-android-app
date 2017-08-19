@@ -48,9 +48,9 @@ public interface Project extends Collaboration {
 
     /**
      * Adds a note to the specified module in the collaboration.
-     * @param note the note to be added to the module.
-     * @param moduleId the identifier of the module.
-     * @return true if the note has been successfully inserted, false otherwise.
+     * @param note the note to be added.
+     * @param moduleId the identifier of the module that will contain the note.
+     * @return true if the note is inserted in the module.
      */
     boolean addNote(Note note, String moduleId);
 

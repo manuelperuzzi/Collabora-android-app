@@ -1,14 +1,22 @@
 package org.gammf.collabora_android.utils;
 
-import android.util.Log;
+import org.gammf.collabora_android.collaborations.Collaboration;
+import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.members.ConcreteMemberUpdateMessage;
+import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
+import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
+import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 
-import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.communication.notification.ConcreteNotificationMessage;
-import org.gammf.collabora_android.communication.notification.NotificationMessage;
-import org.gammf.collabora_android.communication.notification.NotificationMessageType;
-import org.gammf.collabora_android.communication.update.NoteUpdateMessage;
-import org.gammf.collabora_android.communication.update.UpdateMessage;
-
+import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.users.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,58 +25,63 @@ import org.json.JSONObject;
  */
 
 public class MessageUtils {
-    public static JSONObject messageToJSON(final Message message) throws JSONException {
-        switch (message.getMessageType()) {
-            case UPDATE:
-                return updateMessageToJSON((UpdateMessage)message);
-            case NOTIFICATION:
-                return notificationMessageToJSON((NotificationMessage)message);
-            case COLLABORATION:
-                //TO-DO
-                return null;
-        }
-        return new JSONObject();
-    }
-
-    public static Message jsonToMessage(final JSONObject jsn) throws JSONException {
-        //I suppose that jsn can't contain an updateMessage
-        jsn.has("messageType");
-        if(jsn.has("messageType")) {
-            return  new ConcreteNotificationMessage(jsn.getString("user"),
-                                                    NoteUtils.jsonToNote((JSONObject)jsn.get("note")),
-                                                    NotificationMessageType.valueOf(jsn.getString("messageType")));
-        } else {
-            //TO-DO
-            //the message is a collaboration message
-            return null;
-        }
-    }
-
-    private static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
+    public static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
         final JSONObject jsn = new JSONObject();
-        jsn.put("user", message.getUsername()).put("target", message.getTarget()).put("messageType", message.getUpdateType().toString());
+        jsn.put("user", message.getUsername())
+                .put("target", message.getTarget().name())
+                .put("messageType", message.getUpdateType().name())
+                .put("collaborationId", message.getCollaborationId());
         switch (message.getTarget()) {
             case NOTE:
                 jsn.put("note", NoteUtils.noteToJSON(((NoteUpdateMessage)message).getNote()));
                 break;
             case MODULE:
-                //TO-DO
+                jsn.put("module", ModulesUtils.moduleToJson(((ModuleUpdateMessage)message).getModule()));
                 break;
             case COLLABORATION:
-                //TO-DO
+                jsn.put("collaboration", CollaborationUtils.collaborationToJson(((CollaborationUpdateMessage)message).getCollaboration()));
                 break;
             case MEMBER:
-                //TO-DO
+                jsn.put("member", UserUtils.userToJson(((MemberUpdateMessage)message).getMember()));
                 break;
         }
         return jsn;
     }
 
-    private static JSONObject notificationMessageToJSON(final NotificationMessage message) throws JSONException {
-        final JSONObject jsn = new JSONObject();
-        return jsn.put("user", message.getUsername())
-                  .put("messageType", message.getNotificationType().toString())
-                  .put("note", NoteUtils.noteToJSON((message).getNote()));
+    public static UpdateMessage jsonToUpdateMessage(final JSONObject json) throws JSONException{
+        final String username = json.getString("user");
+        final UpdateMessageType updateType = UpdateMessageType.valueOf(json.getString("messageType"));
+        final String collaborationId = json.getString("collaborationId");
+
+        final UpdateMessageTarget target = UpdateMessageTarget.valueOf(json.getString("target"));
+        switch (target) {
+            case NOTE:
+                final Note note = NoteUtils.jsonToNote(json.getJSONObject("note"));
+                return new ConcreteNoteUpdateMessage(username, note, updateType, collaborationId);
+            case COLLABORATION:
+                try {
+                    final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(
+                            json.getJSONObject("collaboration"));
+                    return new ConcreteCollaborationUpdateMessage(username, collaboration, updateType);
+                } catch (final MandatoryFieldMissingException e) {
+                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
+                }
+            case MODULE:
+                final Module module = ModulesUtils.jsonToModule(json.getJSONObject("module"));
+                return new ConcreteModuleUpdateMessage(username, module, updateType, collaborationId);
+            case MEMBER:
+                try {
+                    final User user = UserUtils.jsonToUser(json.getJSONObject("member"));
+                    if (user instanceof CollaborationMember) {
+                        return new ConcreteMemberUpdateMessage(username, (CollaborationMember) user, updateType, collaborationId);
+                    }
+                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
+                } catch (final MandatoryFieldMissingException e) {
+                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
+                }
+            default:
+                throw new JSONException("JSON message not parsable! Target field is incorrect.");
+        }
     }
 
 }

@@ -29,11 +29,10 @@ public class NoteUtilsTest {
         try {
             JSONObject obj = NoteUtils.noteToJSON(note);
             assertEquals(obj.getString("content"), "some content");
-            assertEquals(DateTime.parse(obj.getString("expiration")).getMillis(), 772408800000L);
+            assertEquals(new DateTime(obj.get("expiration")).getMillis(), 772408800000L);
             assertEquals((List<String>)obj.get("previousNotes"), Arrays.asList("test", "test2"));
-            assertNull(obj.getString("id"));
-            fail();
         } catch (JSONException e) {
+            fail();
         }
     }
 
