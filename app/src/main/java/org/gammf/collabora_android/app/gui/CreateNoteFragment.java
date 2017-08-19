@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -70,6 +72,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private Time clock;
     private TextView dateView, timeView;
     private int year, month, day, hour, minute;
+    private EditText txtContentNote;
 
     //  private OnFragmentInteractionListener mListener;
 
@@ -110,14 +113,13 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
-
+        txtContentNote = rootView.findViewById(R.id.txtInsertContent);
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
         ft.commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
-
         radioGroupNoteState = rootView.findViewById(R.id.radioGroupNoteState);
         radioButtonToDo = rootView.findViewById(R.id.radioButtonToDo);
         radioButtonDoing = rootView.findViewById(R.id.radioButtonDoing);
@@ -127,18 +129,24 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int selectedId = radioGroupNoteState.getCheckedRadioButtonId();
-                if(selectedId == radioButtonToDo.getId()) {
-                    noteState = "To-do";
-                    Log.e("",noteState);
-                }else if (selectedId == radioButtonDoing.getId()){
-                    noteState = "Doing";
-                    Log.e("",noteState);
-                }else if(selectedId == radioButtonDone.getId()){
-                    noteState = "Done";
-                    Log.e("",noteState);
+                String insertedNoteName = txtContentNote.getText().toString();
+                if(insertedNoteName.equals("")){
+                    Resources res = getResources();
+                    txtContentNote.setError(res.getString(R.string.fieldempty));
+                }else {
+                    int selectedId = radioGroupNoteState.getCheckedRadioButtonId();
+                    if (selectedId == radioButtonToDo.getId()) {
+                        noteState = "To-do";
+                        Log.e("", noteState);
+                    } else if (selectedId == radioButtonDoing.getId()) {
+                        noteState = "Doing";
+                        Log.e("", noteState);
+                    } else if (selectedId == radioButtonDone.getId()) {
+                        noteState = "Done";
+                        Log.e("", noteState);
+                    }
+                    addNote();
                 }
-                addNote();
 
             }
         });

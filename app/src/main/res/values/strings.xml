@@ -61,4 +61,9 @@
         <item>Group</item>
         <item>Project</item>
     </string-array>
+
+
+
+    <!-- Error message -->
+    <string name="fieldempty">Field Required</string>
 </resources>

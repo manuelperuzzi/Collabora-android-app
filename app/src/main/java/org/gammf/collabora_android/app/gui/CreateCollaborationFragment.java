@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -101,7 +102,12 @@ public class CreateCollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String insertedCollabName = txtCollabName.getText().toString();
-                addCollaboration(insertedCollabName);
+                if(insertedCollabName.equals("")){
+                    Resources res = getResources();
+                    txtCollabName.setError(res.getString(R.string.fieldempty));
+                }else {
+                    addCollaboration(insertedCollabName);
+                }
             }
         });
 
