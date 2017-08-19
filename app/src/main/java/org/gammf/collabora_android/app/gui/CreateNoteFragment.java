@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Selection;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -114,6 +115,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
         txtContentNote = rootView.findViewById(R.id.txtInsertContent);
+        txtContentNote.requestFocus();
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

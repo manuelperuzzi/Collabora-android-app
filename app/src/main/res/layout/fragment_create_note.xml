@@ -6,6 +6,19 @@
                 tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/txtInsertContent"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/lblFragmentTitle"
+        android:layout_alignStart="@+id/lblFragmentTitle"
+        android:layout_below="@+id/lblInsertContent"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"/>
+
     <TextView
         android:id="@+id/lblFragmentTitle"
         android:layout_width="fill_parent"
@@ -32,18 +45,6 @@
         tools:text="Set state"
         android:layout_below="@+id/place_autocomplete_fragment"
         android:layout_toEndOf="@+id/imageView3"/>
-
-    <EditText
-        android:id="@+id/txtInsertContent"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/lblFragmentTitle"
-        android:layout_below="@+id/lblFragmentTitle"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="22dp"
-        android:ems="10"
-        android:inputType="textMultiLine"/>
 
     <TextView
         android:id="@+id/lblInsertContent"
@@ -102,11 +103,10 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtInsertContent"
-        android:layout_marginTop="9dp"
         android:paddingStart="5dp"
         android:text="Search a location for your note"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_alignBottom="@+id/imageView5"
         android:layout_toEndOf="@+id/imageView5"/>
 
     <FrameLayout
@@ -218,8 +218,9 @@
         android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/location32"
-        android:layout_alignTop="@+id/textView10"
-        android:layout_alignStart="@+id/txtInsertContent"/>
+        android:layout_below="@+id/txtInsertContent"
+        android:layout_alignStart="@+id/txtInsertContent"
+        android:layout_marginTop="14dp"/>
 
     <ImageView
         android:id="@+id/imageView7"

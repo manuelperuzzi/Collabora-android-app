@@ -77,6 +77,7 @@ public class CreateCollaborationFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_collaboration, container, false);
         txtCollabName = rootView.findViewById(R.id.txtInsertCollabName);
+        txtCollabName.requestFocus();
         spinnerCollabType = (Spinner) rootView.findViewById(R.id.spinnerCollabType);
         List<String> list = new ArrayList<String>();
         list.add("Group");
@@ -110,7 +111,6 @@ public class CreateCollaborationFragment extends Fragment {
                 }
             }
         });
-
         return rootView;
     }
 
