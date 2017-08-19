@@ -62,8 +62,13 @@
         <item>Project</item>
     </string-array>
 
-
+    <!-- Edit collaboration fragment -->
+    <string name="editcollab_title">Edit Collaboration</string>
+    <string name="editcollab_lblname">Insert new collaboration name</string>
+    <string name="editcollab_member">Members</string>
 
     <!-- Error message -->
     <string name="fieldempty">Field Required</string>
+
+
 </resources>
