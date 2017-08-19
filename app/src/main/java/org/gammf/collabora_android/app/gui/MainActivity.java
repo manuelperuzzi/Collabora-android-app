@@ -183,14 +183,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void updateCollaborationList(String collabname){
-        adapter.add(new DataModel(R.drawable.collaboration_icon, collabname));
-        adapter.notifyDataSetChanged();
+    public void updateCollaborationList(Fragment sender, String collabname){
+
+        if(sender instanceof EditCollaborationFragment){
+            // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
+
+        }else if(sender instanceof CreateCollaborationFragment) {
+            //bisogna aggiungere la nuova collab alla lista
+            adapter.add(new DataModel(R.drawable.collaboration_icon, collabname));
+            adapter.notifyDataSetChanged();
+        }
 
         Fragment fragment = new CollaborationFragment();
         Bundle args = new Bundle();
         args.putString("collabName", collabname);
-        args.putBoolean("BOOLEAN_VALUE",true);
+        args.putBoolean("BOOLEAN_VALUE", true);
         fragment.setArguments(args);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -200,6 +207,7 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.openDrawer(GravityCompat.START);
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

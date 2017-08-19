@@ -2,12 +2,20 @@ package org.gammf.collabora_android.app.gui;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import org.gammf.collabora_android.app.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +32,9 @@ public class EditCollaborationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private ListView memberList;
+    private ArrayList<DataModel> memberItem;
+    private DrawerItemCustomAdapter adapter;
 
     public EditCollaborationFragment() {
         // Required empty public constructor
@@ -61,8 +72,46 @@ public class EditCollaborationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_collaboration, container, false);
+        Button btnAddMember = rootView.findViewById(R.id.btnAddMember);
+        final EditText txtNewTitle = rootView.findViewById(R.id.txtInsertEditedCollabName);
+        memberList = rootView.findViewById(R.id.listViewCollabMember);
+        memberItem = new ArrayList<DataModel>();
+        memberItem.add(new DataModel(R.drawable.user, "Mario Rossi"));
+        memberItem.add(new DataModel(R.drawable.user, "Luca Bianchi"));
+        memberItem.add(new DataModel(R.drawable.user, "Giovanni Verdi"));
+        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, memberItem);
+        memberList.setAdapter(adapter);
 
+        btnAddMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                memberItem.add(new DataModel(R.drawable.user, "New Member"));
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+
+        FloatingActionButton btnEditDone = rootView.findViewById(R.id.btnCollabEditDone);
+        btnEditDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newName = txtNewTitle.getText().toString();
+                if(newName.equals("")) {
+                    CollaborationFragment collabFragment = new CollaborationFragment();
+                    Bundle args = new Bundle();
+                    args.putBoolean("BOOLEAN_VALUE", false);
+                    collabFragment.setArguments(args);
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
+                }else{
+                    updateCollaboration(newName);
+                }
+            }
+        });
         return rootView;
+    }
+
+    private void updateCollaboration(String collabName){
+        ((MainActivity)getActivity()).updateCollaborationList(this, collabName);
     }
 
 }

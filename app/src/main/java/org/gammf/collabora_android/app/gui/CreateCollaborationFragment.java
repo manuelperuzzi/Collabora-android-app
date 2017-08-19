@@ -115,6 +115,6 @@ public class CreateCollaborationFragment extends Fragment {
     }
 
     private void addCollaboration(String collabName){
-        ((MainActivity)getActivity()).updateCollaborationList(collabName);
+        ((MainActivity)getActivity()).updateCollaborationList(this, collabName);
     }
 }
