@@ -2,11 +2,23 @@ package org.gammf.collabora_android.app.gui;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+
 import org.gammf.collabora_android.app.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +35,9 @@ public class CreateCollaborationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private EditText txtCollabName;
+    private Spinner spinnerCollabType;
+    private String spinnerSelection;
 
     public CreateCollaborationFragment() {
         // Required empty public constructor
@@ -61,7 +76,34 @@ public class CreateCollaborationFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_collaboration, container, false);
 
+        spinnerCollabType = (Spinner) rootView.findViewById(R.id.spinnerCollabType);
+        List<String> list = new ArrayList<String>();
+        list.add("Group");
+        list.add("Project");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCollabType.setAdapter(dataAdapter);
+        spinnerCollabType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                spinnerSelection = adapterView.getItemAtPosition(i).toString();
+            }
+        });
+
+        FloatingActionButton btnAddCollaboration = rootView.findViewById(R.id.btnAddNewCollaborationDone);
+        btnAddCollaboration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String insertedCollabName = txtCollabName.getText().toString();
+                addCollaboration(insertedCollabName);
+            }
+        });
+
         return rootView;
     }
 
+    private void addCollaboration(String collabName){
+        ((MainActivity)getActivity()).updateCollaborationList(collabName);
+    }
 }

@@ -53,6 +53,12 @@
     </string-array>
     <string name="title_activity_add_note">AddNoteActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Create collaboration fragment -->
+    <string name="collabfrag_title">New Collaboration</string>
+    <string name="collabfrag_lblname">Insert collaboration name</string>
+    <string name="collabfrag_lbltype">Type</string>
+    <string-array name="collabfrag_spinnertype">
+        <item>Group</item>
+        <item>Project</item>
+    </string-array>
 </resources>

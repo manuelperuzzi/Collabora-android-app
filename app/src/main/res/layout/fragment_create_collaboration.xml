@@ -1,13 +1,104 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="org.gammf.collabora_android.app.gui.CreateCollaborationFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/txtInsertCollabName"
+        android:layout_below="@+id/txtInsertCollabName"
+        android:layout_marginTop="17dp"
+        app:srcCompat="@drawable/typecollabicon"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/lblTitleNewCollab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:text="@string/collabfrag_title"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/lblInsertContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView8"
+        android:layout_alignTop="@+id/imageView8"
+        android:layout_toEndOf="@+id/imageView8"
+        android:gravity="center_vertical"
+        android:paddingStart="5dp"
+        android:text="@string/collabfrag_lblname"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <EditText
+        android:id="@+id/txtInsertCollabName"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:inputType="text"
+        android:layout_below="@+id/imageView8"
+        android:layout_alignStart="@+id/imageView8"
+        android:layout_alignEnd="@+id/lblTitleNewCollab"/>
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:srcCompat="@drawable/collaboration_icon"
+        android:layout_below="@+id/lblTitleNewCollab"
+        android:layout_alignStart="@+id/lblTitleNewCollab"/>
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/collabfrag_lbltype"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_alignTop="@+id/imageView9"
+        android:layout_toEndOf="@+id/imageView9"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/imageView9"/>
+
+    <Spinner
+        android:id="@+id/spinnerCollabType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView13"
+        android:layout_alignTop="@+id/textView13"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/textView13"
+        android:spinnerMode="dialog"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnAddNewCollaborationDone"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/txtInsertCollabName"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
+        android:clickable="true"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/checkmark48"/>
+
+</RelativeLayout>

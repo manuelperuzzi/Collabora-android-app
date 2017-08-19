@@ -90,8 +90,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                adapter.add(new DataModel(R.drawable.collaboration_icon, "New Collaborations"));
-                adapter.notifyDataSetChanged();
+                Fragment createCollaborationFragment = new CreateCollaborationFragment();
+                if (createCollaborationFragment != null) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, createCollaborationFragment).commit();
+                }
+
             }
         });
 
@@ -177,6 +181,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void updateCollaborationList(String collabname){
+        adapter.add(new DataModel(R.drawable.collaboration_icon, collabname));
+        adapter.notifyDataSetChanged();
+
+        Fragment fragment = new CollaborationFragment();
+        Bundle args = new Bundle();
+        args.putString("collabName", collabname);
+        args.putBoolean("BOOLEAN_VALUE",true);
+        fragment.setArguments(args);
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        }
+
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.openDrawer(GravityCompat.START);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
