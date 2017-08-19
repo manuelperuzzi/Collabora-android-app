@@ -6,14 +6,17 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -22,8 +25,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
@@ -45,6 +46,47 @@ implements OnMapReadyCallback{
     TextView expiration;
 
     public NoteFragment() {
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.edit_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_edit) {
+            Fragment editNoteFragment = new EditNoteFragment();
+            Bundle fragmentArgument = new Bundle();
+            fragmentArgument.putString("collabName", collabname);
+
+            editNoteFragment.setArguments(fragmentArgument);
+            if(editNoteFragment != null) {
+                getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction2.addToBackStack("xyz");
+                fragmentTransaction2.hide(NoteFragment.this);
+                fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
+                fragmentTransaction2.commit();
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
