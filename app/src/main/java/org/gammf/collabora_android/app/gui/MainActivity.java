@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity
                 if (createCollaborationFragment != null) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, createCollaborationFragment).commit();
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
                 }
 
             }

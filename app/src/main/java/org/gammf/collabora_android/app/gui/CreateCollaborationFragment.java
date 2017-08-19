@@ -75,7 +75,7 @@ public class CreateCollaborationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_collaboration, container, false);
-
+        txtCollabName = rootView.findViewById(R.id.txtInsertCollabName);
         spinnerCollabType = (Spinner) rootView.findViewById(R.id.spinnerCollabType);
         List<String> list = new ArrayList<String>();
         list.add("Group");
@@ -84,13 +84,18 @@ public class CreateCollaborationFragment extends Fragment {
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCollabType.setAdapter(dataAdapter);
-        spinnerCollabType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerCollabType.setSelection(0);
+        spinnerCollabType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 spinnerSelection = adapterView.getItemAtPosition(i).toString();
             }
-        });
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         FloatingActionButton btnAddCollaboration = rootView.findViewById(R.id.btnAddNewCollaborationDone);
         btnAddCollaboration.setOnClickListener(new View.OnClickListener() {
             @Override
