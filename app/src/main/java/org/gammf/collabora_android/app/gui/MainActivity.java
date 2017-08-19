@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -66,9 +67,9 @@ public class MainActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 1"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 2"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Collaboration 3"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
+        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
         adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -83,14 +84,20 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Button btnAddCollaborations = (Button) findViewById(R.id.btnAddCollaborations);
+        ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
         btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                adapter.add(new DataModel(R.drawable.collaboration_icon, "New Collaborations"));
-                adapter.notifyDataSetChanged();
+                Fragment createCollaborationFragment = new CreateCollaborationFragment();
+                if (createCollaborationFragment != null) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, createCollaborationFragment).commit();
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+
             }
         });
 
@@ -147,6 +154,7 @@ public class MainActivity extends AppCompatActivity
         Bundle fragmentArgument = new Bundle();
         fragment = new CollaborationFragment();
         fragmentArgument.putString("collabName", itemName);
+        fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
 
         fragment.setArguments(fragmentArgument);
         if (fragment != null) {
@@ -175,6 +183,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void updateCollaborationList(Fragment sender, String collabname){
+
+        if(sender instanceof EditCollaborationFragment){
+            // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
+
+        }else if(sender instanceof CreateCollaborationFragment) {
+            //bisogna aggiungere la nuova collab alla lista
+            adapter.add(new DataModel(R.drawable.collaboration32, collabname));
+            adapter.notifyDataSetChanged();
+        }
+
+        Fragment fragment = new CollaborationFragment();
+        Bundle args = new Bundle();
+        args.putString("collabName", collabname);
+        args.putBoolean("BOOLEAN_VALUE", true);
+        fragment.setArguments(args);
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            setTitle(collabname);
+        }
+
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.openDrawer(GravityCompat.START);
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -221,11 +255,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
-
-
 
     @Override
     public void onStart() {

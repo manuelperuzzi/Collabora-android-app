@@ -34,31 +34,48 @@
         android:id="@+id/navigation_drawer_header_include"
         layout="@layout/nav_header_main" />
 
-        <TextView
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Collaborations"
-            android:textAppearance="@style/TextAppearance.AppCompat.Menu"/>
+            android:background="@android:color/background_light">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Collaborations"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:textSize="20sp"/>
+
+            <ImageButton
+                android:id="@+id/btnAddCollaborations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:background="@android:color/background_light"
+                android:cropToPadding="false"
+                android:paddingEnd="5dp"
+                android:tint="@color/colorPrimary"
+                app:srcCompat="@android:drawable/ic_input_add"/>
+
+        </RelativeLayout>
+
 
         <ListView
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#FFFFFF"
             android:choiceMode="singleChoice"
             android:divider="@android:color/white"
-            android:dividerHeight="1dp"/>
+            android:dividerHeight="2dp"
+            android:paddingStart="3dp"
+            android:scrollbars="vertical"/>
 
-        <Button
-            android:id="@+id/btnAddCollaborations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:paddingStart="10dp"
-            android:text="ADD COLLABORATION"
-            android:textAlignment="textStart"/>
 
     </LinearLayout>
     </android.support.design.widget.NavigationView>

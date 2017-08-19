@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context=".gui.EditNoteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <EditText
-        android:id="@+id/txtNoteContent"
+        android:id="@+id/txtNoteContentEdit"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,26 +24,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="65dp"
-        android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="Create a new note"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:text="@string/editnote_title"
+        android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
         />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:paddingStart="5dp"
-        android:text="Set state"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Set state"
-        android:layout_below="@+id/place_autocomplete_fragment"
-        android:layout_toEndOf="@+id/imageView3"/>
 
     <TextView
         android:id="@+id/lblInsertContent"
@@ -54,22 +41,24 @@
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/imageView7"
         android:paddingStart="5dp"
-        android:text="Insert content note"
+        android:text="@string/editnote_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Insert content note"/>
+        />
 
     <TextView
-        android:id="@+id/txtNewDateSelected"
+        android:id="@+id/txtEditDateSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnSetDateExpiration"
-        android:layout_alignStart="@+id/textView8"
         android:text="--/--/----"
+        android:textSize="18sp"
+        android:layout_below="@+id/imageView2"
+        android:layout_alignStart="@+id/textView9"
         android:layout_marginTop="5dp"
-        android:textSize="18sp"/>
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"/>
 
     <TextView
-        android:id="@+id/txtNewTimeSelected"
+        android:id="@+id/txtEditTimeSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--:--"
@@ -77,55 +66,57 @@
         android:textSize="18sp"
         android:layout_below="@+id/textView9"
         android:layout_alignStart="@+id/textView9"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"/>
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date Expiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:paddingStart="5dp"
         android:layout_alignTop="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2"/>
+        android:layout_toEndOf="@+id/imageView2"
+        android:paddingStart="5dp"
+        android:text="@string/editnote_dateexpiration"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time Expiration"
+        android:text="@string/editnote_timeexpiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/txtNewDateSelected"
-        android:layout_alignStart="@+id/txtNewDateSelected"
-        android:layout_marginTop="11dp"/>
+        android:layout_alignTop="@+id/btnEditTimeExpiration"
+        android:layout_toStartOf="@+id/btnEditTimeExpiration"/>
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="5dp"
-        android:text="Search a location for your note"
+        android:text="@string/editnote_location"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignBottom="@+id/imageView5"
-        android:layout_toEndOf="@+id/imageView5"/>
+        android:layout_alignTop="@+id/imageView5"
+        android:layout_toEndOf="@+id/imageView5"
+        android:layout_alignBottom="@+id/imageView5"/>
 
     <FrameLayout
-        android:id="@+id/place_autocomplete_fragment"
+        android:id="@+id/place_autocomplete_fragment_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textView10"/>
 
     <RadioGroup
-        android:id="@+id/radioGroupNoteState"
+        android:id="@+id/radioGroupNoteStateEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_below="@+id/textView3"
+        android:layout_marginStart="13dp"
+        android:layout_below="@+id/imageView3"
         android:layout_alignStart="@+id/imageView3">
 
         <RadioButton
-            android:id="@+id/radioButtonToDo"
+            android:id="@+id/radioButtonToDoEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView3"
@@ -135,28 +126,28 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
-            android:id="@+id/radioButtonDoing"
+            android:id="@+id/radioButtonDoingEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonToDo"
-            android:layout_below="@+id/radioButtonToDo"
+            android:layout_alignStart="@+id/radioButtonToDoEdit"
+            android:layout_below="@+id/radioButtonToDoEdit"
             android:layout_marginTop="5dp"
             android:text="Doing"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
-            android:id="@+id/radioButtonDone"
+            android:id="@+id/radioButtonDoneEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonDoing"
-            android:layout_below="@+id/radioButtonDoing"
+            android:layout_alignStart="@+id/radioButtonDoingEdit"
+            android:layout_below="@+id/radioButtonDoingEdit"
             android:layout_marginTop="5dp"
             android:text="Done"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
     </RadioGroup>
 
     <ImageButton
-        android:id="@+id/btnSetDateExpiration"
+        android:id="@+id/btnEditDateExpiration"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:backgroundTint="@android:color/white"
@@ -168,37 +159,38 @@
         android:layout_toEndOf="@+id/textView8"/>
 
     <ImageButton
-        android:id="@+id/btnSetTimeExpiration"
+        android:id="@+id/btnEditTimeExpiration"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_alignBottom="@+id/txtNewTimeSelected"
-        android:layout_alignStart="@+id/btnSetDateExpiration"
         android:adjustViewBounds="false"
         android:backgroundTint="@android:color/white"
         android:elevation="5dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/time48"/>
+        app:srcCompat="@drawable/time48"
+        android:layout_below="@+id/btnEditDateExpiration"
+        android:layout_alignStart="@+id/btnEditDateExpiration"
+        android:layout_marginTop="11dp"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnAddNote"
+        android:id="@+id/btnEditNoteDone"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_alignEnd="@+id/txtNoteContent"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="30dp"
         android:clickable="true"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
-        app:srcCompat="@drawable/checkmark48"/>
+        app:srcCompat="@drawable/checkmark48"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/txtNoteContentEdit"/>
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="30dp"
         android:layout_height="25dp"
         android:layout_alignTop="@+id/textView3"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/textView3"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/expirationtime32"/>
@@ -209,7 +201,8 @@
         android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/state32"
-        android:layout_alignTop="@+id/textView3"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/place_autocomplete_fragment_edit"
         android:layout_alignStart="@+id/imageView5"/>
 
     <ImageView
@@ -218,19 +211,31 @@
         android:layout_height="25dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/location32"
-        android:layout_below="@+id/txtNoteContent"
-        android:layout_alignStart="@+id/txtNoteContent"
+        android:layout_below="@+id/txtNoteContentEdit"
+        android:layout_alignStart="@+id/txtNoteContentEdit"
         android:layout_marginTop="14dp"/>
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/note_icon"
-        android:layout_alignTop="@+id/lblInsertContent"
-        android:layout_alignStart="@+id/txtNoteContent"
         android:layout_alignBottom="@+id/lblInsertContent"
-        android:layout_toStartOf="@+id/textView10"/>
+        android:layout_alignStart="@+id/txtNoteContent"
+        android:layout_alignTop="@+id/lblInsertContent"
+        android:layout_toStartOf="@+id/textView10"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/note_icon"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView3"
+        android:layout_toEndOf="@+id/imageView3"
+        android:layout_weight="1"
+        android:paddingStart="5dp"
+        android:text="@string/editnote_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_above="@+id/radioGroupNoteStateEdit"/>
 
 </RelativeLayout>
