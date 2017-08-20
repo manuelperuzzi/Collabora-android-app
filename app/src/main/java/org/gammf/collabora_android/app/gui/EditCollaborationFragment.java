@@ -79,7 +79,7 @@ public class EditCollaborationFragment extends Fragment {
         memberItem.add(new DataModel(R.drawable.user, "Mario Rossi"));
         memberItem.add(new DataModel(R.drawable.user, "Luca Bianchi"));
         memberItem.add(new DataModel(R.drawable.user, "Giovanni Verdi"));
-        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, memberItem);
+        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
 
         btnAddMember.setOnClickListener(new View.OnClickListener() {

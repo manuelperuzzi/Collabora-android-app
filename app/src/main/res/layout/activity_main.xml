@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Collaborations"
+                android:text="@string/collaborations_drawer"
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:textSize="20sp"/>
 

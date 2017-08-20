@@ -25,26 +25,25 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="65dp"
-        android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="Create a new note"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:text="@string/newnote_title"
+        android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
         />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:paddingStart="5dp"
-        android:text="Set state"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Set state"
         android:layout_below="@+id/place_autocomplete_fragment"
-        android:layout_toEndOf="@+id/imageView3"/>
+        android:layout_marginTop="9dp"
+        android:layout_toEndOf="@+id/imageView3"
+        android:paddingStart="5dp"
+        android:text="@string/newnote_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/lblInsertContent"
@@ -54,9 +53,9 @@
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/imageView7"
         android:paddingStart="5dp"
-        android:text="Insert content note"
+        android:text="@string/newnote_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Insert content note"/>
+        />
 
     <TextView
         android:id="@+id/txtNewDateSelected"
@@ -83,31 +82,31 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date Expiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:paddingStart="5dp"
         android:layout_alignTop="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2"/>
+        android:layout_toEndOf="@+id/imageView2"
+        android:paddingStart="5dp"
+        android:text="@string/newnote_date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time Expiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_below="@+id/txtNewDateSelected"
         android:layout_alignStart="@+id/txtNewDateSelected"
-        android:layout_marginTop="11dp"/>
+        android:layout_below="@+id/txtNewDateSelected"
+        android:layout_marginTop="11dp"
+        android:text="@string/newnote_time"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="5dp"
-        android:text="Search a location for your note"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_alignBottom="@+id/imageView5"
-        android:layout_toEndOf="@+id/imageView5"/>
+        android:layout_toEndOf="@+id/imageView5"
+        android:paddingStart="5dp"
+        android:text="@string/newnote_location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <FrameLayout
         android:id="@+id/place_autocomplete_fragment"
@@ -131,7 +130,7 @@
             android:layout_alignStart="@+id/textView3"
             android:layout_below="@+id/textView3"
             android:layout_marginTop="5dp"
-            android:text="To-do"
+            android:text="@string/rg_todo"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
@@ -141,7 +140,7 @@
             android:layout_alignStart="@+id/radioButtonToDo"
             android:layout_below="@+id/radioButtonToDo"
             android:layout_marginTop="5dp"
-            android:text="Doing"
+            android:text="@string/rg_doing"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
@@ -151,7 +150,7 @@
             android:layout_alignStart="@+id/radioButtonDoing"
             android:layout_below="@+id/radioButtonDoing"
             android:layout_marginTop="5dp"
-            android:text="Done"
+            android:text="@string/rg_done"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
     </RadioGroup>
 

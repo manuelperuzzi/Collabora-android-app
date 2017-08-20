@@ -51,6 +51,33 @@
         <item>Group</item>
         <item>Project</item>
     </string-array>
+    <string name="dialog_createcollab">Create</string>
+    <string name="dialog_cancelcollab">Cancel</string>
+
+    <!-- Main Activity -->
+    <string name="collaborations_drawer">Collaborations</string>
+
+    <!-- Collaboration Fragment -->
+    <string name="title_listviewnotes">Notes</string>
+
+    <!-- Create Note Fragment -->
+    <string name="newnote_title">Create a new note</string>
+    <string name="newnote_state">Set state</string>
+    <string name="newnote_content">Insert content note</string>
+    <string name="newnote_date">Date Expiration</string>
+    <string name="newnote_time">Time Expiration</string>
+    <string name="newnote_location">Search a location for your note</string>
+
+    <!-- Radio Group Note State -->
+    <string name="rg_todo">To-do</string>
+    <string name="rg_doing">Doing</string>
+    <string name="rg_done">Done</string>
+
+    <!-- Note Fragment -->
+    <string name="note_state">State</string>
+    <string name="note_responsible">Responsible</string>
+    <string name="note_expirationdate">Expiration Date</string>
+    <string name="note_location">Location</string>
 
     <!-- Edit collaboration fragment -->
     <string name="editcollab_title">Edit Collaboration</string>
@@ -58,7 +85,7 @@
     <string name="editcollab_member">Members</string>
     <string name="editcollab_btnaddmember">Add member</string>
 
-    <!-- Edit collaboration fragment -->
+    <!-- Edit note fragment -->
     <string name="editnote_title">Edit Note</string>
     <string name="editnote_content">Insert new content</string>
     <string name="editnote_location">Search new location</string>
@@ -69,6 +96,8 @@
     <!-- Error message -->
     <string name="fieldempty">Field Required</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
