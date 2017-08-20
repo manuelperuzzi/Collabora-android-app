@@ -78,7 +78,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private MapView mapView;
     private GoogleMap googleMap;
     private CameraPosition cameraPosition;
-    private ProgressBar progressBarState;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -171,7 +170,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         radioButtonDoingEdited = rootView.findViewById(R.id.radioButtonDoingEdit);
         radioButtonDoneEdited = rootView.findViewById(R.id.radioButtonDoneEdit);
         radioButtonToDoEdited.setChecked(true);
-        progressBarState = rootView.findViewById(R.id.progressBarStateEdit);
         radioGroupNoteStateEdited.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
@@ -185,11 +183,9 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 } else if (selectedId == radioButtonDoneEdited.getId()) {
                     noteState = "Done";
                 }
-                setStateProgressBar(noteState);
             }
         });
         radioButtonToDoEdited.setChecked(true);
-        setStateProgressBar("To-do");
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
         yearEdited = calendarEdited.get(Calendar.YEAR);
@@ -346,33 +342,5 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 return false;
             }
         });
-    }
-
-    private void setStateProgressBar(String state){
-        Log.println(Log.ERROR, "",""+state);
-        switch(state){
-            case "To-do" :{
-                progressBarState.setProgress(25);
-                progressBarState.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                break;
-            }
-            case "Doing" :{
-                progressBarState.setProgress(50);
-                progressBarState.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
-                break;
-            }
-            case "Done" :{
-                progressBarState.setProgress(100);
-                progressBarState.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-                break;
-            }
-            default:{
-                progressBarState.setProgress(80);
-                progressBarState.getIndeterminateDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
-                break;
-            }
-        }
-        //Only for min API 21
-        //progressBarState.setProgressTintList(ColorStateList.valueOf(Color.RED));
     }
 }
