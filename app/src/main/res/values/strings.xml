@@ -72,6 +72,8 @@
     <string name="rg_todo">To-do</string>
     <string name="rg_doing">Doing</string>
     <string name="rg_done">Done</string>
+    <string name="rg_project">PROJECT</string>
+    <string name="rg_group">GROUP</string>
 
     <!-- Note Fragment -->
     <string name="note_state">State</string>

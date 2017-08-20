@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DialogNewCollaborationFragment.DialogCollabListener{
 
     private ListView mDrawerList;
     private ArrayList<DataModel> drawerItem;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                /*
                 Fragment createCollaborationFragment = new CreateCollaborationFragment();
                 if (createCollaborationFragment != null) {
                     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -89,6 +91,8 @@ public class MainActivity extends AppCompatActivity
                     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                     drawer.closeDrawer(GravityCompat.START);
                 }
+                */
+                showNoticeDialog();
 
             }
         });
@@ -361,6 +365,22 @@ public class MainActivity extends AppCompatActivity
                         });
             }
         }
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
+        Log.e("","positivoooo");
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Log.e("","negativooo");
+    }
+
+    public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new DialogNewCollaborationFragment();
+        dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
     }
 }
 
