@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -40,7 +42,7 @@ import java.util.ArrayList;
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogNewCollaborationFragment.DialogCollabListener{
+        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
     private ListView mDrawerList;
     private ArrayList<DataModel> drawerItem;
@@ -369,12 +371,36 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
-        Log.e("","positivoooo");
+        adapter.add(new DataModel(R.drawable.collaboration32, collabName));
+        adapter.notifyDataSetChanged();
+
+        Fragment fragment = new CollaborationFragment();
+        Bundle args = new Bundle();
+        args.putString("collabName", collabName);
+        args.putBoolean("BOOLEAN_VALUE", true);
+        fragment.setArguments(args);
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            setTitle(collabName);
+        }
+
+        Context context = getApplicationContext();
+        CharSequence text = "Collaboration created!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Log.e("","negativooo");
+        Context context = getApplicationContext();
+        CharSequence text = "Creation discarded";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     public void showNoticeDialog() {

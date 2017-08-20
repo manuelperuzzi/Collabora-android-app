@@ -9,8 +9,8 @@
         android:id="@+id/imageView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/txtInsertCollabName"
-        android:layout_below="@+id/txtInsertCollabName"
+        android:layout_alignStart="@+id/txtInsertCollabNameD"
+        android:layout_below="@+id/txtInsertCollabNameD"
         android:layout_marginTop="17dp"
         app:srcCompat="@drawable/typecollabicon"/>
 
@@ -27,7 +27,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <EditText
-        android:id="@+id/txtInsertCollabName"
+        android:id="@+id/txtInsertCollabNameD"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

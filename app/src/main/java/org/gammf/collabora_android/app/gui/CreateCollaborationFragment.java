@@ -5,15 +5,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import org.gammf.collabora_android.app.R;
@@ -76,7 +73,7 @@ public class CreateCollaborationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_collaboration, container, false);
-        txtCollabName = rootView.findViewById(R.id.txtInsertCollabName);
+        txtCollabName = rootView.findViewById(R.id.txtInsertCollabNameD);
         txtCollabName.requestFocus();
         spinnerCollabType = (Spinner) rootView.findViewById(R.id.spinnerCollabType);
         List<String> list = new ArrayList<String>();

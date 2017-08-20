@@ -1,23 +1,24 @@
 package org.gammf.collabora_android.app.gui;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
 
@@ -28,10 +29,16 @@ import org.gammf.collabora_android.app.R;
  */
 public class DialogNewCollaborationFragment extends DialogFragment {
 
+
+    // Use this instance of the interface to deliver action events
+    private DialogCollabListener mListener;
+    //ui elements
     private EditText txtCollabName;
     private RadioGroup radioGroupCollabType;
     private RadioButton radioButtonGroup;
     private RadioButton radioButtonProject;
+    //manager for keyboard
+    private InputMethodManager inputMethodManager;
 
     public DialogNewCollaborationFragment() {
         // Required empty public constructor
@@ -60,12 +67,6 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dialog_new_collaboration, container, false);
 
-        txtCollabName = rootView.findViewById(R.id.txtInsertCollabName);
-        radioGroupCollabType = rootView.findViewById(R.id.radioGroupCollabType);
-        radioButtonGroup = rootView.findViewById(R.id.radioButtonGroup);
-        radioButtonProject = rootView.findViewById(R.id.radioButtonProject);
-        radioButtonGroup.setChecked(true);
-
         return rootView;
     }
 
@@ -74,16 +75,31 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_dialog_new_collaboration, null);
+        txtCollabName = view.findViewById(R.id.txtInsertCollabNameD);
+        radioGroupCollabType = view.findViewById(R.id.radioGroupCollabType);
+        radioButtonGroup = view.findViewById(R.id.radioButtonGroup);
+        radioButtonProject = view.findViewById(R.id.radioButtonProject);
+        radioButtonGroup.setChecked(true);
 
-        builder.setView(inflater.inflate(R.layout.fragment_dialog_new_collaboration, null))
+        inputMethodManager =
+                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
+
+        builder.setView(view)
                 .setMessage(R.string.collabfrag_title)
                 .setPositiveButton(R.string.dialog_createcollab, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String insertedNoteName = txtCollabName.getText().toString();
                         String collabType = "";
                         if(insertedNoteName.equals("")){
-                            Resources res = getResources();
-                            txtCollabName.setError(res.getString(R.string.fieldempty));
+                            Context context = getActivity().getApplicationContext();
+                            CharSequence text = "Creation failed: name not inserted!";
+                            int duration = Toast.LENGTH_LONG;
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+                            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                         }else {
                             int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
                             if (selectedId == radioButtonProject.getId()) {
@@ -93,22 +109,22 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                                 collabType = "Doing";
                                 Log.e("", collabType);
                             }
+                            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                             mListener.onDialogPositiveClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
                         }
+
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancelcollab, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
+                        inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                         mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
                     }
                 });
         // Create the AlertDialog object and return it
         return builder.create();
     }
-
-    // Use this instance of the interface to deliver action events
-    DialogCollabListener mListener;
 
     @Override
     public void onAttach(Context context) {
