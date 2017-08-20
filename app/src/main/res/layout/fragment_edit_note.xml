@@ -1,119 +1,104 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context=".gui.EditNoteFragment">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+    >
 
-    <EditText
-        android:id="@+id/txtNoteContentEdit"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/lblFragmentTitle"
-        android:layout_alignStart="@+id/lblFragmentTitle"
-        android:layout_below="@+id/lblInsertContent"
-        android:ems="10"
-        android:inputType="text"
+        android:gravity="center_vertical"
         android:paddingEnd="5dp"
-        android:paddingStart="5dp"/>
-
-    <TextView
-        android:id="@+id/lblFragmentTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="65dp"
-        android:text="@string/editnote_title"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/lblInsertContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lblFragmentTitle"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/imageView7"
         android:paddingStart="5dp"
-        android:text="@string/editnote_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        />
-
-    <TextView
-        android:id="@+id/txtEditDateSelected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="--/--/----"
-        android:textSize="18sp"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignStart="@+id/textView9"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"/>
-
-    <TextView
-        android:id="@+id/txtEditTimeSelected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="--:--"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="18sp"
-        android:layout_below="@+id/textView9"
-        android:layout_alignStart="@+id/textView9"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"/>
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2"
-        android:paddingStart="5dp"
-        android:text="@string/editnote_dateexpiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/editnote_timeexpiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignTop="@+id/btnEditTimeExpiration"
-        android:layout_toStartOf="@+id/btnEditTimeExpiration"/>
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_below="@+id/btnEditDateExpiration"
+        android:layout_alignStart="@+id/txtEditDateSelected"
+        android:layout_marginTop="10dp"/>
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="@string/editnote_location"
+        android:text="@string/editnote_dateexpiration"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignTop="@+id/imageView5"
-        android:layout_toEndOf="@+id/imageView5"
-        android:layout_alignBottom="@+id/imageView5"/>
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_above="@+id/txtEditDateSelected"
+        android:layout_toEndOf="@+id/imageView13"/>
 
-    <FrameLayout
-        android:id="@+id/place_autocomplete_fragment_edit"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView10"/>
+        android:gravity="center_vertical"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:text="@string/editnote_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/imageView12"
+        android:layout_alignStart="@+id/radioGroupNoteStateEdit"/>
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/state32"
+        android:layout_below="@+id/textView6"
+        android:layout_alignStart="@+id/imgExpiration"
+        android:layout_marginTop="12dp"/>
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/expirationtime32"
+        android:layout_alignTop="@+id/textView23"
+        android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+        android:id="@+id/btnEditTimeExpiration"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignStart="@+id/btnEditDateExpiration"
+        android:layout_below="@+id/textView24"
+        android:adjustViewBounds="false"
+        android:backgroundTint="@android:color/white"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/time48"/>
+
+    <ImageButton
+        android:id="@+id/btnEditDateExpiration"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@android:color/white"
+        android:cropToPadding="false"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/calendar48"
+        android:layout_below="@+id/textView23"
+        android:layout_alignEnd="@+id/textView23"/>
 
     <RadioGroup
         android:id="@+id/radioGroupNoteStateEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_below="@+id/imageView3"
-        android:layout_alignStart="@+id/imageView3">
+        android:layout_below="@+id/imageView13"
+        android:layout_toEndOf="@+id/imgExpiration">
 
         <RadioButton
             android:id="@+id/radioButtonToDoEdit"
@@ -122,7 +107,7 @@
             android:layout_alignStart="@+id/textView3"
             android:layout_below="@+id/textView3"
             android:layout_marginTop="5dp"
-            android:text="To-do"
+            android:text="@string/rg_todo"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
@@ -132,7 +117,7 @@
             android:layout_alignStart="@+id/radioButtonToDoEdit"
             android:layout_below="@+id/radioButtonToDoEdit"
             android:layout_marginTop="5dp"
-            android:text="Doing"
+            android:text="@string/rg_doing"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
 
         <RadioButton
@@ -142,100 +127,106 @@
             android:layout_alignStart="@+id/radioButtonDoingEdit"
             android:layout_below="@+id/radioButtonDoingEdit"
             android:layout_marginTop="5dp"
-            android:text="Done"
+            android:text="@string/rg_done"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
     </RadioGroup>
 
-    <ImageButton
-        android:id="@+id/btnEditDateExpiration"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:backgroundTint="@android:color/white"
-        android:cropToPadding="false"
-        android:elevation="5dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/calendar48"
-        android:layout_alignTop="@+id/textView8"
-        android:layout_toEndOf="@+id/textView8"/>
-
-    <ImageButton
-        android:id="@+id/btnEditTimeExpiration"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:adjustViewBounds="false"
-        android:backgroundTint="@android:color/white"
-        android:elevation="5dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/time48"
-        android:layout_below="@+id/btnEditDateExpiration"
-        android:layout_alignStart="@+id/btnEditDateExpiration"
-        android:layout_marginTop="11dp"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnEditNoteDone"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="30dp"
-        android:clickable="true"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/checkmark48"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/txtNoteContentEdit"/>
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@+id/textView3"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/expirationtime32"/>
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/state32"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/place_autocomplete_fragment_edit"
-        android:layout_alignStart="@+id/imageView5"/>
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/location32"
-        android:layout_below="@+id/txtNoteContentEdit"
-        android:layout_alignStart="@+id/txtNoteContentEdit"
-        android:layout_marginTop="14dp"/>
-
-    <ImageView
-        android:id="@+id/imageView7"
+    <TextView
+        android:id="@+id/txtEditTimeSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/lblInsertContent"
-        android:layout_alignStart="@+id/txtNoteContent"
-        android:layout_alignTop="@+id/lblInsertContent"
-        android:layout_toStartOf="@+id/textView10"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/note_icon"/>
+        android:layout_alignStart="@+id/textView24"
+        android:layout_below="@+id/textView24"
+        android:layout_marginTop="11dp"
+        android:text="--:--"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="20sp"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/txtEditDateSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView3"
-        android:layout_toEndOf="@+id/imageView3"
-        android:layout_weight="1"
-        android:paddingStart="5dp"
-        android:text="@string/editnote_state"
+        android:text="--/--/----"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_above="@+id/radioGroupNoteStateEdit"/>
+        android:textSize="20sp"
+        android:layout_below="@+id/textView22"
+        android:layout_toEndOf="@+id/imageView13"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/txtNoteContentEdit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="Connect"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+    <EditText
+        android:id="@+id/txtResponsibleEdit"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mapViewLocation"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/textView6"
+        android:gravity="center_horizontal"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:text="12/12/1212 @ 12:12"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarState"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtNoteContentEdit"
+        android:layout_alignParentStart="true"/>
+
+    <FrameLayout
+        android:id="@+id/place_autocomplete_fragment_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBarState"
+        android:layout_alignParentStart="true"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/place_autocomplete_fragment_edit"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtResponsibleEdit"
+        android:layout_alignTop="@+id/txtResponsibleEdit"
+        android:layout_toEndOf="@+id/imgExpiration"
+        android:gravity="center_vertical"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:text="@string/note_responsible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/imgExpiration"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_alignStart="@+id/txtNoteContentEdit"
+        android:layout_alignTop="@+id/textView6"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/expirationtime32"/>
+
 
 </RelativeLayout>

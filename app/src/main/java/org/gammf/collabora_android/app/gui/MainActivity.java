@@ -186,10 +186,6 @@ public class MainActivity extends AppCompatActivity
         if(sender instanceof EditCollaborationFragment){
             // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
 
-        }else if(sender instanceof CreateCollaborationFragment) {
-            //bisogna aggiungere la nuova collab alla lista
-            adapter.add(new DataModel(R.drawable.collaboration32, collabname));
-            adapter.notifyDataSetChanged();
         }
 
         Fragment fragment = new CollaborationFragment();
@@ -374,6 +370,9 @@ public class MainActivity extends AppCompatActivity
         adapter.add(new DataModel(R.drawable.collaboration32, collabName));
         adapter.notifyDataSetChanged();
 
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+
         Fragment fragment = new CollaborationFragment();
         Bundle args = new Bundle();
         args.putString("collabName", collabName);
@@ -391,6 +390,7 @@ public class MainActivity extends AppCompatActivity
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+
     }
 
     @Override
