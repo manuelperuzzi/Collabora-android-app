@@ -6,227 +6,243 @@
                 android:orientation="vertical"
     >
 
-
-    <TextView
-        android:id="@+id/textView24"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:text="@string/editnote_timeexpiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:layout_below="@+id/btnEditDateExpiration"
-        android:layout_alignStart="@+id/txtEditDateSelected"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:id="@+id/textView23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:text="@string/editnote_dateexpiration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:layout_above="@+id/txtEditDateSelected"
-        android:layout_toEndOf="@+id/imageView13"/>
-
-    <TextView
-        android:id="@+id/textView22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:text="@string/editnote_state"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:layout_alignBottom="@+id/imageView12"
-        android:layout_alignStart="@+id/radioGroupNoteStateEdit"/>
-
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/state32"
-        android:layout_below="@+id/textView6"
-        android:layout_alignStart="@+id/imgExpiration"
-        android:layout_marginTop="12dp"/>
-
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/expirationtime32"
-        android:layout_alignTop="@+id/textView23"
-        android:layout_centerHorizontal="true"/>
-
-    <ImageButton
-        android:id="@+id/btnEditTimeExpiration"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignStart="@+id/btnEditDateExpiration"
-        android:layout_below="@+id/textView24"
-        android:adjustViewBounds="false"
-        android:backgroundTint="@android:color/white"
-        android:elevation="5dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/time48"/>
-
-    <ImageButton
-        android:id="@+id/btnEditDateExpiration"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:backgroundTint="@android:color/white"
-        android:cropToPadding="false"
-        android:elevation="5dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/calendar48"
-        android:layout_below="@+id/textView23"
-        android:layout_alignEnd="@+id/textView23"/>
-
-    <RadioGroup
-        android:id="@+id/radioGroupNoteStateEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView13"
-        android:layout_toEndOf="@+id/imgExpiration">
-
-        <RadioButton
-            android:id="@+id/radioButtonToDoEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView3"
-            android:layout_below="@+id/textView3"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_todo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-
-        <RadioButton
-            android:id="@+id/radioButtonDoingEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonToDoEdit"
-            android:layout_below="@+id/radioButtonToDoEdit"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_doing"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-
-        <RadioButton
-            android:id="@+id/radioButtonDoneEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonDoingEdit"
-            android:layout_below="@+id/radioButtonDoingEdit"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_done"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/txtEditTimeSelected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView24"
-        android:layout_below="@+id/textView24"
-        android:layout_marginTop="11dp"
-        android:text="--:--"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:id="@+id/txtEditDateSelected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="--/--/----"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="20sp"
-        android:layout_below="@+id/textView22"
-        android:layout_toEndOf="@+id/imageView13"
-        android:layout_marginTop="8dp"/>
-
-    <EditText
-        android:id="@+id/txtNoteContentEdit"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="70dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="Connect"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"/>
-
-    <EditText
-        android:id="@+id/txtResponsibleEdit"
-        style="@style/Widget.AppCompat.AutoCompleteTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mapViewLocation"
-        android:layout_marginTop="16dp"
-        android:layout_toEndOf="@+id/textView6"
-        android:gravity="center_horizontal"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:text="12/12/1212 @ 12:12"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-    <ProgressBar
-        android:id="@+id/progressBarState"
-        style="?android:attr/progressBarStyleHorizontal"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txtNoteContentEdit"
-        android:layout_alignParentStart="true"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-    <FrameLayout
-        android:id="@+id/place_autocomplete_fragment_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBarState"
-        android:layout_alignParentStart="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/txtNoteContentEdit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Connect"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"/>
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapViewLocation"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/place_autocomplete_fragment_edit"
-        android:layout_alignParentStart="true"/>
+            <ProgressBar
+                android:id="@+id/progressBarStateEdit"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtNoteContentEdit"
+                android:layout_alignParentStart="true"/>
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/txtResponsibleEdit"
-        android:layout_alignTop="@+id/txtResponsibleEdit"
-        android:layout_toEndOf="@+id/imgExpiration"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:text="@string/note_responsible"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"/>
 
-    <ImageView
-        android:id="@+id/imgExpiration"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_alignStart="@+id/txtNoteContentEdit"
-        android:layout_alignTop="@+id/textView6"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/expirationtime32"/>
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/editnote_timeexpiration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_below="@+id/btnEditDateExpiration"
+                android:layout_alignStart="@+id/txtEditDateSelected"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/editnote_dateexpiration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_above="@+id/txtEditDateSelected"
+                android:layout_toEndOf="@+id/imageView13"/>
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/editnote_state"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_alignBottom="@+id/imageView12"
+                android:layout_alignStart="@+id/radioGroupNoteStateEdit"/>
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/state32"
+                android:layout_below="@+id/textView6"
+                android:layout_alignStart="@+id/imgExpiration"
+                android:layout_marginTop="12dp"/>
+
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/expirationtime32"
+                android:layout_alignTop="@+id/textView23"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageButton
+                android:id="@+id/btnEditTimeExpiration"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignStart="@+id/btnEditDateExpiration"
+                android:layout_below="@+id/textView24"
+                android:adjustViewBounds="false"
+                android:backgroundTint="@android:color/white"
+                android:elevation="5dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/time48"/>
+
+            <ImageButton
+                android:id="@+id/btnEditDateExpiration"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:backgroundTint="@android:color/white"
+                android:cropToPadding="false"
+                android:elevation="5dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/calendar48"
+                android:layout_below="@+id/textView23"
+                android:layout_alignEnd="@+id/textView23"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupNoteStateEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView13"
+                android:layout_toEndOf="@+id/imgExpiration">
+
+                <RadioButton
+                    android:id="@+id/radioButtonToDoEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/textView3"
+                    android:layout_below="@+id/textView3"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/rg_todo"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+
+                <RadioButton
+                    android:id="@+id/radioButtonDoingEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/radioButtonToDoEdit"
+                    android:layout_below="@+id/radioButtonToDoEdit"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/rg_doing"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+
+                <RadioButton
+                    android:id="@+id/radioButtonDoneEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/radioButtonDoingEdit"
+                    android:layout_below="@+id/radioButtonDoingEdit"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/rg_done"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/txtEditTimeSelected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView24"
+                android:layout_below="@+id/textView24"
+                android:layout_marginTop="11dp"
+                android:text="--:--"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/txtEditDateSelected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--/--/----"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="20sp"
+                android:layout_below="@+id/textView22"
+                android:layout_toEndOf="@+id/imageView13"
+                android:layout_marginTop="8dp"/>
+
+            <EditText
+                android:id="@+id/txtResponsibleEdit"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mapViewLocationEdit"
+                android:layout_toEndOf="@+id/textView6"
+                android:gravity="center_horizontal"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="12/12/1212 @ 12:12"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+            <FrameLayout
+                android:id="@+id/place_autocomplete_fragment_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/progressBarStateEdit"
+                android:layout_alignParentStart="true"/>
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapViewLocationEdit"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/place_autocomplete_fragment_edit"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/txtResponsibleEdit"
+                android:layout_alignTop="@+id/txtResponsibleEdit"
+                android:layout_toEndOf="@+id/imgExpiration"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/note_responsible"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imgExpiration"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignBottom="@+id/textView6"
+                android:layout_alignTop="@+id/textView6"
+                android:scaleType="fitCenter"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/expirationtime32"/>
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
 
 
 </RelativeLayout>
