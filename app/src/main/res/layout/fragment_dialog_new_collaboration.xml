@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="10dp"
-        app:srcCompat="@drawable/collaboration_icon"
+        app:srcCompat="@drawable/note_icon"
         android:layout_below="@+id/lblTitleNewCollab"
         android:layout_alignStart="@+id/lblTitleNewCollab"/>
 

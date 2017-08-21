@@ -77,9 +77,9 @@ public class CollaborationFragment extends Fragment {
         notesList = (ListView) rootView.findViewById(R.id.notesListView);
 
         drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Connect"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Fixtures"));
-        drawerItem.add(new DataModel(R.drawable.collaboration_icon, "Table"));
+        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
+        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
+        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, drawerItem);
         notesList.setAdapter(adapter);
         notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
@@ -93,7 +93,7 @@ public class CollaborationFragment extends Fragment {
         else
         {
             //VALUE RECEIVED FROM FRAGMENT CREATE NOTE
-            drawerItem.add(new DataModel(R.drawable.note_icon, "New Note"));
+            drawerItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
         }
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
@@ -123,32 +123,22 @@ public class CollaborationFragment extends Fragment {
     }
 
     private void selectItem(int position, String itemName) {
-
-        Fragment openNoteFragment = null;
+        Fragment openNoteFragment = new NoteFragment();
         Bundle fragmentArgument = new Bundle();
-        openNoteFragment = new NoteFragment();
         fragmentArgument.putString("collabName", collabname);
-
         openNoteFragment.setArguments(fragmentArgument);
         changeFragment(openNoteFragment);
     }
 
-
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
-
-            FragmentManager fragmentManager2 = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
+            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.addToBackStack("xyz");
             fragmentTransaction2.hide(CollaborationFragment.this);
-            //fragmentTransaction2.add(android.R.id.content, fragment);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
-
-
         } else {
             Log.e("MainActivity", "Error in creating fragment");
         }
     }
-
 }
