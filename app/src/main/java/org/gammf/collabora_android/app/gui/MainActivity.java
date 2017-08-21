@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LoginFragment fragment = new LoginFragment();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
         group = new ArrayList<String>();
         group.add("Group 1");
         group.add("Group 2");
