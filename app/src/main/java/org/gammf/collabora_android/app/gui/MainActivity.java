@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -153,8 +154,10 @@ public class MainActivity extends AppCompatActivity
 
 
         expandableListDetail = new HashMap<>();
-        expandableListDetail.put("GROUP", group);
-        expandableListDetail.put("PROJECT", project);
+        Resources res = getResources();
+        res.getString(R.string.rg_group);
+        expandableListDetail.put(res.getString(R.string.groups_drawer), group);
+        expandableListDetail.put(res.getString(R.string.project_drawer), project);
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListCollaborations);
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
@@ -412,10 +415,8 @@ public class MainActivity extends AppCompatActivity
             expandableListView.collapseGroup(i);
         }
         if(collabType.equals("Group")) {
-            Log.e("", "dentro a group");
             group.add(collabName);
         }else if(collabType.equals("Project")) {
-            Log.e("", "dentro a project");
             project.add(collabName);
         }
 
@@ -436,7 +437,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         Context context = getApplicationContext();
-        CharSequence text = "Collaboration created!";
+        CharSequence text = ""+collabType+" created!";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);

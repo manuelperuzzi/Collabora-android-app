@@ -55,7 +55,9 @@
     <string name="dialog_cancelcollab">Cancel</string>
 
     <!-- Main Activity -->
-    <string name="collaborations_drawer">Collaborations</string>
+    <string name="collaborations_drawer">COLLABORATIONS</string>
+    <string name="groups_drawer">GROUPS</string>
+    <string name="project_drawer">PROJECTS</string>
 
     <!-- Collaboration Fragment -->
     <string name="title_listviewnotes">Notes</string>

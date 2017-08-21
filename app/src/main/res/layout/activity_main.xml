@@ -45,16 +45,6 @@
                 android:layout_height="45dp"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/collaboration32"/>
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="@string/collaborations_drawer"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:textSize="20sp"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/imageView11"/>
 
             <ImageButton
                 android:id="@+id/btnAddCollaborations"
@@ -68,6 +58,18 @@
                 android:paddingEnd="5dp"
                 android:tint="@color/colorPrimary"
                 app:srcCompat="@android:drawable/ic_input_add"/>
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/imageView11"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="@string/collaborations_drawer"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:textSize="16sp"/>
 
         </RelativeLayout>
 
