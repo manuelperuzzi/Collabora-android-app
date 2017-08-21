@@ -28,7 +28,7 @@ public class CollaborationFragment extends Fragment {
     Bundle arguments;
     TextView label;
     FloatingActionButton btnAddNote;
-    String collabname;
+    String collabname, collabtype;
     ListView notesList;
     ArrayList<DataModel> drawerItem;
 
@@ -89,6 +89,8 @@ public class CollaborationFragment extends Fragment {
         {
             //VALUE RECEIVED FROM DRAWER SELECTION
             collabname =  getArguments().getString("collabName");
+            collabtype = getArguments().getString("collabType");
+
         }
         else
         {

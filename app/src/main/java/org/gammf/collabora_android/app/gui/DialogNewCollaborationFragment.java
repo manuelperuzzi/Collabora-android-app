@@ -103,10 +103,10 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                         }else {
                             int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
                             if (selectedId == radioButtonProject.getId()) {
-                                collabType = "To-do";
+                                collabType = "Project";
                                 Log.e("", collabType);
                             } else if (selectedId == radioButtonGroup.getId()) {
-                                collabType = "Doing";
+                                collabType = "Group";
                                 Log.e("", collabType);
                             }
                             inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
