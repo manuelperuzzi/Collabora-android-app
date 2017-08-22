@@ -3,7 +3,6 @@ package org.gammf.collabora_android.app.gui;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -29,8 +33,15 @@ public class CollaborationFragment extends Fragment {
     TextView label;
     FloatingActionButton btnAddNote;
     String collabname, collabtype;
-    ListView notesList;
-    ArrayList<DataModel> drawerItem;
+    ListView notesList, moduleList;
+    ArrayList<DataModel> noteItems, moduleItems;
+
+    ExpandableListView expandableListView;
+    ExpandableListAdapter expandableListAdapter;
+    List<String> expandableListTitle;
+    List<String> group;
+    List<String> project;
+    HashMap<String, List<String>> expandableListDetail;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -74,16 +85,6 @@ public class CollaborationFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
 
-        notesList = (ListView) rootView.findViewById(R.id.notesListView);
-
-        drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, drawerItem);
-        notesList.setAdapter(adapter);
-        notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
-
         Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
         if(getValue)
         {
@@ -95,8 +96,44 @@ public class CollaborationFragment extends Fragment {
         else
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            drawerItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
+            noteItems.add(new DataModel(R.drawable.note_icon, "New Note Content"));
         }
+
+/*
+        notesList = rootView.findViewById(R.id.notesListView);
+        noteItems = new ArrayList<>();
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
+        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
+        notesList.setAdapter(noteListAdapter);
+        notesList.setOnItemClickListener(new ListItemClickListener());
+
+        moduleList = rootView.findViewById(R.id.modulesListView);
+        moduleItems = new ArrayList<>();
+        moduleItems.add(new DataModel(R.drawable.note_icon, "Module 1", true));
+        moduleItems.add(new DataModel(R.drawable.note_icon, "Module 2", true));
+        moduleItems.add(new DataModel(R.drawable.note_icon, "Module 3", true));
+        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
+        moduleList.setAdapter(moduleListAdapter);
+        moduleList.setOnItemClickListener(new ListItemClickListener());
+*/
+
+        group = new ArrayList<String>();
+        group.add("Group 1");
+        group.add("Group 2");
+        group.add("Group 3");
+        group.add("Group 4");
+        group.add("Group 5");
+
+        project = new ArrayList<String>();
+        project.add("Project 1");
+        project.add("Project 2");
+        project.add("Project 3");
+        project.add("Project 4");
+        project.add("Project 5");
+
+
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,22 +151,29 @@ public class CollaborationFragment extends Fragment {
         return rootView;
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+    private class ListItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName.getName());
+            selectItem(position, listName);
         }
 
     }
 
-    private void selectItem(int position, String itemName) {
-        Fragment openNoteFragment = new NoteFragment();
+    private void selectItem(int position, DataModel itemSelected) {
+        Fragment openFragment = null;
         Bundle fragmentArgument = new Bundle();
         fragmentArgument.putString("collabName", collabname);
-        openNoteFragment.setArguments(fragmentArgument);
-        changeFragment(openNoteFragment);
+        if(itemSelected.getIfIsModule()){
+            openFragment = new ModuleFragment();
+            fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
+            fragmentArgument.putString("moduleName", itemSelected.getName());
+        }else{
+            openFragment = new NoteFragment();
+        }
+        openFragment.setArguments(fragmentArgument);
+        changeFragment(openFragment);
     }
 
     private void changeFragment(Fragment fragment){

@@ -89,11 +89,11 @@ public class MainActivity extends AppCompatActivity
 
       /* mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
-        adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
+        noteItems = new ArrayList<DataModel>();
+        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
+        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
+        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
+        adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, noteItems);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 */

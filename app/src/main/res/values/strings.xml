@@ -60,7 +60,8 @@
     <string name="project_drawer">PROJECTS</string>
 
     <!-- Collaboration Fragment -->
-    <string name="title_listviewnotes">Notes</string>
+    <string name="title_noteslist">Notes</string>
+    <string name="title_modulelist">Module</string>
 
     <!-- Create Note Fragment -->
     <string name="newnote_title">Create a new note</string>

@@ -23,26 +23,98 @@
         app:layout_constraintRight_toRightOf="parent"
         app:srcCompat="@drawable/addicon"/>
 
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/layoutModules"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
     <RelativeLayout
-        android:layout_width="642dp"
-        android:layout_height="914dp"
+        android:id="@+id/layoutModules2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintLeft_toLeftOf="parent">
+        <TextView
+            android:id="@+id/labelModule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
 
+            android:padding="10dp"
+            android:paddingStart="0dp"
+            android:text="@string/title_modulelist"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+
+        <ListView
+            android:id="@+id/modulesListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/labelModule"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutNote2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_below="@+id/layoutModules2"
+        android:orientation="vertical">
         <TextView
             android:id="@+id/label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:paddingStart="0dp"
-            android:text="@string/title_listviewnotes"
+            android:text="@string/title_noteslist"
             android:textColor="@android:color/black"
             android:textSize="22sp"
             android:textStyle="bold"/>
