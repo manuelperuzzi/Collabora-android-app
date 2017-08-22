@@ -3,19 +3,28 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,6 +34,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
 
@@ -39,7 +57,7 @@ import static android.content.ContentValues.TAG;
  * Use the {@link EditNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNoteFragment extends Fragment implements PlaceSelectionListener {
+public class EditNoteFragment extends Fragment implements PlaceSelectionListener, OnMapReadyCallback{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,10 +75,15 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private TextView dateViewEdited, timeViewEdited;
     private int yearEdited, monthEdited, dayEdited, hourEdited, minuteEdited;
     private EditText txtContentNoteEdited;
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private CameraPosition cameraPosition;
+    private LatLng newCoordinates;
 
     public EditNoteFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -83,10 +106,59 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.editdone_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_editdone) {
+            String insertedNoteName = txtContentNoteEdited.getText().toString();
+            if(insertedNoteName.equals("")){
+                Resources res = getResources();
+                txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
+            }else {
+                int selectedId = radioGroupNoteStateEdited.getCheckedRadioButtonId();
+                if (selectedId == radioButtonToDoEdited.getId()) {
+                    noteStateEdited = "To-do";
+                    Log.e("", noteStateEdited);
+                } else if (selectedId == radioButtonDoingEdited.getId()) {
+                    noteStateEdited = "Doing";
+                    Log.e("", noteStateEdited);
+                } else if (selectedId == radioButtonDoneEdited.getId()) {
+                    noteStateEdited = "Done";
+                    Log.e("", noteStateEdited);
+                }
+
+                //qui mettere il codice per aggiornare la nota
+                //il nuovo content è in insertedNoteName
+                //nuovo stato in noteStateEdited
+                //le nuove coordinate sono in newCoordinates
+                String newDateExp = dateViewEdited.getText().toString();
+                String newTimeExp = timeViewEdited.getText().toString();
+
+
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -107,31 +179,22 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         radioButtonDoingEdited = rootView.findViewById(R.id.radioButtonDoingEdit);
         radioButtonDoneEdited = rootView.findViewById(R.id.radioButtonDoneEdit);
         radioButtonToDoEdited.setChecked(true);
-        FloatingActionButton btnEditNoteDone = rootView.findViewById(R.id.btnEditNoteDone);
-        btnEditNoteDone.setOnClickListener(new View.OnClickListener() {
+        radioGroupNoteStateEdited.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                String insertedNoteName = txtContentNoteEdited.getText().toString();
-                if(insertedNoteName.equals("")){
-                    Resources res = getResources();
-                    txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
-                }else {
-                    int selectedId = radioGroupNoteStateEdited.getCheckedRadioButtonId();
-                    if (selectedId == radioButtonToDoEdited.getId()) {
-                        noteStateEdited = "To-do";
-                        Log.e("", noteStateEdited);
-                    } else if (selectedId == radioButtonDoingEdited.getId()) {
-                        noteStateEdited = "Doing";
-                        Log.e("", noteStateEdited);
-                    } else if (selectedId == radioButtonDoneEdited.getId()) {
-                        noteStateEdited = "Done";
-                        Log.e("", noteStateEdited);
-                    }
-
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                Log.println(Log.ERROR, "",""+i);
+                int selectedId = radioGroupNoteStateEdited.getCheckedRadioButtonId();
+                String noteState = "";
+                if (selectedId == radioButtonToDoEdited.getId()) {
+                    noteState = "To-do";
+                } else if (selectedId == radioButtonDoingEdited.getId()) {
+                    noteState = "Doing";
+                } else if (selectedId == radioButtonDoneEdited.getId()) {
+                    noteState = "Done";
                 }
-
             }
         });
+        radioButtonToDoEdited.setChecked(true);
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
         yearEdited = calendarEdited.get(Calendar.YEAR);
@@ -198,15 +261,97 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         Log.i(TAG, "Place: " + place.getName());
 
         String placeDetailsStr = place.getName()+"";
+        newCoordinates = place.getLatLng();
               /*  + "\n"
                 + place.getId() + "\n"
                 + place.getLatLng().toString() + "\n"
                 + place.getAddress() + "\n"
                 + place.getAttributions();*/
+
+        updateMap(place.getLatLng());
     }
 
     @Override
     public void onError(Status status) {
         Log.i(TAG, "An error occurred: " + status);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        mapView = view.findViewById(R.id.mapViewLocationEdit);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);//when you already implement OnMapReadyCallback in your fragment
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        googleMap = map;
+        setUpMap();
+    }
+
+    private void setUpMap(){
+        if (mapView != null) {
+            googleMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
+                    .position(new LatLng(44.1390945, 12.2429281)));
+            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            MapsInitializer.initialize(this.getActivity());
+
+            LatLng italy = new LatLng(42.50, 12.50);
+            LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            newCoordinates = coordinates;
+            // Move the camera instantly to Italy with a zoom of 15.
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
+            // Zoom in, animating the camera.
+            googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+            cameraPosition = new CameraPosition.Builder()
+                    .target(coordinates)      // Sets the center of the map to Mountain View
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    return false;
+                }
+            });
+
+
+        }
+    }
+
+    private void updateMap(LatLng newCoordinates){
+        googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
+                .position(newCoordinates));
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+        // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+        cameraPosition = new CameraPosition.Builder()
+                .target(newCoordinates)      // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                return false;
+            }
+        });
     }
 }

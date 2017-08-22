@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,47 +47,11 @@ implements OnMapReadyCallback{
     TextView expiration;
 
     public NoteFragment() {
-        setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.edit_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_edit) {
-            Fragment editNoteFragment = new EditNoteFragment();
-            Bundle fragmentArgument = new Bundle();
-            fragmentArgument.putString("collabName", collabname);
-
-            editNoteFragment.setArguments(fragmentArgument);
-            if(editNoteFragment != null) {
-                getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction2.addToBackStack("xyz");
-                fragmentTransaction2.hide(NoteFragment.this);
-                fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
-                fragmentTransaction2.commit();
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -107,6 +72,26 @@ implements OnMapReadyCallback{
         expiration = rootView.findViewById(R.id.expiration);
 
         setStateProgressBar(lblState.getText().toString());
+
+        FloatingActionButton btnEditNote = rootView.findViewById(R.id.btnEditNote);
+        btnEditNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment editNoteFragment = new EditNoteFragment();
+                Bundle fragmentArgument = new Bundle();
+                fragmentArgument.putString("collabName", collabname);
+
+                editNoteFragment.setArguments(fragmentArgument);
+                if(editNoteFragment != null) {
+                    getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction2.addToBackStack("xyz");
+                    fragmentTransaction2.hide(NoteFragment.this);
+                    fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
+                    fragmentTransaction2.commit();
+                }
+            }
+        });
 
 
         return rootView;
@@ -162,6 +147,8 @@ implements OnMapReadyCallback{
                     return false;
                 }
             });
+
+
 
 
         }

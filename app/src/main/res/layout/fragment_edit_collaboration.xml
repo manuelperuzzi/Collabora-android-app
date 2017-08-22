@@ -76,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:srcCompat="@drawable/collaboration_icon"
+        app:srcCompat="@drawable/note_icon"
         android:layout_below="@+id/lblTitleEditedCollab"
         android:layout_alignStart="@+id/lblTitleEditedCollab"/>
 
@@ -115,8 +115,8 @@
         android:id="@+id/btnCollabEditDone"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
         android:clickable="true"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
