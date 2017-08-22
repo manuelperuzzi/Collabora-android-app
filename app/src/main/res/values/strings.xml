@@ -28,7 +28,7 @@
     </string>
 
     <string name="insufficient_permissions">Insufficient permissions.</string>
-    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_rationales">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
     <string name="settings">Settings</string>
@@ -51,6 +51,37 @@
         <item>Group</item>
         <item>Project</item>
     </string-array>
+    <string name="dialog_createcollab">Create</string>
+    <string name="dialog_cancelcollab">Cancel</string>
+
+    <!-- Main Activity -->
+    <string name="collaborations_drawer">COLLABORATIONS</string>
+    <string name="groups_drawer">GROUPS</string>
+    <string name="project_drawer">PROJECTS</string>
+
+    <!-- Collaboration Fragment -->
+    <string name="title_listviewnotes">Notes</string>
+
+    <!-- Create Note Fragment -->
+    <string name="newnote_title">Create a new note</string>
+    <string name="newnote_state">Set state</string>
+    <string name="newnote_content">Insert content note</string>
+    <string name="newnote_date">Date Expiration</string>
+    <string name="newnote_time">Time Expiration</string>
+    <string name="newnote_location">Search a location for your note</string>
+
+    <!-- Radio Group Note State -->
+    <string name="rg_todo">To-do</string>
+    <string name="rg_doing">Doing</string>
+    <string name="rg_done">Done</string>
+    <string name="rg_project">PROJECT</string>
+    <string name="rg_group">GROUP</string>
+
+    <!-- Note Fragment -->
+    <string name="note_state">State</string>
+    <string name="note_responsible">Responsible</string>
+    <string name="note_expirationdate">Expiration Date</string>
+    <string name="note_location">Location</string>
 
     <!-- Edit collaboration fragment -->
     <string name="editcollab_title">Edit Collaboration</string>
@@ -58,7 +89,7 @@
     <string name="editcollab_member">Members</string>
     <string name="editcollab_btnaddmember">Add member</string>
 
-    <!-- Edit collaboration fragment -->
+    <!-- Edit note fragment -->
     <string name="editnote_title">Edit Note</string>
     <string name="editnote_content">Insert new content</string>
     <string name="editnote_location">Search new location</string>
@@ -69,6 +100,22 @@
     <!-- Error message -->
     <string name="fieldempty">Field Required</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 
 
 </resources>

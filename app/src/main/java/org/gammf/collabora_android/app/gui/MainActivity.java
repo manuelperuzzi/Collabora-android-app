@@ -1,14 +1,17 @@
 package org.gammf.collabora_android.app.gui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -23,8 +26,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -34,12 +40,15 @@ import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
+
 
     private ListView mDrawerList;
     private ArrayList<DataModel> drawerItem;
@@ -49,6 +58,14 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private GeofenceManager geoManager;
 
+
+    ExpandableListView expandableListView;
+    ExpandableListAdapter expandableListAdapter;
+    List<String> expandableListTitle;
+    List<String> group;
+    List<String> project;
+    HashMap<String, List<String>> expandableListDetail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +73,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        group = new ArrayList<String>();
+        group.add("Group 1");
+        group.add("Group 2");
+        group.add("Group 3");
+        group.add("Group 4");
+        group.add("Group 5");
+
+        project = new ArrayList<String>();
+        project.add("Project 1");
+        project.add("Project 2");
+        project.add("Project 3");
+        project.add("Project 4");
+        project.add("Project 5");
+
+      /* mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         drawerItem = new ArrayList<DataModel>();
         drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
@@ -65,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -82,17 +113,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Fragment createCollaborationFragment = new CreateCollaborationFragment();
-                if (createCollaborationFragment != null) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, createCollaborationFragment).commit();
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                }
+                showNoticeDialog();
 
             }
         });
-
 
 
         final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
@@ -127,17 +151,41 @@ public class MainActivity extends AppCompatActivity
 
 
         */
-    }
 
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        expandableListDetail = new HashMap<>();
+        Resources res = getResources();
+        res.getString(R.string.rg_group);
+        expandableListDetail.put(res.getString(R.string.groups_drawer), group);
+        expandableListDetail.put(res.getString(R.string.project_drawer), project);
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName.getName());
-        }
-
+        expandableListView = (ExpandableListView) findViewById(R.id.expandableListCollaborations);
+        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+        for(int i=0; i < expandableListAdapter.getGroupCount(); i++)
+            expandableListView.expandGroup(i);
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                final String listName =
+                        expandableListDetail.get(
+                        expandableListTitle.get(groupPosition)).get(childPosition);
+                selectItem(groupPosition, listName);
+                /*
+                Toast.makeText(
+                        getApplicationContext(),
+                        expandableListTitle.get(groupPosition)
+                                + " -> "
+                                + expandableListDetail.get(
+                                expandableListTitle.get(groupPosition)).get(
+                                childPosition), Toast.LENGTH_SHORT
+                ).show();
+                */
+                return false;
+            }
+        });
     }
 
     private void selectItem(int position, String itemName) {
@@ -153,8 +201,8 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
+          //  mDrawerList.setItemChecked(position, true);
+          //  mDrawerList.setSelection(position);
             setTitle(itemName);
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
@@ -180,10 +228,6 @@ public class MainActivity extends AppCompatActivity
         if(sender instanceof EditCollaborationFragment){
             // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
 
-        }else if(sender instanceof CreateCollaborationFragment) {
-            //bisogna aggiungere la nuova collab alla lista
-            adapter.add(new DataModel(R.drawable.collaboration32, collabname));
-            adapter.notifyDataSetChanged();
         }
 
         Fragment fragment = new CollaborationFragment();
@@ -361,6 +405,60 @@ public class MainActivity extends AppCompatActivity
                         });
             }
         }
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
+
+
+        for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
+            expandableListView.collapseGroup(i);
+        }
+        if(collabType.equals("Group")) {
+            group.add(collabName);
+        }else if(collabType.equals("Project")) {
+            project.add(collabName);
+        }
+
+
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        Fragment fragment = new CollaborationFragment();
+        Bundle args = new Bundle();
+        args.putString("collabName", collabName);
+        args.putString("collabType", collabType);
+        args.putBoolean("BOOLEAN_VALUE", true);
+        fragment.setArguments(args);
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            setTitle(collabName);
+        }
+
+        Context context = getApplicationContext();
+        CharSequence text = ""+collabType+" created!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Context context = getApplicationContext();
+        CharSequence text = "Creation discarded";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new DialogNewCollaborationFragment();
+        dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
     }
 }
 

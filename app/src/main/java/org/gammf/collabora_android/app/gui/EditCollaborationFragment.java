@@ -79,7 +79,7 @@ public class EditCollaborationFragment extends Fragment {
         memberItem.add(new DataModel(R.drawable.user, "Mario Rossi"));
         memberItem.add(new DataModel(R.drawable.user, "Luca Bianchi"));
         memberItem.add(new DataModel(R.drawable.user, "Giovanni Verdi"));
-        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, memberItem);
+        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
 
         btnAddMember.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +97,8 @@ public class EditCollaborationFragment extends Fragment {
             public void onClick(View view) {
                 String newName = txtNewTitle.getText().toString();
                 if(newName.equals("")) {
+                    //si torna al fragment precedente aggiornando il nome della collaboration
+                    //qui aggiungere il codice per aggiornare anche il server sui cambiamenti
                     CollaborationFragment collabFragment = new CollaborationFragment();
                     Bundle args = new Bundle();
                     args.putBoolean("BOOLEAN_VALUE", false);
