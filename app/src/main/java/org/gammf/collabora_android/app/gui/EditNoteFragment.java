@@ -78,6 +78,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private MapView mapView;
     private GoogleMap googleMap;
     private CameraPosition cameraPosition;
+    private LatLng newCoordinates;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -144,6 +145,14 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                     noteStateEdited = "Done";
                     Log.e("", noteStateEdited);
                 }
+
+                //qui mettere il codice per aggiornare la nota
+                //il nuovo content è in insertedNoteName
+                //nuovo stato in noteStateEdited
+                //le nuove coordinate sono in newCoordinates
+                String newDateExp = dateViewEdited.getText().toString();
+                String newTimeExp = timeViewEdited.getText().toString();
+
 
             }
             return true;
@@ -252,6 +261,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         Log.i(TAG, "Place: " + place.getName());
 
         String placeDetailsStr = place.getName()+"";
+        newCoordinates = place.getLatLng();
               /*  + "\n"
                 + place.getId() + "\n"
                 + place.getLatLng().toString() + "\n"
@@ -295,6 +305,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
 
             LatLng italy = new LatLng(42.50, 12.50);
             LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            newCoordinates = coordinates;
             // Move the camera instantly to Italy with a zoom of 15.
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
             // Zoom in, animating the camera.

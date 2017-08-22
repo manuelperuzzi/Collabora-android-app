@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private LoginActivity.UserLoginTask mAuthTask = null;
+   // private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -82,7 +82,7 @@ public class LoginFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    //attemptLogin();
                     return true;
                 }
                 return false;
@@ -93,7 +93,7 @@ public class LoginFragment extends Fragment {
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                //attemptLogin();
             }
         });
 
@@ -107,7 +107,7 @@ public class LoginFragment extends Fragment {
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
-     */
+
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -150,11 +150,12 @@ public class LoginFragment extends Fragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-          /*  mAuthTask = new LoginActivity.UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-            */
+          // mAuthTask = new LoginActivity.UserLoginTask(email, password);
+           // mAuthTask.execute((Void) null);
+
         }
     }
+
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
@@ -165,10 +166,10 @@ public class LoginFragment extends Fragment {
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
-
+*/
     /**
      * Shows the progress UI and hides the login form.
-     */
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -201,4 +202,5 @@ public class LoginFragment extends Fragment {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+    */
 }

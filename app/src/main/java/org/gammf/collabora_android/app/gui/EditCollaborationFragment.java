@@ -97,6 +97,8 @@ public class EditCollaborationFragment extends Fragment {
             public void onClick(View view) {
                 String newName = txtNewTitle.getText().toString();
                 if(newName.equals("")) {
+                    //si torna al fragment precedente aggiornando il nome della collaboration
+                    //qui aggiungere il codice per aggiornare anche il server sui cambiamenti
                     CollaborationFragment collabFragment = new CollaborationFragment();
                     Bundle args = new Bundle();
                     args.putBoolean("BOOLEAN_VALUE", false);

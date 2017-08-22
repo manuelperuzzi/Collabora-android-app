@@ -94,7 +94,7 @@ public class CollaborationFragment extends Fragment {
         }
         else
         {
-            //VALUE RECEIVED FROM FRAGMENT CREATE NOTE
+            //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
             drawerItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
         }
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);

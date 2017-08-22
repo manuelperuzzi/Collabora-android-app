@@ -73,10 +73,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        LoginFragment fragment = new LoginFragment();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
         group = new ArrayList<String>();
         group.add("Group 1");
         group.add("Group 2");
@@ -413,8 +409,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
-     //   adapter.add(new DataModel(R.drawable.collaboration32, collabName));
-     //   adapter.notifyDataSetChanged();
+
+
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
             expandableListView.collapseGroup(i);
         }
