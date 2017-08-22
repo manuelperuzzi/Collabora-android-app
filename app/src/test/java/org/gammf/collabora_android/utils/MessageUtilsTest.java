@@ -7,6 +7,7 @@ import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdate
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
@@ -59,16 +60,16 @@ public class MessageUtilsTest {
                                                    .put("collaborationId", "id");
 
             Message message = MessageUtils.jsonToUpdateMessage(jsn);
-            /*if(jsn.has("messageType")) {
-                NotificationMessage notificationMessage = (NotificationMessage)message;
-                assertEquals(notificationMessage.getUsername(), "peru");
-                assertEquals(notificationMessage.getNote().getExpirationDate(), new DateTime(772408800000L));
-                assertEquals(notificationMessage.getNote().getState().getCurrentState(), "doing");
-                assertEquals(notificationMessage.getNotificationType(), UpdateMessageType.CREATION.name());
-                assertEquals(notificationMessage.getNote().getLocation().getLongitude(), 53.21, 0.000001);
+            if(jsn.has("messageType")) {
+                NoteUpdateMessage updateMessage = (NoteUpdateMessage) message;
+                assertEquals(updateMessage.getUsername(), "peru");
+                assertEquals(updateMessage.getNote().getExpirationDate(), new DateTime(772408800000L));
+                assertEquals(updateMessage.getNote().getState().getCurrentState(), "doing");
+                assertEquals(updateMessage.getUpdateType().name(), UpdateMessageType.CREATION.name());
+                assertEquals(updateMessage.getNote().getLocation().getLongitude(), 53.21, 0.000001);
             } else {
                 fail();
-            }*/
+            }
 
         } catch (JSONException e) {
             fail();
