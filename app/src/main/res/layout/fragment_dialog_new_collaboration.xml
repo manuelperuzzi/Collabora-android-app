@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:layout_marginStart="9dp"
-        app:srcCompat="@drawable/note_icon"
+        app:srcCompat="@drawable/collaboration32"
         android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"/>
 
@@ -118,7 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/imageView8"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="15dp"
         android:text="New Collaboration"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 

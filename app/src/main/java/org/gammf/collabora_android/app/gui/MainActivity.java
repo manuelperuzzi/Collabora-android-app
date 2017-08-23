@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     private List<String> expandableListTitle;
     private List<String> group;
     private List<String> project;
+    private List<String> personal;
     private HashMap<String, List<String>> expandableListDetail;
     private Resources res;
 
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        personal = new ArrayList<String>();
+        personal.add("My List");
 
         group = new ArrayList<String>();
         group.add("Group 1");
@@ -87,17 +91,6 @@ public class MainActivity extends AppCompatActivity
         project.add("Project 3");
         project.add("Project 4");
         project.add("Project 5");
-
-      /* mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        noteItems = new ArrayList<DataModel>();
-        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
-        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
-        noteItems.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
-        adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, noteItems);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -157,6 +150,7 @@ public class MainActivity extends AppCompatActivity
         expandableListDetail = new HashMap<>();
         res = getResources();
         res.getString(R.string.rg_group);
+        expandableListDetail.put(res.getString(R.string.personal_drawer), personal);
         expandableListDetail.put(res.getString(R.string.groups_drawer), group);
         expandableListDetail.put(res.getString(R.string.project_drawer), project);
 
@@ -461,6 +455,9 @@ public class MainActivity extends AppCompatActivity
         DialogFragment dialog = new DialogNewCollaborationFragment();
         dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
     }
+
+
+
 }
 
 

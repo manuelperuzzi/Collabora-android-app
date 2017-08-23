@@ -32,19 +32,11 @@ import java.util.List;
  */
 public class CollaborationFragment extends Fragment {
 
-    Bundle arguments;
-    TextView label;
-    FloatingActionButton btnAddNote;
-    String collabname, collabtype;
-    ListView notesList, moduleList;
-    ArrayList<DataModel> noteItems, moduleItems;
+    private FloatingActionButton btnAddNote;
+    private String collabname, collabtype;
+    private ListView notesList, moduleList;
+    private ArrayList<DataModel> noteItems, moduleItems;
 
-    ExpandableListView expandableListView;
-    ExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    List<String> group;
-    List<String> project;
-    HashMap<String, List<String>> expandableListDetail;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -87,13 +79,36 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
+        moduleItems = new ArrayList<>();
+        noteItems = new ArrayList<>();
+        TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        tabHost.setup();
 
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("Firts Tab Tag");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab Tag");
+// Set the Tab name and Activity
+        // that will be opened when particular Tab will be selected
+
+        Resources res = getResources();
+        tab1.setIndicator(res.getString(R.string.title_modulelist));
+        tab1.setContent(R.id.i_layout_2);
+
+        tab2.setIndicator(res.getString(R.string.title_noteslist));
+        tab2.setContent(R.id.i_layout_1);
+/** Add the tabs  to the TabHost to display. */
+
+        if(collabtype.equals(res.getString(R.string.project_drawer)))
+            tabHost.addTab(tab1);
+
+        tabHost.addTab(tab2);
         Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
         if(getValue)
         {
             //VALUE RECEIVED FROM DRAWER SELECTION
             collabname =  getArguments().getString("collabName");
             collabtype = getArguments().getString("collabType");
+            if(collabtype.equals(res.getString(R.string.project_drawer)))
+                tabHost.addTab(tab1);
             Log.println(Log.ERROR,"ERRORONE", ""+collabtype);
 
         }
@@ -105,7 +120,7 @@ public class CollaborationFragment extends Fragment {
 
 
         notesList = rootView.findViewById(R.id.notesListView);
-        noteItems = new ArrayList<>();
+
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
@@ -114,32 +129,12 @@ public class CollaborationFragment extends Fragment {
         notesList.setOnItemClickListener(new ListItemClickListener());
 
         moduleList = rootView.findViewById(R.id.modulesListView);
-        moduleItems = new ArrayList<>();
         moduleItems.add(new DataModel(R.drawable.module32, "Module 1", true));
         moduleItems.add(new DataModel(R.drawable.module32, "Module 2", true));
         moduleItems.add(new DataModel(R.drawable.module32, "Module 3", true));
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(new ListItemClickListener());
-
-        TabHost tabHost = rootView.findViewById(R.id.tabhost);
-        tabHost.setup();
-
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("Firts Tab Tag");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab Tag");
-// Set the Tab name and Activity
-        // that will be opened when particular Tab will be selected
-
-        Resources res = getResources();
-        tab1.setIndicator(res.getString(R.string.title_noteslist));
-        tab1.setContent(R.id.i_layout_1);
-
-        tab2.setIndicator(res.getString(R.string.title_modulelist));
-        tab2.setContent(R.id.i_layout_2);
-/** Add the tabs  to the TabHost to display. */
-        tabHost.addTab(tab1);
-        if(collabtype.equals(res.getString(R.string.project_drawer)))
-            tabHost.addTab(tab2);
 
 
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
@@ -158,12 +153,7 @@ public class CollaborationFragment extends Fragment {
 
         return rootView;
     }
-    private View createTabIndicator(String text) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.tab_indicator, null);
-        TextView textView = (TextView) view.findViewById(R.id.tv_indicator_label);
-        textView.setText(text);
-        return view;
-    }
+
     private class ListItemClickListener implements ListView.OnItemClickListener {
 
         @Override
@@ -200,4 +190,5 @@ public class CollaborationFragment extends Fragment {
             Log.e("MainActivity", "Error in creating fragment");
         }
     }
+
 }
