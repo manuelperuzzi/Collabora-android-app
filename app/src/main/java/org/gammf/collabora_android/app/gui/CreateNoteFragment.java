@@ -26,6 +26,16 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.SendMessageToServerTask;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.notes.Location;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.notes.State;
+import org.joda.time.DateTime;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -47,6 +57,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String COLLABORATION_ID = "COLLABORATION_ID";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,6 +72,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private int year, month, day, hour, minute;
     private EditText txtContentNote;
 
+    private String collaborationId;
     //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
@@ -85,12 +97,25 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         return fragment;
     }
 
+    public static CreateNoteFragment newInstance(String collaborationId) {
+        Bundle arg = new Bundle();
+        arg.putString(COLLABORATION_ID, collaborationId);
+        final CreateNoteFragment fragment = new CreateNoteFragment();
+        fragment.setArguments(arg);
+        Log.i("Async", "DIO E': " + fragment.getArguments().getString(COLLABORATION_ID));
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }*/
+        if(getArguments() != null) {
+            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(COLLABORATION_ID));
+            this.collaborationId = getArguments().getString(COLLABORATION_ID);
         }
     }
 
@@ -132,7 +157,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                         noteState = "Done";
                         Log.e("", noteState);
                     }
-                    addNote();
+                    addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
                 }
 
             }
@@ -170,12 +195,16 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         return rootView;
     }
 
-    private void addNote(){
+    private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
         CollaborationFragment collabFragment = new CollaborationFragment ();
         Bundle args = new Bundle();
         args.putBoolean("BOOLEAN_VALUE",false);
         collabFragment.setArguments(args);
-/*
+
+        final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
+        final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);
+        new SendMessageToServerTask().execute(message);
+        /*
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();*/
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();

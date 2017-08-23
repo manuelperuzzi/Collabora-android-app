@@ -5,7 +5,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTar
 
 /**
  * @author Alfredo Maffi
- * Simple class created to supply handy tricks for the rest of the app
+ * Simple class created to supply handy tricks to the rest of the app
  */
 
 public class CollaboraAppUtils {

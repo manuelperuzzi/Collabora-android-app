@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.app;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -16,7 +17,7 @@ import org.gammf.collabora_android.utils.MessageUtils;
 
 public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Boolean> {
 
-    private static final String BROKER_ADDRESS = "192.168.0.16";
+    private static final String BROKER_ADDRESS = "192.168.1.124";
     private static final String EXCHANGE_NAME = "updates";
 
     @Override
@@ -27,6 +28,9 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
             final Connection connection = factory.newConnection();
             final Channel channel = connection.createChannel();
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
+            Log.e("Async", "Message as parameter: " + messages[0]);
+            Log.e("Async", "CollaborationId is: " + messages[0].getCollaborationId());
+            Log.e("Async", "Message in JSON format:" + MessageUtils.updateMessageToJSON(messages[0]));
             channel.basicPublish(EXCHANGE_NAME, "", null, MessageUtils.updateMessageToJSON(messages[0]).toString().getBytes());
         } catch (final Exception e) {
             return false;
