@@ -2,6 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:layout_margin="10dp"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context="org.gammf.collabora_android.app.gui.DialogNewCollaborationFragment">
 
@@ -31,24 +32,24 @@
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:layout_marginEnd="10dp"
-        android:inputType="text"
-        android:layout_below="@+id/imageView8"
+        android:layout_alignParentEnd="true"
         android:layout_alignStart="@+id/imageView8"
-        android:layout_alignParentEnd="true"/>
+        android:layout_below="@+id/imageView8"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"/>
 
     <ImageView
         android:id="@+id/imageView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="9dp"
         app:srcCompat="@drawable/note_icon"
-        android:layout_below="@+id/lblTitleNewCollab"
-        android:layout_alignStart="@+id/lblTitleNewCollab"/>
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:id="@+id/textView13"
@@ -88,5 +89,37 @@
             android:text="@string/rg_project"/>
 
     </RadioGroup>
+
+    <Button
+        android:id="@+id/btnPositiveAddCollab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        android:text="Create"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@+id/radioGroupCollabType"
+        android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:id="@+id/btnNegativePositiveAddCollab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Cancel"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/btnPositiveAddCollab"
+        android:layout_alignBottom="@+id/btnPositiveAddCollab"
+        android:layout_toStartOf="@+id/btnPositiveAddCollab"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/imageView8"
+        android:layout_marginTop="24dp"
+        android:text="New Collaboration"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
 </RelativeLayout>

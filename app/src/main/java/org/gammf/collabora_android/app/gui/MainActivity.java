@@ -446,16 +446,14 @@ public class MainActivity extends AppCompatActivity
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
+        dialog.dismiss();
+
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Context context = getApplicationContext();
-        CharSequence text = "Creation discarded";
-        int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        dialog.dismiss();
     }
 
     public void showNoticeDialog() {
