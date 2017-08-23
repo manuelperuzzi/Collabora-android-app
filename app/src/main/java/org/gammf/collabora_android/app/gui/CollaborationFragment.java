@@ -97,9 +97,6 @@ public class CollaborationFragment extends Fragment {
         tab2.setContent(R.id.i_layout_1);
 /** Add the tabs  to the TabHost to display. */
 
-        if(collabtype.equals(res.getString(R.string.project_drawer)))
-            tabHost.addTab(tab1);
-
         tabHost.addTab(tab2);
         Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
         if(getValue)
