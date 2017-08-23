@@ -59,12 +59,13 @@ public class MainActivity extends AppCompatActivity
     private GeofenceManager geoManager;
 
 
-    ExpandableListView expandableListView;
-    ExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    List<String> group;
-    List<String> project;
-    HashMap<String, List<String>> expandableListDetail;
+    private ExpandableListView expandableListView;
+    private ExpandableListAdapter expandableListAdapter;
+    private List<String> expandableListTitle;
+    private List<String> group;
+    private List<String> project;
+    private HashMap<String, List<String>> expandableListDetail;
+    private Resources res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity
 
 
         expandableListDetail = new HashMap<>();
-        Resources res = getResources();
+        res = getResources();
         res.getString(R.string.rg_group);
         expandableListDetail.put(res.getString(R.string.groups_drawer), group);
         expandableListDetail.put(res.getString(R.string.project_drawer), project);
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity
                 final String listName =
                         expandableListDetail.get(
                         expandableListTitle.get(groupPosition)).get(childPosition);
-                selectItem(groupPosition, listName);
+                selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
                 /*
                 Toast.makeText(
                         getApplicationContext(),
@@ -188,12 +189,13 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void selectItem(int position, String itemName) {
+    private void selectItem(int position, String itemType, String itemName) {
 
         Fragment fragment = null;
         Bundle fragmentArgument = new Bundle();
         fragment = new CollaborationFragment();
         fragmentArgument.putString("collabName", itemName);
+        fragmentArgument.putString("collabType", itemType);
         fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
 
         fragment.setArguments(fragmentArgument);
@@ -410,25 +412,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
 
+        Fragment fragment = new CollaborationFragment();
+        Bundle args = new Bundle();
+        args.putString("collabName", collabName);
+        args.putBoolean("BOOLEAN_VALUE", true);
 
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
             expandableListView.collapseGroup(i);
         }
         if(collabType.equals("Group")) {
             group.add(collabName);
+            args.putString("collabType", res.getString(R.string.groups_drawer));
         }else if(collabType.equals("Project")) {
             project.add(collabName);
+            args.putString("collabType", res.getString(R.string.project_drawer));
         }
 
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabName);
-        args.putString("collabType", collabType);
-        args.putBoolean("BOOLEAN_VALUE", true);
         fragment.setArguments(args);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
