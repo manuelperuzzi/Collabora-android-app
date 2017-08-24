@@ -1,7 +1,5 @@
 package org.gammf.collabora_android.users;
 
-import org.gammf.collabora_android.users.SimpleUser;
-import org.gammf.collabora_android.users.User;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
