@@ -56,11 +56,13 @@
 
     <!-- Main Activity -->
     <string name="collaborations_drawer">COLLABORATIONS</string>
+    <string name="personal_drawer">PERSONAL LIST</string>
     <string name="groups_drawer">GROUPS</string>
     <string name="project_drawer">PROJECTS</string>
 
     <!-- Collaboration Fragment -->
-    <string name="title_listviewnotes">Notes</string>
+    <string name="title_noteslist">Notes</string>
+    <string name="title_modulelist">Module</string>
 
     <!-- Create Note Fragment -->
     <string name="newnote_title">Create a new note</string>

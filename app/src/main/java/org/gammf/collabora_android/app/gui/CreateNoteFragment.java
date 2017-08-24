@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -26,6 +28,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -39,7 +42,11 @@ import org.joda.time.DateTime;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -63,14 +70,13 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private String mParam1;
     private String mParam2;
     private SupportPlaceAutocompleteFragment autocompleteFragment;
-    private RadioGroup radioGroupNoteState;
-    private RadioButton radioButtonToDo, radioButtonDoing, radioButtonDone;
     private String noteState = "";
     private Calendar calendar;
     private Time clock;
     private TextView dateView, timeView;
     private int year, month, day, hour, minute;
     private EditText txtContentNote;
+    private Spinner spinnerState;
 
     private String collaborationId;
     //  private OnFragmentInteractionListener mListener;
@@ -132,11 +138,15 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
         ft.commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
-        radioGroupNoteState = rootView.findViewById(R.id.radioGroupNoteState);
-        radioButtonToDo = rootView.findViewById(R.id.radioButtonToDo);
-        radioButtonDoing = rootView.findViewById(R.id.radioButtonDoing);
-        radioButtonDone = rootView.findViewById(R.id.radioButtonDone);
-        radioButtonToDo.setChecked(true);
+
+        spinnerState = (Spinner) rootView.findViewById(R.id.spinnerNewNoteState);
+        List<NoteProjectState> stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(NoteProjectState.values()));
+        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerState.setAdapter(dataAdapter);
+
         FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,18 +156,9 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                     Resources res = getResources();
                     txtContentNote.setError(res.getString(R.string.fieldempty));
                 }else {
-                    int selectedId = radioGroupNoteState.getCheckedRadioButtonId();
-                    if (selectedId == radioButtonToDo.getId()) {
-                        noteState = "To-do";
-                        Log.e("", noteState);
-                    } else if (selectedId == radioButtonDoing.getId()) {
-                        noteState = "Doing";
-                        Log.e("", noteState);
-                    } else if (selectedId == radioButtonDone.getId()) {
-                        noteState = "Done";
-                        Log.e("", noteState);
-                    }
+
                     addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
+
                 }
 
             }
