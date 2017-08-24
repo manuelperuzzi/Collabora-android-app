@@ -13,6 +13,11 @@ public class SimpleModuleNote implements ModuleNote {
     private final Note note;
     private final String moduleId;
 
+    /**
+     * Class constructor.
+     * @param note the single note.
+     * @param moduleId the identifier of the module that contains the note.
+     */
     public SimpleModuleNote(final Note note, final String moduleId) {
         this.note = note;
         this.moduleId = moduleId;

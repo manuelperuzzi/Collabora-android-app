@@ -12,6 +12,11 @@ public class CollaborationMember implements User {
     private final User user;
     private final AccessRight accessRight;
 
+    /**
+     * Class constructor.
+     * @param user the user.
+     * @param accessRight the access right of the user.
+     */
     public CollaborationMember(final User user, final AccessRight accessRight) {
         this.user = user;
         this.accessRight = accessRight;

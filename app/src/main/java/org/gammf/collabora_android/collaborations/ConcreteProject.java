@@ -16,6 +16,11 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
 
     private final Set<Module> modules;
 
+    /**
+     * Class constructor.
+     * @param id the identifier of the project.
+     * @param name the name of the project.
+     */
     public ConcreteProject(final String id, final String name) {
         super(id, name);
         modules = new HashSet<>();
