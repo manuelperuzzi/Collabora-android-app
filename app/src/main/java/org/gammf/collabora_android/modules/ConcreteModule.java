@@ -102,8 +102,7 @@ public class ConcreteModule implements Module {
 
         if (!id.equals(that.id)) return false;
         if (!description.equals(that.description)) return false;
-        if (!notes.equals(that.notes)) return false;
-        return state.equals(that.state);
+        return notes.equals(that.notes) && state.equals(that.state);
 
     }
 

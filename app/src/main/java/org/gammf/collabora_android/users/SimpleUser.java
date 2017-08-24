@@ -56,11 +56,11 @@ public class SimpleUser implements User {
 
         SimpleUser that = (SimpleUser) o;
 
-        if (!username.equals(that.username)) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (surname != null ? !surname.equals(that.surname) : that.surname != null) return false;
-        return birthday != null ? birthday.equals(that.birthday) : that.birthday == null;
+        return username.equals(that.username) &&
+                (email != null ? email.equals(that.email) : that.email == null &&
+                (name != null ? name.equals(that.name) : that.name == null &&
+                (surname != null ? surname.equals(that.surname) : that.surname == null &&
+                (birthday != null ? birthday.equals(that.birthday) : that.birthday == null))));
 
     }
 

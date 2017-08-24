@@ -90,8 +90,7 @@ public class SimpleModuleNote implements ModuleNote {
 
         SimpleModuleNote that = (SimpleModuleNote) o;
 
-        if (!note.equals(that.note)) return false;
-        return moduleId.equals(that.moduleId);
+        return note.equals(that.note) && moduleId.equals(that.moduleId);
 
     }
 

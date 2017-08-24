@@ -53,8 +53,7 @@ public class CollaborationMember implements User {
 
         CollaborationMember that = (CollaborationMember) o;
 
-        if (!user.equals(that.user)) return false;
-        return accessRight == that.accessRight;
+        return user.equals(that.user) && accessRight == that.accessRight;
 
     }
 
