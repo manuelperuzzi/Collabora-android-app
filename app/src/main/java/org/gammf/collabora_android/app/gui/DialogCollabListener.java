@@ -7,6 +7,6 @@ import android.support.v4.app.DialogFragment;
  */
 
 public interface DialogCollabListener {
-    void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType);
-    void onDialogNegativeClick(DialogFragment dialog);
+    void onDialogCreateClick(DialogFragment dialog, String collabName, String collabType);
+    void onDialogCancelClick(DialogFragment dialog);
 }

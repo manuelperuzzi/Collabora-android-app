@@ -44,8 +44,8 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
         DataModel folder = data.get(position);
 
-        imageViewIcon.setImageResource(folder.icon);
-        textViewName.setText(folder.name);
+        imageViewIcon.setImageResource(folder.getIcon());
+        textViewName.setText(folder.getName());
 
         return listItem;
     }

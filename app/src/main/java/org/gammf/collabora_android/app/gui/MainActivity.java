@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity
      * @param collabType new collaboration type
      */
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
+    public void onDialogCreateClick(DialogFragment dialog, String collabName, String collabType) {
 
         //close drawer lists, used for update the list.
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
@@ -470,7 +470,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onDialogCancelClick(DialogFragment dialog) {
         dialog.dismiss();
     }
 

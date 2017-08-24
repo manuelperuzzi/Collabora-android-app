@@ -127,6 +127,9 @@ public class EditCollaborationFragment extends Fragment {
     }
 
     private void getMemberAndFillList(){
+
+        //HERE THE CODE FOR GET THE MEMBER LIST
+
         memberItem.add(new DataModel(R.drawable.user, "Mario Rossi"));
         memberItem.add(new DataModel(R.drawable.user, "Luca Bianchi"));
         memberItem.add(new DataModel(R.drawable.user, "Giovanni Verdi"));
@@ -135,6 +138,7 @@ public class EditCollaborationFragment extends Fragment {
     }
 
     private void updateMemberList(){
+
         memberItem.add(new DataModel(R.drawable.user, "New Member"));
         adapter.notifyDataSetChanged();
 

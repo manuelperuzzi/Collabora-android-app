@@ -16,8 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -59,13 +57,12 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
+    private static final String ARG_MODULENAME = "moduleName";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private SupportPlaceAutocompleteFragment autocompleteFragment;
     private String noteState = "";
     private Calendar calendar;
@@ -75,7 +72,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String collabName, collabType, collaborationId;
+    private String sender, collabName, collabType, collaborationId, moduleName;
     //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
@@ -91,11 +88,17 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
      * @param collaborationId collaboration id
      * @return A new instance of fragment CreateNoteFragment.
      */
-    public static CreateNoteFragment newInstance(String collabName, String collabType, String collaborationId) {
+    public static CreateNoteFragment newInstance(String sender,
+                                                 String collabName,
+                                                 String collabType,
+                                                 String collaborationId,
+                                                 String moduleName) {
         Bundle arg = new Bundle();
+        arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABORATION_ID, collaborationId);
         arg.putString(ARG_COLLABNAME, collabName);
         arg.putString(ARG_COLLABTYPE, collabType);
+        arg.putString(ARG_MODULENAME, moduleName);
         final CreateNoteFragment fragment = new CreateNoteFragment();
         fragment.setArguments(arg);
         Log.i("Async", "DIO E': " + fragment.getArguments().getString(ARG_COLLABORATION_ID));
@@ -107,9 +110,11 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
+            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.collabName = getArguments().getString(ARG_COLLABNAME);
             this.collabType = getArguments().getString(ARG_COLLABTYPE);
+            this.moduleName = getArguments().getString(ARG_MODULENAME);
         }
     }
 

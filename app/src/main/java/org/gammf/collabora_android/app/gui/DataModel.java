@@ -5,9 +5,9 @@ package org.gammf.collabora_android.app.gui;
  */
 public class DataModel {
 
-    public int icon;
-    public String name;
-    public boolean isModule;
+    private int icon;
+    private String name;
+    private boolean isModule;
 
     // Constructor for notes.
     public DataModel(int icon, String name) {

@@ -116,7 +116,7 @@ public class CollaborationFragment extends Fragment {
         tabHost.addTab(tab2);
         if(collabtype.equals(res.getString(R.string.project_drawer))) {
             tabHost.addTab(tab1);
-            fillModuleList();
+            fillModulesList();
         }
 
         if(sender.equals("notecreation"))
@@ -126,12 +126,13 @@ public class CollaborationFragment extends Fragment {
             addNewNote();
         }
 
-        fillNoteList();
+        fillNotesList();
 
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Fragment newNoteFragment = CreateNoteFragment.newInstance(collabname,collabtype,"59806a4af27da3fcfe0ac0ca");
+                final Fragment newNoteFragment =
+                        CreateNoteFragment.newInstance("collabfrag", collabname,collabtype,"59806a4af27da3fcfe0ac0ca", "nomodule");
 
                 changeFragment(newNoteFragment);
             }
@@ -141,7 +142,8 @@ public class CollaborationFragment extends Fragment {
     }
 
 
-    private void fillNoteList(){
+    private void fillNotesList(){
+        //HERE THE CODE FOR FILL NOTES LIST
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
         noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
@@ -150,7 +152,8 @@ public class CollaborationFragment extends Fragment {
         notesList.setOnItemClickListener(new ListItemClickListener());
     }
 
-    private void fillModuleList(){
+    private void fillModulesList(){
+        //HERE THE CODE FOR FILL MODULES LIST
         moduleItems.add(new DataModel(R.drawable.module32, "Module 1", true));
         moduleItems.add(new DataModel(R.drawable.module32, "Module 2", true));
         moduleItems.add(new DataModel(R.drawable.module32, "Module 3", true));
@@ -160,6 +163,7 @@ public class CollaborationFragment extends Fragment {
     }
 
     private void addNewNote(){
+        //HERE THE CODE FOR ADD NEW NOTE
         noteItems.add(new DataModel(R.drawable.note_icon, "New Note Content"));
     }
 
@@ -175,16 +179,11 @@ public class CollaborationFragment extends Fragment {
 
     private void selectItem(int position, DataModel itemSelected) {
         Fragment openFragment = null;
-        Bundle fragmentArgument = new Bundle();
-        fragmentArgument.putString("collabName", collabname);
         if(itemSelected.getIfIsModule()){
-            openFragment = ModuleFragment.newInstance();
-            fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
-            fragmentArgument.putString("moduleName", itemSelected.getName());
+            openFragment = ModuleFragment.newInstance("collabfrag", collabname, collabtype, itemSelected.getName());
         }else{
-            openFragment = NoteFragment.newInstance();
+            openFragment = NoteFragment.newInstance("collabfrag",collabname, collabtype, "nomodule", itemSelected.getName());
         }
-        openFragment.setArguments(fragmentArgument);
         changeFragment(openFragment);
     }
 

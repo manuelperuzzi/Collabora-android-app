@@ -36,35 +36,53 @@ import org.gammf.collabora_android.app.R;
 public class NoteFragment extends Fragment
 implements OnMapReadyCallback{
 
-    TextView contentNote;
-    String collabname;
-    ProgressBar progressBarState;
-    TextView lblState;
-    TextView lblResponsible;
-    MapView mapView;
-    GoogleMap googleMap;
-    CameraPosition cameraPosition;
-    TextView expiration;
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABNAME = "collabName";
+    private static final String ARG_COLLABTYPE = "collabType";
+    private static final String ARG_MODULENAME = "moduleName";
+    private static final String ARG_NOTENAME = "noteName";
+
+    private TextView contentNote;
+    private String sender, collabname, collabtype, modulename, notename;
+    private ProgressBar progressBarState;
+    private TextView lblState;
+    private TextView lblResponsible;
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private CameraPosition cameraPosition;
+    private TextView expiration;
 
     public NoteFragment() {
     }
 
-    public static NoteFragment newInstance() {
+    public static NoteFragment newInstance(String sender, String collabName, String collabType, String moduleName, String noteName) {
         NoteFragment fragment = new NoteFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SENDER, sender);
+        args.putString(ARG_COLLABNAME, collabName);
+        args.putString(ARG_COLLABTYPE, collabType);
+        args.putString(ARG_MODULENAME, moduleName);
+        args.putString(ARG_NOTENAME, noteName);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collabname = getArguments().getString(ARG_COLLABNAME);
+            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
+            this.modulename = getArguments().getString(ARG_MODULENAME);
+            this.notename = getArguments().getString(ARG_NOTENAME);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_note, container, false);
-        Bundle bundle = getArguments();
-        collabname =  bundle.getString("collabName");
 
         contentNote = rootView.findViewById(R.id.contentNote);
         contentNote.setText("Content note will be there, scrivo qualcosa per farlo andare su due linee");

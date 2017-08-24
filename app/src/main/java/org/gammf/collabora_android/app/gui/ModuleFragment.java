@@ -24,8 +24,13 @@ import java.util.ArrayList;
  */
 public class ModuleFragment extends Fragment {
 
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABNAME = "collabName";
+    private static final String ARG_COLLABTYPE = "collabType";
+    private static final String ARG_MODULENAME = "moduleName";
+
     private FloatingActionButton btnAddNoteModule;
-    private String collabName, moduleName;
+    private String sender, collabname, collabtype, moduleName;
     private ListView moduleNotesList;
     private ArrayList<DataModel> listItem;
 
@@ -39,14 +44,26 @@ public class ModuleFragment extends Fragment {
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static ModuleFragment newInstance() {
+    public static ModuleFragment newInstance(String sender, String collabName, String collabType, String moduleName) {
         ModuleFragment fragment = new ModuleFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SENDER, sender);
+        args.putString(ARG_COLLABNAME, collabName);
+        args.putString(ARG_COLLABTYPE, collabType);
+        args.putString(ARG_MODULENAME, moduleName);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collabname = getArguments().getString(ARG_COLLABNAME);
+            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
+            this.moduleName = getArguments().getString(ARG_MODULENAME);
+        }
     }
 
     @Override
@@ -64,29 +81,17 @@ public class ModuleFragment extends Fragment {
         moduleNotesList.setAdapter(adapter);
         moduleNotesList.setOnItemClickListener(new ModuleFragment.DrawerItemClickListener());
 
-        Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
-        if(getValue)
-        {
-            //VALUE RECEIVED FROM COLLABORATION FRAGMENT
-            collabName =  getArguments().getString("collabName");
-            moduleName = getArguments().getString("moduleName");
-
-        }
-        else
+        if(sender.equals("notecreation"))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
             listItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
         }
+
         btnAddNoteModule = (FloatingActionButton) rootView.findViewById(R.id.btnAddNoteInModule);
         btnAddNoteModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newNoteFragment = null;
-                Bundle fragmentArgument = new Bundle();
-                newNoteFragment = new CreateNoteFragment();
-                fragmentArgument.putString("collabName", moduleName);
-
-                newNoteFragment.setArguments(fragmentArgument);
+                Fragment newNoteFragment = CreateNoteFragment.newInstance("modulefrag", collabname, collabtype, "fintocollabid", moduleName);
                 changeFragment(newNoteFragment);
             }
         });

@@ -88,7 +88,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                     inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                    mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
+                    mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);
 
                 }else {
                     //if it's not empty, get the collabtype
@@ -102,7 +102,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                     }
                     inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                     //and send the info to MainActivity
-                    mListener.onDialogPositiveClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
+                    mListener.onDialogCreateClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
                 }
             }
         });
@@ -120,7 +120,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
                 inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
+                mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);
             }
         });
 
