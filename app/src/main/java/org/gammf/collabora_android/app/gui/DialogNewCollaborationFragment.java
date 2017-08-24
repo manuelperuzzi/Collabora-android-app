@@ -1,10 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -49,12 +46,9 @@ public class DialogNewCollaborationFragment extends DialogFragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      */
-    // TODO: Rename and change types and number of parameters
     public static DialogNewCollaborationFragment newInstance() {
         DialogNewCollaborationFragment fragment = new DialogNewCollaborationFragment();
-
         return fragment;
     }
 
@@ -73,19 +67,20 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         radioButtonGroup = rootView.findViewById(R.id.radioButtonGroup);
         radioButtonProject = rootView.findViewById(R.id.radioButtonProject);
         radioButtonGroup.setChecked(true);
-
-
         inputMethodManager =
                 (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
-
         btnPositiveClick = rootView.findViewById(R.id.btnPositiveAddCollab);
+
+        //CLICK ON CREATE BUTTON
         btnPositiveClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //getting the collabName
                 String insertedNoteName = txtCollabName.getText().toString();
                 String collabType = "";
+                //check if collabName is empty
                 if(insertedNoteName.equals("")){
                     Context context = getActivity().getApplicationContext();
                     CharSequence text = "Creation failed: name not inserted!";
@@ -96,6 +91,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                     mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
 
                 }else {
+                    //if it's not empty, get the collabtype
                     int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
                     if (selectedId == radioButtonProject.getId()) {
                         collabType = "Project";
@@ -105,12 +101,14 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                         Log.e("", collabType);
                     }
                     inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+                    //and send the info to MainActivity
                     mListener.onDialogPositiveClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
                 }
             }
         });
 
         btnNegativeClick = rootView.findViewById(R.id.btnNegativePositiveAddCollab);
+        //CANCEL CLICK EVENT
         btnNegativeClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,61 +129,9 @@ public class DialogNewCollaborationFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
-
-        // Use the Builder class for convenient dialog construction
-        /*
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_dialog_new_collaboration, null);
-        txtCollabName = view.findViewById(R.id.txtInsertCollabNameD);
-        radioGroupCollabType = view.findViewById(R.id.radioGroupCollabType);
-        radioButtonGroup = view.findViewById(R.id.radioButtonGroup);
-        radioButtonProject = view.findViewById(R.id.radioButtonProject);
-        radioButtonGroup.setChecked(true);
-
-
-        builder.setView(view)
-                .setMessage(R.string.collabfrag_title)
-                .setPositiveButton(R.string.dialog_createcollab, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String insertedNoteName = txtCollabName.getText().toString();
-                        String collabType = "";
-                        if(insertedNoteName.equals("")){
-                            Context context = getActivity().getApplicationContext();
-                            CharSequence text = "Creation failed: name not inserted!";
-                            int duration = Toast.LENGTH_LONG;
-                            Toast toast = Toast.makeText(context, text, duration);
-                            toast.show();
-                            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                        }else {
-                            int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
-                            if (selectedId == radioButtonProject.getId()) {
-                                collabType = "Project";
-                                Log.e("", collabType);
-                            } else if (selectedId == radioButtonGroup.getId()) {
-                                collabType = "Group";
-                                Log.e("", collabType);
-                            }
-                            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                            mListener.onDialogPositiveClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
-                        }
-
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancelcollab, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                        mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
-                    }
-                });
-        // Create the AlertDialog object and return it
-        return builder.create();
-        */
     }
 
     @Override

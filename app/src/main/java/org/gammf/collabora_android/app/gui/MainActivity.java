@@ -421,6 +421,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Used for ADD NEW COLLABORATION
+     * TRIGGERED FROM DIALOGNEWCOLLAB ON CREATE BUTTON CLICK
      *
      * @param dialog dialog that have triggered this method
      * @param collabName new collaboration name
@@ -479,7 +480,7 @@ public class MainActivity extends AppCompatActivity
 
     public void showNoticeDialog() {
         // Create an instance of the dialog fragment and show it
-        DialogFragment dialog = new DialogNewCollaborationFragment();
+        DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
         dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
     }
 
