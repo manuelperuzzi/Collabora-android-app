@@ -100,11 +100,8 @@ implements OnMapReadyCallback{
         btnEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment editNoteFragment = new EditNoteFragment();
-                Bundle fragmentArgument = new Bundle();
-                fragmentArgument.putString("collabName", collabname);
+                Fragment editNoteFragment = EditNoteFragment.newInstance("notefrag",collabname,collabtype,modulename, notename);
 
-                editNoteFragment.setArguments(fragmentArgument);
                 if(editNoteFragment != null) {
                     getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
