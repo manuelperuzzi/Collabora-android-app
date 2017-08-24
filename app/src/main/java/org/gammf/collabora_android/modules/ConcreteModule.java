@@ -20,6 +20,12 @@ public class ConcreteModule implements Module {
     private final Set<ModuleNote> notes;
     private String state;
 
+    /**
+     * Class constructor.
+     * @param id the identifier of the module.
+     * @param description the description of the module.
+     * @param state the state definition of the module.
+     */
     public ConcreteModule(final String id, final String description, final String state) {
         this.id = id;
         this.description = description;
@@ -102,8 +108,7 @@ public class ConcreteModule implements Module {
 
         if (!id.equals(that.id)) return false;
         if (!description.equals(that.description)) return false;
-        if (!notes.equals(that.notes)) return false;
-        return state.equals(that.state);
+        return notes.equals(that.notes) && state.equals(that.state);
 
     }
 
