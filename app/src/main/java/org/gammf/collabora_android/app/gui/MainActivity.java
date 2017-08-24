@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity
                 final String listName =
                         expandableListDetail.get(
                                 expandableListTitle.get(groupPosition)).get(childPosition);
+                Log.println(Log.ERROR, "ERRORONI", "select --> "+expandableListTitle.get(groupPosition));
                 selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
                 /*
                        Per il nome del gruppo: expandableListTitle.get(groupPosition)
@@ -164,11 +165,11 @@ public class MainActivity extends AppCompatActivity
         */
     }
     /*
-    Metodo per riempire le liste nel menu:
-    -viene chiamato quando si apre l'app, alla creazione dell'activity
-
-    -qui recuperare le collaborazioni e inserirle nelle liste
-    -il parametro passato è il nome della collaborazione
+    *Metodo per riempire le liste nel menu:
+    *-viene chiamato quando si apre l'app, alla creazione dell'activity
+    *
+    *-qui recuperare le collaborazioni e inserirle nelle liste
+    *-il parametro passato è il nome della collaborazione
      */
     private void fillCollabList(){
 
@@ -195,10 +196,9 @@ public class MainActivity extends AppCompatActivity
     private void selectItem(int position, String itemType, String itemName) {
 
         Fragment fragment = null;
-        Bundle fragmentArgument = new Bundle();
+        Log.println(Log.ERROR, "ERRORONI", "select --> "+itemType);
         fragment = CollaborationFragment.newInstance("drawerSelection", itemName, itemType);
 
-        fragment.setArguments(fragmentArgument);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

@@ -52,18 +52,16 @@ public class CollaborationFragment extends Fragment {
         arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABNAME, name);
         arg.putString(ARG_COLLABTYPE, type);
+        Log.println(Log.ERROR, "ERRORONI", "new instance --> "+type);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
-        if(getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
-            this.collabname = getArguments().getString(ARG_COLLABNAME);
-            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
-        }
+
     }
 
     @Override
@@ -96,7 +94,12 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
-
+        this.sender = getArguments().getString(ARG_SENDER);
+        this.collabname = getArguments().getString(ARG_COLLABNAME);
+        collabtype = getArguments().getString(ARG_COLLABTYPE);
+        Log.println(Log.ERROR, "ERRORONI", "new instance2 --> "+getArguments().getString(ARG_COLLABTYPE));
+        Log.println(Log.ERROR, "ERRORONI", "new instance2 --> "+getArguments().getString(ARG_COLLABNAME));
+        Log.println(Log.ERROR, "ERRORONI", "new instance22 --> "+collabtype);
         notesList = rootView.findViewById(R.id.notesListView);
         moduleList = rootView.findViewById(R.id.modulesListView);
         btnAddNote = rootView.findViewById(R.id.btnAddNote);
