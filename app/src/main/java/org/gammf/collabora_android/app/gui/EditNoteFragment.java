@@ -21,12 +21,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -48,7 +50,10 @@ import org.gammf.collabora_android.app.R;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -68,8 +73,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private String mParam2;
 
     private SupportPlaceAutocompleteFragment autocompleteFragmentEdited;
-    private RadioGroup radioGroupNoteStateEdited;
-    private RadioButton radioButtonToDoEdited, radioButtonDoingEdited, radioButtonDoneEdited;
     private String noteStateEdited = "";
     private Calendar calendarEdited;
     private TextView dateViewEdited, timeViewEdited;
@@ -79,6 +82,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private GoogleMap googleMap;
     private CameraPosition cameraPosition;
     private LatLng newCoordinates;
+    private Spinner spinnerEditState;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -134,17 +138,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 Resources res = getResources();
                 txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
             }else {
-                int selectedId = radioGroupNoteStateEdited.getCheckedRadioButtonId();
-                if (selectedId == radioButtonToDoEdited.getId()) {
-                    noteStateEdited = "To-do";
-                    Log.e("", noteStateEdited);
-                } else if (selectedId == radioButtonDoingEdited.getId()) {
-                    noteStateEdited = "Doing";
-                    Log.e("", noteStateEdited);
-                } else if (selectedId == radioButtonDoneEdited.getId()) {
-                    noteStateEdited = "Done";
-                    Log.e("", noteStateEdited);
-                }
 
                 //qui mettere il codice per aggiornare la nota
                 //il nuovo content è in insertedNoteName
@@ -174,27 +167,15 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         ft.replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited);
         ft.commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this);
-        radioGroupNoteStateEdited = rootView.findViewById(R.id.radioGroupNoteStateEdit);
-        radioButtonToDoEdited = rootView.findViewById(R.id.radioButtonToDoEdit);
-        radioButtonDoingEdited = rootView.findViewById(R.id.radioButtonDoingEdit);
-        radioButtonDoneEdited = rootView.findViewById(R.id.radioButtonDoneEdit);
-        radioButtonToDoEdited.setChecked(true);
-        radioGroupNoteStateEdited.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                Log.println(Log.ERROR, "",""+i);
-                int selectedId = radioGroupNoteStateEdited.getCheckedRadioButtonId();
-                String noteState = "";
-                if (selectedId == radioButtonToDoEdited.getId()) {
-                    noteState = "To-do";
-                } else if (selectedId == radioButtonDoingEdited.getId()) {
-                    noteState = "Doing";
-                } else if (selectedId == radioButtonDoneEdited.getId()) {
-                    noteState = "Done";
-                }
-            }
-        });
-        radioButtonToDoEdited.setChecked(true);
+
+        spinnerEditState = (Spinner) rootView.findViewById(R.id.spinnerEditNoteState);
+        List<NoteProjectState> stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(NoteProjectState.values()));
+        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEditState.setAdapter(dataAdapter);
+
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
         yearEdited = calendarEdited.get(Calendar.YEAR);

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -13,8 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -37,6 +37,8 @@ public class DialogNewCollaborationFragment extends DialogFragment {
     private RadioGroup radioGroupCollabType;
     private RadioButton radioButtonGroup;
     private RadioButton radioButtonProject;
+    private Button btnPositiveClick, btnNegativeClick;
+
     //manager for keyboard
     private InputMethodManager inputMethodManager;
 
@@ -66,13 +68,76 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dialog_new_collaboration, container, false);
+        txtCollabName = rootView.findViewById(R.id.txtInsertCollabNameD);
+        radioGroupCollabType = rootView.findViewById(R.id.radioGroupCollabType);
+        radioButtonGroup = rootView.findViewById(R.id.radioButtonGroup);
+        radioButtonProject = rootView.findViewById(R.id.radioButtonProject);
+        radioButtonGroup.setChecked(true);
+
+
+        inputMethodManager =
+                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
+
+        btnPositiveClick = rootView.findViewById(R.id.btnPositiveAddCollab);
+        btnPositiveClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String insertedNoteName = txtCollabName.getText().toString();
+                String collabType = "";
+                if(insertedNoteName.equals("")){
+                    Context context = getActivity().getApplicationContext();
+                    CharSequence text = "Creation failed: name not inserted!";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                    inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+                    mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
+
+                }else {
+                    int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
+                    if (selectedId == radioButtonProject.getId()) {
+                        collabType = "Project";
+                        Log.e("", collabType);
+                    } else if (selectedId == radioButtonGroup.getId()) {
+                        collabType = "Group";
+                        Log.e("", collabType);
+                    }
+                    inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+                    mListener.onDialogPositiveClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
+                }
+            }
+        });
+
+        btnNegativeClick = rootView.findViewById(R.id.btnNegativePositiveAddCollab);
+        btnNegativeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // User cancelled the dialog
+                Context context = getActivity().getApplicationContext();
+                CharSequence text = "Creation discarded";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+                mListener.onDialogNegativeClick(DialogNewCollaborationFragment.this);
+            }
+        });
 
         return rootView;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+
         // Use the Builder class for convenient dialog construction
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_dialog_new_collaboration, null);
@@ -81,10 +146,6 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         radioButtonGroup = view.findViewById(R.id.radioButtonGroup);
         radioButtonProject = view.findViewById(R.id.radioButtonProject);
         radioButtonGroup.setChecked(true);
-
-        inputMethodManager =
-                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
 
         builder.setView(view)
@@ -124,6 +185,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
         return builder.create();
+        */
     }
 
     @Override

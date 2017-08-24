@@ -1,9 +1,9 @@
 package org.gammf.collabora_android.app.gui;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,24 +13,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class CollaborationFragment extends Fragment {
 
-    Bundle arguments;
-    TextView label;
-    FloatingActionButton btnAddNote;
-    String collabname, collabtype;
-    ListView notesList;
-    ArrayList<DataModel> drawerItem;
+    private FloatingActionButton btnAddNote;
+    private String collabname, collabtype;
+    private ListView notesList, moduleList;
+    private ArrayList<DataModel> noteItems, moduleItems;
+
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -73,30 +79,60 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
+        moduleItems = new ArrayList<>();
+        noteItems = new ArrayList<>();
+        TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        tabHost.setup();
 
-        notesList = (ListView) rootView.findViewById(R.id.notesListView);
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("Firts Tab Tag");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab Tag");
+// Set the Tab name and Activity
+        // that will be opened when particular Tab will be selected
 
-        drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
-        drawerItem.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, drawerItem);
-        notesList.setAdapter(adapter);
-        notesList.setOnItemClickListener(new CollaborationFragment.DrawerItemClickListener());
+        Resources res = getResources();
+        tab1.setIndicator(res.getString(R.string.title_modulelist));
+        tab1.setContent(R.id.i_layout_2);
 
+        tab2.setIndicator(res.getString(R.string.title_noteslist));
+        tab2.setContent(R.id.i_layout_1);
+/** Add the tabs  to the TabHost to display. */
+
+        tabHost.addTab(tab2);
         Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
         if(getValue)
         {
             //VALUE RECEIVED FROM DRAWER SELECTION
             collabname =  getArguments().getString("collabName");
             collabtype = getArguments().getString("collabType");
+            if(collabtype.equals(res.getString(R.string.project_drawer)))
+                tabHost.addTab(tab1);
 
         }
         else
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            drawerItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
+            noteItems.add(new DataModel(R.drawable.note_icon, "New Note Content"));
         }
+
+
+        notesList = rootView.findViewById(R.id.notesListView);
+
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
+        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
+        notesList.setAdapter(noteListAdapter);
+        notesList.setOnItemClickListener(new ListItemClickListener());
+
+        moduleList = rootView.findViewById(R.id.modulesListView);
+        moduleItems.add(new DataModel(R.drawable.module32, "Module 1", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "Module 2", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "Module 3", true));
+        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
+        moduleList.setAdapter(moduleListAdapter);
+        moduleList.setOnItemClickListener(new ListItemClickListener());
+
+
         btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,22 +150,29 @@ public class CollaborationFragment extends Fragment {
         return rootView;
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+    private class ListItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName.getName());
+            selectItem(position, listName);
         }
 
     }
 
-    private void selectItem(int position, String itemName) {
-        Fragment openNoteFragment = new NoteFragment();
+    private void selectItem(int position, DataModel itemSelected) {
+        Fragment openFragment = null;
         Bundle fragmentArgument = new Bundle();
         fragmentArgument.putString("collabName", collabname);
-        openNoteFragment.setArguments(fragmentArgument);
-        changeFragment(openNoteFragment);
+        if(itemSelected.getIfIsModule()){
+            openFragment = new ModuleFragment();
+            fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
+            fragmentArgument.putString("moduleName", itemSelected.getName());
+        }else{
+            openFragment = new NoteFragment();
+        }
+        openFragment.setArguments(fragmentArgument);
+        changeFragment(openFragment);
     }
 
     private void changeFragment(Fragment fragment){
@@ -143,4 +186,5 @@ public class CollaborationFragment extends Fragment {
             Log.e("MainActivity", "Error in creating fragment");
         }
     }
+
 }
