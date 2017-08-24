@@ -130,10 +130,10 @@ public abstract class AbstractCollaboration implements Collaboration {
 
         AbstractCollaboration that = (AbstractCollaboration) o;
 
-        if (!id.equals(that.id)) return false;
-        if (!name.equals(that.name)) return false;
-        if (!members.equals(that.members)) return false;
-        return notes.equals(that.notes);
+        return id.equals(that.id)
+                && name.equals(that.name)
+                && members.equals(that.members)
+                && notes.equals(that.notes);
 
     }
 
