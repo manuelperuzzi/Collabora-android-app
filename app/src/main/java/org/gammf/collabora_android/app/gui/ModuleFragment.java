@@ -39,8 +39,7 @@ public class ModuleFragment extends Fragment {
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ModuleFragment newInstance(String param1, String param2) {
+    public static ModuleFragment newInstance() {
         ModuleFragment fragment = new ModuleFragment();
         return fragment;
     }

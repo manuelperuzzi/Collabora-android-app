@@ -49,6 +49,11 @@ implements OnMapReadyCallback{
     public NoteFragment() {
     }
 
+    public static NoteFragment newInstance() {
+        NoteFragment fragment = new NoteFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

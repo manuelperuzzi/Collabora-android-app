@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         fragment = new CollaborationFragment();
         fragmentArgument.putString("collabName", itemName);
         fragmentArgument.putString("collabType", itemType);
-        fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
+        fragmentArgument.putString("sender","drawerSelection");
 
         fragment.setArguments(fragmentArgument);
         if (fragment != null) {
