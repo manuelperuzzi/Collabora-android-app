@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
  * @author Manuel Peruzzi
  * Simple class that represents a user member of a collaboration with a certain access right.
  */
-public class CollaborationMember implements User {
+public class SimpleCollaborationMember implements CollaborationMember {
 
     private final User user;
     private final AccessRight accessRight;
@@ -17,7 +17,7 @@ public class CollaborationMember implements User {
      * @param user the user.
      * @param accessRight the access right of the user.
      */
-    public CollaborationMember(final User user, final AccessRight accessRight) {
+    public SimpleCollaborationMember(final User user, final AccessRight accessRight) {
         this.user = user;
         this.accessRight = accessRight;
     }
@@ -47,6 +47,12 @@ public class CollaborationMember implements User {
         return user.getBirthday();
     }
 
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
     public AccessRight getAccessRight() {
         return accessRight;
     }
@@ -56,7 +62,7 @@ public class CollaborationMember implements User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CollaborationMember that = (CollaborationMember) o;
+        SimpleCollaborationMember that = (SimpleCollaborationMember) o;
 
         return user.equals(that.user) && accessRight == that.accessRight;
 
