@@ -24,12 +24,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -49,10 +46,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
-
-    private ListView mDrawerList;
-    private ArrayList<DataModel> drawerItem;
-    private DrawerItemCustomAdapter adapter;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -77,20 +70,10 @@ public class MainActivity extends AppCompatActivity
 
         personal = new ArrayList<String>();
         personal.add("My List");
-
         group = new ArrayList<String>();
-        group.add("Group 1");
-        group.add("Group 2");
-        group.add("Group 3");
-        group.add("Group 4");
-        group.add("Group 5");
-
         project = new ArrayList<String>();
-        project.add("Project 1");
-        project.add("Project 2");
-        project.add("Project 3");
-        project.add("Project 4");
-        project.add("Project 5");
+
+        fillCollabList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -112,6 +95,38 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        expandableListDetail = new HashMap<>();
+        res = getResources();
+        res.getString(R.string.rg_group);
+        expandableListDetail.put(res.getString(R.string.personal_drawer), personal);
+        expandableListDetail.put(res.getString(R.string.groups_drawer), group);
+        expandableListDetail.put(res.getString(R.string.project_drawer), project);
+
+        expandableListView = (ExpandableListView) findViewById(R.id.expandableListCollaborations);
+        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+        for(int i=0; i < expandableListAdapter.getGroupCount(); i++)
+            expandableListView.expandGroup(i);
+        //In esecuzione quando si clicca su un elemento del menu
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                final String listName =
+                        expandableListDetail.get(
+                                expandableListTitle.get(groupPosition)).get(childPosition);
+                selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
+                /*
+                       Per il nome del gruppo: expandableListTitle.get(groupPosition)
+                       Per il nome selezionato:
+                                expandableListDetail.get(
+                                expandableListTitle.get(groupPosition)).get(
+                                childPosition)
+                */
+                return false;
+            }
+        });
 
         final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
         intent.putExtra("username", "fone");
@@ -145,44 +160,36 @@ public class MainActivity extends AppCompatActivity
 
 
         */
+    }
+    /*
+    Metodo per riempire le liste nel menu:
+    -viene chiamato quando si apre l'app, alla creazione dell'activity
 
+    -qui recuperare le collaborazioni e inserirle nelle liste
+    -il parametro passato è il nome della collaborazione
+     */
+    private void fillCollabList(){
 
-        expandableListDetail = new HashMap<>();
-        res = getResources();
-        res.getString(R.string.rg_group);
-        expandableListDetail.put(res.getString(R.string.personal_drawer), personal);
-        expandableListDetail.put(res.getString(R.string.groups_drawer), group);
-        expandableListDetail.put(res.getString(R.string.project_drawer), project);
+        group.add("Group 1");
+        group.add("Group 2");
+        group.add("Group 3");
+        group.add("Group 4");
+        group.add("Group 5");
 
-        expandableListView = (ExpandableListView) findViewById(R.id.expandableListCollaborations);
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-        for(int i=0; i < expandableListAdapter.getGroupCount(); i++)
-            expandableListView.expandGroup(i);
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                final String listName =
-                        expandableListDetail.get(
-                        expandableListTitle.get(groupPosition)).get(childPosition);
-                selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
-                /*
-                Toast.makeText(
-                        getApplicationContext(),
-                        expandableListTitle.get(groupPosition)
-                                + " -> "
-                                + expandableListDetail.get(
-                                expandableListTitle.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT
-                ).show();
-                */
-                return false;
-            }
-        });
+        project.add("Project 1");
+        project.add("Project 2");
+        project.add("Project 3");
+        project.add("Project 4");
+        project.add("Project 5");
     }
 
+    /**
+     * Used for open the collaboration selected
+     *
+     * @param position forse si può togliere, è li se diventa utile la posizione in lista ma non penso.
+     * @param itemType collaboration type
+     * @param itemName collaboration name
+     */
     private void selectItem(int position, String itemType, String itemName) {
 
         Fragment fragment = null;
@@ -209,16 +216,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
+    /**
+     * Used for EDIT collaboration
+     *
+     * @param sender fragment that wants to update the collaboration list.
+     * @param collabname new collaboration name
+     */
     public void updateCollaborationList(Fragment sender, String collabname){
 
         if(sender instanceof EditCollaborationFragment){
@@ -241,6 +244,17 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout.openDrawer(GravityCompat.START);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -403,21 +417,35 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Used for ADD NEW COLLABORATION
+     *
+     * @param dialog dialog that have triggered this method
+     * @param collabName new collaboration name
+     * @param collabType new collaboration type
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
 
+        //prepare fragment for new collab inserted
         Fragment fragment = new CollaborationFragment();
         Bundle args = new Bundle();
         args.putString("collabName", collabName);
         args.putBoolean("BOOLEAN_VALUE", true);
 
+        //close drawer lists, used for update the list.
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
             expandableListView.collapseGroup(i);
         }
+
+        //check the collab type
         if(collabType.equals("Group")) {
+            //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
             group.add(collabName);
+            //qui invece metto nel fragment il tipo della collab
             args.putString("collabType", res.getString(R.string.groups_drawer));
         }else if(collabType.equals("Project")) {
+            //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
             project.add(collabName);
             args.putString("collabType", res.getString(R.string.project_drawer));
         }
@@ -439,14 +467,11 @@ public class MainActivity extends AppCompatActivity
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-
         dialog.dismiss();
-
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-
         dialog.dismiss();
     }
 

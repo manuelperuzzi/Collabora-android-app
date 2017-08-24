@@ -106,7 +106,6 @@ public class CollaborationFragment extends Fragment {
             collabtype = getArguments().getString("collabType");
             if(collabtype.equals(res.getString(R.string.project_drawer)))
                 tabHost.addTab(tab1);
-            Log.println(Log.ERROR,"ERRORONE", ""+collabtype);
 
         }
         else
