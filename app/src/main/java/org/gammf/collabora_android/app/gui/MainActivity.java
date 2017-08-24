@@ -35,6 +35,8 @@ import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

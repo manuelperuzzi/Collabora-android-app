@@ -137,12 +137,8 @@ public class CollaborationFragment extends Fragment {
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newNoteFragment = null;
-                Bundle fragmentArgument = new Bundle();
-                newNoteFragment = new CreateNoteFragment();
-                fragmentArgument.putString("collabName", collabname);
+                final Fragment newNoteFragment = CreateNoteFragment.newInstance("59806a4af27da3fcfe0ac0ca");
 
-                newNoteFragment.setArguments(fragmentArgument);
                 changeFragment(newNoteFragment);
             }
         });
