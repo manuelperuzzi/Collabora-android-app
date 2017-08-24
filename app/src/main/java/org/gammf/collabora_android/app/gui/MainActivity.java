@@ -196,10 +196,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         Bundle fragmentArgument = new Bundle();
-        fragment = new CollaborationFragment();
-        fragmentArgument.putString("collabName", itemName);
-        fragmentArgument.putString("collabType", itemType);
-        fragmentArgument.putString("sender","drawerSelection");
+        fragment = CollaborationFragment.newInstance("drawerSelection", itemName, itemType);
 
         fragment.setArguments(fragmentArgument);
         if (fragment != null) {
@@ -224,18 +221,21 @@ public class MainActivity extends AppCompatActivity
      * @param sender fragment that wants to update the collaboration list.
      * @param collabname new collaboration name
      */
-    public void updateCollaborationList(Fragment sender, String collabname){
+    public void updateCollaborationList(Fragment sender, String collabname, String collabType){
+
+        //in collabType c'è il tipo per capire in quale lista va modificata la collaboration
 
         if(sender instanceof EditCollaborationFragment){
-            // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
+            // TO-DO qui bisogna
+            // aggiornare il server col nome nuovo
+            // rimuovere la collab precedente dalla lista
+            // aggiungere quella nuova
+
 
         }
 
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabname);
-        args.putBoolean("BOOLEAN_VALUE", true);
-        fragment.setArguments(args);
+        Fragment fragment = CollaborationFragment.newInstance("drawerSelection", collabname, collabType);
+
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -430,12 +430,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
 
-        //prepare fragment for new collab inserted
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabName);
-        args.putBoolean("BOOLEAN_VALUE", true);
-
         //close drawer lists, used for update the list.
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
             expandableListView.collapseGroup(i);
@@ -445,19 +439,21 @@ public class MainActivity extends AppCompatActivity
         if(collabType.equals("Group")) {
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
             group.add(collabName);
-            //qui invece metto nel fragment il tipo della collab
-            args.putString("collabType", res.getString(R.string.groups_drawer));
+            //qui invece metto nel fragment il tipo della collab per evitare problemi di equalsss
+            collabType = res.getString(R.string.groups_drawer);
         }else if(collabType.equals("Project")) {
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
             project.add(collabName);
-            args.putString("collabType", res.getString(R.string.project_drawer));
+            collabType = res.getString(R.string.project_drawer);
         }
 
+
+        //prepare fragment for new collab inserted
+        Fragment fragment = CollaborationFragment.newInstance("drawerselection", collabName, collabType);
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        fragment.setArguments(args);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

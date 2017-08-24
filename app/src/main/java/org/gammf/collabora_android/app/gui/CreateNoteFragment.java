@@ -52,9 +52,6 @@ import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreateNoteFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link CreateNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -62,9 +59,9 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String COLLABORATION_ID = "COLLABORATION_ID";
+    private static final String ARG_COLLABNAME = "collabName";
+    private static final String ARG_COLLABTYPE = "collabType";
+    private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -78,7 +75,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String collaborationId;
+    private String collabName, collabType, collaborationId;
     //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
@@ -89,39 +86,30 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param collabName collaboration name
+     * @param collabType collaboration type
+     * @param collaborationId collaboration id
      * @return A new instance of fragment CreateNoteFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CreateNoteFragment newInstance(String param1, String param2) {
-        CreateNoteFragment fragment = new CreateNoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static CreateNoteFragment newInstance(String collaborationId) {
+    public static CreateNoteFragment newInstance(String collabName, String collabType, String collaborationId) {
         Bundle arg = new Bundle();
-        arg.putString(COLLABORATION_ID, collaborationId);
+        arg.putString(ARG_COLLABORATION_ID, collaborationId);
+        arg.putString(ARG_COLLABNAME, collabName);
+        arg.putString(ARG_COLLABTYPE, collabType);
         final CreateNoteFragment fragment = new CreateNoteFragment();
         fragment.setArguments(arg);
-        Log.i("Async", "DIO E': " + fragment.getArguments().getString(COLLABORATION_ID));
+        Log.i("Async", "DIO E': " + fragment.getArguments().getString(ARG_COLLABORATION_ID));
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
         if(getArguments() != null) {
-            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(COLLABORATION_ID));
-            this.collaborationId = getArguments().getString(COLLABORATION_ID);
+            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
+            this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
+            this.collabName = getArguments().getString(ARG_COLLABNAME);
+            this.collabType = getArguments().getString(ARG_COLLABTYPE);
         }
     }
 
@@ -197,10 +185,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance();
-        Bundle args = new Bundle();
-        args.putString("sender","notecreation");
-        collabFragment.setArguments(args);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance("notecreation",collabName, collabType);
 
         final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
         final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);

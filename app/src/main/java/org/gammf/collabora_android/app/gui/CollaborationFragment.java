@@ -25,7 +25,12 @@ import java.util.ArrayList;
  */
 public class CollaborationFragment extends Fragment {
 
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABNAME = "collabName";
+    private static final String ARG_COLLABTYPE = "collabType";
+
     private FloatingActionButton btnAddNote;
+    private String sender;
     private String collabname, collabtype;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
@@ -41,8 +46,12 @@ public class CollaborationFragment extends Fragment {
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static CollaborationFragment newInstance() {
+    public static CollaborationFragment newInstance(String sender, String name, String type) {
         CollaborationFragment fragment = new CollaborationFragment();
+        Bundle arg = new Bundle();
+        arg.putString(ARG_SENDER, sender);
+        arg.putString(ARG_COLLABNAME, name);
+        arg.putString(ARG_COLLABTYPE, type);
         return fragment;
     }
 
@@ -50,6 +59,11 @@ public class CollaborationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collabname = getArguments().getString(ARG_COLLABNAME);
+            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
+        }
     }
 
     @Override
@@ -71,11 +85,7 @@ public class CollaborationFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = new EditCollaborationFragment();
-            Bundle fragmentArgument = new Bundle();
-            fragmentArgument.putString("collabName", collabname);
-
-            editCollabFragment.setArguments(fragmentArgument);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collabname, collabtype);
             changeFragment(editCollabFragment);
             return true;
         }
@@ -104,27 +114,16 @@ public class CollaborationFragment extends Fragment {
         tab2.setIndicator(res.getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
         tabHost.addTab(tab2);
-
-        Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
-        String getSender = getArguments().getString("sender");
-        if(getSender.equals("drawerSelection"))
-        {
-            //ARGUMENTS RECEIVED FROM DRAWER SELECTION
-            collabname =  getArguments().getString("collabName");
-            collabtype = getArguments().getString("collabType");
-            if(collabtype.equals(res.getString(R.string.project_drawer))) {
-                tabHost.addTab(tab1);
-                fillModuleList();
-            }
+        if(collabtype.equals(res.getString(R.string.project_drawer))) {
+            tabHost.addTab(tab1);
+            fillModuleList();
         }
-        else if(getSender.equals("notecreation"))
+
+        if(sender.equals("notecreation"))
         {
-            //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
+            //FRAGMENT CALLED BY CreateNoteFragment:
+            //  -things to do: add note
             addNewNote();
-
-        }else if(getSender.equals("editnote")){
-
-            //ARGUMENTS RECEIVED FROM EDIT NOTE FRAGMENT
         }
 
         fillNoteList();
@@ -132,7 +131,7 @@ public class CollaborationFragment extends Fragment {
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Fragment newNoteFragment = CreateNoteFragment.newInstance("59806a4af27da3fcfe0ac0ca");
+                final Fragment newNoteFragment = CreateNoteFragment.newInstance(collabname,collabtype,"59806a4af27da3fcfe0ac0ca");
 
                 changeFragment(newNoteFragment);
             }
