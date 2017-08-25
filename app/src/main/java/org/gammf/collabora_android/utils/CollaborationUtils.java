@@ -33,7 +33,9 @@ public class CollaborationUtils {
     public static JSONObject collaborationToJson(final Collaboration collaboration) throws JSONException {
         final JSONObject json = new JSONObject();
 
-        json.put("id", collaboration.getId());
+        if (collaboration.getId() != null) {
+            json.put("id", collaboration.getId());
+        }
         json.put("name", collaboration.getName());
 
         final Set<CollaborationMember> members = collaboration.getAllMembers();
