@@ -43,20 +43,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CreateNoteFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for note creation user interface
  */
 public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String SENDER = "notecreationfrag";
+
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
@@ -73,7 +71,6 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private Spinner spinnerState;
 
     private String sender, collabName, collabType, collaborationId, moduleName;
-    //  private OnFragmentInteractionListener mListener;
 
     public CreateNoteFragment() {
         // Required empty public constructor
@@ -86,6 +83,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
      * @param collabName collaboration name
      * @param collabType collaboration type
      * @param collaborationId collaboration id
+     *
      * @return A new instance of fragment CreateNoteFragment.
      */
     public static CreateNoteFragment newInstance(String sender,
@@ -190,7 +188,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance("notecreation",collabName, collabType);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER,collabName, collabType);
 
         final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
         final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);
@@ -242,47 +240,5 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private void showTime(int hour, int minute){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
-/*
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-*/
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-
-/*
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    */
 }

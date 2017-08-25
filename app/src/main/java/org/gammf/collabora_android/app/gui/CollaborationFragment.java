@@ -25,6 +25,10 @@ import java.util.ArrayList;
  */
 public class CollaborationFragment extends Fragment {
 
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String SENDER = "collabfrag";
+
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
@@ -52,14 +56,18 @@ public class CollaborationFragment extends Fragment {
         arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABNAME, name);
         arg.putString(ARG_COLLABTYPE, type);
-        Log.println(Log.ERROR, "ERRORONI", "new instance --> "+type);
+        fragment.setArguments(arg);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collabname = getArguments().getString(ARG_COLLABNAME);
+            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
+        }
         setHasOptionsMenu(true);
 
     }
@@ -77,9 +85,7 @@ public class CollaborationFragment extends Fragment {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
@@ -94,12 +100,7 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
-        this.sender = getArguments().getString(ARG_SENDER);
-        this.collabname = getArguments().getString(ARG_COLLABNAME);
-        collabtype = getArguments().getString(ARG_COLLABTYPE);
-        Log.println(Log.ERROR, "ERRORONI", "new instance2 --> "+getArguments().getString(ARG_COLLABTYPE));
-        Log.println(Log.ERROR, "ERRORONI", "new instance2 --> "+getArguments().getString(ARG_COLLABNAME));
-        Log.println(Log.ERROR, "ERRORONI", "new instance22 --> "+collabtype);
+
         notesList = rootView.findViewById(R.id.notesListView);
         moduleList = rootView.findViewById(R.id.modulesListView);
         btnAddNote = rootView.findViewById(R.id.btnAddNote);
@@ -122,7 +123,7 @@ public class CollaborationFragment extends Fragment {
             fillModulesList();
         }
 
-        if(sender.equals("notecreation"))
+        if(sender.equals("notecreationfrag"))
         {
             //FRAGMENT CALLED BY CreateNoteFragment:
             //  -things to do: add note
@@ -135,7 +136,7 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance("collabfrag", collabname,collabtype,"59806a4af27da3fcfe0ac0ca", "nomodule");
+                        CreateNoteFragment.newInstance(SENDER, collabname,collabtype,"59806a4af27da3fcfe0ac0ca", "nomodule");
 
                 changeFragment(newNoteFragment);
             }
@@ -183,9 +184,9 @@ public class CollaborationFragment extends Fragment {
     private void selectItem(int position, DataModel itemSelected) {
         Fragment openFragment = null;
         if(itemSelected.getIfIsModule()){
-            openFragment = ModuleFragment.newInstance("collabfrag", collabname, collabtype, itemSelected.getName());
+            openFragment = ModuleFragment.newInstance(SENDER, collabname, collabtype, itemSelected.getName());
         }else{
-            openFragment = NoteFragment.newInstance("collabfrag",collabname, collabtype, "nomodule", itemSelected.getName());
+            openFragment = NoteFragment.newInstance(SENDER,collabname, collabtype, "nomodule", itemSelected.getName());
         }
         changeFragment(openFragment);
     }
@@ -193,12 +194,12 @@ public class CollaborationFragment extends Fragment {
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.addToBackStack("xyz");
+            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
             fragmentTransaction2.hide(CollaborationFragment.this);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
 

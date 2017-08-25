@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,15 @@ import org.gammf.collabora_android.app.R;
  */
 public class DialogNewCollaborationFragment extends DialogFragment {
 
+    private static final String TOAST_ERR_NAMEREQUIRED = "Creation failed: name not inserted!";
+    private static final String TOAST_ERR_CANCELCREATION = "Creation discarded";
+
+    private static final String TYPE_PROJECT = "Project";
+    private static final String TYPE_GROUP = "Group";
 
     // Use this instance of the interface to deliver action events
     private DialogCollabListener mListener;
+
     //ui elements
     private EditText txtCollabName;
     private RadioGroup radioGroupCollabType;
@@ -83,7 +88,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                 //check if collabName is empty
                 if(insertedNoteName.equals("")){
                     Context context = getActivity().getApplicationContext();
-                    CharSequence text = "Creation failed: name not inserted!";
+                    CharSequence text = TOAST_ERR_NAMEREQUIRED;
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
@@ -94,11 +99,9 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                     //if it's not empty, get the collabtype
                     int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
                     if (selectedId == radioButtonProject.getId()) {
-                        collabType = "Project";
-                        Log.e("", collabType);
+                        collabType = TYPE_PROJECT;
                     } else if (selectedId == radioButtonGroup.getId()) {
-                        collabType = "Group";
-                        Log.e("", collabType);
+                        collabType = TYPE_GROUP;
                     }
                     inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                     //and send the info to MainActivity
@@ -113,11 +116,8 @@ public class DialogNewCollaborationFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 // User cancelled the dialog
-                Context context = getActivity().getApplicationContext();
-                CharSequence text = "Creation discarded";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast =
+                        Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_CANCELCREATION, Toast.LENGTH_SHORT);
                 toast.show();
                 inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                 mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);

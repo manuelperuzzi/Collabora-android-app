@@ -130,9 +130,12 @@ public class EditCollaborationFragment extends Fragment {
 
         //HERE THE CODE FOR GET THE MEMBER LIST
 
+        /*codice esempio per aggiungere alla lista*/
         memberItem.add(new DataModel(R.drawable.user, "Mario Rossi"));
         memberItem.add(new DataModel(R.drawable.user, "Luca Bianchi"));
         memberItem.add(new DataModel(R.drawable.user, "Giovanni Verdi"));
+
+        //setting the list adapter
         adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
     }
