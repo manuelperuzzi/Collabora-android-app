@@ -20,7 +20,7 @@ public class CollaborationMemberUtils {
     public static JSONObject memberToJson(final CollaborationMember member) throws JSONException {
         final JSONObject json = new JSONObject();
 
-        json.put("username", member.getUsername());
+        json.put("user", member.getUsername());
         json.put("right", member.getAccessRight().name());
 
         return json;
@@ -33,7 +33,7 @@ public class CollaborationMemberUtils {
      * @throws JSONException if the conversion went wrong.
      */
     public static CollaborationMember jsonToMember(final JSONObject json) throws JSONException {
-        final String username = json.getString("username");
+        final String username = json.getString("user");
         final AccessRight right = AccessRight.valueOf(json.getString("right"));
 
         return new SimpleCollaborationMember(username, right);
