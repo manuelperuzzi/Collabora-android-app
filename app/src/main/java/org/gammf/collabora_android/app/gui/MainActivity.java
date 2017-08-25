@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private GeofenceManager geoManager;
 
-
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
     private List<String> expandableListTitle;
