@@ -27,7 +27,7 @@ public class CollaborationMemberUtils {
     }
 
     /**
-     * Create a user class from a json message.
+     * Create a member class from a json message.
      * @param json the input json message.
      * @return a member built from the json message.
      * @throws JSONException if the conversion went wrong.
