@@ -13,26 +13,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class CollaborationFragment extends Fragment {
 
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String SENDER = "collabfrag";
+    private static final String CALLER_NOTECREATION = "notecreationfrag";
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABID = "collabid";
+    private static final String NOMODULE = "nomodule";
+
+    private static final String TYPE_PROJECT = "Project";
+    private static final String TYPE_GROUP = "Group";
+
     private FloatingActionButton btnAddNote;
+    private String sender, collabId;
     private String collabname, collabtype;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
@@ -42,10 +47,32 @@ public class CollaborationFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment ModuleFragment.
+     */
+
+    public static CollaborationFragment newInstance(String sender, String collaborationId) {
+        CollaborationFragment fragment = new CollaborationFragment();
+        Bundle arg = new Bundle();
+        arg.putString(ARG_SENDER, sender);
+        arg.putString(ARG_COLLABID, collaborationId);
+        fragment.setArguments(arg);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collabId = getArguments().getString(ARG_COLLABID);
+        }
         setHasOptionsMenu(true);
+        getDataFromServer(this.collabId);
+
     }
 
     @Override
@@ -55,20 +82,17 @@ public class CollaborationFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /*
+        Method for editcollaboration click on toolbar
+        trigger the @EditCollaborationFragment
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = new EditCollaborationFragment();
-            Bundle fragmentArgument = new Bundle();
-            fragmentArgument.putString("collabName", collabname);
-
-            editCollabFragment.setArguments(fragmentArgument);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collabId);
             changeFragment(editCollabFragment);
             return true;
         }
@@ -79,71 +103,80 @@ public class CollaborationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
-        moduleItems = new ArrayList<>();
-        noteItems = new ArrayList<>();
-        TabHost tabHost = rootView.findViewById(R.id.tabhost);
-        tabHost.setup();
-
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("Firts Tab Tag");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab Tag");
-// Set the Tab name and Activity
-        // that will be opened when particular Tab will be selected
-
-        Resources res = getResources();
-        tab1.setIndicator(res.getString(R.string.title_modulelist));
-        tab1.setContent(R.id.i_layout_2);
-
-        tab2.setIndicator(res.getString(R.string.title_noteslist));
-        tab2.setContent(R.id.i_layout_1);
-/** Add the tabs  to the TabHost to display. */
-
-        tabHost.addTab(tab2);
-        Boolean getValue= getArguments().getBoolean("BOOLEAN_VALUE");
-        if(getValue)
-        {
-            //VALUE RECEIVED FROM DRAWER SELECTION
-            collabname =  getArguments().getString("collabName");
-            collabtype = getArguments().getString("collabType");
-            if(collabtype.equals(res.getString(R.string.project_drawer)))
-                tabHost.addTab(tab1);
-
-        }
-        else
-        {
-            //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            noteItems.add(new DataModel(R.drawable.note_icon, "New Note Content"));
-        }
-
 
         notesList = rootView.findViewById(R.id.notesListView);
-
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
-        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
-        notesList.setAdapter(noteListAdapter);
-        notesList.setOnItemClickListener(new ListItemClickListener());
-
         moduleList = rootView.findViewById(R.id.modulesListView);
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 1", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 2", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 3", true));
-        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
-        moduleList.setAdapter(moduleListAdapter);
-        moduleList.setOnItemClickListener(new ListItemClickListener());
+        btnAddNote = rootView.findViewById(R.id.btnAddNote);
 
+        Resources res = getResources();
+        moduleItems = new ArrayList<>();
+        noteItems = new ArrayList<>();
 
-        btnAddNote = (FloatingActionButton) rootView.findViewById(R.id.btnAddNote);
+        TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        tabHost.setup();
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
+        tab1.setIndicator(res.getString(R.string.title_modulelist));
+        tab1.setContent(R.id.i_layout_2);
+        tab2.setIndicator(res.getString(R.string.title_noteslist));
+        tab2.setContent(R.id.i_layout_1);
+        tabHost.addTab(tab2);
+        if(collabtype.equals(TYPE_PROJECT)) {
+            tabHost.addTab(tab1);
+            fillModulesList();
+        }
+
+        if(sender.equals(CALLER_NOTECREATION))
+        {
+            //FRAGMENT CALLED BY CreateNoteFragment:
+            //  -things to do: add note
+            addNewNote();
+        }
+
+        fillNotesList();
+
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Fragment newNoteFragment = CreateNoteFragment.newInstance("59806a4af27da3fcfe0ac0ca");
+                final Fragment newNoteFragment =
+                        CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE);
 
                 changeFragment(newNoteFragment);
             }
         });
 
         return rootView;
+    }
+
+
+    private void fillNotesList(){
+        //HERE THE CODE FOR FILL NOTES LIST
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
+        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
+        notesList.setAdapter(noteListAdapter);
+        notesList.setOnItemClickListener(new ListItemClickListener());
+    }
+
+    private void fillModulesList(){
+        //HERE THE CODE FOR FILL MODULES LIST
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 1", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 2", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 3", true));
+        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
+        moduleList.setAdapter(moduleListAdapter);
+        moduleList.setOnItemClickListener(new ListItemClickListener());
+    }
+
+    private void addNewNote(){
+        //HERE THE CODE FOR ADD NEW NOTE
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
+    }
+
+    private void addNewModule(){
+        //HERE THE CODE FOR ADD NEW MODULE
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "New Module", true));
     }
 
     private class ListItemClickListener implements ListView.OnItemClickListener {
@@ -158,29 +191,34 @@ public class CollaborationFragment extends Fragment {
 
     private void selectItem(int position, DataModel itemSelected) {
         Fragment openFragment = null;
-        Bundle fragmentArgument = new Bundle();
-        fragmentArgument.putString("collabName", collabname);
         if(itemSelected.getIfIsModule()){
-            openFragment = new ModuleFragment();
-            fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
-            fragmentArgument.putString("moduleName", itemSelected.getName());
+            openFragment = ModuleFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }else{
-            openFragment = new NoteFragment();
+            openFragment = NoteFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }
-        openFragment.setArguments(fragmentArgument);
         changeFragment(openFragment);
     }
 
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.addToBackStack("xyz");
+            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
             fragmentTransaction2.hide(CollaborationFragment.this);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(SENDER, CREATIONERROR_FRAG);
         }
+    }
+
+    private void getDataFromServer(String collabId){
+
+
+
+
+        this.collabname = "Nome finto";
+        //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
+        this.collabtype = TYPE_PROJECT;
     }
 
 }

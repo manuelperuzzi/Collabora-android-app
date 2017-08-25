@@ -90,7 +90,7 @@
         android:layout_below="@+id/textView7"
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@+id/imgExpiration"
-        android:text="@string/note_responsible"
+        android:text="@string/note_expirationdate"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="18sp"/>
 

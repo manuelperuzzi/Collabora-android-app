@@ -5,25 +5,29 @@ package org.gammf.collabora_android.app.gui;
  */
 public class DataModel {
 
-    public int icon;
-    public String name;
-    public boolean isModule;
+    private int icon;
+    private String id, name;
+    private boolean isModule;
 
     // Constructor for notes.
-    public DataModel(int icon, String name) {
+    public DataModel(int icon, String id, String name) {
 
         this.icon = icon;
         this.name = name;
         this.isModule = false;
     }
     //Constructor for modules.
-    public DataModel (int icon, String name, boolean isModule){
+    public DataModel (int icon, String id, String name, boolean isModule){
         this.icon = icon;
         this.name = name;
         this.isModule = isModule;
     }
     public int getIcon(){
         return this.icon;
+    }
+
+    public String getId(){
+        return this.id;
     }
 
     public String getName(){

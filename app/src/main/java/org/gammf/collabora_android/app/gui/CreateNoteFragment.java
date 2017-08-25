@@ -16,8 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -45,30 +43,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreateNoteFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CreateNoteFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for note creation user interface
  */
 public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String COLLABORATION_ID = "COLLABORATION_ID";
+    private static final String SENDER = "notecreationfrag";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
+    private static final String ARG_MODULEID = "moduleName";
+    private static final String NOMODULE = "nomodule";
+
     private SupportPlaceAutocompleteFragment autocompleteFragment;
     private String noteState = "";
     private Calendar calendar;
@@ -78,8 +69,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String collaborationId;
-    //  private OnFragmentInteractionListener mListener;
+    private String sender, collabName, collabType, collaborationId, moduleId;
 
     public CreateNoteFragment() {
         // Required empty public constructor
@@ -88,40 +78,33 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     * @param sender
+     * @param collaborationId collaboration id
+     * @param moduleId
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment CreateNoteFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CreateNoteFragment newInstance(String param1, String param2) {
-        CreateNoteFragment fragment = new CreateNoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static CreateNoteFragment newInstance(String collaborationId) {
+    public static CreateNoteFragment newInstance(String sender,
+                                                 String collaborationId,
+                                                 String moduleId) {
         Bundle arg = new Bundle();
-        arg.putString(COLLABORATION_ID, collaborationId);
+        arg.putString(ARG_SENDER, sender);
+        arg.putString(ARG_COLLABORATION_ID, collaborationId);
+        arg.putString(ARG_MODULEID, moduleId);
         final CreateNoteFragment fragment = new CreateNoteFragment();
         fragment.setArguments(arg);
-        Log.i("Async", "DIO E': " + fragment.getArguments().getString(COLLABORATION_ID));
+        Log.i("Async", "DIO E': " + fragment.getArguments().getString(ARG_COLLABORATION_ID));
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
         if(getArguments() != null) {
-            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(COLLABORATION_ID));
-            this.collaborationId = getArguments().getString(COLLABORATION_ID);
+            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
     }
 
@@ -157,6 +140,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                     txtContentNote.setError(res.getString(R.string.fieldempty));
                 }else {
 
+                    //avete un moduleID che può essere nomodule
+                    //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
                     addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
 
                 }
@@ -197,17 +182,12 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        CollaborationFragment collabFragment = new CollaborationFragment ();
-        Bundle args = new Bundle();
-        args.putBoolean("BOOLEAN_VALUE",false);
-        collabFragment.setArguments(args);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
         final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
         final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask().execute(message);
-        /*
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();*/
+
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
     @Override
@@ -254,47 +234,5 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private void showTime(int hour, int minute){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
-/*
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-*/
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-
-/*
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    */
 }

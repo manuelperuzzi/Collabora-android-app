@@ -5,11 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,9 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -48,7 +41,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,14 +55,14 @@ import static android.content.ContentValues.TAG;
  * create an instance of this fragment.
  */
 public class EditNoteFragment extends Fragment implements PlaceSelectionListener, OnMapReadyCallback{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String MAPSEARCH_ERROR = "An error occurred: ";
+
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABID = "collabId";
+    private static final String ARG_MODULEID = "moduleId";
+    private static final String ARG_NOTEID = "noteId";
+
 
     private SupportPlaceAutocompleteFragment autocompleteFragmentEdited;
     private String noteStateEdited = "";
@@ -84,6 +76,20 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private LatLng newCoordinates;
     private Spinner spinnerEditState;
 
+    private String sender, collaborationId, collabname, collabtype, moduleId, noteId;
+
+    private Double startingLat = 42.50;
+    private Double startingLng = 12.50;
+    private int startingZoom = 15;
+    private int animationZoom = 5;
+    private int animationMsDuration = 2000;
+    private int zoomNote = 17;
+    private int bearingNote = 90;
+    private int tiltNote = 30;
+
+    private Double latitudeNote = 44.1390945;
+    private Double longitudeNote = 12.2429281;
+
     public EditNoteFragment() {
         setHasOptionsMenu(true);
     }
@@ -93,16 +99,16 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String param1, String param2) {
+    public static EditNoteFragment newInstance(String sender, String collabId, String moduleId, String noteId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_SENDER, sender);
+        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_MODULEID, moduleId);
+        args.putString(ARG_NOTEID, noteId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -112,9 +118,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
+            this.noteId = getArguments().getString(ARG_NOTEID);
         }
+
+        getNoteDataFromServer();
     }
 
     @Override
@@ -126,18 +136,15 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_editdone) {
             String insertedNoteName = txtContentNoteEdited.getText().toString();
             if(insertedNoteName.equals("")){
                 Resources res = getResources();
                 txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
-            }else {
+            }else{
 
                 //qui mettere il codice per aggiornare la nota
                 //il nuovo content è in insertedNoteName
@@ -212,13 +219,10 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private DatePickerDialog.OnDateSetListener myDateListenerEdited = new
             DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker arg0,
-                                      int arg1, int arg2, int arg3) {
-                    // TODO Auto-generated method stub
-                    // arg1 = year
-                    // arg2 = month
-                    // arg3 = day
-                    showDate(arg1, arg2+1, arg3);
+                public void onDateSet(DatePicker datePicker,
+                                      int year, int month, int day) {
+
+                    showDate(year, month+1, day);
                 }
             };
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited = new
@@ -238,23 +242,24 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
 
     @Override
     public void onPlaceSelected(Place place) {
-        // TODO: Get info about the selected place.
-        Log.i(TAG, "Place: " + place.getName());
 
         String placeDetailsStr = place.getName()+"";
         newCoordinates = place.getLatLng();
-              /*  + "\n"
-                + place.getId() + "\n"
-                + place.getLatLng().toString() + "\n"
-                + place.getAddress() + "\n"
-                + place.getAttributions();*/
+              /*
+              PLACE INFO:
+                 place.getName()
+                 place.getId()
+                 place.getLatLng().toString()
+                 place.getAddress()
+                 place.getAttributions()
+              */
 
         updateMap(place.getLatLng());
     }
 
     @Override
     public void onError(Status status) {
-        Log.i(TAG, "An error occurred: " + status);
+        Log.i(TAG, MAPSEARCH_ERROR + status);
     }
 
     @Override
@@ -275,7 +280,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                    .position(new LatLng(44.1390945, 12.2429281)));
+                    .position(new LatLng(latitudeNote, longitudeNote)));
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -284,21 +289,21 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             MapsInitializer.initialize(this.getActivity());
 
-            LatLng italy = new LatLng(42.50, 12.50);
-            LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            LatLng italy = new LatLng(startingLat, startingLng);
+            LatLng coordinates = new LatLng(latitudeNote, longitudeNote);
             newCoordinates = coordinates;
             // Move the camera instantly to Italy with a zoom of 15.
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, startingZoom));
             // Zoom in, animating the camera.
             googleMap.animateCamera(CameraUpdateFactory.zoomIn());
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
             // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
             cameraPosition = new CameraPosition.Builder()
                     .target(coordinates)      // Sets the center of the map to Mountain View
-                    .zoom(17)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                    .zoom(zoomNote)                   // Sets the zoom
+                    .bearing(bearingNote)                // Sets the orientation of the camera to east
+                    .tilt(tiltNote)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -318,13 +323,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
                 .position(newCoordinates));
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
         // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         cameraPosition = new CameraPosition.Builder()
-                .target(newCoordinates)      // Sets the center of the map to Mountain View
-                .zoom(17)                   // Sets the zoom
-                .bearing(90)                // Sets the orientation of the camera to east
-                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .target(newCoordinates)     // Sets the center of the map to Mountain View
+                .zoom(zoomNote)             // Sets the zoom
+                .bearing(bearingNote)       // Sets the orientation of the camera to east
+                .tilt(tiltNote)             // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -334,5 +339,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 return false;
             }
         });
+    }
+
+    private void getNoteDataFromServer(){
+
+        //RECUPERARE I DATI QUI: ci sono gli id nei campi
+        // e mettere i valori nelle rispettive variabili
+        // poi settare sempre i dati all'utente col setText nel onViewCreated
+        // per mettere i campi nella gui come sono prima della modifica
     }
 }
