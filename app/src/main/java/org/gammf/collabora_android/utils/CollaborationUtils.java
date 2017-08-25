@@ -10,6 +10,7 @@ import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.users.User;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,7 +101,7 @@ public class CollaborationUtils {
                 if (user instanceof CollaborationMember) {
                     collaboration.addMember((CollaborationMember) user);
                 } else {
-                    collaboration.addMember(new CollaborationMember(user, AccessRight.READ));
+                    collaboration.addMember(new SimpleCollaborationMember(user, AccessRight.READ));
                 }
             }
         }

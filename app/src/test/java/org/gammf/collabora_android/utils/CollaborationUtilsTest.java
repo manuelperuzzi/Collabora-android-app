@@ -7,6 +7,7 @@ import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
@@ -22,13 +23,12 @@ import static org.junit.Assert.*;
 public class CollaborationUtilsTest {
 
     private Project project;
-    private CollaborationMember member;
 
     @Before
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
 
-        member = new CollaborationMember(
+        final CollaborationMember member = new SimpleCollaborationMember(
                 new SimpleUser.Builder()
                         .username("myUsername")
                         .email("myEmail@gmail.com")

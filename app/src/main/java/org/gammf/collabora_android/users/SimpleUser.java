@@ -56,11 +56,11 @@ public class SimpleUser implements User {
 
         SimpleUser that = (SimpleUser) o;
 
-        if (!username.equals(that.username)) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (surname != null ? !surname.equals(that.surname) : that.surname != null) return false;
-        return birthday != null ? birthday.equals(that.birthday) : that.birthday == null;
+        return username.equals(that.username) &&
+                (email != null ? email.equals(that.email) : that.email == null &&
+                (name != null ? name.equals(that.name) : that.name == null &&
+                (surname != null ? surname.equals(that.surname) : that.surname == null &&
+                (birthday != null ? birthday.equals(that.birthday) : that.birthday == null))));
 
     }
 
@@ -76,7 +76,7 @@ public class SimpleUser implements User {
 
     /**
      * @author Manuel Peruzzi
-     * This nested class is used as a builder to create an object of type SimpleUser
+     * This nested class is used as a builder to create an object of type SimpleUser.
      */
     public static class Builder {
 
@@ -86,31 +86,56 @@ public class SimpleUser implements User {
         private String surname = "";
         private DateTime birthday = new DateTime();
 
+        /**
+         * @param username the username of the user.
+         * @return the builder object.
+         */
         public Builder username(final String username) {
             this.username = username;
             return this;
         }
 
+        /**
+         * @param email the email of the user.
+         * @return the builder object.
+         */
         public Builder email(final String email) {
             this.email = email;
             return this;
         }
 
+        /**
+         * @param name the name of the user.
+         * @return the builder object.
+         */
         public Builder name(final String name) {
             this.name = name;
             return this;
         }
 
+        /**
+         * @param surname the surname of the user.
+         * @return the builder object.
+         */
         public Builder surname(final String surname) {
             this.surname = surname;
             return this;
         }
 
+        /**
+         * @param birthday the date of birth of the user.
+         * @return the builder object.
+         */
         public Builder birthday(final DateTime birthday) {
             this.birthday = birthday;
             return this;
         }
 
+        /**
+         * Builds an object of type SimpleUser with the supplied fields.
+         * @return an object of type SimpleUser.
+         * @throws MandatoryFieldMissingException if one or more mandatory fields have not been inserted.
+         */
         public SimpleUser build() throws MandatoryFieldMissingException {
             if (username == null) {
                 throw new MandatoryFieldMissingException("username", "SimpleUser");

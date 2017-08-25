@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.collaborations;
 
 import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 
 import java.util.Collections;
@@ -17,6 +16,11 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
 
     private final Set<Module> modules;
 
+    /**
+     * Class constructor.
+     * @param id the identifier of the project.
+     * @param name the name of the project.
+     */
     public ConcreteProject(final String id, final String name) {
         super(id, name);
         modules = new HashSet<>();
@@ -88,7 +92,9 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
         for (final Module m: modules) {
             try {
                 return m.getNote(noteId);
-            } catch (final NoSuchElementException e) { }
+            } catch (final NoSuchElementException e) {
+                // keep searching
+            }
         }
         return super.getNote(noteId);
     }
@@ -102,19 +108,6 @@ public class ConcreteProject extends AbstractCollaboration implements Project {
         }
         return false;
     }
-
-    /*@Override
-    public boolean addNote(final Note note) {
-        if (note instanceof ModuleNote) {
-            final ModuleNote mn = (ModuleNote) note;
-            for (final Module m: modules) {
-                if (m.getId().equals(mn.getModuleId())) {
-                    return m.addNote(mn.getNote());
-                }
-            }
-        }
-        return super.addNote(note);
-    }*/
 
     @Override
     public boolean removeNote(final String noteId) {

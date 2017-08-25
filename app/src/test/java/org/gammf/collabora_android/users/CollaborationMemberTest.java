@@ -15,7 +15,6 @@ public class CollaborationMemberTest {
 
     private SimpleUser user;
     private CollaborationMember member;
-    private AccessRight right;
 
     @Before
     public void setUp() throws Exception {
@@ -26,8 +25,7 @@ public class CollaborationMemberTest {
                 .surname("Peruzzi")
                 .birthday(new DateTime(1994, 3, 7, 0, 0))
                 .build();
-        right = AccessRight.ADMIN;
-        member = new CollaborationMember(user, right);
+        member = new SimpleCollaborationMember(user, AccessRight.ADMIN);
     }
 
     @Test
