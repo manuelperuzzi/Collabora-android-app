@@ -10,12 +10,9 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
-import org.gammf.collabora_android.utils.CollaborationUtils;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -29,7 +26,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
 
     /**
      * Async task constructor.
-     * @param context the application context used to access the application local files.
+     * @param context the application context, used to access the application local files.
      */
     public StoreNotificationsTask(final Context context) {
         this.context = context;
@@ -40,7 +37,8 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         final UpdateMessage message = updateMessages[0];
 
         try {
-            final Collaboration storedCollaboration = readCollaborationFromFile(message.getCollaborationId());
+            final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
+                    context, message.getCollaborationId());
             switch (message.getTarget()) {
                 case NOTE:
                     return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
@@ -75,7 +73,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
                 return false;
         }
 
-        writeCollaborationToFile(storedCollaboration);
+        LocalStorageUtils.writeCollaborationToFile(context, storedCollaboration);
         return true;
     }
 
@@ -99,7 +97,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
                     return false;
             }
 
-            writeCollaborationToFile(storedCollaboration);
+            LocalStorageUtils.writeCollaborationToFile(context, storedCollaboration);
             return true;
         }
         return false;
@@ -122,7 +120,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
                 return false;
         }
 
-        writeCollaborationToFile(storedCollaboration);
+        LocalStorageUtils.writeCollaborationToFile(context, storedCollaboration);
         return true;
     }
 
@@ -130,9 +128,8 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
             throws IOException, JSONException {
         switch (message.getUpdateType()) {
             case UPDATING:
-                final JSONObject json = CollaborationUtils.collaborationToJson(message.getCollaboration());
                 // TODO update collaboration in the general file
-                writeStoredFile(message.getCollaborationId(), json);
+                LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
                 return true;
             case DELETION:
                 context.deleteFile(message.getCollaborationId());
@@ -141,31 +138,6 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
             default:
                 return false;
         }
-    }
-
-    private Collaboration readCollaborationFromFile(final String collaborationId) throws IOException, JSONException {
-        final JSONObject storedJson = readStoredFile(collaborationId);
-        return CollaborationUtils.jsonToCollaboration(storedJson);
-    }
-
-    private JSONObject readStoredFile(final String filename) throws IOException, JSONException {
-        final FileInputStream fis = context.openFileInput(filename);
-        final byte[] content = new byte[fis.available()];
-        if (fis.read(content, 0, content.length) <= 0) {
-            throw new IOException();
-        }
-        return new JSONObject(new String(content));
-    }
-
-    private void writeCollaborationToFile(final Collaboration collaboration) throws IOException, JSONException{
-        final JSONObject json = CollaborationUtils.collaborationToJson(collaboration);
-        writeStoredFile(collaboration.getId(), json);
-    }
-
-    private void writeStoredFile(final String filename, final JSONObject json) throws IOException {
-        final FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-        fos.write(json.toString().getBytes());
-        fos.close();
     }
 
 }
