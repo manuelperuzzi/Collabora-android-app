@@ -15,6 +15,8 @@ import org.gammf.collabora_android.app.R;
 
 /**
  * Created by Mattia on 21/08/2017.
+ *
+ * Expandable list adapter customized for collaboration list drawer in main menu
  */
 
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {

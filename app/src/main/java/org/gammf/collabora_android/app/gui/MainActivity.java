@@ -48,6 +48,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
+    private static final String SENDER = "MainActivity";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String TOAST_COLLABCREATED = " created!";
+    private static final String DIALOGNAME = "NewCollabDialogFragment";
+
+    private static final String TYPE_PROJECT = "Project";
+    private static final String TYPE_GROUP = "Group";
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -69,11 +76,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        res = getResources();
 
-        personal = new ArrayList<String>();
-        personal.add("My List");
-        group = new ArrayList<String>();
-        project = new ArrayList<String>();
+        personal = new ArrayList<>();
+        personal.add(res.getString(R.string.personal_list));
+        group = new ArrayList<>();
+        project = new ArrayList<>();
 
         fillCollabList();
 
@@ -91,15 +99,11 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 showNoticeDialog();
-
             }
         });
 
         expandableListDetail = new HashMap<>();
-        res = getResources();
-        res.getString(R.string.rg_group);
         expandableListDetail.put(res.getString(R.string.personal_drawer), personal);
         expandableListDetail.put(res.getString(R.string.groups_drawer), group);
         expandableListDetail.put(res.getString(R.string.project_drawer), project);
@@ -118,7 +122,6 @@ public class MainActivity extends AppCompatActivity
                 final String listName =
                         expandableListDetail.get(
                                 expandableListTitle.get(groupPosition)).get(childPosition);
-                Log.println(Log.ERROR, "ERRORONI", "select --> "+expandableListTitle.get(groupPosition));
                 selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
                 /*
                        Per il nome del gruppo: expandableListTitle.get(groupPosition)
@@ -196,8 +199,7 @@ public class MainActivity extends AppCompatActivity
     private void selectItem(int position, String itemType, String itemName) {
 
         Fragment fragment = null;
-        Log.println(Log.ERROR, "ERRORONI", "select --> "+itemType);
-        fragment = CollaborationFragment.newInstance("drawerSelection", itemName, itemType);
+        fragment = CollaborationFragment.newInstance(SENDER, itemName, itemType);
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity
 
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
 
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        Fragment fragment = CollaborationFragment.newInstance("drawerSelection", collabname, collabType);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabname, collabType);
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -436,12 +438,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         //check the collab type
-        if(collabType.equals("Group")) {
+        if(collabType.equals(TYPE_GROUP)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
             group.add(collabName);
             //qui invece metto nel fragment il tipo della collab per evitare problemi di equalsss
             collabType = res.getString(R.string.groups_drawer);
-        }else if(collabType.equals("Project")) {
+        }else if(collabType.equals(TYPE_PROJECT)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
             project.add(collabName);
             collabType = res.getString(R.string.project_drawer);
@@ -449,7 +451,7 @@ public class MainActivity extends AppCompatActivity
 
 
         //prepare fragment for new collab inserted
-        Fragment fragment = CollaborationFragment.newInstance("drawerselection", collabName, collabType);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabName, collabType);
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -461,7 +463,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         Context context = getApplicationContext();
-        CharSequence text = ""+collabType+" created!";
+        CharSequence text = ""+collabType+TOAST_COLLABCREATED;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
@@ -477,7 +479,7 @@ public class MainActivity extends AppCompatActivity
     public void showNoticeDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
-        dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
+        dialog.show(getSupportFragmentManager(), DIALOGNAME);
     }
 
 

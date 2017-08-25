@@ -24,8 +24,11 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class EditCollaborationFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    private static final String SENDER = "editcollabfrag";
+
+    private static final String TOAST_ERR_EDITCANCEL = "Edit discarded";
+
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
 
@@ -113,7 +116,8 @@ public class EditCollaborationFragment extends Fragment {
                         returnToCollabFragment();
                     }else { //members not changed and name not modified
 
-                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Edit discarded", Toast.LENGTH_SHORT);
+                        Toast toast =
+                                Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
                         toast.show();
 
                         returnToCollabFragment();
@@ -153,7 +157,7 @@ public class EditCollaborationFragment extends Fragment {
     }
 
     private void returnToCollabFragment(){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance("editcollab", collabName, collabType);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collabName, collabType);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
 
     }

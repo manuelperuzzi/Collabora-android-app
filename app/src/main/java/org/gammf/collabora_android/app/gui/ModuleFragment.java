@@ -24,6 +24,12 @@ import java.util.ArrayList;
  */
 public class ModuleFragment extends Fragment {
 
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String SENDER = "ModuleFragment";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+
+    private static final String CALLER_NOTECREATION = "notecreationfrag";
+
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
@@ -81,7 +87,7 @@ public class ModuleFragment extends Fragment {
         moduleNotesList.setAdapter(adapter);
         moduleNotesList.setOnItemClickListener(new ModuleFragment.DrawerItemClickListener());
 
-        if(sender.equals("notecreation"))
+        if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
             listItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
@@ -91,7 +97,7 @@ public class ModuleFragment extends Fragment {
         btnAddNoteModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newNoteFragment = CreateNoteFragment.newInstance("modulefrag", collabname, collabtype, "fintocollabid", moduleName);
+                Fragment newNoteFragment = CreateNoteFragment.newInstance(SENDER, collabname, collabtype, "fintocollabid", moduleName);
                 changeFragment(newNoteFragment);
             }
         });
@@ -110,22 +116,19 @@ public class ModuleFragment extends Fragment {
     }
 
     private void selectItem(int position, String itemName) {
-        Fragment openNoteFragment = new NoteFragment();
-        Bundle fragmentArgument = new Bundle();
-        fragmentArgument.putString("collabName", moduleName);
-        openNoteFragment.setArguments(fragmentArgument);
+        Fragment openNoteFragment = NoteFragment.newInstance(SENDER,collabname, collabtype, "nomodule", itemName);
         changeFragment(openNoteFragment);
     }
 
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.addToBackStack("xyz");
+            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
             fragmentTransaction2.hide(ModuleFragment.this);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
 

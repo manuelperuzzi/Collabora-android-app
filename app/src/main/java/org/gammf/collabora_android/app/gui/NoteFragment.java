@@ -52,6 +52,19 @@ implements OnMapReadyCallback{
     private CameraPosition cameraPosition;
     private TextView expiration;
 
+    private Double startingLat = 42.50;
+    private Double startingLng = 12.50;
+    private int startingZoom = 15;
+    private int animationZoom = 5;
+    private int animationMsDuration = 2000;
+    private int zoomNote = 17;
+    private int bearingNote = 90;
+    private int tiltNote = 30;
+
+    private Double latitudeNote = 44.1390945;
+    private Double longitudeNote = 12.2429281;
+
+
     public NoteFragment() {
     }
 
@@ -135,7 +148,7 @@ implements OnMapReadyCallback{
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                    .position(new LatLng(44.1390945, 12.2429281)));
+                    .position(new LatLng(latitudeNote, longitudeNote)));
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -144,20 +157,20 @@ implements OnMapReadyCallback{
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             MapsInitializer.initialize(this.getActivity());
 
-            LatLng italy = new LatLng(42.50, 12.50);
-            LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            LatLng italy = new LatLng(startingLat, startingLng);
+            LatLng coordinates = new LatLng(latitudeNote, longitudeNote);
             // Move the camera instantly to Italy with a zoom of 15.
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, startingZoom));
             // Zoom in, animating the camera.
             googleMap.animateCamera(CameraUpdateFactory.zoomIn());
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
             // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
             cameraPosition = new CameraPosition.Builder()
                     .target(coordinates)      // Sets the center of the map to Mountain View
-                    .zoom(17)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                    .zoom(zoomNote)                   // Sets the zoom
+                    .bearing(bearingNote)                // Sets the orientation of the camera to east
+                    .tilt(tiltNote)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -196,17 +209,6 @@ implements OnMapReadyCallback{
                 break;
             }
         }
-        //Only for min API 21
-        //progressBarState.setProgressTintList(ColorStateList.valueOf(Color.RED));
     }
-
-
-    /*   Handler txtsettext = new Handler(Looper.getMainLooper());
-        txtsettext.post(new Runnable() {
-            public void run() {
-                contentNote.setText(collabname);
-            }
-        });
-*/
 
 }

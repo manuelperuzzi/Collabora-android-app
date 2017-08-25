@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
+ *
+ * Custom Adapter for list view
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 

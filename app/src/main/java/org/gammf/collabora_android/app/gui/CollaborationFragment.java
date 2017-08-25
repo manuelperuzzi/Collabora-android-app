@@ -28,7 +28,7 @@ public class CollaborationFragment extends Fragment {
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "collabfrag";
-
+    private static final String CALLER_NOTECREATION = "notecreationfrag";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
@@ -123,7 +123,7 @@ public class CollaborationFragment extends Fragment {
             fillModulesList();
         }
 
-        if(sender.equals("notecreationfrag"))
+        if(sender.equals(CALLER_NOTECREATION))
         {
             //FRAGMENT CALLED BY CreateNoteFragment:
             //  -things to do: add note
