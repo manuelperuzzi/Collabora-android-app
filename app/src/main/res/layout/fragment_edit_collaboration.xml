@@ -69,7 +69,7 @@
         android:inputType="text"
         android:layout_below="@+id/imageView8"
         android:layout_alignStart="@+id/imageView8"
-        android:layout_alignEnd="@+id/lblTitleNewCollab"/>
+        android:layout_alignEnd="@+id/lblTitleEditedCollab"/>
 
     <ImageView
         android:id="@+id/imageView8"
@@ -81,7 +81,7 @@
         android:layout_alignStart="@+id/lblTitleEditedCollab"/>
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/txtCollabType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView14"

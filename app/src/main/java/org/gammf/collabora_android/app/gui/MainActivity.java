@@ -48,19 +48,25 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
+    private static final String SENDER = "MainActivity";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String TOAST_COLLABCREATED = " created!";
+    private static final String DIALOGNAME = "NewCollabDialogFragment";
+
+    private static final String TYPE_PROJECT = "Project";
+    private static final String TYPE_GROUP = "Group";
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private GeofenceManager geoManager;
 
-
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
     private List<String> expandableListTitle;
-    private List<String> group;
-    private List<String> project;
-    private List<String> personal;
-    private HashMap<String, List<String>> expandableListDetail;
+    private List<CollaborationDataModelDrawer> group;
+    private List<CollaborationDataModelDrawer> project;
+    private List<CollaborationDataModelDrawer> personal;
+    private HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail;
     private Resources res;
 
     @Override
@@ -69,18 +75,18 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        res = getResources();
 
-        personal = new ArrayList<String>();
-        personal.add("My List");
-        group = new ArrayList<String>();
-        project = new ArrayList<String>();
+        personal = new ArrayList<>();
+        group = new ArrayList<>();
+        project = new ArrayList<>();
 
         fillCollabList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -91,15 +97,11 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 showNoticeDialog();
-
             }
         });
 
         expandableListDetail = new HashMap<>();
-        res = getResources();
-        res.getString(R.string.rg_group);
         expandableListDetail.put(res.getString(R.string.personal_drawer), personal);
         expandableListDetail.put(res.getString(R.string.groups_drawer), group);
         expandableListDetail.put(res.getString(R.string.project_drawer), project);
@@ -115,10 +117,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                final String listName =
+                final CollaborationDataModelDrawer collabSelected =
                         expandableListDetail.get(
                                 expandableListTitle.get(groupPosition)).get(childPosition);
-                selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
+                selectItem(groupPosition, expandableListTitle.get(groupPosition), collabSelected);
                 /*
                        Per il nome del gruppo: expandableListTitle.get(groupPosition)
                        Per il nome selezionato:
@@ -163,26 +165,32 @@ public class MainActivity extends AppCompatActivity
 
         */
     }
-    /*
-    Metodo per riempire le liste nel menu:
-    -viene chiamato quando si apre l'app, alla creazione dell'activity
 
-    -qui recuperare le collaborazioni e inserirle nelle liste
-    -il parametro passato è il nome della collaborazione
+    /*
+    *Metodo per riempire le liste nel menu:
+    *-viene chiamato quando si apre l'app, alla creazione dell'activity
+    *
+    *-qui recuperare le collaborazioni e inserirle nelle liste
+    *-il parametro passato è il nome della collaborazione
      */
     private void fillCollabList(){
 
-        group.add("Group 1");
-        group.add("Group 2");
-        group.add("Group 3");
-        group.add("Group 4");
-        group.add("Group 5");
+        //per l'unica lista personare il nome è già settato in strings
+        //andranno poi fatti i controlli sull'user per recuperare la sua lista
+        personal.add(new CollaborationDataModelDrawer("FintoID",res.getString(R.string.personal_list)));
 
-        project.add("Project 1");
-        project.add("Project 2");
-        project.add("Project 3");
-        project.add("Project 4");
-        project.add("Project 5");
+        //si aggiunge solo il nome della lista, che verrà visualizzato nel menu
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 1"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 2"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 3"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 4"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 5"));
+
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 1"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 2"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 3"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 4"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 5"));
     }
 
     /**
@@ -190,31 +198,23 @@ public class MainActivity extends AppCompatActivity
      *
      * @param position forse si può togliere, è li se diventa utile la posizione in lista ma non penso.
      * @param itemType collaboration type
-     * @param itemName collaboration name
+     * @param collab collaboration name
      */
-    private void selectItem(int position, String itemType, String itemName) {
+    private void selectItem(int position, String itemType, CollaborationDataModelDrawer collab) {
 
         Fragment fragment = null;
-        Bundle fragmentArgument = new Bundle();
-        fragment = new CollaborationFragment();
-        fragmentArgument.putString("collabName", itemName);
-        fragmentArgument.putString("collabType", itemType);
-        fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
+        fragment = CollaborationFragment.newInstance(SENDER, collab.getCollaborationId());
 
-        fragment.setArguments(fragmentArgument);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-          //  mDrawerList.setItemChecked(position, true);
-          //  mDrawerList.setSelection(position);
-            setTitle(itemName);
+            setTitle(collab.getCollaborationName());
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
 
-
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
 
@@ -222,24 +222,26 @@ public class MainActivity extends AppCompatActivity
      * Used for EDIT collaboration
      *
      * @param sender fragment that wants to update the collaboration list.
-     * @param collabname new collaboration name
+     * @param collabId collaborationId
      */
-    public void updateCollaborationList(Fragment sender, String collabname){
+    public void updateCollaborationList(Fragment sender, String collabId){
+
+        //dall'id della collaboration recuperare le info per aggiornare il menu a fianco
 
         if(sender instanceof EditCollaborationFragment){
-            // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
+            // TO-DO qui bisogna
+            // rimuovere la collab precedente dalla lista
+            // aggiungere quella nuova
+
 
         }
 
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabname);
-        args.putBoolean("BOOLEAN_VALUE", true);
-        fragment.setArguments(args);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabId);
+
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collabname);
+            setTitle("METTERE IL NOME RECUPERATO");
         }
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -421,42 +423,44 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Used for ADD NEW COLLABORATION
+     * TRIGGERED FROM DIALOGNEWCOLLAB ON CREATE BUTTON CLICK
      *
      * @param dialog dialog that have triggered this method
      * @param collabName new collaboration name
      * @param collabType new collaboration type
      */
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
-
-        //prepare fragment for new collab inserted
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabName);
-        args.putBoolean("BOOLEAN_VALUE", true);
+    public void onDialogCreateClick(DialogFragment dialog, String collabName, String collabType) {
 
         //close drawer lists, used for update the list.
         for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
             expandableListView.collapseGroup(i);
         }
 
+        //AGGIUNGERE LA COLLABORAZIONE AL SERVER
+        //il nome e il tipo sono nei parametri passati dal dialog
+        //FARSI DARE L'ID
+        String collaborationId = "FINTOID";
+
         //check the collab type
-        if(collabType.equals("Group")) {
+        if(collabType.equals(TYPE_GROUP)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
-            group.add(collabName);
-            //qui invece metto nel fragment il tipo della collab
-            args.putString("collabType", res.getString(R.string.groups_drawer));
-        }else if(collabType.equals("Project")) {
+            group.add(new CollaborationDataModelDrawer(collaborationId,collabName));
+            //qui invece metto nel fragment il tipo della collab per evitare problemi di equalsss
+            collabType = res.getString(R.string.groups_drawer);
+        }else if(collabType.equals(TYPE_PROJECT)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
-            project.add(collabName);
-            args.putString("collabType", res.getString(R.string.project_drawer));
+            project.add(new CollaborationDataModelDrawer(collaborationId,collabName));
+            collabType = res.getString(R.string.project_drawer);
         }
 
+
+        //prepare fragment for new collab inserted
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        fragment.setArguments(args);
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -464,7 +468,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         Context context = getApplicationContext();
-        CharSequence text = ""+collabType+" created!";
+        CharSequence text = ""+collabType+TOAST_COLLABCREATED;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
@@ -473,14 +477,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onDialogCancelClick(DialogFragment dialog) {
         dialog.dismiss();
     }
 
     public void showNoticeDialog() {
         // Create an instance of the dialog fragment and show it
-        DialogFragment dialog = new DialogNewCollaborationFragment();
-        dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
+        DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
+        dialog.show(getSupportFragmentManager(), DIALOGNAME);
     }
 
 
