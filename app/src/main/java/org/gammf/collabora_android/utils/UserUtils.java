@@ -23,13 +23,15 @@ public class UserUtils {
     public static JSONObject userToJson(final User user) throws JSONException {
         final JSONObject json = new JSONObject();
 
-        json.put("username", user.getUsername());
-        json.put("email", user.getEmail());
-        json.put("name", user.getName());
-        json.put("surname", user.getSurname());
-        json.put("birthday", user.getBirthday());
         if (user instanceof CollaborationMember) {
+            json.put("user", user.getUsername());
             json.put("right", ((CollaborationMember) user).getAccessRight().name());
+        } else {
+            json.put("username", user.getUsername());
+            json.put("email", user.getEmail());
+            json.put("name", user.getName());
+            json.put("surname", user.getSurname());
+            json.put("birthday", user.getBirthday());
         }
 
         return json;
