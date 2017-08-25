@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,10 @@ import org.gammf.collabora_android.app.R;
  */
 public class NoteFragment extends Fragment
 implements OnMapReadyCallback{
+
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String SENDER = "notefrag";
 
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABNAME = "collabName";
@@ -113,15 +118,17 @@ implements OnMapReadyCallback{
         btnEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment editNoteFragment = EditNoteFragment.newInstance("notefrag",collabname,collabtype,modulename, notename);
+                Fragment editNoteFragment = EditNoteFragment.newInstance(SENDER,collabname,collabtype,modulename, notename);
 
                 if(editNoteFragment != null) {
                     getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction2.addToBackStack("xyz");
+                    fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
                     fragmentTransaction2.hide(NoteFragment.this);
                     fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
                     fragmentTransaction2.commit();
+                }else {
+                    Log.e(SENDER, CREATIONERROR_FRAG);
                 }
             }
         });
