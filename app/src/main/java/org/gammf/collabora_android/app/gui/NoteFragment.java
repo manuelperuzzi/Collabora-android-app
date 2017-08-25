@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,30 +37,67 @@ import org.gammf.collabora_android.app.R;
 public class NoteFragment extends Fragment
 implements OnMapReadyCallback{
 
-    TextView contentNote;
-    String collabname;
-    ProgressBar progressBarState;
-    TextView lblState;
-    TextView lblResponsible;
-    MapView mapView;
-    GoogleMap googleMap;
-    CameraPosition cameraPosition;
-    TextView expiration;
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
+    private static final String SENDER = "notefrag";
+
+    private static final String ARG_SENDER = "sender";
+    private static final String ARG_COLLABID = "collabId";
+    private static final String ARG_NOTEID = "noteId";
+
+    private TextView contentNote;
+    private String sender, collaborationId, noteId;
+    private String collabname, collabtype, notename;
+    private ProgressBar progressBarState;
+    private TextView lblState;
+    private TextView lblResponsible;
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private CameraPosition cameraPosition;
+    private TextView expiration;
+
+    private Double startingLat = 42.50;
+    private Double startingLng = 12.50;
+    private int startingZoom = 15;
+    private int animationZoom = 5;
+    private int animationMsDuration = 2000;
+    private int zoomNote = 17;
+    private int bearingNote = 90;
+    private int tiltNote = 30;
+
+    private Double latitudeNote = 44.1390945;
+    private Double longitudeNote = 12.2429281;
+
 
     public NoteFragment() {
+    }
+
+    public static NoteFragment newInstance(String sender, String collabId, String noteId) {
+        NoteFragment fragment = new NoteFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SENDER, sender);
+        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_NOTEID, noteId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            this.sender = getArguments().getString(ARG_SENDER);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
+            this.noteId = getArguments().getString(ARG_NOTEID);
+        }
+
+        getNoteDataFromServer();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_note, container, false);
-        Bundle bundle = getArguments();
-        collabname =  bundle.getString("collabName");
 
         contentNote = rootView.findViewById(R.id.contentNote);
         contentNote.setText("Content note will be there, scrivo qualcosa per farlo andare su due linee");
@@ -77,18 +115,19 @@ implements OnMapReadyCallback{
         btnEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment editNoteFragment = new EditNoteFragment();
-                Bundle fragmentArgument = new Bundle();
-                fragmentArgument.putString("collabName", collabname);
+                //recuperare l'id del modulo
+                //per fare la modifica serve per poi sapere se tornare alla collaboration o al modulo stesso
+                Fragment editNoteFragment = EditNoteFragment.newInstance(SENDER, collaborationId, "FINTOIDMODULE", notename);
 
-                editNoteFragment.setArguments(fragmentArgument);
                 if(editNoteFragment != null) {
                     getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction2.addToBackStack("xyz");
+                    fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
                     fragmentTransaction2.hide(NoteFragment.this);
                     fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
                     fragmentTransaction2.commit();
+                }else {
+                    Log.e(SENDER, CREATIONERROR_FRAG);
                 }
             }
         });
@@ -115,7 +154,7 @@ implements OnMapReadyCallback{
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                    .position(new LatLng(44.1390945, 12.2429281)));
+                    .position(new LatLng(latitudeNote, longitudeNote)));
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -124,20 +163,20 @@ implements OnMapReadyCallback{
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             MapsInitializer.initialize(this.getActivity());
 
-            LatLng italy = new LatLng(42.50, 12.50);
-            LatLng coordinates = new LatLng(44.1390945, 12.2429281);
+            LatLng italy = new LatLng(startingLat, startingLng);
+            LatLng coordinates = new LatLng(latitudeNote, longitudeNote);
             // Move the camera instantly to Italy with a zoom of 15.
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, startingZoom));
             // Zoom in, animating the camera.
             googleMap.animateCamera(CameraUpdateFactory.zoomIn());
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
             // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
             cameraPosition = new CameraPosition.Builder()
                     .target(coordinates)      // Sets the center of the map to Mountain View
-                    .zoom(17)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                    .zoom(zoomNote)                   // Sets the zoom
+                    .bearing(bearingNote)                // Sets the orientation of the camera to east
+                    .tilt(tiltNote)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -147,12 +186,16 @@ implements OnMapReadyCallback{
                     return false;
                 }
             });
-
-
-
-
         }
     }
+
+    /***
+     * DA SISTEMARE SIA LA CHIAMATA AL METODO CHE IL METODO STESSO
+     *
+     * La progress bar è da decidere come settare i vari stati in base al valore
+     *
+     * @param state stato della nota contenuto in @NoteProjectState
+     */
     private void setStateProgressBar(String state){
         switch(state){
             case "Doing" :{
@@ -176,17 +219,14 @@ implements OnMapReadyCallback{
                 break;
             }
         }
-        //Only for min API 21
-        //progressBarState.setProgressTintList(ColorStateList.valueOf(Color.RED));
     }
 
 
-    /*   Handler txtsettext = new Handler(Looper.getMainLooper());
-        txtsettext.post(new Runnable() {
-            public void run() {
-                contentNote.setText(collabname);
-            }
-        });
-*/
+    private void getNoteDataFromServer(){
+
+        //prendere i dati dal server e metterli dentro le variabili adatte
+
+        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
+    }
 
 }

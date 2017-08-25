@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
+ *
+ * Custom Adapter for list view
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
@@ -44,8 +46,8 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
         DataModel folder = data.get(position);
 
-        imageViewIcon.setImageResource(folder.icon);
-        textViewName.setText(folder.name);
+        imageViewIcon.setImageResource(folder.getIcon());
+        textViewName.setText(folder.getName());
 
         return listItem;
     }
