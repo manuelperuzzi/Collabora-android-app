@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.users;
 
 import org.gammf.collabora_android.utils.AccessRight;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,29 +12,16 @@ import static org.junit.Assert.*;
  */
 public class CollaborationMemberTest {
 
-    private SimpleUser user;
     private CollaborationMember member;
 
     @Before
     public void setUp() throws Exception {
-        user = new SimpleUser.Builder()
-                .username("peru")
-                .email("manuel.peruzzi@studio.unibo.it")
-                .name("Manuel")
-                .surname("Peruzzi")
-                .birthday(new DateTime(1994, 3, 7, 0, 0))
-                .build();
-        member = new SimpleCollaborationMember(user, AccessRight.ADMIN);
+        member = new SimpleCollaborationMember("peru", AccessRight.ADMIN);
     }
 
     @Test
     public void getUsername() throws Exception {
-        assertEquals(member.getUsername(), user.getUsername());
-    }
-
-    @Test
-    public void getBirthday() throws Exception {
-        assertEquals(member.getBirthday(), user.getBirthday());
+        assertEquals(member.getUsername(), member.getUsername());
     }
 
     @Test

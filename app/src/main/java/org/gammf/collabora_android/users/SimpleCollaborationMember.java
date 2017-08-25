@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.users;
 
 import org.gammf.collabora_android.utils.AccessRight;
-import org.joda.time.DateTime;
 
 /**
  * @author Manuel Peruzzi
@@ -9,47 +8,22 @@ import org.joda.time.DateTime;
  */
 public class SimpleCollaborationMember implements CollaborationMember {
 
-    private final User user;
+    private final String username;
     private final AccessRight accessRight;
 
     /**
      * Class constructor.
-     * @param user the user.
+     * @param username the identifier of the user.
      * @param accessRight the access right of the user.
      */
-    public SimpleCollaborationMember(final User user, final AccessRight accessRight) {
-        this.user = user;
+    public SimpleCollaborationMember(final String username, final AccessRight accessRight) {
+        this.username = username;
         this.accessRight = accessRight;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
-    }
-
-    @Override
-    public String getEmail() {
-        return user.getEmail();
-    }
-
-    @Override
-    public String getName() {
-        return user.getName();
-    }
-
-    @Override
-    public String getSurname() {
-        return user.getSurname();
-    }
-
-    @Override
-    public DateTime getBirthday() {
-        return user.getBirthday();
-    }
-
-    @Override
-    public User getUser() {
-        return user;
+        return username;
     }
 
     @Override
@@ -64,14 +38,15 @@ public class SimpleCollaborationMember implements CollaborationMember {
 
         SimpleCollaborationMember that = (SimpleCollaborationMember) o;
 
-        return user.equals(that.user) && accessRight == that.accessRight;
+        return username != null ? username.equals(that.username) : that.username == null
+                && accessRight == that.accessRight;
 
     }
 
     @Override
     public int hashCode() {
-        int result = user.hashCode();
-        result = 31 * result + accessRight.hashCode();
+        int result = username != null ? username.hashCode() : 0;
+        result = 31 * result + (accessRight != null ? accessRight.hashCode() : 0);
         return result;
     }
 }

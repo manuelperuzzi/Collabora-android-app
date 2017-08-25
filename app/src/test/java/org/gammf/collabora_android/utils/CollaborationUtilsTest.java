@@ -8,8 +8,6 @@ import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.users.SimpleUser;
-import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +26,7 @@ public class CollaborationUtilsTest {
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
 
-        final CollaborationMember member = new SimpleCollaborationMember(
-                new SimpleUser.Builder()
-                        .username("myUsername")
-                        .email("myEmail@gmail.com")
-                        .name("myName")
-                        .surname("mySurname")
-                        .birthday(new DateTime(1994, 3, 7, 0, 0))
-                        .build(), AccessRight.ADMIN);
+        final CollaborationMember member = new SimpleCollaborationMember("myUsername", AccessRight.ADMIN);
         project.addMember(member);
         final Note singleNote = new SimpleNoteBuilder("SingleNote")
                 .setNoteID("singleNoteId")
