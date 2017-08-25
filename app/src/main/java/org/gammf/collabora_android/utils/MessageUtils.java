@@ -16,7 +16,6 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +41,7 @@ public class MessageUtils {
                 jsn.put("collaboration", CollaborationUtils.collaborationToJson(((CollaborationUpdateMessage)message).getCollaboration()));
                 break;
             case MEMBER:
-                jsn.put("member", UserUtils.userToJson(((MemberUpdateMessage)message).getMember()));
+                jsn.put("member", CollaborationMemberUtils.memberToJson(((MemberUpdateMessage)message).getMember()));
                 break;
         }
         return jsn;
@@ -59,26 +58,15 @@ public class MessageUtils {
                 final Note note = NoteUtils.jsonToNote(json.getJSONObject("note"));
                 return new ConcreteNoteUpdateMessage(username, note, updateType, collaborationId);
             case COLLABORATION:
-                try {
-                    final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(
-                            json.getJSONObject("collaboration"));
-                    return new ConcreteCollaborationUpdateMessage(username, collaboration, updateType);
-                } catch (final MandatoryFieldMissingException e) {
-                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
-                }
+                final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(
+                        json.getJSONObject("collaboration"));
+                return new ConcreteCollaborationUpdateMessage(username, collaboration, updateType);
             case MODULE:
                 final Module module = ModulesUtils.jsonToModule(json.getJSONObject("module"));
                 return new ConcreteModuleUpdateMessage(username, module, updateType, collaborationId);
             case MEMBER:
-                try {
-                    final User user = UserUtils.jsonToUser(json.getJSONObject("member"));
-                    if (user instanceof CollaborationMember) {
-                        return new ConcreteMemberUpdateMessage(username, (CollaborationMember) user, updateType, collaborationId);
-                    }
-                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
-                } catch (final MandatoryFieldMissingException e) {
-                    throw new JSONException("JSON message not parsable! Possibly one or more mandatory fields may have not be filled.");
-                }
+                final CollaborationMember member = CollaborationMemberUtils.jsonToMember(json.getJSONObject("member"));
+                return new ConcreteMemberUpdateMessage(username, member, updateType, collaborationId);
             default:
                 throw new JSONException("JSON message not parsable! Target field is incorrect.");
         }
