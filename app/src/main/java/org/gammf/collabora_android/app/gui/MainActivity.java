@@ -33,10 +33,24 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.SendMessageToServerTask;
 import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.CollaborationType;
+import org.gammf.collabora_android.collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.users.SimpleUser;
+import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.gammf.collabora_android.utils.MessageUtils;
+import org.joda.time.DateTime;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -440,18 +454,33 @@ public class MainActivity extends AppCompatActivity
             expandableListView.collapseGroup(i);
         }
 
+        Collaboration collaboration = null;
+
         //check the collab type
         if(collabType.equals("Group")) {
+            collaboration = new ConcreteGroup(null, collabName);
+
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
             group.add(collabName);
             //qui invece metto nel fragment il tipo della collab
             args.putString("collabType", res.getString(R.string.groups_drawer));
         }else if(collabType.equals("Project")) {
+            collaboration = new ConcreteProject(null, collabName);
+
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
             project.add(collabName);
             args.putString("collabType", res.getString(R.string.project_drawer));
         }
 
+        // TODO retrieve member from local storage instead of building it here
+        collaboration.addMember(new SimpleCollaborationMember("manuelperuzzi", AccessRight.ADMIN));
+
+        final UpdateMessage message = new ConcreteCollaborationUpdateMessage("manuelperuzzi",
+                collaboration, UpdateMessageType.CREATION);
+        try {
+            Log.e("UpdateMessage", MessageUtils.updateMessageToJSON(message).toString());
+        } catch (final Exception e) {}
+        new SendMessageToServerTask().execute(message);
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
