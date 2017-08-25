@@ -59,10 +59,9 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private static final String MAPSEARCH_ERROR = "An error occurred: ";
 
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
-    private static final String ARG_MODULENAME = "moduleName";
-    private static final String ARG_NOTENAME = "noteName";
+    private static final String ARG_COLLABID = "collabId";
+    private static final String ARG_MODULEID = "moduleId";
+    private static final String ARG_NOTEID = "noteId";
 
 
     private SupportPlaceAutocompleteFragment autocompleteFragmentEdited;
@@ -77,7 +76,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private LatLng newCoordinates;
     private Spinner spinnerEditState;
 
-    private String sender, collabname, collabtype, modulename, notename;
+    private String sender, collaborationId, collabname, collabtype, moduleId, noteId;
 
     private Double startingLat = 42.50;
     private Double startingLng = 12.50;
@@ -103,14 +102,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String sender, String collabName, String collabType, String moduleName, String noteName) {
+    public static EditNoteFragment newInstance(String sender, String collabId, String moduleId, String noteId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SENDER, sender);
-        args.putString(ARG_COLLABNAME, collabName);
-        args.putString(ARG_COLLABTYPE, collabType);
-        args.putString(ARG_MODULENAME, moduleName);
-        args.putString(ARG_NOTENAME, noteName);
+        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_MODULEID, moduleId);
+        args.putString(ARG_NOTEID, noteId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -121,11 +119,12 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.collabname = getArguments().getString(ARG_COLLABNAME);
-            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
-            this.modulename = getArguments().getString(ARG_MODULENAME);
-            this.notename = getArguments().getString(ARG_NOTENAME);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
+            this.noteId = getArguments().getString(ARG_NOTEID);
         }
+
+        getNoteDataFromServer();
     }
 
     @Override
@@ -340,5 +339,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 return false;
             }
         });
+    }
+
+    private void getNoteDataFromServer(){
+
+        //RECUPERARE I DATI QUI: ci sono gli id nei campi
+        // e mettere i valori nelle rispettive variabili
+        // poi settare sempre i dati all'utente col setText nel onViewCreated
+        // per mettere i campi nella gui come sono prima della modifica
     }
 }

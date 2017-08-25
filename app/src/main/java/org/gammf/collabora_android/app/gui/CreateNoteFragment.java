@@ -58,6 +58,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
+    private static final String NOMODULE = "nomodule";
 
     private SupportPlaceAutocompleteFragment autocompleteFragment;
     private String noteState = "";
@@ -139,6 +140,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                     txtContentNote.setError(res.getString(R.string.fieldempty));
                 }else {
 
+                    //avete un moduleID che può essere nomodule
+                    //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
                     addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
 
                 }

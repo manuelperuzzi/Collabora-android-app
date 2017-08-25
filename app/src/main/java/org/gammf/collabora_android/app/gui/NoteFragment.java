@@ -42,13 +42,12 @@ implements OnMapReadyCallback{
     private static final String SENDER = "notefrag";
 
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
-    private static final String ARG_MODULENAME = "moduleName";
-    private static final String ARG_NOTENAME = "noteName";
+    private static final String ARG_COLLABID = "collabId";
+    private static final String ARG_NOTEID = "noteId";
 
     private TextView contentNote;
-    private String sender, collabname, collabtype, modulename, notename;
+    private String sender, collaborationId, noteId;
+    private String collabname, collabtype, notename;
     private ProgressBar progressBarState;
     private TextView lblState;
     private TextView lblResponsible;
@@ -73,14 +72,12 @@ implements OnMapReadyCallback{
     public NoteFragment() {
     }
 
-    public static NoteFragment newInstance(String sender, String collabName, String collabType, String moduleName, String noteName) {
+    public static NoteFragment newInstance(String sender, String collabId, String noteId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SENDER, sender);
-        args.putString(ARG_COLLABNAME, collabName);
-        args.putString(ARG_COLLABTYPE, collabType);
-        args.putString(ARG_MODULENAME, moduleName);
-        args.putString(ARG_NOTENAME, noteName);
+        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_NOTEID, noteId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,11 +87,11 @@ implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.collabname = getArguments().getString(ARG_COLLABNAME);
-            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
-            this.modulename = getArguments().getString(ARG_MODULENAME);
-            this.notename = getArguments().getString(ARG_NOTENAME);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
+            this.noteId = getArguments().getString(ARG_NOTEID);
         }
+
+        getNoteDataFromServer();
     }
 
     @Override
@@ -118,7 +115,9 @@ implements OnMapReadyCallback{
         btnEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment editNoteFragment = EditNoteFragment.newInstance(SENDER,collabname,collabtype,modulename, notename);
+                //recuperare l'id del modulo
+                //per fare la modifica serve per poi sapere se tornare alla collaboration o al modulo stesso
+                Fragment editNoteFragment = EditNoteFragment.newInstance(SENDER, collaborationId, "FINTOIDMODULE", notename);
 
                 if(editNoteFragment != null) {
                     getActivity().getSupportFragmentManager();
@@ -187,12 +186,16 @@ implements OnMapReadyCallback{
                     return false;
                 }
             });
-
-
-
-
         }
     }
+
+    /***
+     * DA SISTEMARE SIA LA CHIAMATA AL METODO CHE IL METODO STESSO
+     *
+     * La progress bar è da decidere come settare i vari stati in base al valore
+     *
+     * @param state stato della nota contenuto in @NoteProjectState
+     */
     private void setStateProgressBar(String state){
         switch(state){
             case "Doing" :{
@@ -216,6 +219,14 @@ implements OnMapReadyCallback{
                 break;
             }
         }
+    }
+
+
+    private void getNoteDataFromServer(){
+
+        //prendere i dati dal server e metterli dentro le variabili adatte
+
+        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
     }
 
 }

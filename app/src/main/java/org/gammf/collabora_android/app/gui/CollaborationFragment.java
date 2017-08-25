@@ -31,6 +31,7 @@ public class CollaborationFragment extends Fragment {
     private static final String CALLER_NOTECREATION = "notecreationfrag";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabid";
+    private static final String NOMODULE = "nomodule";
 
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
@@ -138,7 +139,7 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(SENDER, collabId, "nomodule");
+                        CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE);
 
                 changeFragment(newNoteFragment);
             }
@@ -150,9 +151,9 @@ public class CollaborationFragment extends Fragment {
 
     private void fillNotesList(){
         //HERE THE CODE FOR FILL NOTES LIST
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(new ListItemClickListener());
@@ -160,9 +161,9 @@ public class CollaborationFragment extends Fragment {
 
     private void fillModulesList(){
         //HERE THE CODE FOR FILL MODULES LIST
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 1", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 2", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "Module 3", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 1", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 2", true));
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 3", true));
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(new ListItemClickListener());
@@ -170,7 +171,12 @@ public class CollaborationFragment extends Fragment {
 
     private void addNewNote(){
         //HERE THE CODE FOR ADD NEW NOTE
-        noteItems.add(new DataModel(R.drawable.note_icon, "New Note Content"));
+        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
+    }
+
+    private void addNewModule(){
+        //HERE THE CODE FOR ADD NEW MODULE
+        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "New Module", true));
     }
 
     private class ListItemClickListener implements ListView.OnItemClickListener {
@@ -186,9 +192,9 @@ public class CollaborationFragment extends Fragment {
     private void selectItem(int position, DataModel itemSelected) {
         Fragment openFragment = null;
         if(itemSelected.getIfIsModule()){
-            openFragment = ModuleFragment.newInstance(SENDER, collabname, collabtype, itemSelected.getName());
+            openFragment = ModuleFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }else{
-            openFragment = NoteFragment.newInstance(SENDER,collabname, collabtype, "nomodule", itemSelected.getName());
+            openFragment = NoteFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }
         changeFragment(openFragment);
     }
@@ -212,7 +218,7 @@ public class CollaborationFragment extends Fragment {
 
         this.collabname = "Nome finto";
         //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
-        this.collabtype = TYPE_GROUP;
+        this.collabtype = TYPE_PROJECT;
     }
 
 }

@@ -31,12 +31,11 @@ public class ModuleFragment extends Fragment {
     private static final String CALLER_NOTECREATION = "notecreationfrag";
 
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
-    private static final String ARG_MODULENAME = "moduleName";
+    private static final String ARG_COLLABID = "collabId";
+    private static final String ARG_MODULEID = "moduleId";
 
     private FloatingActionButton btnAddNoteModule;
-    private String sender, collabname, collabtype, moduleName;
+    private String sender, collaborationId, moduleId, collabname, collabtype, moduleName;
     private ListView moduleNotesList;
     private ArrayList<DataModel> listItem;
 
@@ -50,13 +49,12 @@ public class ModuleFragment extends Fragment {
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static ModuleFragment newInstance(String sender, String collabName, String collabType, String moduleName) {
+    public static ModuleFragment newInstance(String sender, String collabId, String moduleId) {
         ModuleFragment fragment = new ModuleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SENDER, sender);
-        args.putString(ARG_COLLABNAME, collabName);
-        args.putString(ARG_COLLABTYPE, collabType);
-        args.putString(ARG_MODULENAME, moduleName);
+        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,10 +64,11 @@ public class ModuleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.collabname = getArguments().getString(ARG_COLLABNAME);
-            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
-            this.moduleName = getArguments().getString(ARG_MODULENAME);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
+
+        getModuleDataFromServer();
     }
 
     @Override
@@ -80,9 +79,9 @@ public class ModuleFragment extends Fragment {
         moduleNotesList = (ListView) rootView.findViewById(R.id.moduleNotesListView);
 
         listItem = new ArrayList<DataModel>();
-        listItem.add(new DataModel(R.drawable.note_icon, "Note Content 1"));
-        listItem.add(new DataModel(R.drawable.note_icon, "Note Content 2"));
-        listItem.add(new DataModel(R.drawable.note_icon, "Note Content 3"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, listItem);
         moduleNotesList.setAdapter(adapter);
         moduleNotesList.setOnItemClickListener(new ModuleFragment.DrawerItemClickListener());
@@ -90,14 +89,14 @@ public class ModuleFragment extends Fragment {
         if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new DataModel(R.drawable.note_icon, "New Note Content"));
+            listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
         }
 
         btnAddNoteModule = (FloatingActionButton) rootView.findViewById(R.id.btnAddNoteInModule);
         btnAddNoteModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newNoteFragment = CreateNoteFragment.newInstance(SENDER, collabname, collabtype, "fintocollabid", moduleName);
+                Fragment newNoteFragment = CreateNoteFragment.newInstance(SENDER, collaborationId, moduleName);
                 changeFragment(newNoteFragment);
             }
         });
@@ -109,14 +108,14 @@ public class ModuleFragment extends Fragment {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName.getName());
+            final DataModel listItem = (DataModel) parent.getItemAtPosition(position);
+            selectItem(position, listItem.getId());
         }
 
     }
 
-    private void selectItem(int position, String itemName) {
-        Fragment openNoteFragment = NoteFragment.newInstance(SENDER,collabname, collabtype, "nomodule", itemName);
+    private void selectItem(int position, String itemId) {
+        Fragment openNoteFragment = NoteFragment.newInstance(SENDER, collaborationId, itemId);
         changeFragment(openNoteFragment);
     }
 
@@ -130,6 +129,12 @@ public class ModuleFragment extends Fragment {
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
+    }
+
+    private void getModuleDataFromServer(){
+        //stessa cosa delle note
+        //prendere i dati dal server e metterli dentro le variabili adatte
+        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
     }
 
 }
