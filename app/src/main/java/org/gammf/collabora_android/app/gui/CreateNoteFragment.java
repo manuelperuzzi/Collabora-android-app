@@ -56,10 +56,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private static final String SENDER = "notecreationfrag";
 
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
-    private static final String ARG_MODULENAME = "moduleName";
+    private static final String ARG_MODULEID = "moduleName";
 
     private SupportPlaceAutocompleteFragment autocompleteFragment;
     private String noteState = "";
@@ -70,7 +68,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String sender, collabName, collabType, collaborationId, moduleName;
+    private String sender, collabName, collabType, collaborationId, moduleId;
 
     public CreateNoteFragment() {
         // Required empty public constructor
@@ -79,24 +77,19 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param collabName collaboration name
-     * @param collabType collaboration type
+     * @param sender
      * @param collaborationId collaboration id
+     * @param moduleId
      *
      * @return A new instance of fragment CreateNoteFragment.
      */
     public static CreateNoteFragment newInstance(String sender,
-                                                 String collabName,
-                                                 String collabType,
                                                  String collaborationId,
-                                                 String moduleName) {
+                                                 String moduleId) {
         Bundle arg = new Bundle();
         arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABORATION_ID, collaborationId);
-        arg.putString(ARG_COLLABNAME, collabName);
-        arg.putString(ARG_COLLABTYPE, collabType);
-        arg.putString(ARG_MODULENAME, moduleName);
+        arg.putString(ARG_MODULEID, moduleId);
         final CreateNoteFragment fragment = new CreateNoteFragment();
         fragment.setArguments(arg);
         Log.i("Async", "DIO E': " + fragment.getArguments().getString(ARG_COLLABORATION_ID));
@@ -110,9 +103,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
             this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
-            this.collabName = getArguments().getString(ARG_COLLABNAME);
-            this.collabType = getArguments().getString(ARG_COLLABTYPE);
-            this.moduleName = getArguments().getString(ARG_MODULENAME);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
     }
 
@@ -188,7 +179,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER,collabName, collabType);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
         final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
         final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);

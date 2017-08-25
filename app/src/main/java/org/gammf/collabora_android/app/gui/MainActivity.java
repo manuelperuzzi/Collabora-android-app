@@ -63,10 +63,10 @@ public class MainActivity extends AppCompatActivity
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
     private List<String> expandableListTitle;
-    private List<String> group;
-    private List<String> project;
-    private List<String> personal;
-    private HashMap<String, List<String>> expandableListDetail;
+    private List<CollaborationDataModelDrawer> group;
+    private List<CollaborationDataModelDrawer> project;
+    private List<CollaborationDataModelDrawer> personal;
+    private HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail;
     private Resources res;
 
     @Override
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity
         res = getResources();
 
         personal = new ArrayList<>();
-        personal.add(res.getString(R.string.personal_list));
         group = new ArrayList<>();
         project = new ArrayList<>();
 
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -118,10 +117,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                final String listName =
+                final CollaborationDataModelDrawer collabSelected =
                         expandableListDetail.get(
                                 expandableListTitle.get(groupPosition)).get(childPosition);
-                selectItem(groupPosition, expandableListTitle.get(groupPosition), listName);
+                selectItem(groupPosition, expandableListTitle.get(groupPosition), collabSelected);
                 /*
                        Per il nome del gruppo: expandableListTitle.get(groupPosition)
                        Per il nome selezionato:
@@ -166,6 +165,7 @@ public class MainActivity extends AppCompatActivity
 
         */
     }
+
     /*
     *Metodo per riempire le liste nel menu:
     *-viene chiamato quando si apre l'app, alla creazione dell'activity
@@ -175,17 +175,22 @@ public class MainActivity extends AppCompatActivity
      */
     private void fillCollabList(){
 
-        group.add("Group 1");
-        group.add("Group 2");
-        group.add("Group 3");
-        group.add("Group 4");
-        group.add("Group 5");
+        //per l'unica lista personare il nome è già settato in strings
+        //andranno poi fatti i controlli sull'user per recuperare la sua lista
+        personal.add(new CollaborationDataModelDrawer("FintoID",res.getString(R.string.personal_list)));
 
-        project.add("Project 1");
-        project.add("Project 2");
-        project.add("Project 3");
-        project.add("Project 4");
-        project.add("Project 5");
+        //si aggiunge solo il nome della lista, che verrà visualizzato nel menu
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 1"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 2"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 3"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 4"));
+        group.add(new CollaborationDataModelDrawer("FintoID","Group 5"));
+
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 1"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 2"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 3"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 4"));
+        project.add(new CollaborationDataModelDrawer("FintoID","Project 5"));
     }
 
     /**
@@ -193,23 +198,20 @@ public class MainActivity extends AppCompatActivity
      *
      * @param position forse si può togliere, è li se diventa utile la posizione in lista ma non penso.
      * @param itemType collaboration type
-     * @param itemName collaboration name
+     * @param collab collaboration name
      */
-    private void selectItem(int position, String itemType, String itemName) {
+    private void selectItem(int position, String itemType, CollaborationDataModelDrawer collab) {
 
         Fragment fragment = null;
-        fragment = CollaborationFragment.newInstance(SENDER, itemName, itemType);
+        fragment = CollaborationFragment.newInstance(SENDER, collab.getCollaborationId());
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-          //  mDrawerList.setItemChecked(position, true);
-          //  mDrawerList.setSelection(position);
-            setTitle(itemName);
+            setTitle(collab.getCollaborationName());
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
-
 
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
@@ -220,27 +222,26 @@ public class MainActivity extends AppCompatActivity
      * Used for EDIT collaboration
      *
      * @param sender fragment that wants to update the collaboration list.
-     * @param collabname new collaboration name
+     * @param collabId collaborationId
      */
-    public void updateCollaborationList(Fragment sender, String collabname, String collabType){
+    public void updateCollaborationList(Fragment sender, String collabId){
 
-        //in collabType c'è il tipo per capire in quale lista va modificata la collaboration
+        //dall'id della collaboration recuperare le info per aggiornare il menu a fianco
 
         if(sender instanceof EditCollaborationFragment){
             // TO-DO qui bisogna
-            // aggiornare il server col nome nuovo
             // rimuovere la collab precedente dalla lista
             // aggiungere quella nuova
 
 
         }
 
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabname, collabType);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabId);
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collabname);
+            setTitle("METTERE IL NOME RECUPERATO");
         }
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -436,21 +437,26 @@ public class MainActivity extends AppCompatActivity
             expandableListView.collapseGroup(i);
         }
 
+        //AGGIUNGERE LA COLLABORAZIONE AL SERVER
+        //il nome e il tipo sono nei parametri passati dal dialog
+        //FARSI DARE L'ID
+        String collaborationId = "FINTOID";
+
         //check the collab type
         if(collabType.equals(TYPE_GROUP)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
-            group.add(collabName);
+            group.add(new CollaborationDataModelDrawer(collaborationId,collabName));
             //qui invece metto nel fragment il tipo della collab per evitare problemi di equalsss
             collabType = res.getString(R.string.groups_drawer);
         }else if(collabType.equals(TYPE_PROJECT)) {
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
-            project.add(collabName);
+            project.add(new CollaborationDataModelDrawer(collaborationId,collabName));
             collabType = res.getString(R.string.project_drawer);
         }
 
 
         //prepare fragment for new collab inserted
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabName, collabType);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);

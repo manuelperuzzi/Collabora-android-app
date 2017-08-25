@@ -23,10 +23,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableListTitle;
-    private final HashMap<String, List<String>> expandableListDetail;
+    private final HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail;
 
     public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<String>> expandableListDetail) {
+                                       HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;

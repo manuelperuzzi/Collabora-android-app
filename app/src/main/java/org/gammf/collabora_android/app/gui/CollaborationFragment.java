@@ -30,11 +30,13 @@ public class CollaborationFragment extends Fragment {
     private static final String SENDER = "collabfrag";
     private static final String CALLER_NOTECREATION = "notecreationfrag";
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
+    private static final String ARG_COLLABID = "collabid";
+
+    private static final String TYPE_PROJECT = "Project";
+    private static final String TYPE_GROUP = "Group";
 
     private FloatingActionButton btnAddNote;
-    private String sender;
+    private String sender, collabId;
     private String collabname, collabtype;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
@@ -50,12 +52,12 @@ public class CollaborationFragment extends Fragment {
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static CollaborationFragment newInstance(String sender, String name, String type) {
+
+    public static CollaborationFragment newInstance(String sender, String collaborationId) {
         CollaborationFragment fragment = new CollaborationFragment();
         Bundle arg = new Bundle();
         arg.putString(ARG_SENDER, sender);
-        arg.putString(ARG_COLLABNAME, name);
-        arg.putString(ARG_COLLABTYPE, type);
+        arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
         return fragment;
     }
@@ -65,10 +67,10 @@ public class CollaborationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.collabname = getArguments().getString(ARG_COLLABNAME);
-            this.collabtype = getArguments().getString(ARG_COLLABTYPE);
+            this.collabId = getArguments().getString(ARG_COLLABID);
         }
         setHasOptionsMenu(true);
+        getDataFromServer(this.collabId);
 
     }
 
@@ -89,7 +91,7 @@ public class CollaborationFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collabname, collabtype);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collabId);
             changeFragment(editCollabFragment);
             return true;
         }
@@ -118,7 +120,7 @@ public class CollaborationFragment extends Fragment {
         tab2.setIndicator(res.getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
         tabHost.addTab(tab2);
-        if(collabtype.equals(res.getString(R.string.project_drawer))) {
+        if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
             fillModulesList();
         }
@@ -136,7 +138,7 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(SENDER, collabname,collabtype,"59806a4af27da3fcfe0ac0ca", "nomodule");
+                        CreateNoteFragment.newInstance(SENDER, collabId, "nomodule");
 
                 changeFragment(newNoteFragment);
             }
@@ -201,6 +203,16 @@ public class CollaborationFragment extends Fragment {
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
+    }
+
+    private void getDataFromServer(String collabId){
+
+
+
+
+        this.collabname = "Nome finto";
+        //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
+        this.collabtype = TYPE_GROUP;
     }
 
 }

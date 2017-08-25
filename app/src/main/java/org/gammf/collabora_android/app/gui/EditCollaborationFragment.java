@@ -29,10 +29,11 @@ public class EditCollaborationFragment extends Fragment {
 
     private static final String TOAST_ERR_EDITCANCEL = "Edit discarded";
 
+    private static final String ARG_COLLABID = "collabid";
     private static final String ARG_COLLABNAME = "collabName";
     private static final String ARG_COLLABTYPE = "collabType";
 
-    // TODO: Rename and change types of parameters
+    private String collaborationId;
     private String collabName, collabType;
     private Resources res;
     private ListView memberList;
@@ -53,16 +54,14 @@ public class EditCollaborationFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param nameToEdit collaboration name
-     * @param collabType collaboration type
+     * @param collabId collaboration id
      * @return A new instance of fragment EditCollaborationFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static EditCollaborationFragment newInstance(String nameToEdit, String collabType) {
+
+    public static EditCollaborationFragment newInstance(String collabId) {
         EditCollaborationFragment fragment = new EditCollaborationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_COLLABNAME, nameToEdit);
-        args.putString(ARG_COLLABTYPE, collabType);
+        args.putString(ARG_COLLABID, collabId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,9 +70,10 @@ public class EditCollaborationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            collabName = getArguments().getString(ARG_COLLABNAME);
-            collabType = getArguments().getString(ARG_COLLABTYPE);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
+
+        getDataFromServer();
     }
 
     @Override
@@ -130,6 +130,28 @@ public class EditCollaborationFragment extends Fragment {
         return rootView;
     }
 
+    private void updateCollaboration(String collabName){
+        //QUI AGGIORNARE LA COLLABORAZIONE
+        ((MainActivity)getActivity()).updateCollaborationList(this, collaborationId);
+    }
+
+    private void returnToCollabFragment(){
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
+
+    }
+
+    private void getDataFromServer(){
+
+        //recuperare il titolo, il tipo e la lista dei membri
+
+        //il metodo per aggiungere i membri viene chiamato dentro onviewcreated
+        //perchè prima deve essere inizializzata la view per riempire la lista
+        //vedete voi se spostare getDataFromServer dentro onviewcreated al posto di getMemberAndFillList
+        //oppure se salvare i dati da qualche parte e poi dal metodo qui sotto se li aggiunge alla lista
+
+    }
+
     private void getMemberAndFillList(){
 
         //HERE THE CODE FOR GET THE MEMBER LIST
@@ -144,22 +166,15 @@ public class EditCollaborationFragment extends Fragment {
         memberList.setAdapter(adapter);
     }
 
+    /***
+     * Called when user add a new member
+     */
     private void updateMemberList(){
 
         memberItem.add(new DataModel(R.drawable.user, "New Member"));
         adapter.notifyDataSetChanged();
 
         memberHasChanged = true; //importante per i controlli se è stata fatta una modifica o meno
-    }
-
-    private void updateCollaboration(String collabName){
-        ((MainActivity)getActivity()).updateCollaborationList(this, collabName, collabType);
-    }
-
-    private void returnToCollabFragment(){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collabName, collabType);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
-
     }
 
 }
