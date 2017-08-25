@@ -133,10 +133,14 @@ public class SubscriberService extends Service {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope,
                                                    AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            String message = new String(body, "UTF-8");
-                            buildNotification(message);
-                            channel.basicAck(envelope.getDeliveryTag(), false);
-                            //TODO save update message content in local storage
+                            try {
+                                final JSONObject json = new JSONObject(new String(body, "UTF-8"));
+                                final UpdateMessage message = MessageUtils.jsonToUpdateMessage(json);
+                                channel.basicAck(envelope.getDeliveryTag(), false);
+                                new StoreNotificationsTask(getApplicationContext()).execute(message);
+                            } catch (final JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     isConsumerRegistered = true;
@@ -146,7 +150,7 @@ public class SubscriberService extends Service {
             }
         }
 
-        private void buildNotification(String message) {
+        /*private void buildNotification(String message) {
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(SubscriberService.this);
             try {
                 final UpdateMessage updateMessage = MessageUtils.jsonToUpdateMessage(new JSONObject(message));
@@ -170,6 +174,6 @@ public class SubscriberService extends Service {
             final NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             final int notificationID = 1;
             nManager.notify(notificationID, builder.build());
-        }
+        }*/
     }
 }
