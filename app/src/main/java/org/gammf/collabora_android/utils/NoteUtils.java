@@ -18,10 +18,18 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Utily class providing methods to convert from note class to json message and vice versa.
  */
 
 public class NoteUtils {
+
+    /**
+     * Provides a json with all the note information.
+     * @param note the note.
+     * @return a json message with all the note information.
+     * @throws JSONException if the conversion went wrong.
+     */
     public static JSONObject noteToJSON(final Note note) throws JSONException {
         final JSONObject jsn = new JSONObject();
         if(note.getNoteID() != null) {
@@ -56,6 +64,12 @@ public class NoteUtils {
         return jsn;
     }
 
+    /**
+     * Creates a note class from a json message.
+     * @param jsn the input json message.
+     * @return a note built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
     public static Note jsonToNote(final JSONObject jsn) throws JSONException{
         final SimpleNoteBuilder builder = new SimpleNoteBuilder(jsn.getString("content"));
         if(jsn.has("id")) {

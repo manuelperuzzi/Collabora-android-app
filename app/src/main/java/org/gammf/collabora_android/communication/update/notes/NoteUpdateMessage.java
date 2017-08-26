@@ -4,9 +4,13 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.notes.Note;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi
+ * A simple interface that represents a message containing an update in a note.
  */
 
 public interface NoteUpdateMessage extends UpdateMessage {
+    /**
+     * @return the updated note.
+     */
     Note getNote();
 }

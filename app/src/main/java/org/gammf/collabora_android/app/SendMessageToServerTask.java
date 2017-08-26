@@ -13,15 +13,15 @@ import org.gammf.collabora_android.utils.RabbitMQConfig;
 
 /**
  * @author Alfredo Maffi
- * AsyncTask meant to send a message to the server whenever the user performs a modification while using the app
+ * AsyncTask meant to send a message to the server whenever the user performs a modification while using the app.
  */
 
 public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Boolean> {
 
     /**
-     * Simple usage of RabbitMQ's APIs in order to send a message to the broker
-     * @param messages array containing the message to be sent
-     * @return true if the message is sent successfully  
+     * Simple usage of RabbitMQ's APIs in order to send a message to the broker.
+     * @param messages array containing the message to be sent.
+     * @return true if the message is sent successfully.
      */
     @Override
     protected Boolean doInBackground(UpdateMessage... messages) {

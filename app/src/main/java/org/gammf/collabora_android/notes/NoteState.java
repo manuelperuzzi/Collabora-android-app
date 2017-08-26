@@ -1,7 +1,8 @@
 package org.gammf.collabora_android.notes;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi
+ * Concrete state representing a note's state.
  */
 
 public class NoteState implements State {
@@ -9,10 +10,19 @@ public class NoteState implements State {
     private String state;
     private String responsibleUsername;
 
+    /**
+     * First class constructor, only the textual state is set.
+     * @param state the textual state to be set.
+     */
     public NoteState(final String state) {
         this.state = state;
     }
 
+    /**
+     * Second class constructor, the NoteState is fully set.
+     * @param state the textual state to be set.
+     * @param responsibleUsername the responsible's username to be set.
+     */
     public NoteState(final String state, final String responsibleUsername) {
         this(state);
         this.responsibleUsername = responsibleUsername;
