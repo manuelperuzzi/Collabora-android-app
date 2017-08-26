@@ -1,16 +1,13 @@
 package org.gammf.collabora_android.communication.update.collaborations;
 
-import org.gammf.collabora_android.collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.Project;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.communication.common.MessageType;
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.json.JSONObject;

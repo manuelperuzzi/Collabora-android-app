@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
