@@ -34,10 +34,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.SendMessageToServerTask;
 import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -446,23 +454,33 @@ public class MainActivity extends AppCompatActivity
             expandableListView.collapseGroup(i);
         }
 
-        //AGGIUNGERE LA COLLABORAZIONE AL SERVER
-        //il nome e il tipo sono nei parametri passati dal dialog
-        //FARSI DARE L'ID
+        Collaboration collaboration = null;
+
         String collaborationId = "FINTOID";
 
         //check the collab type
         if(collabType.equals(TYPE_GROUP)) {
+            collaboration = new ConcreteGroup(null, collabName);
             //QUI LA AGGIUNGO ALLA LISTA DEI GRUPPI
             group.add(new CollaborationDataModelDrawer(collaborationId,collabName));
             //qui invece metto nel fragment il tipo della collab per evitare problemi di equalsss
             collabType = res.getString(R.string.groups_drawer);
         }else if(collabType.equals(TYPE_PROJECT)) {
+            collaboration = new ConcreteProject(null, collabName);
             //QUI LA AGGIUNGO ALLA LISTA DEI PROGETTI
             project.add(new CollaborationDataModelDrawer(collaborationId,collabName));
             collabType = res.getString(R.string.project_drawer);
         }
 
+        // TODO retrieve member from local storage instead of building it here
+        collaboration.addMember(new SimpleCollaborationMember("manuelperuzzi", AccessRight.ADMIN));
+
+        final UpdateMessage message = new ConcreteCollaborationUpdateMessage("manuelperuzzi",
+                collaboration, UpdateMessageType.CREATION);
+        try {
+            Log.e("UpdateMessage", MessageUtils.updateMessageToJSON(message).toString());
+        } catch (final Exception e) {}
+        new SendMessageToServerTask().execute(message);
 
         //prepare fragment for new collab inserted
         Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);

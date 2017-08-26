@@ -25,6 +25,7 @@ import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.CollaboraAppUtils;
 import org.gammf.collabora_android.utils.MessageUtils;
+import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,35 +38,31 @@ import java.io.IOException;
 
 public class SubscriberService extends Service {
 
-    /**
-     * rabbitMQ constants
-     */
-    private static final String BROKER_ADDRESS = "192.168.1.125";
-    private static final String EXCHANGE_NAME = "notifications";
-    private static final String QUEUE_PREFIX = "notify.";
-
     private Channel channel;
     private String queueName;
-    private BroadcastReceiver binderReceiver;
-    private BroadcastReceiver unbinderReceiver;
+    private BroadcastReceiver createBindingReceiver;
+    private BroadcastReceiver destroyBindingReceiver;
     private boolean isConsumerRegistered;
 
+    /**
+     * Registering receivers for binding/unbinding the queue from the exchange
+     */
     @Override
     public void onCreate() {
         super.onCreate();
         this.isConsumerRegistered = false;
-        this.binderReceiver = new BroadcastReceiver() {
+        this.createBindingReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 final String collaborationID = intent.getStringExtra("routing-key");
                 new SubscriberThread(collaborationID).start();
             }
         };
-        this.unbinderReceiver = new BroadcastReceiver() {
+        this.destroyBindingReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 try {
-                    channel.queueUnbind(queueName, EXCHANGE_NAME, intent.getStringExtra("routing-key"));
+                    channel.queueUnbind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, intent.getStringExtra("routing-key"));
                 } catch (IOException e) {
                     //TODO better error strategy
                 }
@@ -82,27 +79,27 @@ public class SubscriberService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        this.queueName = QUEUE_PREFIX + intent.getStringExtra("username");
+        this.queueName = RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + intent.getStringExtra("username");
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(BROKER_ADDRESS);
+        factory.setHost(RabbitMQConfig.BROKER_ADDRESS);
         try {
             final Connection connection = factory.newConnection();
             this.channel = connection.createChannel();
-            this.channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
+            this.channel.exchangeDeclare(RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
             this.channel.queueDeclare(queueName, true, false, false, null);
         } catch (final Exception e) {
             //TODO better error strategy}
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(binderReceiver, new IntentFilter("new.binding.for.collaboration"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(unbinderReceiver, new IntentFilter("remove.binding.for.collaboration"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(createBindingReceiver, new IntentFilter("new.binding.for.collaboration"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(destroyBindingReceiver, new IntentFilter("remove.binding.for.collaboration"));
 
         return START_REDELIVER_INTENT;
     }
 
     @Override
     public void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(binderReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(unbinderReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(createBindingReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(destroyBindingReceiver);
     }
 
     @Nullable
@@ -127,16 +124,20 @@ public class SubscriberService extends Service {
         @Override
         public void run() {
             try {
-                channel.queueBind(queueName, EXCHANGE_NAME, QUEUE_PREFIX + collaborationID);
+                channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + collaborationID);
                 if(!isConsumerRegistered) {
                     channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope,
                                                    AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            String message = new String(body, "UTF-8");
-                            buildNotification(message);
-                            channel.basicAck(envelope.getDeliveryTag(), false);
-                            //TODO save update message content in local storage
+                            try {
+                                final JSONObject json = new JSONObject(new String(body, "UTF-8"));
+                                final UpdateMessage message = MessageUtils.jsonToUpdateMessage(json);
+                                channel.basicAck(envelope.getDeliveryTag(), false);
+                                new StoreNotificationsTask(getApplicationContext()).execute(message);
+                            } catch (final JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     isConsumerRegistered = true;
@@ -146,7 +147,7 @@ public class SubscriberService extends Service {
             }
         }
 
-        private void buildNotification(String message) {
+        /*private void buildNotification(String message) {
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(SubscriberService.this);
             try {
                 final UpdateMessage updateMessage = MessageUtils.jsonToUpdateMessage(new JSONObject(message));
@@ -170,6 +171,6 @@ public class SubscriberService extends Service {
             final NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             final int notificationID = 1;
             nManager.notify(notificationID, builder.build());
-        }
+        }*/
     }
 }

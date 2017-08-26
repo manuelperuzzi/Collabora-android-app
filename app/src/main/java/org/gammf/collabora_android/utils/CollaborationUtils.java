@@ -1,17 +1,15 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.CollaborationType;
-import org.gammf.collabora_android.collaborations.ConcreteGroup;
-import org.gammf.collabora_android.collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.Group;
-import org.gammf.collabora_android.collaborations.Project;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Group;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.users.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,14 +31,16 @@ public class CollaborationUtils {
     public static JSONObject collaborationToJson(final Collaboration collaboration) throws JSONException {
         final JSONObject json = new JSONObject();
 
-        json.put("id", collaboration.getId());
+        if (collaboration.getId() != null) {
+            json.put("id", collaboration.getId());
+        }
         json.put("name", collaboration.getName());
 
         final Set<CollaborationMember> members = collaboration.getAllMembers();
         if (!members.isEmpty()) {
             final JSONArray jMembers = new JSONArray();
-            for (CollaborationMember m: members) {
-                jMembers.put(UserUtils.userToJson(m));
+            for (final CollaborationMember m: members) {
+                jMembers.put(CollaborationMemberUtils.memberToJson(m));
             }
             json.put("users", jMembers);
         }
@@ -71,8 +71,13 @@ public class CollaborationUtils {
         return json;
     }
 
-    public static Collaboration jsonToCollaboration(final JSONObject json)
-            throws JSONException, MandatoryFieldMissingException {
+    /**
+     * Create a collaboration class from a json message.
+     * @param json the input json message.
+     * @return a collaboration built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
+    public static Collaboration jsonToCollaboration(final JSONObject json) throws JSONException {
         final String id = json.getString("id");
         final String name = json.getString("name");
         final CollaborationType type = CollaborationType.valueOf(json.getString("collaborationType"));
@@ -97,12 +102,8 @@ public class CollaborationUtils {
         if (json.has("users")) {
             final JSONArray jMembers = json.getJSONArray("users");
             for (int i = 0; i < jMembers.length(); i++) {
-                final User user = UserUtils.jsonToUser(jMembers.getJSONObject(i));
-                if (user instanceof CollaborationMember) {
-                    collaboration.addMember((CollaborationMember) user);
-                } else {
-                    collaboration.addMember(new SimpleCollaborationMember(user, AccessRight.READ));
-                }
+                final CollaborationMember member = CollaborationMemberUtils.jsonToMember(jMembers.getJSONObject(i));
+                collaboration.addMember(member);
             }
         }
 

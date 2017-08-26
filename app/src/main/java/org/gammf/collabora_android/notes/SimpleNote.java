@@ -5,7 +5,8 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Concrete note representing a note of the application domain.
  */
 
 public class SimpleNote implements Note {
@@ -16,6 +17,15 @@ public class SimpleNote implements Note {
     private State state;
     private List<String> previousNotes;
 
+    /**
+     * Class constructor.
+     * @param noteID the note's id.
+     * @param content the note's content.
+     * @param location the note's location.
+     * @param expirationDate the note's expiration date.
+     * @param state the note's state.
+     * @param previousNotes the note's previous notes.
+     */
     SimpleNote(final String noteID,
                final String content,
                final Location location,
@@ -105,14 +115,11 @@ public class SimpleNote implements Note {
 
         SimpleNote that = (SimpleNote) o;
 
-        if (noteID != null ? !noteID.equals(that.noteID) : that.noteID != null) return false;
-        if (!content.equals(that.content)) return false;
-        if (location != null ? !location.equals(that.location) : that.location != null)
-            return false;
-        if (expirationDate != null ? !expirationDate.equals(that.expirationDate) : that.expirationDate != null)
-            return false;
-        if (state != null ? !state.equals(that.state) : that.state != null) return false;
-        return previousNotes != null ? previousNotes.equals(that.previousNotes) : that.previousNotes == null;
+        return noteID != null ? noteID.equals(that.noteID) : that.noteID == null && content.equals(that.content) && (location != null
+                              ? location.equals(that.location) : that.location == null && (expirationDate != null
+                              ? expirationDate.equals(that.expirationDate) : that.expirationDate == null && (state != null
+                              ? state.equals(that.state) : that.state == null && (previousNotes != null
+                              ? previousNotes.equals(that.previousNotes) : that.previousNotes == null))));
 
     }
 

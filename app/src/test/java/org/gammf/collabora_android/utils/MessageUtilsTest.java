@@ -1,8 +1,6 @@
 package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.communication.notification.NotificationMessage;
-import org.gammf.collabora_android.communication.notification.NotificationMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -21,16 +19,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi
+ * Simple test of the conversions in MessageUtils class.
  */
 public class MessageUtilsTest {
     private Note note;
 
     @Before
     public void init() {
-        this.note = new SimpleNoteBuilder("this is a test")
+        this.note = new SimpleNoteBuilder("this is a test", new NoteState("doing", "fone"))
                 .setExpirationDate(new DateTime(772408800000L))
-                .setState(new NoteState("doing", "fone"))
                 .setLocation(new NoteLocation(44.24,53.21))
                 .buildNote();
     }

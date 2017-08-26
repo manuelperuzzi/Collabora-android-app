@@ -6,12 +6,12 @@ import org.gammf.collabora_android.utils.AccessRight;
  * @author Manuel Peruzzi
  * Represents a user member of a collaboration with a certain access right.
  */
-public interface CollaborationMember extends User {
+public interface CollaborationMember {
 
     /**
-     * @return the user.
+     * @return the username.
      */
-    User getUser();
+    String getUsername();
 
     /**
      * @return the access right of the user.

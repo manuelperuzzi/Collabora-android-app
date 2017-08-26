@@ -1,10 +1,19 @@
 package org.gammf.collabora_android.notes;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi
+ * Interface representing a well-defined position on planet earth.
  */
 
 public interface Location {
+
+    /**
+     * @return the location's latitude.
+     */
     Double getLatitude();
+
+    /**
+     * @return the location's longitude.
+     */
     Double getLongitude();
 }
