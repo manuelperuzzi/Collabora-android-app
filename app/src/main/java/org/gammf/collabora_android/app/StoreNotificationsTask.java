@@ -2,14 +2,18 @@ package org.gammf.collabora_android.app;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
+import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
+import org.gammf.collabora_android.utils.CollaborationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -126,18 +130,24 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
 
     private boolean storeUpdatedCollaboration(final CollaborationUpdateMessage message)
             throws IOException, JSONException {
+        final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
+
         switch (message.getUpdateType()) {
             case UPDATING:
-                // TODO update collaboration in the general file
+                manager.removeCollaboration(message.getCollaborationId());
+                manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
                 LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
-                return true;
+                break;
             case DELETION:
+                manager.removeCollaboration(message.getCollaborationId());
                 context.deleteFile(message.getCollaborationId());
-                // TODO remove collaboration from general file
-                return true;
+                break;
             default:
                 return false;
         }
+
+        LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
+        return true;
     }
 
 }
