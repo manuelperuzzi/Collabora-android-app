@@ -79,7 +79,7 @@ public class SubscriberService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        this.queueName = RabbitMQConfig.COLLABORATIONS_QUEUE_PREFIX + intent.getStringExtra("username");
+        this.queueName = RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + intent.getStringExtra("username");
         final ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(RabbitMQConfig.BROKER_ADDRESS);
         try {
