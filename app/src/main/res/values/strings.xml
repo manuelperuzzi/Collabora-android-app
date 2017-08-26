@@ -36,6 +36,9 @@
     <string name="action_addmember">Add member</string>
     <string name="action_edit">Edit</string>
     <string name="action_settings">Settings</string>
+    <string name="action_editcollab">Edit Collaboration</string>
+    <string name="action_editmodule">Edit Module</string>
+    <string name="action_editnote">Edit Note</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -97,11 +100,14 @@
 
     <!-- Edit note fragment -->
     <string name="editnote_title">Edit Note</string>
-    <string name="editnote_content">Insert new content</string>
+    <string name="insert_new_content">Insert new content</string>
     <string name="editnote_location">Search new location</string>
-    <string name="editnote_state">Change state</string>
+    <string name="change_state">Change state</string>
     <string name="editnote_dateexpiration">Expiration Date</string>
     <string name="editnote_timeexpiration">Expiration Time</string>
+
+    <!-- Edit Module Fragment -->
+    <string name="editmodule_title">Edit Module</string>
 
     <!-- Error message -->
     <string name="fieldempty">Field Required</string>

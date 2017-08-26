@@ -59,9 +59,12 @@ import static android.content.ContentValues.TAG;
  */
 public class EditNoteFragment extends Fragment implements PlaceSelectionListener, OnMapReadyCallback{
 
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String MAPSEARCH_ERROR = "An error occurred: ";
     private static final String ERR_STATENOTSELECTED = "Please select state";
-    private static final String ARG_SENDER = "sender";
+    private static final String SENDER = "editnotefrag";
+
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
     private static final String ARG_NOTEID = "noteId";
@@ -79,7 +82,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private LatLng newCoordinates;
     private Spinner spinnerEditState;
 
-    private String sender, collaborationId, collabname, collabtype, moduleId, noteId;
+    private String collaborationId, collabname, collabtype, moduleId, noteId;
 
     private Double startingLat = 42.50;
     private Double startingLng = 12.50;
@@ -105,10 +108,9 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String sender, String collabId, String moduleId, String noteId) {
+    public static EditNoteFragment newInstance(String collabId, String moduleId, String noteId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SENDER, sender);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_MODULEID, moduleId);
         args.putString(ARG_NOTEID, noteId);
@@ -121,7 +123,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
             this.noteId = getArguments().getString(ARG_NOTEID);
@@ -156,7 +157,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 String newDateExp = dateViewEdited.getText().toString();
                 String newTimeExp = timeViewEdited.getText().toString();
 
-
+                changeFragment(NoteFragment.newInstance(collaborationId, noteId));
             }
             return true;
         }
@@ -259,7 +260,16 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private void showTime(int hour, int minute){
         timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
-
+    private void changeFragment(Fragment fragment){
+        if (fragment != null) {
+            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction2.remove(EditNoteFragment.this);
+            fragmentTransaction2.commit();
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else {
+            Log.e(SENDER, CREATIONERROR_FRAG);
+        }
+    }
     @Override
     public void onPlaceSelected(Place place) {
 

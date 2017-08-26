@@ -5,7 +5,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,13 +45,12 @@ public class EditCollaborationFragment extends Fragment {
     private DrawerItemCustomAdapter adapter;
     private EditText txtNewTitle;
     private Button btnAddMember;
-    private FloatingActionButton btnEditDone;
     private TextView txtCollabType;
 
     private boolean memberHasChanged = false;
 
     public EditCollaborationFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
     /**
@@ -69,6 +72,7 @@ public class EditCollaborationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
@@ -76,6 +80,47 @@ public class EditCollaborationFragment extends Fragment {
         getDataFromServer();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.editdone_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_editdone) {
+            String newName = txtNewTitle.getText().toString();
+            //If newName is empty
+            if(newName.equals("")) {
+                //display error for field required
+                txtNewTitle.setError(res.getString(R.string.fieldempty));
+
+                //if name isn't changed
+            }else if(newName.equals(collabName)){
+
+                //check if member(s) was added.
+                if(memberHasChanged) {
+                    returnToCollabFragment();
+                }else { //members not changed and name not modified
+
+                    Toast toast =
+                            Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
+                    toast.show();
+
+                    returnToCollabFragment();
+                }
+            }else{
+                updateCollaboration(newName);
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,7 +131,6 @@ public class EditCollaborationFragment extends Fragment {
         txtNewTitle = rootView.findViewById(R.id.txtInsertEditedCollabName);
         memberList = rootView.findViewById(R.id.listViewCollabMember);
         txtNewTitle.setText(collabName);
-        btnEditDone = rootView.findViewById(R.id.btnCollabEditDone);
         txtCollabType = rootView.findViewById(R.id.txtCollabType);
         txtCollabType.setText(collabType);
 
@@ -99,34 +143,6 @@ public class EditCollaborationFragment extends Fragment {
             }
         });
 
-        btnEditDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newName = txtNewTitle.getText().toString();
-                //If newName is empty
-                if(newName.equals("")) {
-                    //display error for field required
-                    txtNewTitle.setError(res.getString(R.string.fieldempty));
-
-                    //if name isn't changed
-                }else if(newName.equals(collabName)){
-
-                    //check if member(s) was added.
-                    if(memberHasChanged) {
-                        returnToCollabFragment();
-                    }else { //members not changed and name not modified
-
-                        Toast toast =
-                                Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
-                        toast.show();
-
-                        returnToCollabFragment();
-                    }
-                }else{
-                    updateCollaboration(newName);
-                }
-            }
-        });
         return rootView;
     }
 
@@ -136,8 +152,10 @@ public class EditCollaborationFragment extends Fragment {
     }
 
     private void returnToCollabFragment(){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
+        FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction2.remove(EditCollaborationFragment.this);
+        fragmentTransaction2.commit();
+        getActivity().getSupportFragmentManager().popBackStack();
 
     }
 

@@ -17,15 +17,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.SendMessageToServerTask;
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
-import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,32 +31,28 @@ public class CreateModuleFragment extends Fragment {
 
     private static final String SENDER = "modulefrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
-    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabid";
 
-    // TODO: Rename and change types of parameters
-    private String sender, collaborationId;
+    private String collaborationId;
     private Spinner spinnerModuleState;
     private EditText txtContentModule;
     private String stateSelected = "";
 
     public CreateModuleFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(false);
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param sender fragment caller
      * @param collaborationId collaboration id where the module will be added
      * @return A new instance of fragment CreateModuleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateModuleFragment newInstance(String sender, String collaborationId) {
+    public static CreateModuleFragment newInstance(String collaborationId) {
         CreateModuleFragment fragment = new CreateModuleFragment();
         Bundle arg = new Bundle();
-        arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
         return fragment;
@@ -74,8 +61,8 @@ public class CreateModuleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         if(getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
         getModuleDataFromServer();

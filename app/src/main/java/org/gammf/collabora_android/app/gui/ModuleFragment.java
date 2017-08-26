@@ -7,10 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.modules.Module;
@@ -35,12 +39,15 @@ public class ModuleFragment extends Fragment {
     private static final String ARG_MODULEID = "moduleId";
 
     private FloatingActionButton btnAddNoteModule;
-    private String sender, collaborationId, moduleId, collabname, collabtype, moduleName;
+    private String sender, collaborationId, moduleId, collabname, moduleName;
     private ListView moduleNotesList;
     private ArrayList<DataModel> listItem;
+    private TextView lblModuleTitle;
+
+    private String moduleContent;
 
     public ModuleFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
     /**
@@ -67,8 +74,35 @@ public class ModuleFragment extends Fragment {
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
-
+        setHasOptionsMenu(true);
         getModuleDataFromServer();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.edit_collabmodule, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /*
+        Method for editcollaboration click on toolbar
+        trigger the @EditCollaborationFragment
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+        if(id == R.id.action_editcollab){
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(this.collaborationId);
+            changeFragment(editCollabFragment);
+            return true;
+        }else if (id == R.id.action_editmodule){
+            Fragment editModuleFragment = EditModuleFragment.newInstance(SENDER, this.collaborationId);
+            changeFragment(editModuleFragment);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -77,7 +111,7 @@ public class ModuleFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_module, container, false);
         moduleNotesList = (ListView) rootView.findViewById(R.id.moduleNotesListView);
-
+        lblModuleTitle = rootView.findViewById(R.id.lblModuleTitle);
         listItem = new ArrayList<DataModel>();
         listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
         listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
@@ -96,10 +130,13 @@ public class ModuleFragment extends Fragment {
         btnAddNoteModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment newNoteFragment = CreateNoteFragment.newInstance(SENDER, collaborationId, moduleName);
+                Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleName);
                 changeFragment(newNoteFragment);
             }
         });
+
+
+        lblModuleTitle.setText("Module Content Title");
 
         return rootView;
     }
@@ -115,7 +152,7 @@ public class ModuleFragment extends Fragment {
     }
 
     private void selectItem(int position, String itemId) {
-        Fragment openNoteFragment = NoteFragment.newInstance(SENDER, collaborationId, itemId);
+        Fragment openNoteFragment = NoteFragment.newInstance(collaborationId, itemId);
         changeFragment(openNoteFragment);
     }
 
@@ -135,6 +172,9 @@ public class ModuleFragment extends Fragment {
         //stessa cosa delle note
         //prendere i dati dal server e metterli dentro le variabili adatte
         //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
+
+
+        moduleContent = "Module Content Title";
     }
 
 }

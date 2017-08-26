@@ -5,16 +5,20 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -35,6 +39,10 @@ public class CollaborationFragment extends Fragment {
     private static final String ARG_COLLABID = "collabid";
     private static final String NOMODULE = "nomodule";
 
+    private static final int MAXSWIPE = 100;
+    private static final int NOTETABINDEX = 0;
+    private static final int MODULETABINDEX = 1;
+
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
 
@@ -46,7 +54,7 @@ public class CollaborationFragment extends Fragment {
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
 
-
+private boolean pino;
     public CollaborationFragment() {
         setHasOptionsMenu(true);
     }
@@ -82,7 +90,7 @@ public class CollaborationFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.edit_menu, menu);
+        inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -100,7 +108,6 @@ public class CollaborationFragment extends Fragment {
             changeFragment(editCollabFragment);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -120,7 +127,7 @@ public class CollaborationFragment extends Fragment {
         moduleItems = new ArrayList<>();
         noteItems = new ArrayList<>();
 
-        TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        final TabHost tabHost = rootView.findViewById(R.id.tabhost);
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
@@ -131,6 +138,26 @@ public class CollaborationFragment extends Fragment {
         tabHost.addTab(tab2);
         if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
+            tabHost.setOnTouchListener(new View.OnTouchListener() {
+                int downX, upX;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        downX = (int) event.getX();
+                        return true;
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        upX = (int) event.getX();
+                        if (upX - downX > MAXSWIPE) {
+                            tabHost.setCurrentTab(NOTETABINDEX);
+                        } else if (downX - upX > -MAXSWIPE) {
+                            tabHost.setCurrentTab(MODULETABINDEX);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
             btnMenuAdd.setVisibility(View.VISIBLE);
             btnAddNote.setVisibility(View.INVISIBLE);
             fillModulesList();
@@ -149,7 +176,7 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE);
+                        CreateNoteFragment.newInstance(collabId, NOMODULE);
 
                 changeFragment(newNoteFragment);
             }
@@ -158,13 +185,13 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //qui gli va aggiunto l'id del modulo
-                changeFragment(CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE));
+                changeFragment(CreateNoteFragment.newInstance(collabId, NOMODULE));
             }
         });
         btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               changeFragment(CreateModuleFragment.newInstance(SENDER, collabId));
+               changeFragment(CreateModuleFragment.newInstance(collabId));
             }
         });
         return rootView;
@@ -216,7 +243,7 @@ public class CollaborationFragment extends Fragment {
         if(itemSelected.getIfIsModule()){
             openFragment = ModuleFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }else{
-            openFragment = NoteFragment.newInstance(SENDER, collabId, itemSelected.getId());
+            openFragment = NoteFragment.newInstance(collabId, itemSelected.getId());
         }
         changeFragment(openFragment);
     }
@@ -225,7 +252,6 @@ public class CollaborationFragment extends Fragment {
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
-            fragmentTransaction2.hide(CollaborationFragment.this);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
         } else {
@@ -240,7 +266,7 @@ public class CollaborationFragment extends Fragment {
 
         this.collabname = "Nome finto";
         //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
-        this.collabtype = TYPE_PROJECT;
+        this.collabtype = TYPE_GROUP;
     }
 
 }

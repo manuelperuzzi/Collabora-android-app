@@ -58,7 +58,6 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
     private static final String SENDER = "notecreationfrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
-    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
     private static final String NOMODULE = "nomodule";
@@ -72,26 +71,23 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String sender, collabName, collabType, collaborationId, moduleId;
+    private String collabName, collabType, collaborationId, moduleId;
 
     public CreateNoteFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(false);
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @param sender
+     *
      * @param collaborationId collaboration id
      * @param moduleId
      *
      * @return A new instance of fragment CreateNoteFragment.
      */
-    public static CreateNoteFragment newInstance(String sender,
-                                                 String collaborationId,
-                                                 String moduleId) {
+    public static CreateNoteFragment newInstance(String collaborationId, String moduleId) {
         Bundle arg = new Bundle();
-        arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABORATION_ID, collaborationId);
         arg.putString(ARG_MODULEID, moduleId);
         final CreateNoteFragment fragment = new CreateNoteFragment();
@@ -103,9 +99,9 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         if(getArguments() != null) {
             Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
