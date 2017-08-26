@@ -54,7 +54,7 @@ import static android.content.ContentValues.TAG;
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
+public class CreateNoteFragment extends Fragment implements PlaceSelectionListener, AdapterView.OnItemSelectedListener {
 
     private static final String SENDER = "notecreationfrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
@@ -115,53 +115,19 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
-        ft.commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.place_autocomplete_fragment, autocompleteFragment)
+                .commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
-        spinnerState = (Spinner) rootView.findViewById(R.id.spinnerNewNoteState);
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerState.setAdapter(dataAdapter);
-        spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-                noteState = item.toString();
-                Log.println(Log.ERROR, "ERRORONI", ""+noteState);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Context context = getActivity().getApplicationContext();
-                CharSequence text = ERR_STATENOTSELECTED;
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-        });
+        spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
+        setSpinner();
         FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String insertedNoteName = txtContentNote.getText().toString();
-                if(insertedNoteName.equals("")){
-                    Resources res = getResources();
-                    txtContentNote.setError(res.getString(R.string.fieldempty));
-                }else {
-
-                    //avete un moduleID che può essere nomodule
-                    //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
-                    addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
-
-                }
-
+                processInput();
             }
         });
         dateView = rootView.findViewById(R.id.txtNewDateSelected);
@@ -195,6 +161,30 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             }
         });
         return rootView;
+    }
+
+    private void setSpinner(){
+        List<NoteProjectState> stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(NoteProjectState.values()));
+        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerState.setAdapter(dataAdapter);
+        spinnerState.setOnItemSelectedListener(this);
+    }
+
+    private void processInput(){
+        String insertedNoteName = txtContentNote.getText().toString();
+        if(insertedNoteName.equals("")){
+            Resources res = getResources();
+            txtContentNote.setError(res.getString(R.string.fieldempty));
+        }else {
+
+            //avete un moduleID che può essere nomodule
+            //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
+            addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
+
+        }
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
@@ -251,4 +241,19 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+        noteState = item.toString();
+        Log.println(Log.ERROR, "ERRORONI", ""+noteState);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Context context = getActivity().getApplicationContext();
+        CharSequence text = ERR_STATENOTSELECTED;
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 }

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
-public class CollaborationFragment extends Fragment {
+public class CollaborationFragment extends Fragment implements View.OnTouchListener, AdapterView.OnItemClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
@@ -53,8 +53,8 @@ public class CollaborationFragment extends Fragment {
     private String collabname, collabtype;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
+    private TabHost tabHost;
 
-private boolean pino;
     public CollaborationFragment() {
         setHasOptionsMenu(true);
     }
@@ -127,7 +127,7 @@ private boolean pino;
         moduleItems = new ArrayList<>();
         noteItems = new ArrayList<>();
 
-        final TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        tabHost = rootView.findViewById(R.id.tabhost);
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
@@ -138,26 +138,7 @@ private boolean pino;
         tabHost.addTab(tab2);
         if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
-            tabHost.setOnTouchListener(new View.OnTouchListener() {
-                int downX, upX;
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        downX = (int) event.getX();
-                        return true;
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        upX = (int) event.getX();
-                        if (upX - downX > MAXSWIPE) {
-                            tabHost.setCurrentTab(NOTETABINDEX);
-                        } else if (downX - upX > -MAXSWIPE) {
-                            tabHost.setCurrentTab(MODULETABINDEX);
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-            });
+            tabHost.setOnTouchListener(this);
             btnMenuAdd.setVisibility(View.VISIBLE);
             btnAddNote.setVisibility(View.INVISIBLE);
             fillModulesList();
@@ -205,7 +186,7 @@ private boolean pino;
         noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
-        notesList.setOnItemClickListener(new ListItemClickListener());
+        notesList.setOnItemClickListener(this);
     }
 
     private void fillModulesList(){
@@ -215,7 +196,7 @@ private boolean pino;
         moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 3", true));
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
-        moduleList.setOnItemClickListener(new ListItemClickListener());
+        moduleList.setOnItemClickListener(this);
     }
 
     private void addNewNote(){
@@ -228,14 +209,28 @@ private boolean pino;
         moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "New Module", true));
     }
 
-    private class ListItemClickListener implements ListView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName);
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        int downX = 0;
+        int upX;
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            upX = (int) event.getX();
+            if (upX - downX > MAXSWIPE) {
+                tabHost.setCurrentTab(NOTETABINDEX);
+            } else if (downX - upX > -MAXSWIPE) {
+                tabHost.setCurrentTab(MODULETABINDEX);
+            }
+            return true;
         }
+        return false;
+    }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final DataModel listName = (DataModel) adapterView.getItemAtPosition(position);
+        selectItem(position, listName);
     }
 
     private void selectItem(int position, DataModel itemSelected) {

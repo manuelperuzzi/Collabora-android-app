@@ -27,7 +27,7 @@ import java.util.List;
  * Use the {@link CreateModuleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateModuleFragment extends Fragment {
+public class CreateModuleFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener{
 
     private static final String SENDER = "modulefrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
@@ -76,6 +76,14 @@ public class CreateModuleFragment extends Fragment {
 
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
         spinnerModuleState = rootView.findViewById(R.id.spinnerNewModuleState);
+        setSpinner();
+        FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
+        btnAddModule.setOnClickListener(this);
+
+        return rootView;
+    }
+
+    private void setSpinner(){
         final List<NoteProjectState> stateList = new ArrayList<>();
         stateList.addAll(Arrays.asList(NoteProjectState.values()));
         ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
@@ -83,43 +91,7 @@ public class CreateModuleFragment extends Fragment {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerModuleState.setAdapter(dataAdapter);
         spinnerModuleState.setSelection(0);
-        spinnerModuleState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-                stateSelected = item.toString();
-                Log.println(Log.ERROR, "ERRORONI", ""+stateSelected);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Context context = getActivity().getApplicationContext();
-                CharSequence text = ERR_STATENOTSELECTED;
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-        });
-        FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
-        btnAddModule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String insertedNoteName = txtContentModule.getText().toString();
-                if(insertedNoteName.equals("")){
-                    Resources res = getResources();
-                    txtContentModule.setError(res.getString(R.string.fieldempty));
-                }else {
-                    //avete un moduleID che può essere nomodule
-                    //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
-                    addModule(insertedNoteName, stateSelected);
-
-                }
-
-            }
-        });
-
-        return rootView;
+        spinnerModuleState.setOnItemSelectedListener(this);
     }
 
     private void getModuleDataFromServer(){
@@ -127,10 +99,40 @@ public class CreateModuleFragment extends Fragment {
 
     }
 
+
     private void addModule(final String content, final String stateSelected){
         CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
 
+    @Override
+    public void onClick(View view) {
+        String insertedNoteName = txtContentModule.getText().toString();
+        if(insertedNoteName.equals("")){
+            Resources res = getResources();
+            txtContentModule.setError(res.getString(R.string.fieldempty));
+        }else {
+            //avete un moduleID che può essere nomodule
+            //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
+            addModule(insertedNoteName, stateSelected);
+
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+        stateSelected = item.toString();
+        Log.println(Log.ERROR, "ERRORONI", ""+stateSelected);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Context context = getActivity().getApplicationContext();
+        CharSequence text = ERR_STATENOTSELECTED;
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 }
