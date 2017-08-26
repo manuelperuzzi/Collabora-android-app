@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.collaborations.short_collaborations;
 
 import java.util.Collections;
 import java.util.HashSet;

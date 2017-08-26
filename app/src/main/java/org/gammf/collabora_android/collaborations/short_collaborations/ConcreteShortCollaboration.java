@@ -1,4 +1,8 @@
-package org.gammf.collabora_android.collaborations;
+package org.gammf.collabora_android.collaborations.short_collaborations;
+
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.CollaborationType;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 
 /**
  * @author Manuel Peruzzi

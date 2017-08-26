@@ -3,8 +3,8 @@ package org.gammf.collabora_android.app;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import org.gammf.collabora_android.collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.Project;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;

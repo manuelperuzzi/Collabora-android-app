@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
