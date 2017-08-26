@@ -41,12 +41,11 @@ implements OnMapReadyCallback{
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "notefrag";
 
-    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
 
     private TextView contentNote;
-    private String sender, collaborationId, noteId;
+    private String collaborationId, noteId;
     private String collabname, collabtype, notename;
     private ProgressBar progressBarState;
     private TextView lblState;
@@ -70,12 +69,12 @@ implements OnMapReadyCallback{
 
 
     public NoteFragment() {
+        setHasOptionsMenu(true);
     }
 
-    public static NoteFragment newInstance(String sender, String collabId, String noteId) {
+    public static NoteFragment newInstance(String collabId, String noteId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SENDER, sender);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
         fragment.setArguments(args);
@@ -86,12 +85,35 @@ implements OnMapReadyCallback{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
         }
-
+        setHasOptionsMenu(true);
         getNoteDataFromServer();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.edit_note, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /*
+        Method for editcollaboration click on toolbar
+        trigger the @EditCollaborationFragment
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_editnote) {
+            Fragment editNoteFragment = EditNoteFragment.newInstance(collaborationId, "FINTOIDMODULE", notename);
+            changeFragment(editNoteFragment);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -110,28 +132,6 @@ implements OnMapReadyCallback{
         expiration = rootView.findViewById(R.id.expiration);
 
         setStateProgressBar(lblState.getText().toString());
-
-        FloatingActionButton btnEditNote = rootView.findViewById(R.id.btnEditNote);
-        btnEditNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //recuperare l'id del modulo
-                //per fare la modifica serve per poi sapere se tornare alla collaboration o al modulo stesso
-                Fragment editNoteFragment = EditNoteFragment.newInstance(SENDER, collaborationId, "FINTOIDMODULE", notename);
-
-                if(editNoteFragment != null) {
-                    getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
-                    fragmentTransaction2.hide(NoteFragment.this);
-                    fragmentTransaction2.replace(R.id.content_frame, editNoteFragment);
-                    fragmentTransaction2.commit();
-                }else {
-                    Log.e(SENDER, CREATIONERROR_FRAG);
-                }
-            }
-        });
-
 
         return rootView;
     }
@@ -189,6 +189,16 @@ implements OnMapReadyCallback{
         }
     }
 
+    private void changeFragment(Fragment fragment){
+        if (fragment != null) {
+            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
+            fragmentTransaction2.replace(R.id.content_frame, fragment);
+            fragmentTransaction2.commit();
+        } else {
+            Log.e(SENDER, CREATIONERROR_FRAG);
+        }
+    }
     /***
      * DA SISTEMARE SIA LA CHIAMATA AL METODO CHE IL METODO STESSO
      *

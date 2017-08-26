@@ -5,16 +5,22 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.gammf.collabora_android.app.R;
 
@@ -23,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
-public class CollaborationFragment extends Fragment {
+public class CollaborationFragment extends Fragment implements View.OnTouchListener, AdapterView.OnItemClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
@@ -33,15 +39,22 @@ public class CollaborationFragment extends Fragment {
     private static final String ARG_COLLABID = "collabid";
     private static final String NOMODULE = "nomodule";
 
+    private static final int MAXSWIPE = 100;
+    private static final int NOTETABINDEX = 0;
+    private static final int MODULETABINDEX = 1;
+
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
-
+    private int downX;
+    private int upX;
+    private FloatingActionMenu btnMenuAdd;
+    private com.github.clans.fab.FloatingActionButton btnMenuAddNote, btnMenuAddModule;
     private FloatingActionButton btnAddNote;
     private String sender, collabId;
     private String collabname, collabtype;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
-
+    private TabHost tabHost;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -78,7 +91,7 @@ public class CollaborationFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.edit_menu, menu);
+        inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -96,7 +109,6 @@ public class CollaborationFragment extends Fragment {
             changeFragment(editCollabFragment);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -107,12 +119,16 @@ public class CollaborationFragment extends Fragment {
         notesList = rootView.findViewById(R.id.notesListView);
         moduleList = rootView.findViewById(R.id.modulesListView);
         btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        btnMenuAdd = rootView.findViewById(R.id.floating_action_menu);
+        btnMenuAddNote = rootView.findViewById(R.id.floating_action_menu_addnote);
+        btnMenuAddModule = rootView.findViewById(R.id.floating_action_menu_addmodel);
+        btnMenuAdd.setVisibility(View.INVISIBLE);
 
         Resources res = getResources();
         moduleItems = new ArrayList<>();
         noteItems = new ArrayList<>();
 
-        TabHost tabHost = rootView.findViewById(R.id.tabhost);
+        tabHost = rootView.findViewById(R.id.tabhost);
         tabHost.setup();
         TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
@@ -123,6 +139,9 @@ public class CollaborationFragment extends Fragment {
         tabHost.addTab(tab2);
         if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
+            tabHost.setOnTouchListener(this);
+            btnMenuAdd.setVisibility(View.VISIBLE);
+            btnAddNote.setVisibility(View.INVISIBLE);
             fillModulesList();
         }
 
@@ -139,12 +158,24 @@ public class CollaborationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE);
+                        CreateNoteFragment.newInstance(collabId, NOMODULE);
 
                 changeFragment(newNoteFragment);
             }
         });
-
+        btnMenuAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //qui gli va aggiunto l'id del modulo
+                changeFragment(CreateNoteFragment.newInstance(collabId, NOMODULE));
+            }
+        });
+        btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               changeFragment(CreateModuleFragment.newInstance(collabId));
+            }
+        });
         return rootView;
     }
 
@@ -156,7 +187,7 @@ public class CollaborationFragment extends Fragment {
         noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
-        notesList.setOnItemClickListener(new ListItemClickListener());
+        notesList.setOnItemClickListener(this);
     }
 
     private void fillModulesList(){
@@ -166,7 +197,7 @@ public class CollaborationFragment extends Fragment {
         moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 3", true));
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
-        moduleList.setOnItemClickListener(new ListItemClickListener());
+        moduleList.setOnItemClickListener(this);
     }
 
     private void addNewNote(){
@@ -179,14 +210,27 @@ public class CollaborationFragment extends Fragment {
         moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "New Module", true));
     }
 
-    private class ListItemClickListener implements ListView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final DataModel listName = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listName);
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            downX = (int) event.getX();
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            upX = (int) event.getX();
+            if (upX - downX > MAXSWIPE) {
+                tabHost.setCurrentTab(NOTETABINDEX);
+            } else if (downX - upX > -MAXSWIPE) {
+                tabHost.setCurrentTab(MODULETABINDEX);
+            }
+            return true;
         }
+        return false;
+    }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final DataModel listName = (DataModel) adapterView.getItemAtPosition(position);
+        selectItem(position, listName);
     }
 
     private void selectItem(int position, DataModel itemSelected) {
@@ -194,7 +238,7 @@ public class CollaborationFragment extends Fragment {
         if(itemSelected.getIfIsModule()){
             openFragment = ModuleFragment.newInstance(SENDER, collabId, itemSelected.getId());
         }else{
-            openFragment = NoteFragment.newInstance(SENDER, collabId, itemSelected.getId());
+            openFragment = NoteFragment.newInstance(collabId, itemSelected.getId());
         }
         changeFragment(openFragment);
     }
@@ -203,7 +247,6 @@ public class CollaborationFragment extends Fragment {
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
-            fragmentTransaction2.hide(CollaborationFragment.this);
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
         } else {

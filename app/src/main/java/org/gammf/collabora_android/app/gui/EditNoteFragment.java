@@ -3,6 +3,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -54,11 +57,16 @@ import static android.content.ContentValues.TAG;
  * Use the {@link EditNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNoteFragment extends Fragment implements PlaceSelectionListener, OnMapReadyCallback{
+public class EditNoteFragment extends Fragment implements PlaceSelectionListener,
+        OnMapReadyCallback, AdapterView.OnItemSelectedListener,
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String MAPSEARCH_ERROR = "An error occurred: ";
+    private static final String ERR_STATENOTSELECTED = "Please select state";
+    private static final String SENDER = "editnotefrag";
 
-    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
     private static final String ARG_NOTEID = "noteId";
@@ -75,8 +83,10 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private CameraPosition cameraPosition;
     private LatLng newCoordinates;
     private Spinner spinnerEditState;
+    private DatePickerDialog.OnDateSetListener myDateListenerEdited;
+    private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
 
-    private String sender, collaborationId, collabname, collabtype, moduleId, noteId;
+    private String collaborationId, collabname, collabtype, moduleId, noteId;
 
     private Double startingLat = 42.50;
     private Double startingLng = 12.50;
@@ -102,10 +112,9 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String sender, String collabId, String moduleId, String noteId) {
+    public static EditNoteFragment newInstance(String collabId, String moduleId, String noteId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SENDER, sender);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_MODULEID, moduleId);
         args.putString(ARG_NOTEID, noteId);
@@ -118,7 +127,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
             this.noteId = getArguments().getString(ARG_NOTEID);
@@ -153,7 +161,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 String newDateExp = dateViewEdited.getText().toString();
                 String newTimeExp = timeViewEdited.getText().toString();
 
-
+                changeFragment(NoteFragment.newInstance(collaborationId, noteId));
             }
             return true;
         }
@@ -174,14 +182,10 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         ft.replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited);
         ft.commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this);
-
+        myDateListenerEdited = this;
+        myTimeListenerEdited = this;
         spinnerEditState = (Spinner) rootView.findViewById(R.id.spinnerEditNoteState);
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEditState.setAdapter(dataAdapter);
+        setSpinner();
 
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
@@ -216,22 +220,17 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
 
         return rootView;
     }
-    private DatePickerDialog.OnDateSetListener myDateListenerEdited = new
-            DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker,
-                                      int year, int month, int day) {
 
-                    showDate(year, month+1, day);
-                }
-            };
-    private TimePickerDialog.OnTimeSetListener myTimeListenerEdited = new
-            TimePickerDialog.OnTimeSetListener(){
-                @Override
-                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                    showTime(hour,minute);
-                }
-            };
+    private void setSpinner(){
+        List<NoteProjectState> stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(NoteProjectState.values()));
+        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEditState.setAdapter(dataAdapter);
+        spinnerEditState.setOnItemSelectedListener(this);
+    }
+
     private void showDate(int year, int month, int day) {
         dateViewEdited.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
@@ -239,7 +238,16 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private void showTime(int hour, int minute){
         timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
-
+    private void changeFragment(Fragment fragment){
+        if (fragment != null) {
+            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction2.remove(EditNoteFragment.this);
+            fragmentTransaction2.commit();
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else {
+            Log.e(SENDER, CREATIONERROR_FRAG);
+        }
+    }
     @Override
     public void onPlaceSelected(Place place) {
 
@@ -347,5 +355,28 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         // e mettere i valori nelle rispettive variabili
         // poi settare sempre i dati all'utente col setText nel onViewCreated
         // per mettere i campi nella gui come sono prima della modifica
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+        noteStateEdited = item.toString();
+        Log.println(Log.ERROR, "ERRORONI", ""+noteStateEdited);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Toast toast = Toast.makeText(getActivity().getApplicationContext(), ERR_STATENOTSELECTED, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        showDate(year, month+1, day);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        showTime(hour,minute);
     }
 }
