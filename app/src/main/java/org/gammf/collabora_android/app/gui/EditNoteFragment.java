@@ -3,6 +3,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -57,7 +60,7 @@ import static android.content.ContentValues.TAG;
 public class EditNoteFragment extends Fragment implements PlaceSelectionListener, OnMapReadyCallback{
 
     private static final String MAPSEARCH_ERROR = "An error occurred: ";
-
+    private static final String ERR_STATENOTSELECTED = "Please select state";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
@@ -182,7 +185,24 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                 android.R.layout.simple_spinner_item, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEditState.setAdapter(dataAdapter);
+        spinnerEditState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+                noteStateEdited = item.toString();
+                Log.println(Log.ERROR, "ERRORONI", ""+noteStateEdited);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Context context = getActivity().getApplicationContext();
+                CharSequence text = ERR_STATENOTSELECTED;
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
         yearEdited = calendarEdited.get(Calendar.YEAR);

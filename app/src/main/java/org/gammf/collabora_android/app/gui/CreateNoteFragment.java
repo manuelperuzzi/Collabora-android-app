@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -54,7 +57,7 @@ import static android.content.ContentValues.TAG;
 public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
 
     private static final String SENDER = "notecreationfrag";
-
+    private static final String ERR_STATENOTSELECTED = "Please select state";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
@@ -129,7 +132,24 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                 android.R.layout.simple_spinner_item, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerState.setAdapter(dataAdapter);
+        spinnerState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+                noteState = item.toString();
+                Log.println(Log.ERROR, "ERRORONI", ""+noteState);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Context context = getActivity().getApplicationContext();
+                CharSequence text = ERR_STATENOTSELECTED;
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
         FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override

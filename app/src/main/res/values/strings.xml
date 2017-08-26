@@ -67,11 +67,14 @@
 
     <!-- Create Note Fragment -->
     <string name="newnote_title">Create a new note</string>
-    <string name="newnote_state">Set state</string>
-    <string name="newnote_content">Insert content note</string>
+    <string name="set_state">Set state</string>
+    <string name="insert_content">Insert content</string>
     <string name="newnote_date">Date Expiration</string>
     <string name="newnote_time">Time Expiration</string>
     <string name="newnote_location">Search a location for your note</string>
+
+    <!--Create Module Fragment -->
+    <string name="newmodule_title">Create a new module</string>
 
     <!-- Radio Group Note State -->
     <string name="rg_todo">To-do</string>
