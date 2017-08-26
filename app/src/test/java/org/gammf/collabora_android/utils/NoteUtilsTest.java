@@ -16,7 +16,8 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Simple test of the conversions in NoteUtils class.
  */
 public class NoteUtilsTest {
 

@@ -9,7 +9,8 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Simple test used to test a note builder.
  */
 public class SimpleNoteBuilderTest {
     private Note n;

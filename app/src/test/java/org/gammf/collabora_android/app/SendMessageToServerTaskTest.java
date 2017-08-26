@@ -9,7 +9,8 @@ import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Test;
 
 /**
- * Created by Alfredo on 07/08/2017.
+ * @author Alfredo Maffi
+ * Simple test used to test SendToMessageServerTask.
  */
 public class SendMessageToServerTaskTest {
     @Test
