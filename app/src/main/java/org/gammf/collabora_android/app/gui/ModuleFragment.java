@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Use the {@link ModuleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ModuleFragment extends Fragment {
+public class ModuleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "ModuleFragment";
@@ -118,7 +118,7 @@ public class ModuleFragment extends Fragment {
         listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, listItem);
         moduleNotesList.setAdapter(adapter);
-        moduleNotesList.setOnItemClickListener(new ModuleFragment.DrawerItemClickListener());
+        moduleNotesList.setOnItemClickListener(this);
 
         if(sender.equals(CALLER_NOTECREATION))
         {
@@ -127,13 +127,7 @@ public class ModuleFragment extends Fragment {
         }
 
         btnAddNoteModule = (FloatingActionButton) rootView.findViewById(R.id.btnAddNoteInModule);
-        btnAddNoteModule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleName);
-                changeFragment(newNoteFragment);
-            }
-        });
+        btnAddNoteModule.setOnClickListener(this);
 
 
         lblModuleTitle.setText("Module Content Title");
@@ -141,19 +135,30 @@ public class ModuleFragment extends Fragment {
         return rootView;
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final DataModel listItem = (DataModel) parent.getItemAtPosition(position);
-            selectItem(position, listItem.getId());
-        }
-
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final DataModel listItem = (DataModel) adapterView.getItemAtPosition(position);
+        selectItem(position, listItem.getId());
     }
 
     private void selectItem(int position, String itemId) {
         Fragment openNoteFragment = NoteFragment.newInstance(collaborationId, itemId);
         changeFragment(openNoteFragment);
+    }
+
+    private void getModuleDataFromServer(){
+        //stessa cosa delle note
+        //prendere i dati dal server e metterli dentro le variabili adatte
+        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
+
+
+        moduleContent = "Module Content Title";
+    }
+
+    @Override
+    public void onClick(View view) {
+        Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleName);
+        changeFragment(newNoteFragment);
     }
 
     private void changeFragment(Fragment fragment){
@@ -167,14 +172,4 @@ public class ModuleFragment extends Fragment {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
-
-    private void getModuleDataFromServer(){
-        //stessa cosa delle note
-        //prendere i dati dal server e metterli dentro le variabili adatte
-        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
-
-
-        moduleContent = "Module Content Title";
-    }
-
 }
