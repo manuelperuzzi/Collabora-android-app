@@ -12,4 +12,3 @@
 *.ap_
 *.dex
 *.log
-app/src/main/java/org/gammf/collabora_android/utils/RabbitMQConfig.java
