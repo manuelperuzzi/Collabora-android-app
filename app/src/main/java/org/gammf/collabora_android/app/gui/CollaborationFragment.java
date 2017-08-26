@@ -45,7 +45,8 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
 
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
-
+    private int downX;
+    private int upX;
     private FloatingActionMenu btnMenuAdd;
     private com.github.clans.fab.FloatingActionButton btnMenuAddNote, btnMenuAddModule;
     private FloatingActionButton btnAddNote;
@@ -211,9 +212,8 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        int downX = 0;
-        int upX;
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            downX = (int) event.getX();
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             upX = (int) event.getX();
@@ -261,7 +261,7 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
 
         this.collabname = "Nome finto";
         //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
-        this.collabtype = TYPE_GROUP;
+        this.collabtype = TYPE_PROJECT;
     }
 
 }
