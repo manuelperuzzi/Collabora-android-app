@@ -8,6 +8,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTyp
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.json.JSONObject;
@@ -29,26 +30,26 @@ public class ConcreteCollaborationUpdateMessageTest {
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
 
-        final Note singleNote = new SimpleNoteBuilder("SingleNote")
+        final Note singleNote = new SimpleNoteBuilder("SingleNote", new NoteState("toDo"))
                 .setNoteID("singleNoteId")
                 .buildNote();
         project.addNote(singleNote);
 
         final Module firstModule = new ConcreteModule("firstModuleId", "FirstModule", "toDo");
-        final Note firstNote = new SimpleNoteBuilder("FirstNote")
+        final Note firstNote = new SimpleNoteBuilder("FirstNote", new NoteState("toDo"))
                 .setNoteID("firstNoteId")
                 .buildNote();
         firstModule.addNote(firstNote);
         project.addModule(firstModule);
 
         final Module secondModule = new ConcreteModule("secondModuleId", "SecondModule", "toDo");
-        final Note secondNote = new SimpleNoteBuilder("SecondNote")
+        final Note secondNote = new SimpleNoteBuilder("SecondNote", new NoteState("toDo"))
                 .setNoteID("secondNoteId")
                 .buildNote();
         secondModule.addNote(secondNote);
         project.addModule(secondModule);
 
-        final Note thirdNote = new SimpleNoteBuilder("ThirdNote")
+        final Note thirdNote = new SimpleNoteBuilder("ThirdNote", new NoteState("toDo"))
                 .setNoteID("thirdNoteId")
                 .buildNote();
         project.addNote(thirdNote, firstModule.getId());

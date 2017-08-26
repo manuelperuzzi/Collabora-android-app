@@ -20,10 +20,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi, Manuel Peruzzi
+ * Utily class providing methods to convert from UpdateMessage class to json message and vice versa.
  */
 
 public class MessageUtils {
+
+    /**
+     * Provides a json with all the update message information.
+     * @param message the update message.
+     * @return a json message with all the update message information.
+     * @throws JSONException if the conversion went wrong.
+     */
     public static JSONObject updateMessageToJSON(final UpdateMessage message) throws JSONException {
         final JSONObject jsn = new JSONObject();
         jsn.put("user", message.getUsername())
@@ -47,6 +55,12 @@ public class MessageUtils {
         return jsn;
     }
 
+    /**
+     * Creates an update message from a json message.
+     * @param json the input json message.
+     * @return an update message built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
     public static UpdateMessage jsonToUpdateMessage(final JSONObject json) throws JSONException{
         final String username = json.getString("user");
         final UpdateMessageType updateType = UpdateMessageType.valueOf(json.getString("messageType"));

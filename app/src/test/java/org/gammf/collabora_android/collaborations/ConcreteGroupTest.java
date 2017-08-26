@@ -3,6 +3,7 @@ package org.gammf.collabora_android.collaborations;
 import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
@@ -30,7 +31,7 @@ public class ConcreteGroupTest {
         final CollaborationMember sm = new SimpleCollaborationMember(secondUser, AccessRight.READ);
         group.addMember(fm);
         group.addMember(sm);
-        note = new SimpleNoteBuilder("myNote")
+        note = new SimpleNoteBuilder("myNote", new NoteState("doing", "fone"))
                 .setNoteID("myNoteId")
                 .buildNote();
         group.addNote(note);
@@ -68,7 +69,7 @@ public class ConcreteGroupTest {
 
     @Test
     public void getNote() throws Exception {
-        final Note n = new SimpleNoteBuilder("myNote")
+        final Note n = new SimpleNoteBuilder("myNote", new NoteState("doing", "fone"))
                 .setNoteID("myNoteId")
                 .buildNote();
         assertEquals(n, group.getNote(n.getNoteID()));

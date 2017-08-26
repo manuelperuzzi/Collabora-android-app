@@ -1,7 +1,8 @@
 package org.gammf.collabora_android.communication.common;
 
 /**
- * Created by Alfredo on 07/08/2017.
+ * @author Alfredo Maffi
+ * Basic interface representing a generic message of the application domain.
  */
 
 public interface Message {
