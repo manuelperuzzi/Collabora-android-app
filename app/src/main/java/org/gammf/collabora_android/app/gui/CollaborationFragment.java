@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
+import com.github.clans.fab.FloatingActionMenu;
+
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class CollaborationFragment extends Fragment {
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
 
+    private FloatingActionMenu btnMenuAdd;
+    private com.github.clans.fab.FloatingActionButton btnMenuAddNote, btnMenuAddModule;
     private FloatingActionButton btnAddNote;
     private String sender, collabId;
     private String collabname, collabtype;
@@ -107,6 +111,10 @@ public class CollaborationFragment extends Fragment {
         notesList = rootView.findViewById(R.id.notesListView);
         moduleList = rootView.findViewById(R.id.modulesListView);
         btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        btnMenuAdd = rootView.findViewById(R.id.floating_action_menu);
+        btnMenuAddNote = rootView.findViewById(R.id.floating_action_menu_addnote);
+        btnMenuAddModule = rootView.findViewById(R.id.floating_action_menu_addmodel);
+        btnMenuAdd.setVisibility(View.INVISIBLE);
 
         Resources res = getResources();
         moduleItems = new ArrayList<>();
@@ -123,6 +131,8 @@ public class CollaborationFragment extends Fragment {
         tabHost.addTab(tab2);
         if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
+            btnMenuAdd.setVisibility(View.VISIBLE);
+            btnAddNote.setVisibility(View.INVISIBLE);
             fillModulesList();
         }
 
@@ -144,7 +154,19 @@ public class CollaborationFragment extends Fragment {
                 changeFragment(newNoteFragment);
             }
         });
-
+        btnMenuAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //qui gli va aggiunto l'id del modulo
+                changeFragment(CreateNoteFragment.newInstance(SENDER, collabId, NOMODULE));
+            }
+        });
+        btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               changeFragment(CreateModuleFragment.newInstance(SENDER, collabId));
+            }
+        });
         return rootView;
     }
 
