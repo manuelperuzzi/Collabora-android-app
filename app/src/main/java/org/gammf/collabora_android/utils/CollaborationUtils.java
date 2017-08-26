@@ -1,11 +1,11 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.CollaborationType;
-import org.gammf.collabora_android.collaborations.ConcreteGroup;
-import org.gammf.collabora_android.collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.Group;
-import org.gammf.collabora_android.collaborations.Project;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Group;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;

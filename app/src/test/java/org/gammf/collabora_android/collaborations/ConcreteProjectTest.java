@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
+import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
