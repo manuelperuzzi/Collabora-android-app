@@ -184,7 +184,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
         CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
 
-        final Note newNote = new SimpleNoteBuilder(content).setLocation(location).setState(state).setExpirationDate(expiration).buildNote();
+        final Note newNote = new SimpleNoteBuilder(content, state).setLocation(location).setExpirationDate(expiration).buildNote();
         final UpdateMessage message = new ConcreteNoteUpdateMessage("fone", newNote, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask().execute(message);
 

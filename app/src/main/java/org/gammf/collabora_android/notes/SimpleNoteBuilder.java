@@ -22,8 +22,9 @@ public class SimpleNoteBuilder implements NoteBuilder {
      * Class constructor. Content is required as parameter since it's mandatory for a note.
      * @param content the content to be set.
      */
-    public SimpleNoteBuilder(final String content) {
+    public SimpleNoteBuilder(final String content, final State state) {
         this.content = content;
+        this.state = state;
     }
 
 
@@ -44,12 +45,6 @@ public class SimpleNoteBuilder implements NoteBuilder {
     @Override
     public NoteBuilder setExpirationDate(DateTime expirationDate) {
         this.expirationDate = expirationDate;
-        return this;
-    }
-
-    @Override
-    public NoteBuilder setState(State state) {
-        this.state = state;
         return this;
     }
 

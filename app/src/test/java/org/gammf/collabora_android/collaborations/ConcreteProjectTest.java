@@ -4,6 +4,7 @@ import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Before;
@@ -28,26 +29,26 @@ public class ConcreteProjectTest {
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
 
-        singleNote = new SimpleNoteBuilder("SingleNote")
+        singleNote = new SimpleNoteBuilder("SingleNote", new NoteState("toDo"))
                 .setNoteID("singleNoteId")
                 .buildNote();
         project.addNote(singleNote);
 
         firstModule = new ConcreteModule("firstModuleId", "FirstModule", "toDo");
-        firstNote = new SimpleNoteBuilder("FirstNote")
+        firstNote = new SimpleNoteBuilder("FirstNote", new NoteState("toDo"))
                 .setNoteID("firstNoteId")
                 .buildNote();
         firstModule.addNote(firstNote);
         project.addModule(firstModule);
 
         secondModule = new ConcreteModule("secondModuleId", "SecondModule", "toDo");
-        final Note secondNote = new SimpleNoteBuilder("SecondNote")
+        final Note secondNote = new SimpleNoteBuilder("SecondNote", new NoteState("toDo"))
                 .setNoteID("secondNoteId")
                 .buildNote();
         secondModule.addNote(secondNote);
         project.addModule(secondModule);
 
-        thirdNote = new SimpleNoteBuilder("ThirdNote")
+        thirdNote = new SimpleNoteBuilder("ThirdNote", new NoteState("toDo"))
                 .setNoteID("thirdNoteId")
                 .buildNote();
         project.addNote(thirdNote, firstModule.getId());

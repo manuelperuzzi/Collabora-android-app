@@ -15,11 +15,10 @@ public class SimpleNoteBuilderTest {
     private Note n;
     @Before
     public void init() {
-        n = new SimpleNoteBuilder("content").setState(new NoteState("todo"))
-                                            .setLocation(new NoteLocation(42.22, 55.23))
-                                            .setExpirationDate(new DateTime())
-                                            .setPreviousNotes(Arrays.asList("test","test2","test3"))
-                                            .buildNote();
+        n = new SimpleNoteBuilder("content", new NoteState("todo")).setLocation(new NoteLocation(42.22, 55.23))
+                                                                   .setExpirationDate(new DateTime())
+                                                                   .setPreviousNotes(Arrays.asList("test","test2","test3"))
+                                                                   .buildNote();
     }
 
     @Test

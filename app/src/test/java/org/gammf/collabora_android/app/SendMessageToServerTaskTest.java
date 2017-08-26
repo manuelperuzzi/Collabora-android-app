@@ -4,6 +4,7 @@ import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdate
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import org.junit.Test;
 public class SendMessageToServerTaskTest {
     @Test
     public void testService() {
-        Note note = new SimpleNoteBuilder("some content").buildNote();
+        Note note = new SimpleNoteBuilder("some content", new NoteState("doing", "fone")).buildNote();
         UpdateMessage message = new ConcreteNoteUpdateMessage("fone", note, UpdateMessageType.CREATION, "collaborationId");
         new SendMessageToServerTask().execute(message);
     }

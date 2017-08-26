@@ -33,13 +33,6 @@ public interface NoteBuilder {
     NoteBuilder setExpirationDate(DateTime expirationDate);
 
     /**
-     * Sets the note's state.
-     * @param state the state to be set.
-     * @return the builder itself.
-     */
-    NoteBuilder setState(State state);
-
-    /**
      * Sets the note's previous notes.
      * @param previousNotes the previous notes to be set.
      * @return the builder itself.

@@ -1,10 +1,9 @@
 package org.gammf.collabora_android.modules;
 
-import org.gammf.collabora_android.modules.ConcreteModule;
-import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteLocation;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.junit.Before;
@@ -25,11 +24,11 @@ public class ConcreteModuleTest {
     @Before
     public void setUp() throws Exception {
         module = new ConcreteModule("moduleId", "SampleModule", "toDo");
-        firstNote = new SimpleNoteBuilder("FirstNote")
+        firstNote = new SimpleNoteBuilder("FirstNote", new NoteState("toDo"))
                 .setNoteID("FirstNoteId")
                 .setLocation(new NoteLocation(235.0, 456.0))
                 .buildNote();
-        secondNote = new SimpleNoteBuilder("SecondNote")
+        secondNote = new SimpleNoteBuilder("SecondNote", new NoteState("toDo"))
                 .setNoteID("SecondNoteId")
                 .buildNote();
         module.addNote(firstNote);
