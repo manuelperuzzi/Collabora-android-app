@@ -82,31 +82,7 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         btnPositiveClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //getting the collabName
-                String insertedNoteName = txtCollabName.getText().toString();
-                String collabType = "";
-                //check if collabName is empty
-                if(insertedNoteName.equals("")){
-                    Context context = getActivity().getApplicationContext();
-                    CharSequence text = TOAST_ERR_NAMEREQUIRED;
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                    inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                    mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);
-
-                }else {
-                    //if it's not empty, get the collabtype
-                    int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
-                    if (selectedId == radioButtonProject.getId()) {
-                        collabType = TYPE_PROJECT;
-                    } else if (selectedId == radioButtonGroup.getId()) {
-                        collabType = TYPE_GROUP;
-                    }
-                    inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
-                    //and send the info to MainActivity
-                    mListener.onDialogCreateClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
-                }
+                processPositiveClick();
             }
         });
 
@@ -125,6 +101,31 @@ public class DialogNewCollaborationFragment extends DialogFragment {
         });
 
         return rootView;
+    }
+
+    private void processPositiveClick(){
+        //getting the collabName
+        String insertedNoteName = txtCollabName.getText().toString();
+        String collabType = "";
+        //check if collabName is empty
+        if(insertedNoteName.equals("")){
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_NAMEREQUIRED, Toast.LENGTH_LONG);
+            toast.show();
+            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+            mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);
+
+        }else {
+            //if it's not empty, get the collabtype
+            int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
+            if (selectedId == radioButtonProject.getId()) {
+                collabType = TYPE_PROJECT;
+            } else if (selectedId == radioButtonGroup.getId()) {
+                collabType = TYPE_GROUP;
+            }
+            inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
+            //and send the info to MainActivity
+            mListener.onDialogCreateClick(DialogNewCollaborationFragment.this, insertedNoteName, collabType);
+        }
     }
 
     @Override

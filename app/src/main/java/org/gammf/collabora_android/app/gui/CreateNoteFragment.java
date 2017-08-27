@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -51,11 +54,10 @@ import static android.content.ContentValues.TAG;
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements PlaceSelectionListener {
+public class CreateNoteFragment extends Fragment implements PlaceSelectionListener, AdapterView.OnItemSelectedListener {
 
     private static final String SENDER = "notecreationfrag";
-
-    private static final String ARG_SENDER = "sender";
+    private static final String ERR_STATENOTSELECTED = "Please select state";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
     private static final String NOMODULE = "nomodule";
@@ -69,26 +71,23 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private EditText txtContentNote;
     private Spinner spinnerState;
 
-    private String sender, collabName, collabType, collaborationId, moduleId;
+    private String collabName, collabType, collaborationId, moduleId;
 
     public CreateNoteFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(false);
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @param sender
+     *
      * @param collaborationId collaboration id
      * @param moduleId
      *
      * @return A new instance of fragment CreateNoteFragment.
      */
-    public static CreateNoteFragment newInstance(String sender,
-                                                 String collaborationId,
-                                                 String moduleId) {
+    public static CreateNoteFragment newInstance(String collaborationId, String moduleId) {
         Bundle arg = new Bundle();
-        arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABORATION_ID, collaborationId);
         arg.putString(ARG_MODULEID, moduleId);
         final CreateNoteFragment fragment = new CreateNoteFragment();
@@ -100,9 +99,9 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         if(getArguments() != null) {
             Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
@@ -116,36 +115,19 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
-        ft.commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.place_autocomplete_fragment, autocompleteFragment)
+                .commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
-        spinnerState = (Spinner) rootView.findViewById(R.id.spinnerNewNoteState);
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerState.setAdapter(dataAdapter);
-
+        spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
+        setSpinner();
         FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String insertedNoteName = txtContentNote.getText().toString();
-                if(insertedNoteName.equals("")){
-                    Resources res = getResources();
-                    txtContentNote.setError(res.getString(R.string.fieldempty));
-                }else {
-
-                    //avete un moduleID che può essere nomodule
-                    //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
-                    addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
-
-                }
-
+                processInput();
             }
         });
         dateView = rootView.findViewById(R.id.txtNewDateSelected);
@@ -179,6 +161,30 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             }
         });
         return rootView;
+    }
+
+    private void setSpinner(){
+        List<NoteProjectState> stateList = new ArrayList<>();
+        stateList.addAll(Arrays.asList(NoteProjectState.values()));
+        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerState.setAdapter(dataAdapter);
+        spinnerState.setOnItemSelectedListener(this);
+    }
+
+    private void processInput(){
+        String insertedNoteName = txtContentNote.getText().toString();
+        if(insertedNoteName.equals("")){
+            Resources res = getResources();
+            txtContentNote.setError(res.getString(R.string.fieldempty));
+        }else {
+
+            //avete un moduleID che può essere nomodule
+            //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
+            addNote(insertedNoteName, null, new NoteState(noteState, "fone"), null);
+
+        }
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
@@ -235,4 +241,19 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
+        noteState = item.toString();
+        Log.println(Log.ERROR, "ERRORONI", ""+noteState);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Context context = getActivity().getApplicationContext();
+        CharSequence text = ERR_STATENOTSELECTED;
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 }

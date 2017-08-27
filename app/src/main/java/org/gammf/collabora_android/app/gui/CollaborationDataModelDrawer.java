@@ -21,7 +21,7 @@ public class CollaborationDataModelDrawer {
     public String getCollaborationName(){
         return this.collaborationName;
     }
-    /*
+
     public void setCollaborationId(String id){
         this.collaborationId = id;
     }
@@ -29,6 +29,6 @@ public class CollaborationDataModelDrawer {
     public void setCollaborationName(String name){
         this.collaborationName = name;
     }
-    */
+
 
 }
