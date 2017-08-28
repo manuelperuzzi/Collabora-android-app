@@ -57,6 +57,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
+    private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String TOAST_COLLABCREATED = " created!";
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             setTitle(collab.getCollaborationName());
@@ -301,23 +303,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-/*
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -334,25 +319,6 @@ public class MainActivity extends AppCompatActivity
         this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
 
         //this.geoManager.removeGeofence("id2");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        /*
-        Log.i("MainActivity", "onActivityResult");
-        switch(requestCode) {
-            case (REQUEST_CODE) : {
-                if (resultCode == Activity.RESULT_OK) {
-                    String listType = data.getStringExtra(LIST_TYPE);
-                    String listName = data.getStringExtra(LIST_NAME);
-                    String listDescription = data.getStringExtra(LIST_DESCRIPTION);
-                    addNewList(listType, listName, listDescription);
-                }
-                break;
-            }
-        }
-        */
     }
 
     /**
@@ -449,13 +415,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogCreateClick(DialogFragment dialog, String collabName, String collabType) {
 
-        //close drawer lists, used for update the list.
-        for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
-            expandableListView.collapseGroup(i);
-        }
-
+        closeDrawerGroup();
         Collaboration collaboration = null;
-
         String collaborationId = "FINTOID";
 
         //check the collab type
@@ -494,11 +455,7 @@ public class MainActivity extends AppCompatActivity
             setTitle(collabName);
         }
 
-        Context context = getApplicationContext();
-        CharSequence text = ""+collabType+TOAST_COLLABCREATED;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(getApplicationContext(), ""+collabType+TOAST_COLLABCREATED, Toast.LENGTH_SHORT);
         toast.show();
         dialog.dismiss();
     }
@@ -514,6 +471,12 @@ public class MainActivity extends AppCompatActivity
         dialog.show(getSupportFragmentManager(), DIALOGNAME);
     }
 
+    private void closeDrawerGroup(){
+        //close drawer lists, used for update the list.
+        for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
+            expandableListView.collapseGroup(i);
+        }
+    }
 
 
 }

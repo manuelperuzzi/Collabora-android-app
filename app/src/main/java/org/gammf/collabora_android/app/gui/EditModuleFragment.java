@@ -87,13 +87,7 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         // Handle action bar item clicks here.
         int id = item.getItemId();
         if (id == R.id.action_editdone) {
-            String insertedNoteName = txtEditContentModule.getText().toString();
-            if(insertedNoteName.equals("")){
-                Resources res = getResources();
-                txtEditContentModule.setError(res.getString(R.string.fieldempty));
-            }else{
-                updateModule(insertedNoteName, newStateSelected);
-            }
+            checkUserUpdate();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -103,12 +97,14 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_edit_module, container, false);
-
-        txtEditContentModule = rootView.findViewById(R.id.txtModuleContentEdited);
-        spinnerModuleStateEdited = (Spinner) rootView.findViewById(R.id.spinnerModuleStateEdited);
-        setSpinner();
-
+        initializeGuiComponent(rootView);
         return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView){
+        txtEditContentModule = rootView.findViewById(R.id.txtModuleContentEdited);
+        spinnerModuleStateEdited = rootView.findViewById(R.id.spinnerModuleStateEdited);
+        setSpinner();
     }
 
     private void setSpinner(){
@@ -132,6 +128,16 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         fragmentTransaction.remove(EditModuleFragment.this);
         fragmentTransaction.commit();
         getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    private void checkUserUpdate(){
+        String insertedNoteName = txtEditContentModule.getText().toString();
+        if(insertedNoteName.equals("")){
+            Resources res = getResources();
+            txtEditContentModule.setError(res.getString(R.string.fieldempty));
+        }else{
+            updateModule(insertedNoteName, newStateSelected);
+        }
     }
 
     @Override

@@ -121,6 +121,13 @@ implements OnMapReadyCallback{
 
         View rootView = inflater.inflate(R.layout.fragment_note, container, false);
 
+        initializeGuiComponent(rootView);
+        setStateProgressBar(lblState.getText().toString());
+
+        return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView) {
         contentNote = rootView.findViewById(R.id.contentNote);
         contentNote.setText("Content note will be there, scrivo qualcosa per farlo andare su due linee");
 
@@ -128,12 +135,7 @@ implements OnMapReadyCallback{
         lblState = rootView.findViewById(R.id.lblState);
         lblState.setText("Doing");
         lblResponsible = rootView.findViewById(R.id.lblResponsible);
-      //  mapView = rootView.findViewById(R.id.mapViewLocation);
         expiration = rootView.findViewById(R.id.expiration);
-
-        setStateProgressBar(lblState.getText().toString());
-
-        return rootView;
     }
 
     @Override
