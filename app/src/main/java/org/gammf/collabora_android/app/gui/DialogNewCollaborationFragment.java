@@ -67,16 +67,21 @@ public class DialogNewCollaborationFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dialog_new_collaboration, container, false);
+        initializeDialogGuiComponent(rootView);
+
+        return rootView;
+    }
+
+    private void initializeDialogGuiComponent(View rootView) {
         txtCollabName = rootView.findViewById(R.id.txtInsertCollabNameD);
         radioGroupCollabType = rootView.findViewById(R.id.radioGroupCollabType);
         radioButtonGroup = rootView.findViewById(R.id.radioButtonGroup);
         radioButtonProject = rootView.findViewById(R.id.radioButtonProject);
         radioButtonGroup.setChecked(true);
-        inputMethodManager =
-                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-
+        inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         btnPositiveClick = rootView.findViewById(R.id.btnPositiveAddCollab);
+        btnNegativeClick = rootView.findViewById(R.id.btnNegativePositiveAddCollab);
 
         //CLICK ON CREATE BUTTON
         btnPositiveClick.setOnClickListener(new View.OnClickListener() {
@@ -86,21 +91,17 @@ public class DialogNewCollaborationFragment extends DialogFragment {
             }
         });
 
-        btnNegativeClick = rootView.findViewById(R.id.btnNegativePositiveAddCollab);
         //CANCEL CLICK EVENT
         btnNegativeClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // User cancelled the dialog
-                Toast toast =
-                        Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_CANCELCREATION, Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_CANCELCREATION, Toast.LENGTH_SHORT);
                 toast.show();
                 inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
                 mListener.onDialogCancelClick(DialogNewCollaborationFragment.this);
             }
         });
-
-        return rootView;
     }
 
     private void processPositiveClick(){

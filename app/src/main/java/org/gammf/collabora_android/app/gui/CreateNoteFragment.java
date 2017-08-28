@@ -54,7 +54,8 @@ import static android.content.ContentValues.TAG;
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements PlaceSelectionListener, AdapterView.OnItemSelectedListener {
+public class CreateNoteFragment extends Fragment implements PlaceSelectionListener,
+        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String SENDER = "notecreationfrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
@@ -70,6 +71,10 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private int year, month, day, hour, minute;
     private EditText txtContentNote;
     private Spinner spinnerState;
+    private FloatingActionButton btnAddNote;
+
+    private DatePickerDialog.OnDateSetListener myDateListener;
+    private TimePickerDialog.OnTimeSetListener myTimeListener;
 
     private String collabName, collabType, collaborationId, moduleId;
 
@@ -101,9 +106,9 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if(getArguments() != null) {
-            Log.e("Async", "CollaborationId in fragment is: " + getArguments().getString(ARG_COLLABORATION_ID));
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
+            Log.e("Async", "CollaborationId in fragment is: " + this.collaborationId);
         }
     }
 
@@ -112,18 +117,32 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
+
+        initializeGuiComponent(rootView);
+
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        showDate(year, month+1, day);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String strTime = sdf.format(calendar.getTime());
+        timeView.setText(strTime);
+
+        return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView){
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
         autocompleteFragment = new SupportPlaceAutocompleteFragment();
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.place_autocomplete_fragment, autocompleteFragment)
-                .commit();
+        getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
         spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
         setSpinner();
-        FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,17 +150,10 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             }
         });
         dateView = rootView.findViewById(R.id.txtNewDateSelected);
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        showDate(year, month+1, day);
-
         timeView = rootView.findViewById(R.id.txtNewTimeSelected);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String strTime = sdf.format(calendar.getTime());
-        timeView.setText(strTime);
 
+        myDateListener = this;
+        myTimeListener = this;
 
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnSetDateExpiration);
         btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +172,6 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                         myTimeListener, hour, minute, true).show();
             }
         });
-        return rootView;
     }
 
     private void setSpinner(){
@@ -196,6 +207,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
+
     @Override
     public void onPlaceSelected(Place place) {
         // TODO: Get info about the selected place.
@@ -214,38 +226,10 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         Log.i(TAG, "An error occurred: " + status);
     }
 
-    private DatePickerDialog.OnDateSetListener myDateListener = new
-            DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker arg0,
-                                      int arg1, int arg2, int arg3) {
-                    // TODO Auto-generated method stub
-                    // arg1 = year
-                    // arg2 = month
-                    // arg3 = day
-                    showDate(arg1, arg2+1, arg3);
-                }
-            };
-    private TimePickerDialog.OnTimeSetListener myTimeListener = new
-            TimePickerDialog.OnTimeSetListener(){
-                @Override
-                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                    showTime(hour,minute);
-                }
-            };
-    private void showDate(int year, int month, int day) {
-        dateView.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
-    }
-    private void showTime(int hour, int minute){
-        timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
         noteState = item.toString();
-        Log.println(Log.ERROR, "ERRORONI", ""+noteState);
     }
 
     @Override
@@ -255,5 +239,24 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker arg0, int year, int month, int day) {
+        showDate(year, month+1, day);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        showTime(hour,minute);
+    }
+
+    private void showDate(int year, int month, int day) {
+        dateView.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+
+    private void showTime(int hour, int minute){
+        timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 }
