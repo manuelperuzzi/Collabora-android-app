@@ -32,6 +32,7 @@
         <receiver android:name=".alarm.AlarmBroadcastReceiver"/>
 
         <service android:name=".rabbitmq.NotificationsSubscriberService"/>
+        <service android:name=".rabbitmq.CollaborationsSubscriberService"/>
         <service android:name=".BootService"/>
         <service android:name=".location_geofence.GeofenceTransitionsIntentService"/>
 
