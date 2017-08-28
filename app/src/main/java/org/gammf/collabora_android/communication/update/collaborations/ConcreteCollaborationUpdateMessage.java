@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.communication.update.collaborations;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.general.AbstractUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;

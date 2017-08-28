@@ -1,5 +1,6 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.complete_collaborations.private_collaborations;
 
+import org.gammf.collabora_android.collaborations.complete_collaborations.general.AbstractCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
@@ -27,5 +28,5 @@ public class ConcretePrivateCollaboration extends AbstractCollaboration implemen
     public CollaborationMember getUser() {
         return user;
     }
-    
+
 }

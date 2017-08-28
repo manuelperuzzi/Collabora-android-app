@@ -2,7 +2,7 @@ package org.gammf.collabora_android.utils;
 
 import android.content.Context;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
 import org.json.JSONException;
 import org.json.JSONObject;

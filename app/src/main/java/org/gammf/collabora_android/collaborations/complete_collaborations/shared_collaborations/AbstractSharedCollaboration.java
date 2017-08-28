@@ -1,5 +1,6 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations;
 
+import org.gammf.collabora_android.collaborations.complete_collaborations.general.AbstractCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.Collections;
@@ -12,7 +13,7 @@ import java.util.Set;
  * This is an abstract class that defines the basic operations of a generic collaboration shared
  * between users.
  */
-public abstract class AbstractSharedCollaboration extends AbstractCollaboration implements SharedCollaboration  {
+public abstract class AbstractSharedCollaboration extends AbstractCollaboration implements SharedCollaboration {
 
     private final Set<CollaborationMember> members;
 

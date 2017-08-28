@@ -1,5 +1,6 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.complete_collaborations.private_collaborations;
 
+import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 /**

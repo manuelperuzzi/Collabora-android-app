@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
