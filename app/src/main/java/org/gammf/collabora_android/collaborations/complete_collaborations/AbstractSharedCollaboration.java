@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.collaborations.complete_collaborations;
 
-import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.Collections;
@@ -10,35 +9,16 @@ import java.util.Set;
 
 /**
  * @author Manuel Peruzzi
- * This is an abstract class that defines the basic operations of a generic collaboration.
+ * This is an abstract class that defines the basic operations of a generic collaboration shared
+ * between users.
  */
-public abstract class AbstractSharedCollaboration implements SharedCollaboration {
+public abstract class AbstractSharedCollaboration extends AbstractCollaboration implements SharedCollaboration  {
 
-    private final String id;
-    private String name;
     private final Set<CollaborationMember> members;
-    private final Set<Note> notes;
 
     protected AbstractSharedCollaboration(final String id, final String name) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.members = new HashSet<>();
-        this.notes = new HashSet<>();
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
@@ -83,66 +63,21 @@ public abstract class AbstractSharedCollaboration implements SharedCollaboration
     }
 
     @Override
-    public Set<Note> getAllNotes() {
-        return Collections.unmodifiableSet(notes);
-    }
-
-    @Override
-    public boolean containsNote(String noteId) {
-        for (final Note n: notes) {
-            if (n.getNoteID().equals(noteId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Note getNote(String noteId) throws NoSuchElementException {
-        for (final Note n: notes) {
-            if (n.getNoteID().equals(noteId)) {
-                return n;
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    @Override
-    public boolean addNote(Note note) {
-        return notes.add(note);
-    }
-
-    @Override
-    public boolean removeNote(String noteId) {
-        for (final Note n: notes) {
-            if (n.getNoteID().equals(noteId)) {
-                notes.remove(n);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         AbstractSharedCollaboration that = (AbstractSharedCollaboration) o;
 
-        return id.equals(that.id)
-                && name.equals(that.name)
-                && members.equals(that.members)
-                && notes.equals(that.notes);
+        return members.equals(that.members);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = super.hashCode();
         result = 31 * result + members.hashCode();
-        result = 31 * result + notes.hashCode();
         return result;
     }
 }
