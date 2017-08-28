@@ -26,7 +26,7 @@ public class NotificationsSubscriberService extends SubscriberService {
     private BroadcastReceiver destroyBindingReceiver;
 
     /**
-     * Registering receivers for binding/unbinding the queue from the exchange
+     * Registering receivers for binding/unbinding the queue from the exchange.
      */
     @Override
     public void onCreate() {
@@ -50,12 +50,12 @@ public class NotificationsSubscriberService extends SubscriberService {
     }
 
     /**
-     * When the service is started, the user's queue is declared and created (if it doesn't exist).
-     * Also, a basic consumer is registered on such queue and all existing bindings are established.
-     * @param intent contains the username that will be the suffix of the queue's name
-     * @param flags not used
-     * @param startId not used
-     * @return constant START_REDELIVER_INTENT in order to force the system to schedule the recreation of the service if it's killed during its creation, redelivering the same intent
+     * Method used to establish all the necessary bindings to receive the server's notifications.
+     * Also, this method register two BroadcastReceiver in order to manage the creation of new bindings.
+     * @param intent contains the username that will be the suffix of the queue's name and, potentially, all the collaborations IDs to which the user has joined to.
+     * @param flags  unused
+     * @param startId unused
+     * @return constant START_REDELIVER_INTENT in order to force the system to schedule the recreation of the service if it's killed during its creation, redelivering the same intent.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -68,6 +68,9 @@ public class NotificationsSubscriberService extends SubscriberService {
         return START_REDELIVER_INTENT;
     }
 
+    /**
+     * The service, and all its components, are killed.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

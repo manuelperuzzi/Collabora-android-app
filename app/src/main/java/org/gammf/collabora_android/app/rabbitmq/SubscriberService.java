@@ -30,6 +30,13 @@ public abstract class SubscriberService extends Service{
     protected String queueName;
     protected String consumerTag;
 
+    /**
+     * In this method, RabbitMQ configuration is performed and a basic consumer is registered on the user's queue.
+     * @param intent contains the username that will be the suffix of the queue's name
+     * @param flags unused
+     * @param startId unused
+     * @return constant START_REDELIVER_INTENT in order to force the system to schedule the recreation of the service if it's killed during its creation, redelivering the same intent
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -39,6 +46,9 @@ public abstract class SubscriberService extends Service{
         return START_REDELIVER_INTENT;
     }
 
+    /**
+     * The service, and all its components, are killed.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -72,7 +82,7 @@ public abstract class SubscriberService extends Service{
 
     /**
      * Thread used to register a consumer for incoming message from the server.
-     * The consumer registered is responsible for storing updates to local data.
+     * The consumer handles the received message calling the abstract method handleMessage.
      */
     private class SubscriberThread extends Thread {
 
