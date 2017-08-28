@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.users.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +18,37 @@ import java.io.IOException;
  */
 public class LocalStorageUtils {
 
+    private static final String USER_FILENAME = "user";
     private static final String COLLABORATIONS_FILENAME = "collaborations";
+
+    /**
+     * Retrieves a user from the application local storage.
+     * @param context the application context used to access the application local files.
+     * @return the user built from the local storage.
+     * @throws IOException if the file reading went wrong.
+     * @throws JSONException if the json conversion went wrong
+     */
+    public static User readUserFromFile(final Context context) throws IOException, JSONException {
+        final JSONObject storedJson = readStoredFile(context, USER_FILENAME);
+        try {
+            return UserUtils.jsonToUser(storedJson);
+        } catch (final MandatoryFieldMissingException e) {
+            throw new JSONException("Json message not correctly formatted! " + e.toString());
+        }
+    }
+
+    /**
+     * Writes a user on a single file in the application local storage.
+     * @param context the application context used to access the application local files.
+     * @param user the user to be written.
+     * @throws IOException if the file writing went wrong.
+     * @throws JSONException if the json conversion went wrong.
+     */
+    public static void writeUserToFile(final Context context, final User user)
+            throws IOException, JSONException{
+        final JSONObject json = UserUtils.userToJson(user);
+        writeStoredFile(context, USER_FILENAME, json);
+    }
 
     /**
      * Retrieves a collaboration from the application local storage.
@@ -34,7 +65,7 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Writes a collaboration in a single file in the application local storage.
+     * Writes a collaboration on a single file in the application local storage.
      * @param context the application context used to access the application local files.
      * @param collaboration the collaboration to be written.
      * @throws IOException if the file writing went wrong.
@@ -60,7 +91,7 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Writes all the short collaborations contained in a manager in a single file in the application
+     * Writes all the short collaborations contained in a manager on a single file in the application
      * local storage.
      * @param context the application context used to access the application local files.
      * @param manager the manager containing the collaborations to be written.
