@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.collaborations.complete_collaborations;
 
-import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.NoSuchElementException;
