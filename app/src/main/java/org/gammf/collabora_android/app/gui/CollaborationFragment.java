@@ -5,20 +5,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -29,7 +25,7 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
-public class CollaborationFragment extends Fragment implements View.OnTouchListener, AdapterView.OnItemClickListener {
+public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
@@ -39,14 +35,9 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
     private static final String ARG_COLLABID = "collabid";
     private static final String NOMODULE = "nomodule";
 
-    private static final int MAXSWIPE = 100;
-    private static final int NOTETABINDEX = 0;
-    private static final int MODULETABINDEX = 1;
-
     private static final String TYPE_PROJECT = "Project";
     private static final String TYPE_GROUP = "Group";
-    private int downX;
-    private int upX;
+
     private FloatingActionMenu btnMenuAdd;
     private com.github.clans.fab.FloatingActionButton btnMenuAddNote, btnMenuAddModule;
     private FloatingActionButton btnAddNote;
@@ -136,14 +127,13 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
         tab1.setContent(R.id.i_layout_2);
         tab2.setIndicator(res.getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
-        tabHost.addTab(tab2);
         if(collabtype.equals(TYPE_PROJECT)) {
             tabHost.addTab(tab1);
-            tabHost.setOnTouchListener(this);
             btnMenuAdd.setVisibility(View.VISIBLE);
             btnAddNote.setVisibility(View.INVISIBLE);
             fillModulesList();
         }
+        tabHost.addTab(tab2);
 
         if(sender.equals(CALLER_NOTECREATION))
         {
@@ -159,7 +149,6 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
             public void onClick(View view) {
                 final Fragment newNoteFragment =
                         CreateNoteFragment.newInstance(collabId, NOMODULE);
-
                 changeFragment(newNoteFragment);
             }
         });
@@ -211,23 +200,6 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            downX = (int) event.getX();
-            return true;
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            upX = (int) event.getX();
-            if (upX - downX > MAXSWIPE) {
-                tabHost.setCurrentTab(NOTETABINDEX);
-            } else if (downX - upX > -MAXSWIPE) {
-                tabHost.setCurrentTab(MODULETABINDEX);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         final DataModel listName = (DataModel) adapterView.getItemAtPosition(position);
         selectItem(position, listName);
@@ -255,8 +227,6 @@ public class CollaborationFragment extends Fragment implements View.OnTouchListe
     }
 
     private void getDataFromServer(String collabId){
-
-
 
 
         this.collabname = "Nome finto";
