@@ -57,6 +57,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
 
+    private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String TOAST_COLLABCREATED = " created!";
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             setTitle(collab.getCollaborationName());
