@@ -2,7 +2,7 @@ package org.gammf.collabora_android.utils;
 
 import android.content.Context;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class LocalStorageUtils {
      * @throws IOException if the file reading from file went wrong.
      * @throws JSONException if the json conversion went wrong.
      */
-    public static SharedCollaboration readCollaborationFromFile(final Context context, final String collaborationId)
+    public static Collaboration readCollaborationFromFile(final Context context, final String collaborationId)
             throws IOException, JSONException {
         final JSONObject storedJson = readStoredFile(context, collaborationId);
         return CollaborationUtils.jsonToCollaboration(storedJson);
@@ -40,7 +40,7 @@ public class LocalStorageUtils {
      * @throws IOException if the file writing went wrong.
      * @throws JSONException if the json conversion went wrong.
      */
-    public static void writeCollaborationToFile(final Context context, final SharedCollaboration collaboration)
+    public static void writeCollaborationToFile(final Context context, final Collaboration collaboration)
             throws IOException, JSONException{
         final JSONObject json = CollaborationUtils.collaborationToJson(collaboration);
         writeStoredFile(context, collaboration.getId(), json);

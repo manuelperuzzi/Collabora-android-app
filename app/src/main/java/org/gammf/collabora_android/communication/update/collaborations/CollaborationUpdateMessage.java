@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.communication.update.collaborations;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 
 /**
@@ -12,6 +12,6 @@ public interface CollaborationUpdateMessage extends UpdateMessage {
     /**
      * @return the updated collaboration.
      */
-    SharedCollaboration getCollaboration();
+    Collaboration getCollaboration();
 
 }

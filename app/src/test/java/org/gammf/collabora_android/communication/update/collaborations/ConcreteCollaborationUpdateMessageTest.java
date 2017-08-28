@@ -10,6 +10,8 @@ import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -29,6 +31,8 @@ public class ConcreteCollaborationUpdateMessageTest {
     @Before
     public void setUp() throws Exception {
         project = new ConcreteProject("myProjectId", "MyProject");
+
+        project.addMember(new SimpleCollaborationMember("maffone", AccessRight.ADMIN));
 
         final Note singleNote = new SimpleNoteBuilder("SingleNote", new NoteState("toDo"))
                 .setNoteID("singleNoteId")
