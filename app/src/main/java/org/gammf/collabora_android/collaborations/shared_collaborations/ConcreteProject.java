@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.shared_collaborations;
 
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Manuel Peruzzi
  * An implementation of a collaboration of type project.
  */
-public class ConcreteProject extends AbstractCollaboration implements Project {
+public class ConcreteProject extends AbstractSharedCollaboration implements Project {
 
     private final Set<Module> modules;
 

@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.collaborations;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public class ConcreteGroupTest {
 
-    private Collaboration group;
+    private SharedCollaboration group;
     private String firstUser = "peru";
     private String secondUser = "maffone";
     private Note note;

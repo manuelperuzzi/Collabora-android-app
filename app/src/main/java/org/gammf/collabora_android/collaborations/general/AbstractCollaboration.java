@@ -1,7 +1,6 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.general;
 
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,13 +15,11 @@ public abstract class AbstractCollaboration implements Collaboration {
 
     private final String id;
     private String name;
-    private final Set<CollaborationMember> members;
     private final Set<Note> notes;
 
     protected AbstractCollaboration(final String id, final String name) {
         this.id = id;
         this.name = name;
-        this.members = new HashSet<>();
         this.notes = new HashSet<>();
     }
 
@@ -39,47 +36,6 @@ public abstract class AbstractCollaboration implements Collaboration {
     @Override
     public void setName(final String name) {
         this.name = name;
-    }
-
-    @Override
-    public Set<CollaborationMember> getAllMembers() {
-        return Collections.unmodifiableSet(members);
-    }
-
-    @Override
-    public boolean containsMember(String username) {
-        for (final CollaborationMember m: members) {
-            if (m.getUsername().equals(username)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public CollaborationMember getMember(String username) throws NoSuchElementException {
-        for (final CollaborationMember m: members) {
-            if (m.getUsername().equals(username)) {
-                return m;
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    @Override
-    public boolean addMember(CollaborationMember member) {
-        return members.add(member);
-    }
-
-    @Override
-    public boolean removeMember(String username) {
-        for (final CollaborationMember m: members) {
-            if (m.getUsername().equals(username)) {
-                members.remove(m);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -130,18 +86,16 @@ public abstract class AbstractCollaboration implements Collaboration {
 
         AbstractCollaboration that = (AbstractCollaboration) o;
 
-        return id.equals(that.id)
-                && name.equals(that.name)
-                && members.equals(that.members)
-                && notes.equals(that.notes);
+        return id != null ? id.equals(that.id) : that.id == null &&
+                (name != null ? name.equals(that.name) : that.name == null &&
+                        notes.equals(that.notes));
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + members.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + notes.hashCode();
         return result;
     }

@@ -1,8 +1,8 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteCollaborationManager;
-import org.gammf.collabora_android.collaborations.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
