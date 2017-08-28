@@ -12,14 +12,14 @@ import java.util.Set;
  * @author Manuel Peruzzi
  * This is an abstract class that defines the basic operations of a generic collaboration.
  */
-public abstract class AbstractCollaboration implements Collaboration {
+public abstract class AbstractSharedCollaboration implements SharedCollaboration {
 
     private final String id;
     private String name;
     private final Set<CollaborationMember> members;
     private final Set<Note> notes;
 
-    protected AbstractCollaboration(final String id, final String name) {
+    protected AbstractSharedCollaboration(final String id, final String name) {
         this.id = id;
         this.name = name;
         this.members = new HashSet<>();
@@ -128,7 +128,7 @@ public abstract class AbstractCollaboration implements Collaboration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractCollaboration that = (AbstractCollaboration) o;
+        AbstractSharedCollaboration that = (AbstractSharedCollaboration) o;
 
         return id.equals(that.id)
                 && name.equals(that.name)

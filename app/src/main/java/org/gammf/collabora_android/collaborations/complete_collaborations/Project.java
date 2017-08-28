@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Manuel Peruzzi
  * Represents a collaboration of type project.
  */
-public interface Project extends Collaboration {
+public interface Project extends SharedCollaboration {
 
     /**
      * @return a list containing each module of the collaboration.

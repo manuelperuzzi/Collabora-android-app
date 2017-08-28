@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Manuel Peruzzi
  * An implementation of a collaboration of type project.
  */
-public class ConcreteProject extends AbstractCollaboration implements Project {
+public class ConcreteProject extends AbstractSharedCollaboration implements Project {
 
     private final Set<Module> modules;
 

@@ -2,9 +2,8 @@ package org.gammf.collabora_android.app;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
 import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteShortCollaboration;
@@ -13,7 +12,6 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
-import org.gammf.collabora_android.utils.CollaborationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -41,7 +39,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         final UpdateMessage message = updateMessages[0];
 
         try {
-            final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
+            final SharedCollaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
                     context, message.getCollaborationId());
             switch (message.getTarget()) {
                 case NOTE:
@@ -60,7 +58,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         }
     }
 
-    private boolean storeUpdatedNote(final NoteUpdateMessage message, final Collaboration storedCollaboration)
+    private boolean storeUpdatedNote(final NoteUpdateMessage message, final SharedCollaboration storedCollaboration)
             throws IOException, JSONException {
         switch (message.getUpdateType()) {
             case CREATION:
@@ -81,7 +79,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         return true;
     }
 
-    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final Collaboration storedCollaboration)
+    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final SharedCollaboration storedCollaboration)
             throws IOException, JSONException {
         if (storedCollaboration instanceof Project) {
             final Project project = (Project) storedCollaboration;
@@ -107,7 +105,7 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         return false;
     }
 
-    private boolean storeUpdatedMember(final MemberUpdateMessage message, final Collaboration storedCollaboration)
+    private boolean storeUpdatedMember(final MemberUpdateMessage message, final SharedCollaboration storedCollaboration)
             throws IOException, JSONException {
         switch (message.getUpdateType()) {
             case CREATION:

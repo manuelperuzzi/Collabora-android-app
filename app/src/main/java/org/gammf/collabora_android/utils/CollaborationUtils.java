@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.CollaborationType;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
@@ -28,7 +28,7 @@ public class CollaborationUtils {
      * @return a json message with all the collaboration information.
      * @throws JSONException if the conversion went wrong.
      */
-    public static JSONObject collaborationToJson(final Collaboration collaboration) throws JSONException {
+    public static JSONObject collaborationToJson(final SharedCollaboration collaboration) throws JSONException {
         final JSONObject json = new JSONObject();
 
         if (collaboration.getId() != null) {
@@ -77,12 +77,12 @@ public class CollaborationUtils {
      * @return a collaboration built from the json message.
      * @throws JSONException if the conversion went wrong.
      */
-    public static Collaboration jsonToCollaboration(final JSONObject json) throws JSONException {
+    public static SharedCollaboration jsonToCollaboration(final JSONObject json) throws JSONException {
         final String id = json.getString("id");
         final String name = json.getString("name");
         final CollaborationType type = CollaborationType.valueOf(json.getString("collaborationType"));
 
-        final Collaboration collaboration;
+        final SharedCollaboration collaboration;
         switch (type) {
             case PROJECT:
                 collaboration = new ConcreteProject(id, name);

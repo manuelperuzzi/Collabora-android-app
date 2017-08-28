@@ -37,7 +37,7 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.SendMessageToServerTask;
 import org.gammf.collabora_android.app.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity
             expandableListView.collapseGroup(i);
         }
 
-        Collaboration collaboration = null;
+        SharedCollaboration collaboration = null;
 
         String collaborationId = "FINTOID";
 

@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
+import org.gammf.collabora_android.collaborations.complete_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -72,7 +72,7 @@ public class MessageUtils {
                 final Note note = NoteUtils.jsonToNote(json.getJSONObject("note"));
                 return new ConcreteNoteUpdateMessage(username, note, updateType, collaborationId);
             case COLLABORATION:
-                final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(
+                final SharedCollaboration collaboration = CollaborationUtils.jsonToCollaboration(
                         json.getJSONObject("collaboration"));
                 return new ConcreteCollaborationUpdateMessage(username, collaboration, updateType);
             case MODULE:

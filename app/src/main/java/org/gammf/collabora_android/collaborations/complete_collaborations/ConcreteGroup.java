@@ -4,7 +4,7 @@ package org.gammf.collabora_android.collaborations.complete_collaborations;
  * @author Manuel Peruzzi
  * A simple implementation of a collaboration of type group.
  */
-public class ConcreteGroup extends AbstractCollaboration implements Group {
+public class ConcreteGroup extends AbstractSharedCollaboration implements Group {
 
     /**
      * Class constructor.
