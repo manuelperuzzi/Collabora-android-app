@@ -36,6 +36,8 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
     private String collaborationId;
     private Spinner spinnerModuleState;
     private EditText txtContentModule;
+    private FloatingActionButton btnAddModule;
+
     private String stateSelected = "";
 
     public CreateModuleFragment() {
@@ -73,14 +75,16 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_module, container, false);
+        initializeGuiComponent(rootView);
+        return rootView;
+    }
 
+    private void initializeGuiComponent(View rootView){
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
         spinnerModuleState = rootView.findViewById(R.id.spinnerNewModuleState);
         setSpinner();
-        FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
+        btnAddModule = rootView.findViewById(R.id.btnAddModule);
         btnAddModule.setOnClickListener(this);
-
-        return rootView;
     }
 
     private void setSpinner(){
@@ -129,10 +133,7 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Context context = getActivity().getApplicationContext();
-        CharSequence text = ERR_STATENOTSELECTED;
-        int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(getActivity().getApplicationContext(), ERR_STATENOTSELECTED, Toast.LENGTH_LONG);
         toast.show();
     }
 }

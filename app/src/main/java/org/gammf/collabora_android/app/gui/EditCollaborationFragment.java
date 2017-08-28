@@ -29,13 +29,9 @@ import java.util.ArrayList;
  */
 public class EditCollaborationFragment extends Fragment {
 
-    private static final String SENDER = "editcollabfrag";
-
     private static final String TOAST_ERR_EDITCANCEL = "Edit discarded";
 
     private static final String ARG_COLLABID = "collabid";
-    private static final String ARG_COLLABNAME = "collabName";
-    private static final String ARG_COLLABTYPE = "collabType";
 
     private String collaborationId;
     private String collabName, collabType;
@@ -93,29 +89,7 @@ public class EditCollaborationFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_editdone) {
-            String newName = txtNewTitle.getText().toString();
-            //If newName is empty
-            if(newName.equals("")) {
-                //display error for field required
-                txtNewTitle.setError(res.getString(R.string.fieldempty));
-
-                //if name isn't changed
-            }else if(newName.equals(collabName)){
-
-                //check if member(s) was added.
-                if(memberHasChanged) {
-                    returnToCollabFragment();
-                }else { //members not changed and name not modified
-
-                    Toast toast =
-                            Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
-                    toast.show();
-
-                    returnToCollabFragment();
-                }
-            }else{
-                updateCollaboration(newName);
-            }
+            checkUserInput();
             return true;
         }
 
@@ -127,6 +101,12 @@ public class EditCollaborationFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_collaboration, container, false);
         res = getResources();
+        initializeGuiComponent(rootView);
+
+        return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView){
         btnAddMember = rootView.findViewById(R.id.btnAddMember);
         txtNewTitle = rootView.findViewById(R.id.txtInsertEditedCollabName);
         memberList = rootView.findViewById(R.id.listViewCollabMember);
@@ -142,10 +122,7 @@ public class EditCollaborationFragment extends Fragment {
                 updateMemberList();
             }
         });
-
-        return rootView;
     }
-
     private void updateCollaboration(String collabName){
         //QUI AGGIORNARE LA COLLABORAZIONE
         ((MainActivity)getActivity()).updateCollaborationList(this, collaborationId);
@@ -195,4 +172,29 @@ public class EditCollaborationFragment extends Fragment {
         memberHasChanged = true; //importante per i controlli se è stata fatta una modifica o meno
     }
 
+    private void checkUserInput(){
+        String newName = txtNewTitle.getText().toString();
+        //If newName is empty
+        if(newName.equals("")) {
+            //display error for field required
+            txtNewTitle.setError(res.getString(R.string.fieldempty));
+
+            //if name isn't changed
+        }else if(newName.equals(collabName)){
+
+            //check if member(s) was added.
+            if(memberHasChanged) {
+                returnToCollabFragment();
+            }else { //members not changed and name not modified
+
+                Toast toast =
+                        Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
+                toast.show();
+
+                returnToCollabFragment();
+            }
+        }else{
+            updateCollaboration(newName);
+        }
+    }
 }

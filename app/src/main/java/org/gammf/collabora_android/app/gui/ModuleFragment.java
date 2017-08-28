@@ -110,15 +110,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_module, container, false);
-        moduleNotesList = (ListView) rootView.findViewById(R.id.moduleNotesListView);
-        lblModuleTitle = rootView.findViewById(R.id.lblModuleTitle);
-        listItem = new ArrayList<DataModel>();
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, listItem);
-        moduleNotesList.setAdapter(adapter);
-        moduleNotesList.setOnItemClickListener(this);
+        initializeGuiComponent(rootView);
+
+        fillNoteList();
 
         if(sender.equals(CALLER_NOTECREATION))
         {
@@ -126,13 +120,27 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
             listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
         }
 
-        btnAddNoteModule = (FloatingActionButton) rootView.findViewById(R.id.btnAddNoteInModule);
-        btnAddNoteModule.setOnClickListener(this);
-
-
-        lblModuleTitle.setText("Module Content Title");
-
         return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView) {
+        moduleNotesList = rootView.findViewById(R.id.moduleNotesListView);
+        lblModuleTitle = rootView.findViewById(R.id.lblModuleTitle);
+        listItem = new ArrayList<DataModel>();
+        btnAddNoteModule =  rootView.findViewById(R.id.btnAddNoteInModule);
+        btnAddNoteModule.setOnClickListener(this);
+        lblModuleTitle.setText("Module Content Title");
+    }
+
+    private void fillNoteList(){
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
+
+
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
+        moduleNotesList.setAdapter(adapter);
+        moduleNotesList.setOnItemClickListener(this);
     }
 
     @Override
