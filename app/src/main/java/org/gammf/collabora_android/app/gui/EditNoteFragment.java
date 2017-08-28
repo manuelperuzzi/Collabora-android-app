@@ -61,7 +61,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         OnMapReadyCallback, AdapterView.OnItemSelectedListener,
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
-    private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String MAPSEARCH_ERROR = "An error occurred: ";
     private static final String ERR_STATENOTSELECTED = "Please select state";
@@ -148,21 +147,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         int id = item.getItemId();
 
         if (id == R.id.action_editdone) {
-            String insertedNoteName = txtContentNoteEdited.getText().toString();
-            if(insertedNoteName.equals("")){
-                Resources res = getResources();
-                txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
-            }else{
-
-                //qui mettere il codice per aggiornare la nota
-                //il nuovo content è in insertedNoteName
-                //nuovo stato in noteStateEdited
-                //le nuove coordinate sono in newCoordinates
-                String newDateExp = dateViewEdited.getText().toString();
-                String newTimeExp = timeViewEdited.getText().toString();
-
-                changeFragment(NoteFragment.newInstance(collaborationId, noteId));
-            }
+            checkUserNoteUpdate();
             return true;
         }
 
@@ -174,31 +159,35 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_note, container, false);
-        txtContentNoteEdited = rootView.findViewById(R.id.txtNoteContentEdit);
-        txtContentNoteEdited.requestFocus();
-        autocompleteFragmentEdited = new SupportPlaceAutocompleteFragment();
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited);
-        ft.commit();
-        autocompleteFragmentEdited.setOnPlaceSelectedListener(this);
-        myDateListenerEdited = this;
-        myTimeListenerEdited = this;
-        spinnerEditState = (Spinner) rootView.findViewById(R.id.spinnerEditNoteState);
-        setSpinner();
+        initializeGuiComponent(rootView);
 
-        dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         calendarEdited = Calendar.getInstance();
         yearEdited = calendarEdited.get(Calendar.YEAR);
         monthEdited = calendarEdited.get(Calendar.MONTH);
         dayEdited = calendarEdited.get(Calendar.DAY_OF_MONTH);
         showDate(yearEdited, monthEdited+1, dayEdited);
 
-        timeViewEdited = rootView.findViewById(R.id.txtEditTimeSelected);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String strTime = sdf.format(calendarEdited.getTime());
         timeViewEdited.setText(strTime);
 
+        return rootView;
+    }
+
+    private void initializeGuiComponent(View rootView){
+        txtContentNoteEdited = rootView.findViewById(R.id.txtNoteContentEdit);
+        txtContentNoteEdited.requestFocus();
+        autocompleteFragmentEdited = new SupportPlaceAutocompleteFragment();
+        getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
+        autocompleteFragmentEdited.setOnPlaceSelectedListener(this);
+        spinnerEditState = (Spinner) rootView.findViewById(R.id.spinnerEditNoteState);
+        setSpinner();
+
+        dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
+        timeViewEdited = rootView.findViewById(R.id.txtEditTimeSelected);
+
+        myDateListenerEdited = this;
+        myTimeListenerEdited = this;
 
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnEditDateExpiration);
         btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
@@ -217,8 +206,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
                         myTimeListenerEdited, hourEdited, minuteEdited, true).show();
             }
         });
-
-        return rootView;
     }
 
     private void setSpinner(){
@@ -231,13 +218,32 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         spinnerEditState.setOnItemSelectedListener(this);
     }
 
-    private void showDate(int year, int month, int day) {
-        dateViewEdited.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
+    private void getNoteDataFromServer(){
+
+        //RECUPERARE I DATI QUI: ci sono gli id nei campi
+        // e mettere i valori nelle rispettive variabili
+        // poi settare sempre i dati all'utente col setText nel onViewCreated
+        // per mettere i campi nella gui come sono prima della modifica
     }
-    private void showTime(int hour, int minute){
-        timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
+
+    private void checkUserNoteUpdate(){
+        String insertedNoteName = txtContentNoteEdited.getText().toString();
+        if(insertedNoteName.equals("")){
+            Resources res = getResources();
+            txtContentNoteEdited.setError(res.getString(R.string.fieldempty));
+        }else{
+
+            //qui mettere il codice per aggiornare la nota
+            //il nuovo content è in insertedNoteName
+            //nuovo stato in noteStateEdited
+            //le nuove coordinate sono in newCoordinates
+            String newDateExp = dateViewEdited.getText().toString();
+            String newTimeExp = timeViewEdited.getText().toString();
+
+            changeFragment(NoteFragment.newInstance(collaborationId, noteId));
+        }
     }
+
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
@@ -349,14 +355,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         });
     }
 
-    private void getNoteDataFromServer(){
-
-        //RECUPERARE I DATI QUI: ci sono gli id nei campi
-        // e mettere i valori nelle rispettive variabili
-        // poi settare sempre i dati all'utente col setText nel onViewCreated
-        // per mettere i campi nella gui come sono prima della modifica
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
@@ -378,5 +376,13 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         showTime(hour,minute);
+    }
+
+    private void showDate(int year, int month, int day) {
+        dateViewEdited.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+    private void showTime(int hour, int minute){
+        timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 }
