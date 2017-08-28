@@ -7,8 +7,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,15 +28,13 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.app.SendMessageToServerTask;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.gammf.collabora_android.notes.State;
 import org.joda.time.DateTime;
 
 import java.sql.Time;

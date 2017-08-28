@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.app.gui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -34,8 +33,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.SendMessageToServerTask;
-import org.gammf.collabora_android.app.SubscriberService;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.rabbitmq.SubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;

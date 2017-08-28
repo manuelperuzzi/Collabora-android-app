@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app;
+package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,6 +21,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.app.StoreNotificationsTask;
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.CollaboraAppUtils;

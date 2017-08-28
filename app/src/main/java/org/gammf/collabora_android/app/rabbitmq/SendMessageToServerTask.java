@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app;
+package org.gammf.collabora_android.app.rabbitmq;
 
 import android.os.AsyncTask;
 
