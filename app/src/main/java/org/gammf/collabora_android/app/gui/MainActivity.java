@@ -36,9 +36,10 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
-import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -414,8 +415,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogCreateClick(DialogFragment dialog, String collabName, String collabType) {
 
-        closeDrawerGroup();
+        //close drawer lists, used for update the list.
+        for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
+            expandableListView.collapseGroup(i);
+        }
+
         Collaboration collaboration = null;
+
         String collaborationId = "FINTOID";
 
         //check the collab type
@@ -433,7 +439,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // TODO retrieve member from local storage instead of building it here
-        collaboration.addMember(new SimpleCollaborationMember("manuelperuzzi", AccessRight.ADMIN));
+        //collaboration.addMember(new SimpleCollaborationMember("manuelperuzzi", AccessRight.ADMIN));
 
         final UpdateMessage message = new ConcreteCollaborationUpdateMessage("manuelperuzzi",
                 collaboration, UpdateMessageType.CREATION);

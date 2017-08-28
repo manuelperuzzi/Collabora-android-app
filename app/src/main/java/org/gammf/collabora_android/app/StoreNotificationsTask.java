@@ -2,18 +2,17 @@ package org.gammf.collabora_android.app;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.Project;
-import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
-import org.gammf.collabora_android.utils.CollaborationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -47,11 +46,13 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
                 case NOTE:
                     return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
                 case MODULE:
-                    return storeUpdatedModule((ModuleUpdateMessage) message, storedCollaboration);
+                    return storedCollaboration instanceof Project &&
+                            storeUpdatedModule((ModuleUpdateMessage) message, (Project) storedCollaboration);
                 case COLLABORATION:
                     return storeUpdatedCollaboration((CollaborationUpdateMessage) message);
                 case MEMBER:
-                    return storeUpdatedMember((MemberUpdateMessage) message, storedCollaboration);
+                    return storedCollaboration instanceof SharedCollaboration &&
+                            storeUpdatedMember((MemberUpdateMessage) message, (SharedCollaboration) storedCollaboration);
                 default:
                     return false;
             }
@@ -81,33 +82,28 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         return true;
     }
 
-    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final Collaboration storedCollaboration)
+    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final Project storedCollaboration)
             throws IOException, JSONException {
-        if (storedCollaboration instanceof Project) {
-            final Project project = (Project) storedCollaboration;
-
-            switch (message.getUpdateType()) {
-                case CREATION:
-                    project.addModule(message.getModule());
-                    break;
-                case UPDATING:
-                    project.removeModule(message.getModule().getId());
-                    project.addModule(message.getModule());
-                    break;
-                case DELETION:
-                    project.removeModule(message.getModule().getId());
-                    break;
-                default:
-                    return false;
-            }
-
-            LocalStorageUtils.writeCollaborationToFile(context, storedCollaboration);
-            return true;
+        switch (message.getUpdateType()) {
+            case CREATION:
+                storedCollaboration.addModule(message.getModule());
+                break;
+            case UPDATING:
+                storedCollaboration.removeModule(message.getModule().getId());
+                storedCollaboration.addModule(message.getModule());
+                break;
+            case DELETION:
+                storedCollaboration.removeModule(message.getModule().getId());
+                break;
+            default:
+                return false;
         }
-        return false;
+
+        LocalStorageUtils.writeCollaborationToFile(context, storedCollaboration);
+        return true;
     }
 
-    private boolean storeUpdatedMember(final MemberUpdateMessage message, final Collaboration storedCollaboration)
+    private boolean storeUpdatedMember(final MemberUpdateMessage message, final SharedCollaboration storedCollaboration)
             throws IOException, JSONException {
         switch (message.getUpdateType()) {
             case CREATION:

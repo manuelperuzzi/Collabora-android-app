@@ -2,9 +2,9 @@ package org.gammf.collabora_android.utils;
 
 import android.content.Context;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
-import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 

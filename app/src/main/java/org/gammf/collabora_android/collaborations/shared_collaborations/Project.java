@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations;
+package org.gammf.collabora_android.collaborations.shared_collaborations;
 
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Manuel Peruzzi
  * Represents a collaboration of type project.
  */
-public interface Project extends Collaboration {
+public interface Project extends SharedCollaboration {
 
     /**
      * @return a list containing each module of the collaboration.
