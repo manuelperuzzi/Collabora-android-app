@@ -34,7 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.app.rabbitmq.SubscriberService;
+import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.complete_collaborations.Collaboration;
 import org.gammf.collabora_android.collaborations.complete_collaborations.ConcreteGroup;
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
+        final Intent intent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         intent.putExtra("username", "fone");
         startService(intent);
 
