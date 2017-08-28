@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteShortCollaboration;
-import org.gammf.collabora_android.collaborations.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.json.JSONException;
 import org.json.JSONObject;
 

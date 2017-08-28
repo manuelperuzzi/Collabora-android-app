@@ -1,13 +1,13 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.private_collaborations.ConcretePrivateCollaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.private_collaborations.PrivateCollaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.ConcreteGroup;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.Group;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.ConcretePrivateCollaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;

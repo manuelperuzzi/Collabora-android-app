@@ -1,6 +1,6 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations;
+package org.gammf.collabora_android.collaborations.shared_collaborations;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 import java.util.NoSuchElementException;

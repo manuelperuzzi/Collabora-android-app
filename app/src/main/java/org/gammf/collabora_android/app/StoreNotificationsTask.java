@@ -3,11 +3,11 @@ package org.gammf.collabora_android.app;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import org.gammf.collabora_android.collaborations.complete_collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.SharedCollaboration;
-import org.gammf.collabora_android.collaborations.complete_collaborations.shared_collaborations.Project;
-import org.gammf.collabora_android.collaborations.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.collaborations.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;

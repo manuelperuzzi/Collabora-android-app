@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations.complete_collaborations.general;
+package org.gammf.collabora_android.collaborations.general;
 
 import org.gammf.collabora_android.notes.Note;
 

@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.collaborations.short_collaborations;
+package org.gammf.collabora_android.short_collaborations;
 
 import org.gammf.collabora_android.utils.CollaborationType;
 
