@@ -1,17 +1,13 @@
 package org.gammf.collabora_android.app.rabbitmq;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.NotificationCompat;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -22,15 +18,14 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
-import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
-import org.gammf.collabora_android.utils.CollaboraAppUtils;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Alfredo Maffi
@@ -43,7 +38,6 @@ public class SubscriberService extends Service {
     private String queueName;
     private BroadcastReceiver createBindingReceiver;
     private BroadcastReceiver destroyBindingReceiver;
-    private boolean isConsumerRegistered;
 
     /**
      * Registering receivers for binding/unbinding the queue from the exchange
@@ -51,12 +45,10 @@ public class SubscriberService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.isConsumerRegistered = false;
         this.createBindingReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                final String collaborationID = intent.getStringExtra("routing-key");
-                new SubscriberThread(collaborationID).start();
+                createBinding(intent.getStringExtra("routing-key"));
             }
         };
         this.destroyBindingReceiver = new BroadcastReceiver() {
@@ -72,7 +64,8 @@ public class SubscriberService extends Service {
     }
 
     /**
-     * When the service is started, the user's queue is declared and created (if it doesn't exist)
+     * When the service is started, the user's queue is declared and created (if it doesn't exist).
+     * Also, a basic consumer is registered on such queue and all existing bindings are established.
      * @param intent contains the username that will be the suffix of the queue's name
      * @param flags not used
      * @param startId not used
@@ -88,6 +81,15 @@ public class SubscriberService extends Service {
             this.channel = connection.createChannel();
             this.channel.exchangeDeclare(RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
             this.channel.queueDeclare(queueName, true, false, false, null);
+
+            new SubscriberThread().start();
+
+            List<String> collaborationsIds = intent.getStringArrayListExtra("collaborationsIds");
+            if(collaborationsIds != null) {
+                for (final String id : collaborationsIds) {
+                    this.createBinding(id);
+                }
+            }
         } catch (final Exception e) {
             //TODO better error strategy}
         }
@@ -109,69 +111,41 @@ public class SubscriberService extends Service {
         return null;
     }
 
+    private void createBinding(final String routingKey) {
+        try {
+            channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + routingKey);
+        } catch (IOException e) {
+            //TODO better error strategy
+            e.printStackTrace();
+        }
+    }
+
     /**
-     * Thread used to create bindings between the user's queue and the exchange notifications
-     * It is also used to register a consumer for incoming message when the first binding is established
-     * The consumer registered is able to show notifications to the user
+     * Thread used to register a consumer for incoming message from the server.
+     * The consumer registered is responsible for storing updates to local data.
      */
     private class SubscriberThread extends Thread {
-
-        private final String collaborationID;
-
-        private SubscriberThread(final String collaborationID) {
-            this.collaborationID = collaborationID;
-        }
 
         @Override
         public void run() {
             try {
-                channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + collaborationID);
-                if(!isConsumerRegistered) {
-                    channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
-                        @Override
-                        public void handleDelivery(String consumerTag, Envelope envelope,
-                                                   AMQP.BasicProperties properties, byte[] body) throws IOException {
-                            try {
-                                final JSONObject json = new JSONObject(new String(body, "UTF-8"));
-                                final UpdateMessage message = MessageUtils.jsonToUpdateMessage(json);
-                                channel.basicAck(envelope.getDeliveryTag(), false);
-                                new StoreNotificationsTask(getApplicationContext()).execute(message);
-                            } catch (final JSONException e) {
-                                e.printStackTrace();
-                            }
+                channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope,
+                                               AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        try {
+                            final JSONObject json = new JSONObject(new String(body, "UTF-8"));
+                            final UpdateMessage message = MessageUtils.jsonToUpdateMessage(json);
+                            channel.basicAck(envelope.getDeliveryTag(), false);
+                            new StoreNotificationsTask(getApplicationContext()).execute(message);
+                        } catch (final JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    isConsumerRegistered = true;
-                }
+                    }
+                });
             } catch (final Exception e) {
                 //TODO better error strategy
             }
         }
-
-        /*private void buildNotification(String message) {
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(SubscriberService.this);
-            try {
-                final UpdateMessage updateMessage = MessageUtils.jsonToUpdateMessage(new JSONObject(message));
-                builder.setSmallIcon(R.mipmap.ic_launcher_round)
-                        .setContentTitle("Notification")
-                        .setContentText(CollaboraAppUtils.getReadableNotificationMessage(updateMessage))
-                        .setAutoCancel(true)
-                        .setVibrate(new long[] { 100, 200, 400, 200, 400 })
-                        .setLights(Color.BLUE, 1000, 3000);
-                sendNotification(builder);
-            } catch (final JSONException e) {
-                //hypothetically unreachable
-            }
-        }
-
-        private void sendNotification(NotificationCompat.Builder builder) {
-            final Intent targetIntent = new Intent(SubscriberService.this, MainActivity.class);
-            final PendingIntent contentIntent = PendingIntent.getActivity(SubscriberService.this, 0,
-                    targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(contentIntent);
-            final NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            final int notificationID = 1;
-            nManager.notify(notificationID, builder.build());
-        }*/
     }
 }
