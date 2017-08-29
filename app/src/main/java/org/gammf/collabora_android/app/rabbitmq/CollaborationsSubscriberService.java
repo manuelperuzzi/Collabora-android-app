@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 
+import java.io.IOException;
+
 /**
  * @author Alfredo Maffi
  * This class represent a service whose task is to listen for incoming collaboration messages from the server, acting accordingly.
@@ -23,7 +25,14 @@ public class CollaborationsSubscriberService extends SubscriberService {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
+        try {
+            this.channel.queueBind(this.queueName, RabbitMQConfig.COLLABORATIONS_EXCHANGE_NAME, intent.getStringExtra("username"));
+        } catch (final IOException e) {
+            //TODO
+        }
+
+        return START_REDELIVER_INTENT;
     }
 
     /**

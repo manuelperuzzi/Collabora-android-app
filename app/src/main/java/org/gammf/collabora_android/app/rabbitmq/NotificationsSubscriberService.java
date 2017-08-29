@@ -110,7 +110,7 @@ public class NotificationsSubscriberService extends SubscriberService {
 
     private void createBinding(final String routingKey) {
         try {
-            channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + routingKey);
+            channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, routingKey);
         } catch (IOException e) {
             //TODO better error strategy
         }
