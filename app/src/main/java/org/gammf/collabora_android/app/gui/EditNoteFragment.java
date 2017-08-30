@@ -66,11 +66,12 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private static final String ERR_STATENOTSELECTED = "Please select state";
     private static final String SENDER = "editnotefrag";
 
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
     private static final String ARG_NOTEID = "noteId";
 
-
+    private String username;
     private SupportPlaceAutocompleteFragment autocompleteFragmentEdited;
     private String noteStateEdited = "";
     private Calendar calendarEdited;
@@ -111,9 +112,10 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String collabId, String moduleId, String noteId) {
+    public static EditNoteFragment newInstance(String username, String collabId, String moduleId, String noteId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_MODULEID, moduleId);
         args.putString(ARG_NOTEID, noteId);
@@ -126,6 +128,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
+            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
             this.noteId = getArguments().getString(ARG_NOTEID);
@@ -240,7 +243,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
             String newDateExp = dateViewEdited.getText().toString();
             String newTimeExp = timeViewEdited.getText().toString();
 
-            changeFragment(NoteFragment.newInstance(collaborationId, noteId));
+            changeFragment(NoteFragment.newInstance(username, collaborationId, noteId));
         }
     }
 
