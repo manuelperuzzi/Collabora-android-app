@@ -6,5 +6,5 @@ package org.gammf.collabora_android.communication.common;
  */
 
 public enum MessageType {
-    UPDATE, NOTIFICATION, COLLABORATION
+    UPDATE, COLLABORATION
 }

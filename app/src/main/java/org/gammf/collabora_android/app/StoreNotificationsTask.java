@@ -1,11 +1,16 @@
 package org.gammf.collabora_android.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
+import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.common.MessageType;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
@@ -23,7 +28,7 @@ import java.io.IOException;
  * This is an asynchronous task that parses an update message, storing in the local application
  * memory the new collaborations data deriving from the server notification.
  */
-public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boolean> {
+public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     private final Context context;
 
@@ -36,9 +41,31 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
     }
 
     @Override
-    protected Boolean doInBackground(UpdateMessage... updateMessages) {
-        final UpdateMessage message = updateMessages[0];
+    protected Boolean doInBackground(Message... messages) {
+        final Message message = messages[0];
 
+        if(message.getMessageType().equals(MessageType.UPDATE)) {
+            return handleUpdateMessage((UpdateMessage)message);
+        } else if(message.getMessageType().equals(MessageType.COLLABORATION)) {
+            return handleCollaborationMessage((CollaborationMessage)message);
+        }
+
+        return false;
+    }
+
+    private boolean handleCollaborationMessage(CollaborationMessage message) {
+        try {
+            final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
+            manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
+            LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
+            LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
+            return true;
+        } catch (final IOException | JSONException e) {
+            return false;
+        }
+    }
+
+    private boolean handleUpdateMessage(final UpdateMessage message) {
         try {
             final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
                     context, message.getCollaborationId());
@@ -146,4 +173,11 @@ public class StoreNotificationsTask extends AsyncTask<UpdateMessage, Void, Boole
         return true;
     }
 
+    @Override
+    protected void onPostExecute(final Boolean success) {
+        if(success) {
+            final Intent intent = new Intent("update.collaborations.on.gui");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
 }
