@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 
 /**
  * Created by Mattia on 21/08/2017.
@@ -23,10 +25,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableListTitle;
-    private final HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail;
+    private final Map<String, List<ShortCollaboration>> expandableListDetail;
 
     public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<CollaborationDataModelDrawer>> expandableListDetail) {
+                                       Map<String, List<ShortCollaboration>> expandableListDetail) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -46,8 +48,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final CollaborationDataModelDrawer item = (CollaborationDataModelDrawer) getChild(listPosition, expandedListPosition);
-        final String expandedListText = item.getCollaborationName();
+        final ShortCollaboration item = (ShortCollaboration) getChild(listPosition, expandedListPosition);
+        final String expandedListText = item.getName();
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

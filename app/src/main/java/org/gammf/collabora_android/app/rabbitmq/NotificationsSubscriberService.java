@@ -9,8 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,7 +62,6 @@ public class NotificationsSubscriberService extends SubscriberService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        this.establishExistingBindings(intent);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(createBindingReceiver, new IntentFilter("new.binding.for.collaboration"));
         LocalBroadcastManager.getInstance(this).registerReceiver(destroyBindingReceiver, new IntentFilter("remove.binding.for.collaboration"));
@@ -95,11 +96,12 @@ public class NotificationsSubscriberService extends SubscriberService {
     }
 
     @Override
-    protected void handleMessage(UpdateMessage message) {
-        new StoreNotificationsTask(getApplicationContext()).execute(message);
+    protected void handleJsonMessage(final JSONObject message) throws JSONException {
+        new StoreNotificationsTask(getApplicationContext()).execute(MessageUtils.jsonToUpdateMessage(message));
     }
 
-    private void establishExistingBindings(final Intent intent) {
+    @Override
+    protected void onConfigurationCompleted(final Intent intent) {
         final List<String> collaborationsIds = intent.getStringArrayListExtra("collaborationsIds");
         if(collaborationsIds != null) {
             for (final String id : collaborationsIds) {
@@ -110,7 +112,7 @@ public class NotificationsSubscriberService extends SubscriberService {
 
     private void createBinding(final String routingKey) {
         try {
-            channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, RabbitMQConfig.NOTIFICATIONS_QUEUE_PREFIX + routingKey);
+            channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, routingKey);
         } catch (IOException e) {
             //TODO better error strategy
         }
