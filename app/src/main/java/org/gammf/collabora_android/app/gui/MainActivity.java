@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         refreshCollaborationLists();
-        
+
         final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         notificationIntent.putExtra("username", user.getUsername());
         notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));

@@ -23,6 +23,12 @@ public class RabbitMQConfig {
 
     private static Connection connection;
 
+    /**
+     * Getter for the unique instance of the RabbitMQ connection in the application.
+     * @return the RabbitMQ connection.
+     * @throws IOException if something went wrong.
+     * @throws TimeoutException probably if the server is unreachable.
+     */
     public static Connection getRabbitMQConnection() throws IOException, TimeoutException {
         if(connection == null) {
             final ConnectionFactory factory = new ConnectionFactory();
