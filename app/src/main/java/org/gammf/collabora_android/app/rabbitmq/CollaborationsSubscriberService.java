@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.app.StoreNotificationsTask;
+import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -26,12 +29,6 @@ public class CollaborationsSubscriberService extends SubscriberService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        try {
-            this.channel.queueBind(this.queueName, RabbitMQConfig.COLLABORATIONS_EXCHANGE_NAME, intent.getStringExtra("username"));
-        } catch (final IOException e) {
-            //TODO
-        }
-
         return START_REDELIVER_INTENT;
     }
 
@@ -55,8 +52,17 @@ public class CollaborationsSubscriberService extends SubscriberService {
     }
 
     @Override
-    protected void handleMessage(UpdateMessage message) {
-        //TODO
+    protected void handleJsonMessage(final JSONObject message) throws JSONException {
+        new StoreNotificationsTask(getApplicationContext()).execute(MessageUtils.jsonToCollaborationMessage(message));
+    }
+
+    @Override
+    protected void onConfigurationCompleted(final Intent intent) {
+        try {
+            this.channel.queueBind(this.queueName, RabbitMQConfig.COLLABORATIONS_EXCHANGE_NAME, intent.getStringExtra("username"));
+        } catch (final IOException e) {
+            //TODO
+        }
     }
 
     @Nullable
