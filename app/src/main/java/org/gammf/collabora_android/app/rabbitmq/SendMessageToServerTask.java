@@ -4,8 +4,6 @@ import android.os.AsyncTask;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.MessageUtils;
@@ -25,13 +23,11 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
      */
     @Override
     protected Boolean doInBackground(UpdateMessage... messages) {
-        ConnectionFactory factory = new ConnectionFactory();
         try {
-            factory.setHost(RabbitMQConfig.BROKER_ADDRESS);
-            final Connection connection = factory.newConnection();
-            final Channel channel = connection.createChannel();
+            final Channel channel = RabbitMQConfig.getRabbitMQConnection().createChannel();
             channel.exchangeDeclare(RabbitMQConfig.UPDATES_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
             channel.basicPublish(RabbitMQConfig.UPDATES_EXCHANGE_NAME, RabbitMQConfig.UPDATES_ROUTING_KEY, null, MessageUtils.updateMessageToJSON(messages[0]).toString().getBytes());
+            channel.close();
         } catch (final Exception e) {
             return false;
         }
