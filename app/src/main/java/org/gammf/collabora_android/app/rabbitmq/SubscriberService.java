@@ -6,13 +6,9 @@ import android.content.Intent;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
-import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +36,7 @@ public abstract class SubscriberService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        this.setUpRabbitMQ(intent);
-        new SubscriberThread().start();
+        new SubscriberThread(intent).start();
 
         return START_REDELIVER_INTENT;
     }
@@ -64,47 +59,44 @@ public abstract class SubscriberService extends Service{
 
     protected abstract String getExchangeName();
 
-    protected abstract void handleMessage(UpdateMessage message);
+    protected abstract void handleJsonMessage(final JSONObject message) throws JSONException;
 
-    private void setUpRabbitMQ(final Intent intent) {
-        this.queueName = this.getQueuePrefix() + intent.getStringExtra("username");
-        final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(RabbitMQConfig.BROKER_ADDRESS);
-        try {
-            final Connection connection = factory.newConnection();
-            this.channel = connection.createChannel();
-            this.channel.exchangeDeclare(this.getExchangeName(), BuiltinExchangeType.DIRECT, true);
-            this.channel.queueDeclare(queueName, true, false, false, null);
-        } catch (final Exception e) {
-            //TODO better error strategy}
-        }
-    }
+    protected abstract void onConfigurationCompleted(final Intent intent);
 
     /**
      * Thread used to register a consumer for incoming message from the server.
      * The consumer handles the received message calling the abstract method handleMessage.
      */
     private class SubscriberThread extends Thread {
+        private final Intent intent;
+
+        public SubscriberThread(final Intent intent) {
+            this.intent = intent;
+        }
 
         @Override
         public void run() {
             try {
+                queueName = getQueuePrefix() + intent.getStringExtra("username");
+                channel = RabbitMQConfig.getRabbitMQConnection().createChannel();
+                channel.exchangeDeclare(getExchangeName(), BuiltinExchangeType.DIRECT, true);
+                channel.queueDeclare(queueName, true, false, false, null);
                 consumerTag = channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
                     @Override
                     public void handleDelivery(String consumerTag, Envelope envelope,
                                                AMQP.BasicProperties properties, byte[] body) throws IOException {
                         try {
                             final JSONObject json = new JSONObject(new String(body, "UTF-8"));
-                            final UpdateMessage message = MessageUtils.jsonToUpdateMessage(json);
                             channel.basicAck(envelope.getDeliveryTag(), false);
-                            handleMessage(message);
+                            handleJsonMessage(json);
                         } catch (final JSONException e) {
-                            e.printStackTrace();
+                            //TODO
                         }
                     }
                 });
+                onConfigurationCompleted(this.intent);
             } catch (final Exception e) {
-                //TODO better error strategy
+                //TODO
             }
         }
     }

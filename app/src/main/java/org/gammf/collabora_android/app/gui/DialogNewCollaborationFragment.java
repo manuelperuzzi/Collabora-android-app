@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.utils.CollaborationType;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,9 +28,6 @@ public class DialogNewCollaborationFragment extends DialogFragment {
 
     private static final String TOAST_ERR_NAMEREQUIRED = "Creation failed: name not inserted!";
     private static final String TOAST_ERR_CANCELCREATION = "Creation discarded";
-
-    private static final String TYPE_PROJECT = "Project";
-    private static final String TYPE_GROUP = "Group";
 
     // Use this instance of the interface to deliver action events
     private DialogCollabListener mListener;
@@ -119,9 +117,9 @@ public class DialogNewCollaborationFragment extends DialogFragment {
             //if it's not empty, get the collabtype
             int selectedId = radioGroupCollabType.getCheckedRadioButtonId();
             if (selectedId == radioButtonProject.getId()) {
-                collabType = TYPE_PROJECT;
+                collabType = CollaborationType.PROJECT.name();
             } else if (selectedId == radioButtonGroup.getId()) {
-                collabType = TYPE_GROUP;
+                collabType = CollaborationType.GROUP.name();
             }
             inputMethodManager.hideSoftInputFromWindow(txtCollabName.getWindowToken(), 0);
             //and send the info to MainActivity

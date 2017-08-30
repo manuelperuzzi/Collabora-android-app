@@ -1,6 +1,9 @@
 package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
+import org.gammf.collabora_android.communication.collaboration.ConcreteCollaborationMessage;
+import org.gammf.collabora_android.communication.common.MessageType;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -86,4 +89,9 @@ public class MessageUtils {
         }
     }
 
+    public static CollaborationMessage jsonToCollaborationMessage(final JSONObject json) throws JSONException {
+        final String username = json.getString("user");
+        final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(json.getJSONObject("collaboration"));
+        return new ConcreteCollaborationMessage(username, MessageType.COLLABORATION, collaboration);
+    }
 }
