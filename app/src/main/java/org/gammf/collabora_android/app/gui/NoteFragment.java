@@ -4,10 +4,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +28,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.notes.Location;
+import org.gammf.collabora_android.notes.ModuleNote;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -41,40 +47,40 @@ implements OnMapReadyCallback{
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "notefrag";
 
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
+    private static final String NOMODULE = "nomodule";
 
-    private TextView contentNote;
-    private String collaborationId, noteId;
-    private String collabname, collabtype, notename;
-    private ProgressBar progressBarState;
-    private TextView lblState;
-    private TextView lblResponsible;
+    private String username;
+    private String collaborationId;
+    private String noteId;
+    private String moduleId;
+    private Location location;
+
     private MapView mapView;
-    private GoogleMap googleMap;
     private CameraPosition cameraPosition;
-    private TextView expiration;
 
-    private Double startingLat = 42.50;
-    private Double startingLng = 12.50;
-    private int startingZoom = 15;
-    private int animationZoom = 5;
-    private int animationMsDuration = 2000;
-    private int zoomNote = 17;
-    private int bearingNote = 90;
-    private int tiltNote = 30;
+    private static final Double startingLat = 42.50;
+    private static final Double startingLng = 12.50;
+    private static final int startingZoom = 15;
+    private static final int animationZoom = 5;
+    private static final int animationMsDuration = 2000;
+    private static final int zoomNote = 17;
+    private static final int bearingNote = 90;
+    private static final int tiltNote = 30;
 
-    private Double latitudeNote = 44.1390945;
-    private Double longitudeNote = 12.2429281;
-
+    private ProgressBar progressBarState;
+    private TextView stateTextView;
 
     public NoteFragment() {
         setHasOptionsMenu(true);
     }
 
-    public static NoteFragment newInstance(String collabId, String noteId) {
+    public static NoteFragment newInstance(String username, String collabId, String noteId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
         fragment.setArguments(args);
@@ -85,11 +91,11 @@ implements OnMapReadyCallback{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
+            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
         }
         setHasOptionsMenu(true);
-        getNoteDataFromServer();
     }
 
     @Override
@@ -109,7 +115,7 @@ implements OnMapReadyCallback{
         int id = item.getItemId();
 
         if (id == R.id.action_editnote) {
-            Fragment editNoteFragment = EditNoteFragment.newInstance(collaborationId, "FINTOIDMODULE", notename);
+            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, moduleId, noteId);
             changeFragment(editNoteFragment);
             return true;
         }
@@ -122,20 +128,41 @@ implements OnMapReadyCallback{
         View rootView = inflater.inflate(R.layout.fragment_note, container, false);
 
         initializeGuiComponent(rootView);
-        setStateProgressBar(lblState.getText().toString());
+        setStateProgressBar(stateTextView.getText().toString());
 
         return rootView;
     }
 
     private void initializeGuiComponent(View rootView) {
-        contentNote = rootView.findViewById(R.id.contentNote);
-        contentNote.setText("Content note will be there, scrivo qualcosa per farlo andare su due linee");
+        try {
+            final Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            final Note note = collaboration.getNote(noteId);
 
-        progressBarState = rootView.findViewById(R.id.progressBarState);
-        lblState = rootView.findViewById(R.id.lblState);
-        lblState.setText("Doing");
-        lblResponsible = rootView.findViewById(R.id.lblResponsible);
-        expiration = rootView.findViewById(R.id.expiration);
+            final TextView noteContent = rootView.findViewById(R.id.contentNote);
+            noteContent.setText(note.getContent());
+
+            progressBarState = rootView.findViewById(R.id.progressBarState);
+
+            stateTextView = rootView.findViewById(R.id.lblState);
+            stateTextView.setText(note.getState().getCurrentState());
+
+            final TextView responsibleTextView = rootView.findViewById(R.id.lblResponsible);
+            responsibleTextView.setText(note.getState().getCurrentResponsible());
+
+            final TextView expiration = rootView.findViewById(R.id.expiration);
+            expiration.setText(note.getExpirationDate().toString());
+
+            location = note.getLocation();
+
+            if (note instanceof ModuleNote) {
+                moduleId = ((ModuleNote) note).getModuleId();
+            } else {
+                moduleId = NOMODULE;
+            }
+
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -147,16 +174,15 @@ implements OnMapReadyCallback{
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        googleMap = map;
-        setUpMap();
+    public void onMapReady(final GoogleMap map) {
+        setUpMap(map);
     }
 
-    private void setUpMap(){
+    private void setUpMap(final GoogleMap googleMap){
         if (mapView != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                    .position(new LatLng(latitudeNote, longitudeNote)));
+                    .position(new LatLng(location.getLatitude(), location.getLongitude())));
             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -166,7 +192,7 @@ implements OnMapReadyCallback{
             MapsInitializer.initialize(this.getActivity());
 
             LatLng italy = new LatLng(startingLat, startingLng);
-            LatLng coordinates = new LatLng(latitudeNote, longitudeNote);
+            LatLng coordinates = new LatLng(location.getLatitude(), location.getLongitude());
             // Move the camera instantly to Italy with a zoom of 15.
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, startingZoom));
             // Zoom in, animating the camera.
@@ -231,14 +257,6 @@ implements OnMapReadyCallback{
                 break;
             }
         }
-    }
-
-
-    private void getNoteDataFromServer(){
-
-        //prendere i dati dal server e metterli dentro le variabili adatte
-
-        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
     }
 
 }
