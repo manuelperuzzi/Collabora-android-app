@@ -139,6 +139,7 @@
     </string>
     <string name="dateStr">--/--/----</string>
     <string name="or_back_to_login">or back to Login</string>
+    <string name="action_logout">LOGOUT</string>
 
 
 </resources>

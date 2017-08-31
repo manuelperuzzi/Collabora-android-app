@@ -3,6 +3,7 @@ package org.gammf.collabora_android.app.gui;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,9 +30,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -58,6 +62,7 @@ import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -105,13 +110,9 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
-            Fragment fragment = LoginFragment.newInstance();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -121,10 +122,12 @@ public class MainActivity extends AppCompatActivity
             //TODO ?
         } catch (IOException e) {
             //TODO ?
+        } catch (MandatoryFieldMissingException e) {
+            e.printStackTrace();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -138,6 +141,39 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 showNoticeDialog();
+            }
+        });
+
+        TextView username = (TextView) findViewById(R.id.nameOfUser);
+        username.setText(user.getUsername());
+        TextView email = (TextView) findViewById(R.id.emailOfUser);
+        email.setText(user.getEmail());
+
+        Button btnLogout = (Button)findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("CAUTION");
+                builder.setMessage("If you press Continue, you will logout from Collabora, are you sure?");
+                builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        user = null;
+                        Fragment fragment = LoginFragment.newInstance();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        drawer.closeDrawers();
+                    }
+                });
+                builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
             }
         });
 
