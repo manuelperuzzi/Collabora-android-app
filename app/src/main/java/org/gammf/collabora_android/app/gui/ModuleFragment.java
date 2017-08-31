@@ -121,7 +121,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
+            listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content", false));
         }
 
         return rootView;
@@ -137,9 +137,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void fillNoteList(){
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1", false));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2", false));
+        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3", false));
 
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
@@ -154,7 +154,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void selectItem(int position, String itemId) {
-        Fragment openNoteFragment = NoteFragment.newInstance(collaborationId, itemId);
+        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId);
         changeFragment(openNoteFragment);
     }
 

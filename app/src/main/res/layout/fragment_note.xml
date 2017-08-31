@@ -30,7 +30,6 @@
         android:layout_marginStart="9dp"
         android:layout_toEndOf="@+id/textView6"
         android:gravity="center_horizontal"
-        android:text="12/12/1212 @ 12:12"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         />
 
@@ -68,7 +67,6 @@
         android:layout_alignStart="@+id/lblResponsible"
         android:layout_below="@+id/lblResponsible"
         android:layout_marginTop="14dp"
-        android:text="Doing"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="18sp"/>
 
@@ -101,7 +99,6 @@
         android:layout_alignBaseline="@+id/textView5"
         android:layout_alignBottom="@+id/textView5"
         android:layout_alignStart="@+id/expiration"
-        android:text="Mario Rossi"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="18sp"/>
 
@@ -152,7 +149,6 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/expiration"
         android:layout_alignTop="@+id/textView7"
-        android:text="Via Sacchi 3, Cesena"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         />
 
