@@ -175,13 +175,21 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         if (insertedNoteName.equals("")) {
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
-            addNote(insertedNoteName, location, new NoteState(noteState, null),
-                    new DateTime(year, month, day, hour, minute));
+            if (isDateTimeValid()) {
+                addNote(insertedNoteName, location, new NoteState(noteState, null),
+                        new DateTime(year, month, day, hour, minute));
+            } else {
+                addNote(insertedNoteName, location, new NoteState(noteState, null), null);
+            }
         }
     }
 
+    private boolean isDateTimeValid() {
+        return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
+    }
+
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        final CollaborationFragment collaborationFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
+        final CollaborationFragment collaborationFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
 
         final Note simpleNote = new SimpleNoteBuilder(content, state)
                 .setLocation(location)
@@ -220,23 +228,23 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     @Override
     public void onDateSet(final DatePicker arg0, final int year, final int month, final int day) {
         this.year = year;
-        this.month = month;
+        this.month = month + 1;
         this.day = day;
-        showDate(year, month, day);
+        showDate();
     }
 
     @Override
     public void onTimeSet(final TimePicker timePicker, final int hour, final int minute) {
         this.hour = hour;
         this.minute = minute;
-        showTime(hour, minute);
+        showTime();
     }
 
-    private void showDate(int year, int month, int day) {
+    private void showDate() {
         dateView.setText(new StringBuilder().append(day).append("/").append(month).append("/").append(year));
     }
 
-    private void showTime(int hour, int minute){
+    private void showTime(){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 
