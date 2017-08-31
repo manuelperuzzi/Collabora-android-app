@@ -105,17 +105,22 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+            Fragment fragment = LoginFragment.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         } catch (final FileNotFoundException e) {
-            //TODO show login/registration page
+            Fragment fragment = LoginFragment.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         } catch (final JSONException e) {
             //TODO ?
         } catch (IOException e) {
             //TODO ?
-        } catch (MandatoryFieldMissingException e) {
-            e.printStackTrace();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

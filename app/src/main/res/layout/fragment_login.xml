@@ -24,28 +24,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="65dp"
         android:src="@drawable/ic_launcher"
-        android:layout_below="@+id/login_progress"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
-
-    <ScrollView
-        android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true">
-
-        <LinearLayout
-            android:id="@+id/email_login_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:id="@+id/textInputLayout">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,7 +49,11 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/textInputLayout"
+                android:layout_alignParentStart="true"
+                android:id="@+id/textInputLayout2">
 
                 <EditText
                     android:id="@+id/password"
@@ -78,19 +74,21 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_below="@+id/textInputLayout2"
+                android:layout_alignParentStart="true"/>
 
             <TextView
-                android:id="@+id/text_register"
+                android:id="@+id/text_registerL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="29dp"
                 android:gravity="center"
+                android:textSize="19sp"
                 android:text="@string/action_goto_register"
-                android:onClick="onClick"
-                android:clickable="true"/>
-        </LinearLayout>
-    </ScrollView>
+                android:clickable="true"
+                android:layout_below="@+id/email_sign_in_button"
+                android:layout_alignParentStart="true"/>
 </RelativeLayout>
