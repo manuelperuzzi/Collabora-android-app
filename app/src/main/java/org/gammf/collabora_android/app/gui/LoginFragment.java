@@ -43,10 +43,7 @@ import cz.msebera.android.httpclient.entity.mime.MIME;
  */
 public class LoginFragment extends Fragment {
 
-    private static final String BACKSTACK_FRAG = "xyz";
-
-
-    /**
+    /*
      * Keep track of the login task to ensure we can cancel it if requested.
      */
    // private UserLoginTask mAuthTask = null;
@@ -65,8 +62,7 @@ public class LoginFragment extends Fragment {
      * @return A new instance of fragment LoginFragment.
      */
     public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
-        return fragment;
+        return new LoginFragment();
     }
 
     @Override
@@ -106,6 +102,7 @@ public class LoginFragment extends Fragment {
             fragmentTransaction2.commit();
             Log.d("loginfragment","passo a register");
         } else {
+            Log.d("loginfragment","errore nel cambio");
         }
     }
 
@@ -118,10 +115,7 @@ public class LoginFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 //tornare a homepage!!
                 //Toast in caso si successo solo per ora che non c'è ancora una homepage
-                Context context = getContext();
-                CharSequence text = "Logged correctly!";
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(getContext(), "Logged correctly!",  Toast.LENGTH_SHORT);
                 toast.show();
                 ((MainActivity)getActivity()).riputMenu();
 
@@ -129,10 +123,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Context context = getContext();
-                CharSequence text = "Username or Password wrong! Retry";
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
@@ -140,16 +131,4 @@ public class LoginFragment extends Fragment {
 
 
     }
-
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
 }
