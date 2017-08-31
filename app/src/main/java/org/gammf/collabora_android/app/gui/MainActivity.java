@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         collaborationIntent.putExtra("username", user.getUsername());
         startService(collaborationIntent);
 
-        //this.geoManager = new GeofenceManager(this);
+        this.geoManager = new GeofenceManager(this);
 
 /*
         //simple examples, 2 set and 1 delete to test.
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
     private void selectItem(ShortCollaboration collab) {
 
         Fragment fragment = null;
-        fragment = CollaborationFragment.newInstance(SENDER, collab.getId());
+        fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collab.getId());
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, collabId);
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collabId);
 
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
@@ -283,14 +283,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        //if (!checkPermissions()) {
-        //    requestPermissions();
-        //}
+        if (!checkPermissions()) {
+            requestPermissions();
+        }
 
-        //this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
-        //this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
+        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
+        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
 
-        //this.geoManager.removeGeofence("id2");
+        this.geoManager.removeGeofence("id2");
     }
 
     /**

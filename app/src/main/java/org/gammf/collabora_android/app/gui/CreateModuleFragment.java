@@ -31,8 +31,10 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
 
     private static final String SENDER = "modulefrag";
     private static final String ERR_STATENOTSELECTED = "Please select state";
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
 
+    private String username;
     private String collaborationId;
     private Spinner spinnerModuleState;
     private EditText txtContentModule;
@@ -52,9 +54,10 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
      * @return A new instance of fragment CreateModuleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateModuleFragment newInstance(String collaborationId) {
+    public static CreateModuleFragment newInstance(String username, String collaborationId) {
         CreateModuleFragment fragment = new CreateModuleFragment();
         Bundle arg = new Bundle();
+        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
         return fragment;
@@ -65,6 +68,7 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if(getArguments() != null) {
+            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
         getModuleDataFromServer();
@@ -105,7 +109,7 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
 
 
     private void addModule(final String content, final String stateSelected){
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, collaborationId);
+        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
 
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
