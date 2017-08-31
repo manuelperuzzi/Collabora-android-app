@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -92,6 +93,9 @@ public class MainActivity extends AppCompatActivity
     private ExpandableListAdapter expandableListAdapter;
     private User user;
     private CollaborationsManager collaborationsManager;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
@@ -118,6 +122,8 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            toolbar.setNavigationIcon(null);
+
         } catch (final JSONException e) {
             //TODO ?
         } catch (IOException e) {
@@ -126,8 +132,8 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -164,6 +170,7 @@ public class MainActivity extends AppCompatActivity
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         drawer.closeDrawers();
+                        toolbar.setNavigationIcon(null);
                     }
                 });
                 builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -550,6 +557,16 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+
+    public void riputMenu(){
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    public void leaveMenu(){
+        this.toolbar.setNavigationIcon(null);
     }
 }
 

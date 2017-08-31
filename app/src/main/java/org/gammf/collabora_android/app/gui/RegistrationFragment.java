@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -42,8 +43,6 @@ public class RegistrationFragment extends Fragment {
     private EditText emailText;
     private EditText nameText;
     private EditText usernameText;
-
-
 
     public RegistrationFragment() {
         // Required empty public constructor
