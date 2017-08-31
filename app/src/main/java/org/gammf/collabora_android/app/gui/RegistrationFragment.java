@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
@@ -51,7 +52,7 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
     private EditText passText;
     private EditText emailText;
     private EditText nameText;
-    private EditText usernameText;
+    private EditText surnameText;
     private TextView dateViewEdited;
     private Calendar calendarEdited;
     private int yearEdited, monthEdited, dayEdited;
@@ -116,7 +117,7 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
         passText = rootView.findViewById(R.id.password);
         emailText= rootView.findViewById(R.id.email);
         nameText= rootView.findViewById(R.id.name);
-        usernameText= rootView.findViewById(R.id.surname);
+        surnameText= rootView.findViewById(R.id.surname);
         dateViewEdited = rootView.findViewById(R.id.txtNewDateSelected);
         myDateListenerEdited = this;
         calendarEdited = Calendar.getInstance();
@@ -163,7 +164,14 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             Toast toast = Toast.makeText(getContext(), "Email is not valid!", Toast.LENGTH_SHORT);
             toast.show();
         }else{
-            client.post(AuthenticationUtils.POST, new AsyncHttpResponseHandler() {
+            RequestParams params = new RequestParams();
+            params.put("username", userText.getText().toString());
+            params.put("password", passText.getText().toString());
+            params.put("email", emailText.getText().toString());
+            params.put("name", nameText.getText().toString());
+            params.put("surname", surnameText.getText().toString() );
+            params.put("birthday", calendarEdited.getTime());
+            client.post(AuthenticationUtils.POST, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     //aggiunta user in memoria e passaggio ad homepage
