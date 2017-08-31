@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
 import org.gammf.collabora_android.utils.MessageUtils;
@@ -37,6 +40,7 @@ public class NotificationsSubscriberService extends SubscriberService {
             @Override
             public void onReceive(Context context, Intent intent) {
                 createBinding(intent.getStringExtra("routing-key"));
+                FirebaseMessaging.getInstance().subscribeToTopic(intent.getStringExtra("routing-key"));
             }
         };
         this.destroyBindingReceiver = new BroadcastReceiver() {
@@ -44,6 +48,7 @@ public class NotificationsSubscriberService extends SubscriberService {
             public void onReceive(Context context, Intent intent) {
                 try {
                     channel.queueUnbind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, intent.getStringExtra("routing-key"));
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(intent.getStringExtra("routing-key"));
                 } catch (final Exception e) {
                     //TODO better error strategy
                 }
@@ -106,6 +111,7 @@ public class NotificationsSubscriberService extends SubscriberService {
         if(collaborationsIds != null) {
             for (final String id : collaborationsIds) {
                 this.createBinding(id);
+                FirebaseMessaging.getInstance().subscribeToTopic(id);
             }
         }
     }
