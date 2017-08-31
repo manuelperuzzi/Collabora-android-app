@@ -115,7 +115,7 @@ implements OnMapReadyCallback{
         int id = item.getItemId();
 
         if (id == R.id.action_editnote) {
-            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, moduleId, noteId);
+            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, noteId);
             changeFragment(editNoteFragment);
             return true;
         }
@@ -147,10 +147,14 @@ implements OnMapReadyCallback{
             stateTextView.setText(note.getState().getCurrentState());
 
             final TextView responsibleTextView = rootView.findViewById(R.id.lblResponsible);
-            responsibleTextView.setText(note.getState().getCurrentResponsible());
+            if (note.getState().getCurrentResponsible() != null) {
+                responsibleTextView.setText(note.getState().getCurrentResponsible());
+            }
 
             final TextView expiration = rootView.findViewById(R.id.expiration);
-            expiration.setText(note.getExpirationDate().toString());
+            if (note.getExpirationDate() != null) {
+                expiration.setText(note.getExpirationDate().toString());
+            }
 
             location = note.getLocation();
 
@@ -179,7 +183,7 @@ implements OnMapReadyCallback{
     }
 
     private void setUpMap(final GoogleMap googleMap){
-        if (mapView != null) {
+        if (mapView != null && location != null) {
             googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
                     .position(new LatLng(location.getLatitude(), location.getLongitude())));
