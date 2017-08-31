@@ -3,8 +3,11 @@ package org.gammf.collabora_android.app.rabbitmq;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
+import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
@@ -53,7 +56,11 @@ public class CollaborationsSubscriberService extends SubscriberService {
 
     @Override
     protected void handleJsonMessage(final JSONObject message) throws JSONException {
-        new StoreNotificationsTask(getApplicationContext()).execute(MessageUtils.jsonToCollaborationMessage(message));
+        final CollaborationMessage convertedMessage = MessageUtils.jsonToCollaborationMessage(message);
+        new StoreNotificationsTask(getApplicationContext()).execute(convertedMessage);
+        final Intent intent = new Intent("new.binding.for.collaboration");
+        intent.putExtra("routing-key", convertedMessage.getCollaboration().getId());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
