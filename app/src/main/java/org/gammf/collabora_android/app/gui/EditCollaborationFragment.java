@@ -152,9 +152,9 @@ public class EditCollaborationFragment extends Fragment {
         //HERE THE CODE FOR GET THE MEMBER LIST
 
         /*codice esempio per aggiungere alla lista*/
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Mario Rossi"));
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Luca Bianchi"));
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Giovanni Verdi"));
+        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Mario Rossi", false));
+        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Luca Bianchi", false));
+        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Giovanni Verdi", false));
 
         //setting the list adapter
         adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
@@ -166,7 +166,7 @@ public class EditCollaborationFragment extends Fragment {
      */
     private void updateMemberList(){
 
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "New Member"));
+        memberItem.add(new DataModel(R.drawable.user, "FintoID", "New Member", false));
         adapter.notifyDataSetChanged();
 
         memberHasChanged = true; //importante per i controlli se è stata fatta una modifica o meno
