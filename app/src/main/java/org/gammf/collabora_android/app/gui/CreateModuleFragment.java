@@ -1,8 +1,6 @@
 package org.gammf.collabora_android.app.gui;
 
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,6 +15,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
+import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
+import org.gammf.collabora_android.modules.ConcreteModule;
+import org.gammf.collabora_android.modules.Module;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,9 +40,9 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
 
     private String username;
     private String collaborationId;
+
     private Spinner spinnerModuleState;
     private EditText txtContentModule;
-    private FloatingActionButton btnAddModule;
 
     private String stateSelected = "";
 
@@ -71,7 +75,6 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
-        getModuleDataFromServer();
     }
 
     @Override
@@ -87,7 +90,7 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
         spinnerModuleState = rootView.findViewById(R.id.spinnerNewModuleState);
         setSpinner();
-        btnAddModule = rootView.findViewById(R.id.btnAddModule);
+        FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
         btnAddModule.setOnClickListener(this);
     }
 
@@ -102,29 +105,23 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
         spinnerModuleState.setOnItemSelectedListener(this);
     }
 
-    private void getModuleDataFromServer(){
+    private void addModule(final String content, final String stateSelected) {
+        final Module module = new ConcreteModule(null, content, stateSelected);
+        final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
+                username, module, UpdateMessageType.CREATION, collaborationId);
+        new SendMessageToServerTask().execute(message);
 
-
-    }
-
-
-    private void addModule(final String content, final String stateSelected){
         CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
-
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
 
     @Override
     public void onClick(View view) {
-        String insertedNoteName = txtContentModule.getText().toString();
-        if(insertedNoteName.equals("")){
-            Resources res = getResources();
-            txtContentModule.setError(res.getString(R.string.fieldempty));
-        }else {
-            //avete un moduleID che può essere nomodule
-            //per verificare se la nota va aggiunta in un modulo o è solo nella collaborazione
-            addModule(insertedNoteName, stateSelected);
-
+        String insertedModuleName = txtContentModule.getText().toString();
+        if (insertedModuleName.equals("")) {
+            txtContentModule.setError(getResources().getString(R.string.fieldempty));
+        } else {
+            addModule(insertedModuleName, stateSelected);
         }
     }
 

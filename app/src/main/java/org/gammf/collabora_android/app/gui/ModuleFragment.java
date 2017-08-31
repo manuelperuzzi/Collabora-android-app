@@ -14,11 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -39,14 +43,12 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
 
-    private FloatingActionButton btnAddNoteModule;
-    private String sender, collaborationId, moduleId, collabname, moduleName;
+    private String sender, collaborationId, moduleId;
     private ListView moduleNotesList;
     private ArrayList<DataModel> listItem;
-    private TextView lblModuleTitle;
 
-    private String moduleContent;
     private String username;
+    private Module module;
 
     public ModuleFragment() {
         setHasOptionsMenu(true);
@@ -79,7 +81,14 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
         setHasOptionsMenu(true);
-        getModuleDataFromServer();
+
+        try {
+            final Project project = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            module = project.getModule(moduleId);
+            getActivity().setTitle(project.getName() + " - " + module.getDescription());
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -98,11 +107,11 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         // Handle action bar item clicks here.
         int id = item.getItemId();
         if(id == R.id.action_editcollab){
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(this.collaborationId);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(username, this.collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }else if (id == R.id.action_editmodule){
-            Fragment editModuleFragment = EditModuleFragment.newInstance(SENDER, this.collaborationId);
+            Fragment editModuleFragment = EditModuleFragment.newInstance(username, this.collaborationId, moduleId);
             changeFragment(editModuleFragment);
             return true;
         }
@@ -129,18 +138,16 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void initializeGuiComponent(View rootView) {
         moduleNotesList = rootView.findViewById(R.id.moduleNotesListView);
-        lblModuleTitle = rootView.findViewById(R.id.lblModuleTitle);
-        listItem = new ArrayList<DataModel>();
-        btnAddNoteModule =  rootView.findViewById(R.id.btnAddNoteInModule);
+        listItem = new ArrayList<>();
+        FloatingActionButton btnAddNoteModule = rootView.findViewById(R.id.btnAddNoteInModule);
         btnAddNoteModule.setOnClickListener(this);
-        lblModuleTitle.setText("Module Content Title");
     }
 
-    private void fillNoteList(){
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1", false));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2", false));
-        listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3", false));
+    private void fillNoteList() {
 
+        for (final Note n: module.getAllNotes()) {
+            listItem.add(new DataModel(R.drawable.note_icon, n.getNoteID(), n.getContent(), false));
+        }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
         moduleNotesList.setAdapter(adapter);
@@ -150,26 +157,17 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         final DataModel listItem = (DataModel) adapterView.getItemAtPosition(position);
-        selectItem(position, listItem.getId());
+        selectItem(listItem.getId());
     }
 
-    private void selectItem(int position, String itemId) {
+    private void selectItem(final String itemId) {
         Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId);
         changeFragment(openNoteFragment);
     }
 
-    private void getModuleDataFromServer(){
-        //stessa cosa delle note
-        //prendere i dati dal server e metterli dentro le variabili adatte
-        //poi DENTRO ONVIEWCREATED fare tutti i setText sui rispettivi campi per visualizzarli all'utente
-
-
-        moduleContent = "Module Content Title";
-    }
-
     @Override
     public void onClick(View view) {
-        Fragment newNoteFragment = CreateNoteFragment.newInstance(username, collaborationId, moduleName);
+        Fragment newNoteFragment = CreateNoteFragment.newInstance(username, collaborationId, moduleId);
         changeFragment(newNoteFragment);
     }
 

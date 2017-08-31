@@ -21,7 +21,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
+import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
+import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,9 +43,12 @@ import java.util.List;
 public class EditModuleFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final String ERR_STATENOTSELECTED = "Please select state";
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
     private static final String ARG_MODULEID = "moduleid";
 
+    private String username;
+    private Module module;
     private String collaborationId, moduleId;
     private Spinner spinnerModuleStateEdited;
     private EditText txtEditContentModule;
@@ -56,9 +68,10 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
      * @return A new instance of fragment EditModuleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditModuleFragment newInstance(String collaborationId, String moduleId) {
+    public static EditModuleFragment newInstance(String username, String collaborationId, String moduleId) {
         EditModuleFragment fragment = new EditModuleFragment();
         Bundle arg = new Bundle();
+        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_COLLABID, collaborationId);
         arg.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(arg);
@@ -70,8 +83,16 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
+            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
+        }
+
+        try {
+            final Project project = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            module = project.getModule(moduleId);
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -101,8 +122,9 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         return rootView;
     }
 
-    private void initializeGuiComponent(View rootView){
+    private void initializeGuiComponent(View rootView) {
         txtEditContentModule = rootView.findViewById(R.id.txtModuleContentEdited);
+        txtEditContentModule.setText(module.getDescription());
         spinnerModuleStateEdited = rootView.findViewById(R.id.spinnerModuleStateEdited);
         setSpinner();
     }
@@ -118,25 +140,26 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         spinnerModuleStateEdited.setOnItemSelectedListener(this);
     }
 
-    private void getModuleDataFromServer(){
+    private void updateModule(final String content, final String stateSelected) {
+        module.setDescription(content);
+        module.setStateDefinition(stateSelected);
 
+        final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
+                username, module, UpdateMessageType.UPDATING, collaborationId);
+        new SendMessageToServerTask().execute(message);
 
-    }
-
-    private void updateModule(final String content, final String stateSelected){
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.remove(EditModuleFragment.this);
         fragmentTransaction.commit();
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
-    private void checkUserUpdate(){
-        String insertedNoteName = txtEditContentModule.getText().toString();
-        if(insertedNoteName.equals("")){
-            Resources res = getResources();
-            txtEditContentModule.setError(res.getString(R.string.fieldempty));
-        }else{
-            updateModule(insertedNoteName, newStateSelected);
+    private void checkUserUpdate() {
+        String insertedModuleName = txtEditContentModule.getText().toString();
+        if(insertedModuleName.equals("")) {
+            txtEditContentModule.setError(getResources().getString(R.string.fieldempty));
+        } else {
+            updateModule(insertedModuleName, newStateSelected);
         }
     }
 
