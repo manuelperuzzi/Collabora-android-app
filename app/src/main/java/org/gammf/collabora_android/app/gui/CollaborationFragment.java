@@ -108,7 +108,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collaborationId);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(username, collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }
