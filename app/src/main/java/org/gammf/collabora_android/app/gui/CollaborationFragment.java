@@ -19,7 +19,16 @@ import android.widget.TabHost;
 import com.github.clans.fab.FloatingActionMenu;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -30,22 +39,19 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "collabfrag";
-    private static final String CALLER_NOTECREATION = "notecreationfrag";
+    //private static final String CALLER_NOTECREATION = "notecreationfrag";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabid";
+    private static final String ARG_USERNAME = "username";
     private static final String NOMODULE = "nomodule";
 
-    private static final String TYPE_PROJECT = "Project";
-    private static final String TYPE_GROUP = "Group";
-
-    private FloatingActionMenu btnMenuAdd;
-    private com.github.clans.fab.FloatingActionButton btnMenuAddNote, btnMenuAddModule;
-    private FloatingActionButton btnAddNote;
-    private String sender, collabId;
-    private String collabname, collabtype;
+    private String sender;
     private ListView notesList, moduleList;
     private ArrayList<DataModel> noteItems, moduleItems;
-    private TabHost tabHost;
+
+    private String username;
+    private String collaborationId;
+    private Collaboration collaboration;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -58,9 +64,10 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
      * @return A new instance of fragment ModuleFragment.
      */
 
-    public static CollaborationFragment newInstance(String sender, String collaborationId) {
+    public static CollaborationFragment newInstance(String sender, String username, String collaborationId) {
         CollaborationFragment fragment = new CollaborationFragment();
         Bundle arg = new Bundle();
+        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
@@ -72,11 +79,16 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.collabId = getArguments().getString(ARG_COLLABID);
+            this.username = getArguments().getString(ARG_USERNAME);
+            this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
         setHasOptionsMenu(true);
-        getDataFromServer(this.collabId);
 
+        try {
+            collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -96,7 +108,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(collabId);
+            Fragment editCollabFragment = EditCollaborationFragment.newInstance(username, collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }
@@ -109,25 +121,25 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
         notesList = rootView.findViewById(R.id.notesListView);
         moduleList = rootView.findViewById(R.id.modulesListView);
-        btnAddNote = rootView.findViewById(R.id.btnAddNote);
-        btnMenuAdd = rootView.findViewById(R.id.floating_action_menu);
-        btnMenuAddNote = rootView.findViewById(R.id.floating_action_menu_addnote);
-        btnMenuAddModule = rootView.findViewById(R.id.floating_action_menu_addmodel);
+
+        final FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
+        final FloatingActionMenu btnMenuAdd = rootView.findViewById(R.id.floating_action_menu);
+        final com.github.clans.fab.FloatingActionButton btnMenuAddNote = rootView.findViewById(R.id.floating_action_menu_addnote);
+        final com.github.clans.fab.FloatingActionButton btnMenuAddModule = rootView.findViewById(R.id.floating_action_menu_addmodel);
         btnMenuAdd.setVisibility(View.INVISIBLE);
 
-        Resources res = getResources();
         moduleItems = new ArrayList<>();
         noteItems = new ArrayList<>();
 
-        tabHost = rootView.findViewById(R.id.tabhost);
+        final TabHost tabHost = rootView.findViewById(R.id.tabhost);
         tabHost.setup();
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
-        tab1.setIndicator(res.getString(R.string.title_modulelist));
+        final TabHost.TabSpec tab1 = tabHost.newTabSpec("Module Tab Tag");
+        final TabHost.TabSpec tab2 = tabHost.newTabSpec("Note Tab Tag");
+        tab1.setIndicator(getResources().getString(R.string.title_modulelist));
         tab1.setContent(R.id.i_layout_2);
-        tab2.setIndicator(res.getString(R.string.title_noteslist));
+        tab2.setIndicator(getResources().getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
-        if(collabtype.equals(TYPE_PROJECT)) {
+        if(collaboration instanceof Project) {
             tabHost.addTab(tab1);
             btnMenuAdd.setVisibility(View.VISIBLE);
             btnAddNote.setVisibility(View.INVISIBLE);
@@ -135,12 +147,12 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         }
         tabHost.addTab(tab2);
 
-        if(sender.equals(CALLER_NOTECREATION))
+        /*if(sender.equals(CALLER_NOTECREATION))
         {
             //FRAGMENT CALLED BY CreateNoteFragment:
             //  -things to do: add note
             addNewNote();
-        }
+        }*/
 
         fillNotesList();
 
@@ -148,7 +160,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(collabId, NOMODULE);
+                        CreateNoteFragment.newInstance(username, collaborationId, NOMODULE);
                 changeFragment(newNoteFragment);
             }
         });
@@ -156,61 +168,54 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 //qui gli va aggiunto l'id del modulo
-                changeFragment(CreateNoteFragment.newInstance(collabId, NOMODULE));
+                changeFragment(CreateNoteFragment.newInstance(username, collaborationId, NOMODULE));
             }
         });
         btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               changeFragment(CreateModuleFragment.newInstance(collabId));
+               changeFragment(CreateModuleFragment.newInstance(username, collaborationId));
             }
         });
         return rootView;
     }
 
-
     private void fillNotesList(){
-        //HERE THE CODE FOR FILL NOTES LIST
-        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 1"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 2"));
-        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "Note Content 3"));
-        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
+        for (final Note note: collaboration.getAllNotes()) {
+            if (! (note instanceof ModuleNote)) {
+                noteItems.add(new DataModel(R.drawable.note_icon, note.getNoteID(), note.getContent(), false));
+            }
+        }
+
+        final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
     }
 
-    private void fillModulesList(){
-        //HERE THE CODE FOR FILL MODULES LIST
-        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 1", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 2", true));
-        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "Module 3", true));
-        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
+    private void fillModulesList() {
+        if (collaboration instanceof Project) {
+            for (final Module module: ((Project) collaboration).getAllModules()) {
+                moduleItems.add(new DataModel(R.drawable.module32, module.getId(), module.getDescription(), true));
+            }
+        }
+
+        final DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(this);
-    }
-
-    private void addNewNote(){
-        //HERE THE CODE FOR ADD NEW NOTE
-        noteItems.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content"));
-    }
-
-    private void addNewModule(){
-        //HERE THE CODE FOR ADD NEW MODULE
-        moduleItems.add(new DataModel(R.drawable.module32, "FintoID", "New Module", true));
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         final DataModel listName = (DataModel) adapterView.getItemAtPosition(position);
-        selectItem(position, listName);
+        selectItem(listName);
     }
 
-    private void selectItem(int position, DataModel itemSelected) {
-        Fragment openFragment = null;
+    private void selectItem(DataModel itemSelected) {
+        Fragment openFragment;
         if(itemSelected.getIfIsModule()){
-            openFragment = ModuleFragment.newInstance(SENDER, collabId, itemSelected.getId());
+            openFragment = ModuleFragment.newInstance(SENDER, username, collaborationId, itemSelected.getId());
         }else{
-            openFragment = NoteFragment.newInstance(collabId, itemSelected.getId());
+            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId());
         }
         changeFragment(openFragment);
     }
@@ -224,14 +229,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
-    }
-
-    private void getDataFromServer(String collabId){
-
-
-        this.collabname = "Nome finto";
-        //scegliere fra TYPE_GROUP oppure TYPE_PROJECT
-        this.collabtype = TYPE_PROJECT;
     }
 
 }

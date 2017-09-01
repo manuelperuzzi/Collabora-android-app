@@ -19,8 +19,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,11 +46,12 @@ public class EditCollaborationFragment extends Fragment {
 
     private static final String TOAST_ERR_EDITCANCEL = "Edit discarded";
 
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
 
+    private String username;
     private String collaborationId;
-    private String collabName, collabType;
-    private Resources res;
+    private Collaboration collaboration;
     private ListView memberList;
     private ArrayList<DataModel> memberItem;
     private DrawerItemCustomAdapter adapter;
@@ -53,14 +69,15 @@ public class EditCollaborationFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param collabId collaboration id
+     * @param collaborationId collaboration id
      * @return A new instance of fragment EditCollaborationFragment.
      */
 
-    public static EditCollaborationFragment newInstance(String collabId) {
+    public static EditCollaborationFragment newInstance(String username, String collaborationId) {
         EditCollaborationFragment fragment = new EditCollaborationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_COLLABID, collabId);
+        args.putString(ARG_USERNAME, username);
+        args.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,10 +87,16 @@ public class EditCollaborationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
+            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
 
-        getDataFromServer();
+        try {
+            collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -100,7 +123,6 @@ public class EditCollaborationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_collaboration, container, false);
-        res = getResources();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -110,23 +132,24 @@ public class EditCollaborationFragment extends Fragment {
         btnAddMember = rootView.findViewById(R.id.btnAddMember);
         txtNewTitle = rootView.findViewById(R.id.txtInsertEditedCollabName);
         memberList = rootView.findViewById(R.id.listViewCollabMember);
-        txtNewTitle.setText(collabName);
+        txtNewTitle.setText(collaboration.getName());
         txtCollabType = rootView.findViewById(R.id.txtCollabType);
-        txtCollabType.setText(collabType);
+        txtCollabType.setText(new ConcreteShortCollaboration(collaboration).getCollaborationType().name());
 
-        memberItem = new ArrayList<DataModel>();
+        memberItem = new ArrayList<>();
         getMemberAndFillList();
-        btnAddMember.setOnClickListener(new View.OnClickListener() {
+        /*btnAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateMemberList();
             }
-        });
+        });*/
     }
-    private void updateCollaboration(String collabName){
+
+    /*private void updateCollaboration(String collabName){
         //QUI AGGIORNARE LA COLLABORAZIONE
         ((MainActivity)getActivity()).updateCollaborationList(this, collaborationId);
-    }
+    }*/
 
     private void returnToCollabFragment(){
         FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
@@ -136,51 +159,43 @@ public class EditCollaborationFragment extends Fragment {
 
     }
 
-    private void getDataFromServer(){
-
-        //recuperare il titolo, il tipo e la lista dei membri
-
-        //il metodo per aggiungere i membri viene chiamato dentro onviewcreated
-        //perchè prima deve essere inizializzata la view per riempire la lista
-        //vedete voi se spostare getDataFromServer dentro onviewcreated al posto di getMemberAndFillList
-        //oppure se salvare i dati da qualche parte e poi dal metodo qui sotto se li aggiunge alla lista
-
-    }
-
     private void getMemberAndFillList(){
 
-        //HERE THE CODE FOR GET THE MEMBER LIST
-
-        /*codice esempio per aggiungere alla lista*/
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Mario Rossi"));
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Luca Bianchi"));
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "Giovanni Verdi"));
+        final Set<CollaborationMember> members = ((SharedCollaboration) collaboration).getAllMembers();
+        for (final CollaborationMember cm: members) {
+            memberItem.add(new DataModel(R.drawable.user, cm.getUsername(), cm.getUsername(), false));
+        }
 
         //setting the list adapter
         adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
     }
 
-    /***
-     * Called when user add a new member
-     */
-    private void updateMemberList(){
+    private void checkUserInput() {
 
-        memberItem.add(new DataModel(R.drawable.user, "FintoID", "New Member"));
-        adapter.notifyDataSetChanged();
+        final String newName = txtNewTitle.getText().toString();
+        if (newName.equals("")) {
+            txtNewTitle.setError(getResources().getString(R.string.fieldempty));
+        } else if (! newName.equals(collaboration.getName())) {
+            collaboration.setName(newName);
+            final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
+                    username, collaboration, UpdateMessageType.UPDATING);
+            new SendMessageToServerTask().execute(message);
+            returnToCollabFragment();
+        }
 
-        memberHasChanged = true; //importante per i controlli se è stata fatta una modifica o meno
-    }
 
-    private void checkUserInput(){
-        String newName = txtNewTitle.getText().toString();
+
+
+
+        /*String newName = txtNewTitle.getText().toString();
         //If newName is empty
         if(newName.equals("")) {
             //display error for field required
             txtNewTitle.setError(res.getString(R.string.fieldempty));
 
             //if name isn't changed
-        }else if(newName.equals(collabName)){
+        }else if(newName.equals(collaboration.getName())){
 
             //check if member(s) was added.
             if(memberHasChanged) {
@@ -195,6 +210,6 @@ public class EditCollaborationFragment extends Fragment {
             }
         }else{
             updateCollaboration(newName);
-        }
+        }*/
     }
 }

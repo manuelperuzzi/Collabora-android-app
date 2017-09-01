@@ -14,25 +14,12 @@
         app:layout_constraintLeft_toLeftOf="parent">
 
         <TextView
-            android:id="@+id/lblModuleTitle"
+            android:id="@+id/label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="65dp"
-            android:padding="0dp"
-            android:paddingStart="0dp"
-            android:text="@string/title_modulelist"
-            android:textColor="@android:color/black"
-            android:textSize="22sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/lblModuleTitle"
             android:padding="10dp"
             android:paddingTop="0dp"
             android:paddingStart="0dp"

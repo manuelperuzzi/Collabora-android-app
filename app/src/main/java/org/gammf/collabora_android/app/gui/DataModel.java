@@ -9,15 +9,8 @@ public class DataModel {
     private String id, name;
     private boolean isModule;
 
-    // Constructor for notes.
-    public DataModel(int icon, String id, String name) {
-
-        this.icon = icon;
-        this.name = name;
-        this.isModule = false;
-    }
-    //Constructor for modules.
-    public DataModel (int icon, String id, String name, boolean isModule){
+    public DataModel (int icon, String id, String name, boolean isModule) {
+        this.id = id;
         this.icon = icon;
         this.name = name;
         this.isModule = isModule;
