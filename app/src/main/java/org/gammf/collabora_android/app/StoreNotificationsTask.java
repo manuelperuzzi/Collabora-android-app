@@ -15,6 +15,7 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.common.MessageType;
+import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
@@ -107,31 +108,17 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addNote(message.getNote());
-                if(message.getNote().getLocation()!=null)
-                    this.geoManager.addGeofence(message.getNote().getNoteID(),message.getNote().getContent(),
-                            new LatLng(message.getNote().getLocation().getLatitude(), message.getNote().getLocation().getLongitude()));
-                if(message.getNote().getExpirationDate()!=null)
-                    this.alarm.setAlarm(context,message.getNote().getContent(),message.getNote().getExpirationDate());
+                addAlarmAndGeofences(message.getNote());
                 break;
             case UPDATING:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
                 storedCollaboration.addNote(message.getNote());
-                if(message.getNote().getLocation()!=null) {
-                    this.geoManager.removeGeofence(message.getNote().getNoteID());
-                    this.geoManager.addGeofence(message.getNote().getNoteID(),message.getNote().getContent(),
-                            new LatLng(message.getNote().getLocation().getLatitude(), message.getNote().getLocation().getLongitude()));
-                }
-                if(message.getNote().getExpirationDate()!=null){
-                    this.alarm.deleteAlarm(context,message.getNote().getExpirationDate());
-                    this.alarm.setAlarm(context,message.getNote().getContent(),message.getNote().getExpirationDate());
-                }
+                updateAlarmAndGeofences(message.getNote());
+
                 break;
             case DELETION:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
-                if(message.getNote().getLocation()!=null)
-                    this.geoManager.removeGeofence(message.getNote().getNoteID());
-                if(message.getNote().getExpirationDate()!=null)
-                    this.alarm.deleteAlarm(context,message.getNote().getExpirationDate());
+                deleteAlarmAndGeofences(message.getNote());
                 break;
             default:
                 return false;
@@ -146,13 +133,22 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addModule(message.getModule());
+                for (Note note: message.getModule().getAllNotes()) {
+                    addAlarmAndGeofences(note);
+                }
                 break;
             case UPDATING:
                 storedCollaboration.removeModule(message.getModule().getId());
                 storedCollaboration.addModule(message.getModule());
+                for (Note note: message.getModule().getAllNotes()) {
+                    updateAlarmAndGeofences(note);
+                }
                 break;
             case DELETION:
                 storedCollaboration.removeModule(message.getModule().getId());
+                for (Note note: message.getModule().getAllNotes()) {
+                    deleteAlarmAndGeofences(note);
+                }
                 break;
             default:
                 return false;
@@ -203,6 +199,33 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
         LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
         return true;
+    }
+
+    private void addAlarmAndGeofences(Note note){
+        if(note.getLocation()!=null)
+            this.geoManager.addGeofence(note.getNoteID(),note.getContent(),
+                    new LatLng(note.getLocation().getLatitude(),note.getLocation().getLongitude()));
+        if(note.getExpirationDate()!=null)
+            this.alarm.setAlarm(context,note.getContent(),note.getExpirationDate());
+    }
+
+    private void updateAlarmAndGeofences(Note note){
+        if(note.getLocation()!=null) {
+            this.geoManager.removeGeofence(note.getNoteID());
+            this.geoManager.addGeofence(note.getNoteID(),note.getContent(),
+                    new LatLng(note.getLocation().getLatitude(), note.getLocation().getLongitude()));
+        }
+        if(note.getExpirationDate()!=null){
+            this.alarm.deleteAlarm(context,note.getExpirationDate());
+            this.alarm.setAlarm(context,note.getContent(),note.getExpirationDate());
+        }
+    }
+
+    private void deleteAlarmAndGeofences(Note note){
+        if(note.getLocation()!=null)
+            this.geoManager.removeGeofence(note.getNoteID());
+        if(note.getExpirationDate()!=null)
+            this.alarm.deleteAlarm(context,note.getExpirationDate());
     }
 
     @Override
