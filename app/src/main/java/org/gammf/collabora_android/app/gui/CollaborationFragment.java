@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.app.gui;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -24,7 +23,6 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -45,9 +43,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private static final String ARG_USERNAME = "username";
     private static final String NOMODULE = "nomodule";
 
-    private String sender;
     private ListView notesList, moduleList;
-    private ArrayList<DataModel> noteItems, moduleItems;
+    private ArrayList<CollaborationComponentInfo> noteItems, moduleItems;
 
     private String username;
     private String collaborationId;
@@ -78,7 +75,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
@@ -183,7 +179,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void fillNotesList(){
         for (final Note note: collaboration.getAllNotes()) {
             if (! (note instanceof ModuleNote)) {
-                noteItems.add(new DataModel(R.drawable.note_icon, note.getNoteID(), note.getContent(), false));
+                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE));
             }
         }
 
@@ -195,7 +191,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void fillModulesList() {
         if (collaboration instanceof Project) {
             for (final Module module: ((Project) collaboration).getAllModules()) {
-                moduleItems.add(new DataModel(R.drawable.module32, module.getId(), module.getDescription(), true));
+                moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
             }
         }
 
@@ -206,13 +202,13 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final DataModel listName = (DataModel) adapterView.getItemAtPosition(position);
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         selectItem(listName);
     }
 
-    private void selectItem(DataModel itemSelected) {
+    private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment;
-        if(itemSelected.getIfIsModule()){
+        if(itemSelected.getType().equals(CollaborationComponentType.MODULE)){
             openFragment = ModuleFragment.newInstance(SENDER, username, collaborationId, itemSelected.getId());
         }else{
             openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId());

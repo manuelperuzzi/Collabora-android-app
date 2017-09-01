@@ -1,9 +1,7 @@
 package org.gammf.collabora_android.app.gui;
 
 
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -16,20 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -53,7 +47,7 @@ public class EditCollaborationFragment extends Fragment {
     private String collaborationId;
     private Collaboration collaboration;
     private ListView memberList;
-    private ArrayList<DataModel> memberItem;
+    private ArrayList<CollaborationComponentInfo> memberItem;
     private DrawerItemCustomAdapter adapter;
     private EditText txtNewTitle;
     private Button btnAddMember;
@@ -163,7 +157,7 @@ public class EditCollaborationFragment extends Fragment {
 
         final Set<CollaborationMember> members = ((SharedCollaboration) collaboration).getAllMembers();
         for (final CollaborationMember cm: members) {
-            memberItem.add(new DataModel(R.drawable.user, cm.getUsername(), cm.getUsername(), false));
+            memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername(), CollaborationComponentType.MEMBER));
         }
 
         //setting the list adapter

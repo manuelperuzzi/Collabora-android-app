@@ -45,7 +45,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
 
     private String sender, collaborationId, moduleId;
     private ListView moduleNotesList;
-    private ArrayList<DataModel> listItem;
+    private ArrayList<CollaborationComponentInfo> listItem;
 
     private String username;
     private Module module;
@@ -130,7 +130,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new DataModel(R.drawable.note_icon, "FintoID", "New Note Content", false));
+            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE));
         }
 
         return rootView;
@@ -146,7 +146,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private void fillNoteList() {
 
         for (final Note n: module.getAllNotes()) {
-            listItem.add(new DataModel(R.drawable.note_icon, n.getNoteID(), n.getContent(), false));
+            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE));
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
@@ -156,7 +156,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final DataModel listItem = (DataModel) adapterView.getItemAtPosition(position);
+        final CollaborationComponentInfo listItem = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         selectItem(listItem.getId());
     }
 
