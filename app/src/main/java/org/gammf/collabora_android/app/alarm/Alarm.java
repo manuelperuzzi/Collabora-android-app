@@ -58,13 +58,16 @@ public class Alarm {
      * @param context Activity when call this method
      * @param timeToSpawn A simpler identifier for an alarm, TO TEST, maybe to change!!
      */
-    public void deleteAlarm(Context context, Calendar timeToSpawn){
+    public void deleteAlarm(Context context, DateTime timeToSpawn){
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context , AlarmBroadcastReceiver.class);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(timeToSpawn.getYear(), timeToSpawn.getMonthOfYear(), timeToSpawn.getDayOfMonth(),
+                timeToSpawn.getHourOfDay(), timeToSpawn.getMinuteOfHour(), timeToSpawn.getSecondOfMinute());
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Log.d("DEBUG ID CANCEL", String.valueOf((int) prefs.getLong(getDate(timeToSpawn.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE)));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) prefs.getLong(getDate(timeToSpawn.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE),intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Log.d("DEBUG ID CANCEL", String.valueOf((int) prefs.getLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE)));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) prefs.getLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE),intent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.cancel(pendingIntent);
 
     }

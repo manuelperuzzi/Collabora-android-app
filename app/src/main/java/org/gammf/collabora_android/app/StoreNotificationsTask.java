@@ -107,20 +107,31 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addNote(message.getNote());
-                if(message.getNote().getLocation()!=null) {
+                if(message.getNote().getLocation()!=null)
                     this.geoManager.addGeofence(message.getNote().getNoteID(),message.getNote().getContent(),
                             new LatLng(message.getNote().getLocation().getLatitude(), message.getNote().getLocation().getLongitude()));
-                }
-                if(message.getNote().getExpirationDate()!=null){
+                if(message.getNote().getExpirationDate()!=null)
                     this.alarm.setAlarm(context,message.getNote().getContent(),message.getNote().getExpirationDate());
-                }
                 break;
             case UPDATING:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
                 storedCollaboration.addNote(message.getNote());
+                if(message.getNote().getLocation()!=null) {
+                    this.geoManager.removeGeofence(message.getNote().getNoteID());
+                    this.geoManager.addGeofence(message.getNote().getNoteID(),message.getNote().getContent(),
+                            new LatLng(message.getNote().getLocation().getLatitude(), message.getNote().getLocation().getLongitude()));
+                }
+                if(message.getNote().getExpirationDate()!=null){
+                    this.alarm.deleteAlarm(context,message.getNote().getExpirationDate());
+                    this.alarm.setAlarm(context,message.getNote().getContent(),message.getNote().getExpirationDate());
+                }
                 break;
             case DELETION:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
+                if(message.getNote().getLocation()!=null)
+                    this.geoManager.removeGeofence(message.getNote().getNoteID());
+                if(message.getNote().getExpirationDate()!=null)
+                    this.alarm.deleteAlarm(context,message.getNote().getExpirationDate());
                 break;
             default:
                 return false;
