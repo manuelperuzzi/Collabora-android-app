@@ -111,32 +111,30 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            //getApplicationContext().deleteFile("user"); usato per cancellare temporaneamente il file che rimaneva nel local storage
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            toolbar.setNavigationIcon(null);
-
-        } catch (final JSONException e) {
+            leaveMenu();
+        } catch (final JSONException | IOException e) {
             //TODO ?
-        } catch (IOException e) {
-            //TODO ?
-        } catch (MandatoryFieldMissingException e) {
+        } /*catch (MandatoryFieldMissingException e) {
             e.printStackTrace();
-        }
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        }*/
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -150,10 +148,21 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        TextView username = (TextView) findViewById(R.id.nameOfUser);
-        username.setText(user.getUsername());
-        TextView email = (TextView) findViewById(R.id.emailOfUser);
-        email.setText(user.getEmail());
+        if(user!= null) {
+            TextView username = (TextView) findViewById(R.id.nameOfUser);
+            username.setText(user.getUsername());
+            TextView email = (TextView) findViewById(R.id.emailOfUser);
+            email.setText(user.getEmail());
+
+            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+            notificationIntent.putExtra("username", user.getUsername());
+            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+            startService(notificationIntent);
+
+            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+            collaborationIntent.putExtra("username", user.getUsername());
+            startService(collaborationIntent);
+        }
 
         Button btnLogout = (Button)findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -186,14 +195,7 @@ public class MainActivity extends AppCompatActivity
 
         refreshCollaborationLists();
 
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-        startService(notificationIntent);
 
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
 
         //this.geoManager = new GeofenceManager(this);
 
