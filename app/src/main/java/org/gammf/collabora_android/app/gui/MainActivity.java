@@ -583,6 +583,8 @@ public class MainActivity extends AppCompatActivity
         username.setText(user.getUsername());
         TextView email = (TextView) findViewById(R.id.emailOfUser);
         email.setText(user.getEmail());
+        //PROBABILMENTE QUA CI DOVREBBERO ANDARE ANCHE LE INIZIALIZZAZIONI DEI SERVIZI DI
+        //COLLABORATIONS E NOTIFICATION + refreshCollaborationLists()
     }
 }
 
