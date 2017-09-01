@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         drawer.closeDrawers();
-                        toolbar.setNavigationIcon(null);
+                        leaveMenu();
                     }
                 });
                 builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -563,10 +563,12 @@ public class MainActivity extends AppCompatActivity
     public void riputMenu(){
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     public void leaveMenu(){
         this.toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }
 
