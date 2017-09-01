@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -16,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.gammf.collabora_android.app.Constants;
+import org.gammf.collabora_android.utils.GeofenceUtils;
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
@@ -108,11 +107,11 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 .setCircularRegion(
                         coordinates.latitude,
                         coordinates.longitude,
-                        Constants.GEOFENCE_RADIUS_IN_METERS
+                        GeofenceUtils.GEOFENCE_RADIUS_IN_METERS
                 )
 
                 //1 year...maybe to change
-                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setExpirationDuration(GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
 
                 // Set the transition types of interest. Alerts are only generated for these
                 // transition. We track entry and exit transitions in this sample.
@@ -139,7 +138,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      */
     private boolean getGeofencesAdded() {
         return PreferenceManager.getDefaultSharedPreferences(this.context).getBoolean(
-                Constants.GEOFENCES_ADDED_KEY, false);
+                GeofenceUtils.GEOFENCES_ADDED_KEY, false);
     }
 
     /**
@@ -150,7 +149,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     private void updateGeofencesAdded(boolean added) {
         PreferenceManager.getDefaultSharedPreferences(this.context)
                 .edit()
-                .putBoolean(Constants.GEOFENCES_ADDED_KEY, added)
+                .putBoolean(GeofenceUtils.GEOFENCES_ADDED_KEY, added)
                 .apply();
     }
 

@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.gammf.collabora_android.app.Constants.PREFS_NAME;
+import static org.gammf.collabora_android.utils.GeofenceUtils.PREFS_NAME;
 
 /**
  * Created by Federico on 04/08/2017.

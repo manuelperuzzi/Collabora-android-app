@@ -3,10 +3,12 @@ package org.gammf.collabora_android.app.gui;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -21,6 +23,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,9 +31,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -58,6 +63,7 @@ import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -87,6 +93,9 @@ public class MainActivity extends AppCompatActivity
     private ExpandableListAdapter expandableListAdapter;
     private User user;
     private CollaborationsManager collaborationsManager;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -99,30 +108,33 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            //LocalStorageUtils.deleteUserInFile(getApplicationContext());
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
-            //TODO show login/registration page
-        } catch (final JSONException e) {
+            Fragment fragment = LoginFragment.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            leaveMenu();
+        } catch (final JSONException | IOException e) {
             //TODO ?
-        } catch (IOException e) {
-            //TODO ?
-        } catch (MandatoryFieldMissingException e) {
+        } /*catch (MandatoryFieldMissingException e) {
             e.printStackTrace();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        }*/
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -136,16 +148,54 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        if(user!= null) {
+            TextView username = (TextView) findViewById(R.id.nameOfUser);
+            username.setText(user.getUsername());
+            TextView email = (TextView) findViewById(R.id.emailOfUser);
+            email.setText(user.getEmail());
+
+            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+            notificationIntent.putExtra("username", user.getUsername());
+            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+            startService(notificationIntent);
+
+            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+            collaborationIntent.putExtra("username", user.getUsername());
+            startService(collaborationIntent);
+        }
+
+        Button btnLogout = (Button)findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("CAUTION");
+                builder.setMessage("If you press Continue, you will logout from Collabora, are you sure?");
+                builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Fragment fragment = LoginFragment.newInstance();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        drawer.closeDrawers();
+                        LocalStorageUtils.deleteUserInFile(getApplicationContext());
+                        leaveMenu();
+                    }
+                });
+                builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
+            }
+        });
+
         refreshCollaborationLists();
 
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-        startService(notificationIntent);
 
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
 
         //this.geoManager = new GeofenceManager(this);
 
@@ -509,6 +559,41 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+
+    /**
+     * method used to insert lateral menu after user login
+     */
+    public void insertLateralMenu(){
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    /**
+     * method used to hide lateral menu after user logout
+     */
+    public void leaveMenu(){
+        this.toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * method called after login or registration that update lateral menu with all the user information and collaboration
+     */
+    public void updateMenuInfo(){
+        try {
+            user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        TextView username = (TextView) findViewById(R.id.nameOfUser);
+        username.setText(user.getUsername());
+        TextView email = (TextView) findViewById(R.id.emailOfUser);
+        email.setText(user.getEmail());
+        //PROBABILMENTE QUA CI DOVREBBERO ANDARE ANCHE LE INIZIALIZZAZIONI DEI SERVIZI DI
+        //COLLABORATIONS E NOTIFICATION + refreshCollaborationLists()
     }
 }
 

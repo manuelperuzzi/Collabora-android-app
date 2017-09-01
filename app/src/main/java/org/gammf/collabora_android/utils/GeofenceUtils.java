@@ -1,17 +1,17 @@
-package org.gammf.collabora_android.app;
+package org.gammf.collabora_android.utils;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 
 /**
- * Constants used in this project.
+ * GeofenceUtils used in this project.
  * Created by Federico on 07/08/2017.
  */
 
-public class Constants {
+public class GeofenceUtils {
 
-    private Constants() {
+    private GeofenceUtils() {
     }
     
     public static final String PREFS_NAME = "CollaboraPrefs";
