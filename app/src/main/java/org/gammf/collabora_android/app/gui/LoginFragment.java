@@ -1,25 +1,13 @@
 package org.gammf.collabora_android.app.gui;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,12 +17,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.mime.MIME;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,9 +101,11 @@ public class LoginFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 //tornare a homepage, rimettere menu laterale e aggiornare info utente all'interno!!
                 //Toast in caso si successo solo per ora che non c'è ancora una homepage
+                //final User user = leggere responsebody trasformandolo in Json
+                //LocalStorageUtils.writeUserToFile(getApplicationContext(), user); //inserirlo nel local storage
                 Toast toast = Toast.makeText(getContext(), "Logged correctly!",  Toast.LENGTH_SHORT);
                 toast.show();
-                ((MainActivity)getActivity()).riputMenu();
+                ((MainActivity)getActivity()).insertLateralMenu();
                 ((MainActivity)getActivity()).updateMenuInfo();
             }
 

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         try {
             //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
             //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
-            //getApplicationContext().deleteFile("user"); usato per cancellare temporaneamente il file che rimaneva nel local storage
+            //LocalStorageUtils.deleteUserInFile(getApplicationContext());
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
@@ -174,11 +174,11 @@ public class MainActivity extends AppCompatActivity
                 builder.setMessage("If you press Continue, you will logout from Collabora, are you sure?");
                 builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        user = null;
                         Fragment fragment = LoginFragment.newInstance();
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         drawer.closeDrawers();
+                        LocalStorageUtils.deleteUserInFile(getApplicationContext());
                         leaveMenu();
                     }
                 });
@@ -562,17 +562,26 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void riputMenu(){
+    /**
+     * method used to insert lateral menu after user login
+     */
+    public void insertLateralMenu(){
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
+    /**
+     * method used to hide lateral menu after user logout
+     */
     public void leaveMenu(){
         this.toolbar.setNavigationIcon(null);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
+    /**
+     * method called after login or registration that update lateral menu with all the user information and collaboration
+     */
     public void updateMenuInfo(){
         try {
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());

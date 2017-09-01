@@ -51,6 +51,10 @@ public class LocalStorageUtils {
         writeStoredFile(context, USER_FILENAME, json);
     }
 
+    public static void deleteUserInFile(final Context context){
+        deleteStoredFile(context,USER_FILENAME);
+    }
+
     /**
      * Retrieves a collaboration from the application local storage.
      * @param context the application context used to access the application local files.
@@ -123,6 +127,10 @@ public class LocalStorageUtils {
         final FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
         fos.write(json.toString().getBytes());
         fos.close();
+    }
+
+    private static void deleteStoredFile(final Context context, final String filename){
+        context.deleteFile(filename);
     }
 
 }

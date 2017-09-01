@@ -1,22 +1,12 @@
 package org.gammf.collabora_android.app.gui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -176,7 +166,7 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     //aggiunta user in memoria e passaggio ad homepage + ritorno del menu laterale con aggiunta info nuove
 
-                    ((MainActivity)getActivity()).riputMenu();
+                    ((MainActivity)getActivity()).insertLateralMenu();
                     ((MainActivity)getActivity()).updateMenuInfo();
                 }
 
