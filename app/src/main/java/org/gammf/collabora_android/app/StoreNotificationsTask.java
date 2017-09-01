@@ -59,12 +59,6 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         } else if(message.getMessageType().equals(MessageType.COLLABORATION)) {
             return handleCollaborationMessage((CollaborationMessage)message);
         }
-
-        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
-
-        this.geoManager.removeGeofence("id2");
-
         return false;
     }
 
@@ -188,10 +182,16 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 manager.removeCollaboration(message.getCollaborationId());
                 manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
                 LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
+                for (Note note: message.getCollaboration().getAllNotes()) {
+                    updateAlarmAndGeofences(note);
+                }
                 break;
             case DELETION:
                 manager.removeCollaboration(message.getCollaborationId());
                 context.deleteFile(message.getCollaborationId());
+                for (Note note: message.getCollaboration().getAllNotes()) {
+                    deleteAlarmAndGeofences(note);
+                }
                 break;
             default:
                 return false;
