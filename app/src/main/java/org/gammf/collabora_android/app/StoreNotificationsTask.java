@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import org.gammf.collabora_android.app.alarm.Alarm;
+import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -31,6 +35,9 @@ import java.io.IOException;
 public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     private final Context context;
+    private GeofenceManager geoManager;
+    private Alarm alarm;
+
 
     /**
      * Async task constructor.
@@ -38,17 +45,24 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
      */
     public StoreNotificationsTask(final Context context) {
         this.context = context;
+        this.alarm = new Alarm();
     }
 
     @Override
     protected Boolean doInBackground(Message... messages) {
         final Message message = messages[0];
+        this.geoManager = new GeofenceManager(context);
 
         if(message.getMessageType().equals(MessageType.UPDATE)) {
             return handleUpdateMessage((UpdateMessage)message);
         } else if(message.getMessageType().equals(MessageType.COLLABORATION)) {
             return handleCollaborationMessage((CollaborationMessage)message);
         }
+
+        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
+        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
+
+        this.geoManager.removeGeofence("id2");
 
         return false;
     }
@@ -93,6 +107,13 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addNote(message.getNote());
+                if(message.getNote().getLocation()!=null) {
+                    this.geoManager.addGeofence(message.getNote().getNoteID(),message.getNote().getContent(),
+                            new LatLng(message.getNote().getLocation().getLatitude(), message.getNote().getLocation().getLongitude()));
+                }
+                if(message.getNote().getExpirationDate()!=null){
+                    this.alarm.setAlarm(context,message.getNote().getContent(),message.getNote().getExpirationDate());
+                }
                 break;
             case UPDATING:
                 storedCollaboration.removeNote(message.getNote().getNoteID());

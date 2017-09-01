@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import org.joda.time.DateTime;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -24,25 +27,28 @@ public class Alarm {
      * @param message message to show on notification
      * @param timeToSpawn exact time when spawn the notification
      */
-    public void setAlarm(Context context, String message, Calendar timeToSpawn){
+    public void setAlarm(Context context, String message, DateTime timeToSpawn){
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(timeToSpawn.getYear(), timeToSpawn.getMonthOfYear(), timeToSpawn.getDayOfMonth(),
+                timeToSpawn.getHourOfDay(), timeToSpawn.getMinuteOfHour(), timeToSpawn.getSecondOfMinute());
 
         Intent intent = new Intent(context , AlarmBroadcastReceiver.class);
         intent.putExtra("title",message);
-        intent.putExtra("time",timeToSpawn.getTimeInMillis());
+        intent.putExtra("time",calendar.getTimeInMillis());
 
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong(getDate(timeToSpawn.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),System.currentTimeMillis());
+        editor.putLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),System.currentTimeMillis());
         editor.apply();
 
         // pendingIntend MUST have different id if we want multiple allarms to set
         final int _id = (int) System.currentTimeMillis();
         Log.d("DEBUG ID START", String.valueOf(_id));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if(timeToSpawn.getTimeInMillis()>System.currentTimeMillis()) {
-            am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getTimeInMillis(), pendingIntent);
+        if(calendar.getTimeInMillis()>System.currentTimeMillis()) {
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
 
