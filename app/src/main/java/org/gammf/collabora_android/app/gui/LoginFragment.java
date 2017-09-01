@@ -113,12 +113,12 @@ public class LoginFragment extends Fragment {
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                //tornare a homepage!!
+                //tornare a homepage, rimettere menu laterale e aggiornare info utente all'interno!!
                 //Toast in caso si successo solo per ora che non c'è ancora una homepage
                 Toast toast = Toast.makeText(getContext(), "Logged correctly!",  Toast.LENGTH_SHORT);
                 toast.show();
                 ((MainActivity)getActivity()).riputMenu();
-
+                ((MainActivity)getActivity()).updateMenuInfo();
             }
 
             @Override

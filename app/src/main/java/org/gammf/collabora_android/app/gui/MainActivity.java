@@ -570,6 +570,18 @@ public class MainActivity extends AppCompatActivity
         this.toolbar.setNavigationIcon(null);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
+
+    public void updateMenuInfo(){
+        try {
+            user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        TextView username = (TextView) findViewById(R.id.nameOfUser);
+        username.setText(user.getUsername());
+        TextView email = (TextView) findViewById(R.id.emailOfUser);
+        email.setText(user.getEmail());
+    }
 }
 
 

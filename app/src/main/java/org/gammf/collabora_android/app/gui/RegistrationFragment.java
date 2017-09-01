@@ -174,9 +174,10 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             client.post(AuthenticationUtils.POST, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    //aggiunta user in memoria e passaggio ad homepage
+                    //aggiunta user in memoria e passaggio ad homepage + ritorno del menu laterale con aggiunta info nuove
 
                     ((MainActivity)getActivity()).riputMenu();
+                    ((MainActivity)getActivity()).updateMenuInfo();
                 }
 
                 @Override
