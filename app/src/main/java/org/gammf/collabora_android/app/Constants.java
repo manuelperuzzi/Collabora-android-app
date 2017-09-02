@@ -1,8 +1,5 @@
 package org.gammf.collabora_android.app;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.HashMap;
 
 /**
  * Constants used in this project.
