@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity
             }
             progress.setVisibility(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            Log.i("Test", "Main Activity - messages received " + messagesReceived+ ", timeouts " + timeouts);
         }
     };
 
