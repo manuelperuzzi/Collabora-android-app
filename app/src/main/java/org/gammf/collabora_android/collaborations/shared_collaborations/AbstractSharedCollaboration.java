@@ -62,23 +62,4 @@ public abstract class AbstractSharedCollaboration extends AbstractCollaboration 
         }
         return false;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        AbstractSharedCollaboration that = (AbstractSharedCollaboration) o;
-
-        return members.equals(that.members);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + members.hashCode();
-        return result;
-    }
 }

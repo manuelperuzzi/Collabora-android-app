@@ -95,14 +95,12 @@ public class SimpleModuleNote implements ModuleNote {
 
         SimpleModuleNote that = (SimpleModuleNote) o;
 
-        return note.equals(that.note) && moduleId.equals(that.moduleId);
+        return note != null ? note.equals(that.note) : that.note == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = note.hashCode();
-        result = 31 * result + moduleId.hashCode();
-        return result;
+        return note != null ? note.hashCode() : 0;
     }
 }

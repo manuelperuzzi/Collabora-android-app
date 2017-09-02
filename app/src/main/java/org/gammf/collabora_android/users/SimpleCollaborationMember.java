@@ -38,8 +38,9 @@ public class SimpleCollaborationMember implements CollaborationMember {
 
         SimpleCollaborationMember that = (SimpleCollaborationMember) o;
 
-        return username != null ? username.equals(that.username) : that.username == null
-                && accessRight == that.accessRight;
+        if (username != null ? !username.equals(that.username) : that.username != null)
+            return false;
+        return accessRight == that.accessRight;
 
     }
 

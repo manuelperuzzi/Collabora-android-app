@@ -58,21 +58,4 @@ public class ConcreteCollaborationManager implements CollaborationsManager {
         }
         return false;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ConcreteCollaborationManager that = (ConcreteCollaborationManager) o;
-
-        return collaborations.equals(that.collaborations);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return collaborations.hashCode();
-    }
-
 }

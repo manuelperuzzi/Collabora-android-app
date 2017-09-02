@@ -115,22 +115,12 @@ public class SimpleNote implements Note {
 
         SimpleNote that = (SimpleNote) o;
 
-        return noteID != null ? noteID.equals(that.noteID) : that.noteID == null && content.equals(that.content) && (location != null
-                              ? location.equals(that.location) : that.location == null && (expirationDate != null
-                              ? expirationDate.equals(that.expirationDate) : that.expirationDate == null && (state != null
-                              ? state.equals(that.state) : that.state == null && (previousNotes != null
-                              ? previousNotes.equals(that.previousNotes) : that.previousNotes == null))));
+        return noteID != null ? noteID.equals(that.noteID) : that.noteID == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = noteID != null ? noteID.hashCode() : 0;
-        result = 31 * result + content.hashCode();
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (expirationDate != null ? expirationDate.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (previousNotes != null ? previousNotes.hashCode() : 0);
-        return result;
+        return noteID != null ? noteID.hashCode() : 0;
     }
 }
