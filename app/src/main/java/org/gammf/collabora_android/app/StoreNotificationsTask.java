@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
@@ -31,6 +32,7 @@ import java.io.IOException;
 public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     private final Context context;
+    private String collaborationId;
 
     /**
      * Async task constructor.
@@ -67,6 +69,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     private boolean handleUpdateMessage(final UpdateMessage message) {
         try {
+            collaborationId = message.getCollaborationId();
             final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
                     context, message.getCollaborationId());
             switch (message.getTarget()) {
@@ -177,6 +180,9 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     protected void onPostExecute(final Boolean success) {
         if(success) {
             final Intent intent = new Intent("update.collaborations.on.gui");
+            if(collaborationId != null) {
+                intent.putExtra("collaborationId", collaborationId);
+            }
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
