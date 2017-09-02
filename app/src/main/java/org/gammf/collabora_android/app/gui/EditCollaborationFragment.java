@@ -140,19 +140,6 @@ public class EditCollaborationFragment extends Fragment {
         });*/
     }
 
-    /*private void updateCollaboration(String collabName){
-        //QUI AGGIORNARE LA COLLABORAZIONE
-        ((MainActivity)getActivity()).updateCollaborationList(this, collaborationId);
-    }*/
-
-    private void returnToCollabFragment(){
-        FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction2.remove(EditCollaborationFragment.this);
-        fragmentTransaction2.commit();
-        getActivity().getSupportFragmentManager().popBackStack();
-
-    }
-
     private void getMemberAndFillList(){
 
         final Set<CollaborationMember> members = ((SharedCollaboration) collaboration).getAllMembers();
@@ -175,7 +162,8 @@ public class EditCollaborationFragment extends Fragment {
             final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
                     username, collaboration, UpdateMessageType.UPDATING);
             new SendMessageToServerTask().execute(message);
-            returnToCollabFragment();
+            ((MainActivity)getActivity()).showLoadingSpinner();
+            new TimeoutSender(getContext(), 5000);
         }
 
 

@@ -148,10 +148,8 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
                 username, module, UpdateMessageType.UPDATING, collaborationId);
         new SendMessageToServerTask().execute(message);
 
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.remove(EditModuleFragment.this);
-        fragmentTransaction.commit();
-        getActivity().getSupportFragmentManager().popBackStack();
+        ((MainActivity)getActivity()).showLoadingSpinner();
+        new TimeoutSender(getContext(), 5000);
     }
 
     private void checkUserUpdate() {

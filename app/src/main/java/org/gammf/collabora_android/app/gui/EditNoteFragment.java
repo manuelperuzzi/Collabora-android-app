@@ -257,7 +257,8 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
             new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
 
-            changeFragment(NoteFragment.newInstance(username, collaborationId, noteId));
+            ((MainActivity)getActivity()).showLoadingSpinner();
+            new TimeoutSender(getContext(), 5000);
         }
     }
 
@@ -265,16 +266,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
     }
 
-    private void changeFragment(Fragment fragment){
-        if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.remove(EditNoteFragment.this);
-            fragmentTransaction2.commit();
-            getActivity().getSupportFragmentManager().popBackStack();
-        } else {
-            Log.e(SENDER, CREATIONERROR_FRAG);
-        }
-    }
+
     @Override
     public void onPlaceSelected(Place place) {
         note.modifyLocation(new NoteLocation(place.getLatLng().latitude, place.getLatLng().longitude));
