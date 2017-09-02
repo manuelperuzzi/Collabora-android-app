@@ -28,9 +28,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -66,6 +69,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -87,11 +92,33 @@ public class MainActivity extends AppCompatActivity
     private ExpandableListAdapter expandableListAdapter;
     private User user;
     private CollaborationsManager collaborationsManager;
+    private ProgressBar progress;
+    private int messagesReceived;
+    private int timeouts;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            refreshCollaborationLists();
+            if(intent.getLongExtra("timeout", -1) != -1) {
+                timeouts++;
+                if(timeouts > messagesReceived) {
+                    Toast.makeText(getApplicationContext(), "Timeout Error", Toast.LENGTH_SHORT).show();
+                    timeouts--;
+                }
+            } else {
+                messagesReceived++;
+                refreshCollaborationLists();
+                final String collaborationId = intent.getStringExtra("collaborationId");
+                if(collaborationId != null) {
+                    final ShortCollaboration collaboration = collaborationsManager.getCollaboration(collaborationId);
+                    openCollaborationFragment(collaboration);
+                } else {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+            progress.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     };
 
@@ -102,7 +129,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
+        messagesReceived = 0;
+        timeouts = 0;
 
         try {
             final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
@@ -148,90 +176,23 @@ public class MainActivity extends AppCompatActivity
         startService(collaborationIntent);
 
         this.geoManager = new GeofenceManager(this);
-
-/*
-        //simple examples, 2 set and 1 delete to test.
-        Utility utility = new Utility();
-
-        Calendar firstTry = Calendar.getInstance();
-        firstTry.set(Calendar.YEAR, 2017);
-        firstTry.set(Calendar.MONTH, 7);
-        firstTry.set(Calendar.DAY_OF_MONTH, 4);
-        firstTry.set(Calendar.HOUR_OF_DAY, 12);
-        firstTry.set(Calendar.MINUTE, 37);
-        firstTry.set(Calendar.SECOND, 0);
-
-        Calendar secondTry = Calendar.getInstance();
-        secondTry.set(Calendar.YEAR, 2017);
-        secondTry.set(Calendar.MONTH, 7);
-        secondTry.set(Calendar.DAY_OF_MONTH, 4);
-        secondTry.set(Calendar.HOUR_OF_DAY, 12);
-        secondTry.set(Calendar.MINUTE, 38);
-        secondTry.set(Calendar.SECOND, 0);
-
-        utility.setAlarm(this,"First Event",firstTry);
-        utility.setAlarm(this,"Second Event",secondTry);
-        utility.deleteAlarm(this,secondTry);
-
-
-        */
     }
 
-    /**
-     * Used for open the collaboration selected
-     *
-     * @param collab collaboration name
-     */
-    private void selectItem(ShortCollaboration collab) {
+    private void openCollaborationFragment(final ShortCollaboration collaboration) {
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collaboration.getId());
 
-        Fragment fragment = null;
-        fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collab.getId());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        setTitle(collaboration.getName());
 
-            setTitle(collab.getName());
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-
-        } else {
-            Log.e(SENDER, CREATIONERROR_FRAG);
-        }
     }
 
-    /**
-     * Used for EDIT collaboration
-     *
-     * @param sender fragment that wants to update the collaboration list.
-     * @param collabId collaborationId
-     */
-    public void updateCollaborationList(Fragment sender, String collabId){
-
-        //dall'id della collaboration recuperare le info per aggiornare il menu a fianco
-
-        if(sender instanceof EditCollaborationFragment){
-            // TO-DO qui bisogna
-            // rimuovere la collab precedente dalla lista
-            // aggiungere quella nuova
-
-
-        }
-
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collabId);
-
-        if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.remove(sender);
-            fragmentTransaction2.commit();
-            getSupportFragmentManager().popBackStack();
-            setTitle("METTERE IL NOME RECUPERATO");
-        }
-
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-
+    private void selectItem(ShortCollaboration collaboration) {
+        this.openCollaborationFragment(collaboration);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -409,26 +370,38 @@ public class MainActivity extends AppCompatActivity
         } catch (final Exception e) {}
         new SendMessageToServerTask().execute(message);
 
-        /*//prepare fragment for new collab inserted
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
-
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collaborationName);
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), ""+collaborationType+TOAST_COLLABCREATED, Toast.LENGTH_SHORT);
-        toast.show();*/
         dialog.dismiss();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        showLoadingSpinner();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        new TimeoutSender(getApplicationContext(), 5000);
     }
 
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
         dialog.dismiss();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("Test", "MainActiviy onPause");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("Test", "MainActiviy onResume");
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -441,6 +414,11 @@ public class MainActivity extends AppCompatActivity
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
         dialog.show(getSupportFragmentManager(), DIALOGNAME);
+    }
+
+    public void showLoadingSpinner() {
+        progress = (ProgressBar) findViewById(R.id.progressBar);
+        progress.setVisibility(View.VISIBLE);
     }
 
     private void closeDrawerGroup(){
