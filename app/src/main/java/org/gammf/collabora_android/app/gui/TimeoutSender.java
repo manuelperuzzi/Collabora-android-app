@@ -29,7 +29,6 @@ public class TimeoutSender extends Timer {
                 if(collaborationId != null) {
                     intent.putExtra("collaborationId", collaborationId);
                 }
-                Log.i("Test","5) TimeoutSender - eeeh");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         }, timeout);

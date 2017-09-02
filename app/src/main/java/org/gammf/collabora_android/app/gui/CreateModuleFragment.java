@@ -109,7 +109,7 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
         final Module module = new ConcreteModule(null, content, stateSelected);
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 username, module, UpdateMessageType.CREATION, collaborationId);
-        new SendMessageToServerTask().execute(message);
+        new SendMessageToServerTask(getContext()).execute(message);
 
         ((MainActivity)getActivity()).showLoadingSpinner();
         new TimeoutSender(getContext(), 5000);

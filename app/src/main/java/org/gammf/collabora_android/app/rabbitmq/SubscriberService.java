@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.Service;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.rabbitmq.client.AMQP;
@@ -10,6 +11,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,6 +105,8 @@ public abstract class SubscriberService extends Service{
     }
 
     private void showNetworkErrorToast() {
-        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+        final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+        intent.putExtra("network-error", "Network Error");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }

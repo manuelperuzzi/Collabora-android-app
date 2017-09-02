@@ -161,7 +161,7 @@ public class EditCollaborationFragment extends Fragment {
             collaboration.setName(newName);
             final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
                     username, collaboration, UpdateMessageType.UPDATING);
-            new SendMessageToServerTask().execute(message);
+            new SendMessageToServerTask(getContext()).execute(message);
             ((MainActivity)getActivity()).showLoadingSpinner();
             new TimeoutSender(getContext(), 5000);
         }

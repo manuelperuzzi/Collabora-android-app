@@ -254,7 +254,7 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
             }
             note.modifyState(new NoteState(noteStateEdited, null));
 
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
 
             ((MainActivity)getActivity()).showLoadingSpinner();

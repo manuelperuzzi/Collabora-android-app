@@ -1,11 +1,15 @@
 package org.gammf.collabora_android.app.rabbitmq;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
@@ -16,6 +20,16 @@ import org.gammf.collabora_android.utils.RabbitMQConfig;
  */
 
 public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Boolean> {
+
+    private final Context context;
+
+    /**
+     * Class constructor.
+     * @param context the application context.
+     */
+    public SendMessageToServerTask(final Context context) {
+        this.context = context;
+    }
 
     /**
      * Simple usage of RabbitMQ's APIs in order to send a message to the broker.
@@ -39,7 +53,9 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
     @Override
     protected void onPostExecute(final Boolean result) {
         if (!result) {
-            
+            final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+            intent.putExtra("network-error", "Network Error");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
 }

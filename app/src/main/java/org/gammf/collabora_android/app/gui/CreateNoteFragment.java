@@ -199,10 +199,10 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                 .setExpirationDate(expiration)
                 .buildNote();
         if (moduleId.equals(NOMODULE)) {
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                     username, simpleNote, UpdateMessageType.CREATION, collaborationId));
         } else {
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                     username, new SimpleModuleNote(simpleNote, moduleId), UpdateMessageType.CREATION, collaborationId));
         }
 

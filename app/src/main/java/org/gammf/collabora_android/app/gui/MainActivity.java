@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
                     timeouts--;
                 }
+            } else if (intent.getStringExtra("network-error") != null) {
+                Toast.makeText(context, intent.getStringExtra("network-error"), Toast.LENGTH_SHORT).show();
             } else {
                 messagesReceived++;
                 refreshCollaborationLists();
@@ -378,7 +380,7 @@ public class MainActivity extends AppCompatActivity
         try {
             Log.e("UpdateMessage", MessageUtils.updateMessageToJSON(message).toString());
         } catch (final Exception e) {}
-        new SendMessageToServerTask().execute(message);
+        new SendMessageToServerTask(getApplicationContext()).execute(message);
 
         dialog.dismiss();
 
