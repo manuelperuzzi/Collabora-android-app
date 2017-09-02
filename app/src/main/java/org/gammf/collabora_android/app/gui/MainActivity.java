@@ -93,16 +93,22 @@ public class MainActivity extends AppCompatActivity
     private User user;
     private CollaborationsManager collaborationsManager;
     private ProgressBar progress;
-    private int messagesReceived;
-    private int timeouts;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+
+    private class MainActivityReceiver extends BroadcastReceiver {
+
+        private static final String INTENT_FILTER = "update.collaborations.on.gui";
+
+        private int messagesReceived = 0;
+        private int timeouts = 0;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getLongExtra("timeout", -1) != -1) {
                 timeouts++;
                 if(timeouts > messagesReceived) {
-                    Toast.makeText(getApplicationContext(), "Timeout Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
                     timeouts--;
                 }
             } else {
@@ -120,7 +126,14 @@ public class MainActivity extends AppCompatActivity
             progress.setVisibility(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
-    };
+    }
+
+
+    private BroadcastReceiver receiver = new MainActivityReceiver();
+
+    public static String getReceverIntentFilter() {
+        return MainActivityReceiver.INTENT_FILTER;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +141,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        messagesReceived = 0;
-        timeouts = 0;
 
         try {
             final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
@@ -396,7 +406,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Log.i("Test", "MainActiviy onResume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
     }
 
     @Override

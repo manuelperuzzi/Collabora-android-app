@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -178,7 +179,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         if(success) {
-            final Intent intent = new Intent("update.collaborations.on.gui");
+            final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
             if(collaborationId != null) {
                 intent.putExtra("collaborationId", collaborationId);
             }

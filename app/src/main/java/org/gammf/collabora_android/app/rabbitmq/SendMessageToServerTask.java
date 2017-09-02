@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.app.rabbitmq;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -22,7 +23,7 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
      * @return true if the message is sent successfully.
      */
     @Override
-    protected Boolean doInBackground(UpdateMessage... messages) {
+    protected Boolean doInBackground(final UpdateMessage... messages) {
         try {
             final Channel channel = RabbitMQConfig.getRabbitMQConnection().createChannel();
             channel.exchangeDeclare(RabbitMQConfig.UPDATES_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
@@ -36,7 +37,9 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
     }
 
     @Override
-    protected void onPostExecute(Boolean result) {
-        //TODO integration with GUI
+    protected void onPostExecute(final Boolean result) {
+        if (!result) {
+            
+        }
     }
 }

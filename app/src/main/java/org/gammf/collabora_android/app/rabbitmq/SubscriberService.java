@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.Service;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -90,14 +91,18 @@ public abstract class SubscriberService extends Service{
                             channel.basicAck(envelope.getDeliveryTag(), false);
                             handleJsonMessage(json);
                         } catch (final JSONException e) {
-                            //TODO
+                            showNetworkErrorToast();
                         }
                     }
                 });
                 onConfigurationCompleted(this.intent);
             } catch (final Exception e) {
-                //TODO
+                showNetworkErrorToast();
             }
         }
+    }
+
+    private void showNetworkErrorToast() {
+        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
     }
 }

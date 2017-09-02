@@ -24,7 +24,7 @@ public class TimeoutSender extends Timer {
         this.schedule(new TimerTask() {
             @Override
             public void run() {
-                final Intent intent = new Intent("update.collaborations.on.gui");
+                final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
                 intent.putExtra("timeout", timeout);
                 if(collaborationId != null) {
                     intent.putExtra("collaborationId", collaborationId);
