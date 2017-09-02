@@ -111,8 +111,10 @@ public class CreateModuleFragment extends Fragment implements AdapterView.OnItem
                 username, module, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask().execute(message);
 
-        CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
+        ((MainActivity)getActivity()).showLoadingSpinner();
+        new TimeoutSender(getContext(), 5000);
+        //CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
+        //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
 
     @Override

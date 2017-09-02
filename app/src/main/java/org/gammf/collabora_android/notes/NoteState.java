@@ -47,4 +47,23 @@ public class NoteState implements State {
     public void setResponsible(String newResponsibleUsername) {
         this.responsibleUsername = newResponsibleUsername;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NoteState noteState = (NoteState) o;
+
+        return state != null ? state.equals(noteState.state) : noteState.state == null &&
+                (responsibleUsername != null ? responsibleUsername.equals(noteState.responsibleUsername) : noteState.responsibleUsername == null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = state != null ? state.hashCode() : 0;
+        result = 31 * result + (responsibleUsername != null ? responsibleUsername.hashCode() : 0);
+        return result;
+    }
 }

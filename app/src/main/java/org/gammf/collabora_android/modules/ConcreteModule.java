@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.modules;
 
+import android.util.Log;
+
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
@@ -99,6 +101,7 @@ public class ConcreteModule implements Module {
         this.state = stateDefinition;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -106,19 +109,13 @@ public class ConcreteModule implements Module {
 
         ConcreteModule that = (ConcreteModule) o;
 
-        if (!id.equals(that.id)) return false;
-        if (!description.equals(that.description)) return false;
-        return notes.equals(that.notes) && state.equals(that.state);
+        return id != null ? id.equals(that.id) : that.id == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + notes.hashCode();
-        result = 31 * result + state.hashCode();
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
 }
