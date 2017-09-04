@@ -183,6 +183,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             if(collaborationId != null) {
                 intent.putExtra("collaborationId", collaborationId);
             }
+            intent.putExtra("network-message", "");
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
