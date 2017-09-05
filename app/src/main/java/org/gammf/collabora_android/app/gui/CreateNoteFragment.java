@@ -27,6 +27,8 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -49,8 +51,8 @@ import static android.content.ContentValues.TAG;
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements PlaceSelectionListener,
-        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateNoteFragment extends Fragment implements
+        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, Observer<Location> {
 
     private static final String SENDER = "notecreationfrag";
     private static final String ARG_USERNAME = "USERNAME";
@@ -65,6 +67,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
 
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
+
+    private MapManager mapManager;
 
     private String collaborationId, moduleId;
 
@@ -105,6 +109,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
+        this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
+        this.mapManager.addObserver(this);
     }
 
     @Override
@@ -123,7 +129,7 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         txtContentNote.requestFocus();
         final SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
-        autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
         spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
         setSpinner();
@@ -211,16 +217,6 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     @Override
-    public void onPlaceSelected(final Place place) {
-        location = new NoteLocation(place.getLatLng().latitude, place.getLatLng().longitude);
-    }
-
-    @Override
-    public void onError(final Status status) {
-        Log.i(TAG, "An error occurred: " + status);
-    }
-
-    @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
         noteState = item.toString();
@@ -252,4 +248,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
 
+    @Override
+    public void notify(final Location location) {
+        this.location = location;
+    }
 }
