@@ -42,7 +42,7 @@ public class MapManager extends AbstractObservableSource<Location> implements Pl
     private static final int ANIMATION_ZOOM = 5;
     private static final int ANIMATION_DURATION = 2000;
     private static final int ZOOM_NOTE = 17;
-    private static final int BEARING_NOTE = 90;
+    private static final int BEARING_NOTE = 0;
     private static final int TILT_NOTE = 30;
 
     private MapView mapView;
@@ -109,37 +109,26 @@ public class MapManager extends AbstractObservableSource<Location> implements Pl
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, STARTING_ZOOM));
             // Zoom in, animating the camera.
             this.googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(ANIMATION_ZOOM), ANIMATION_DURATION, null);
-            // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-            this.cameraPosition = new CameraPosition.Builder()
-                    .target(coordinates)      // Sets the center of the map to Mountain View
-                    .zoom(ZOOM_NOTE)                   // Sets the zoom
-                    .bearing(BEARING_NOTE)                // Sets the orientation of the camera to east
-                    .tilt(TILT_NOTE)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            this.googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    return false;
-                }
-            });
+            this.moveCamera(coordinates);
         }
     }
 
-    private void updateMap(LatLng newCoordinates){
-        this.googleMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                .position(newCoordinates));
+    private void updateMap(LatLng newCoordinates) {
+        if (this.mapView != null && this.initialLocation != NO_LOCATION) {
+            this.googleMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
+                    .position(newCoordinates));
+            this.moveCamera(newCoordinates);
+        }
+    }
+
+    private void moveCamera(final LatLng coordinates) {
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(ANIMATION_ZOOM), ANIMATION_DURATION, null);
-        // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
         this.cameraPosition = new CameraPosition.Builder()
-                .target(newCoordinates)     // Sets the center of the map to Mountain View
+                .target(coordinates)     // Sets the center of the map to Mountain View
                 .zoom(ZOOM_NOTE)             // Sets the zoom
-                .bearing(BEARING_NOTE)       // Sets the orientation of the camera to east
+                .bearing(BEARING_NOTE)       // Sets the orientation of the camera to north
                 .tilt(TILT_NOTE)             // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(this.cameraPosition));
@@ -151,5 +140,4 @@ public class MapManager extends AbstractObservableSource<Location> implements Pl
             }
         });
     }
-
 }
