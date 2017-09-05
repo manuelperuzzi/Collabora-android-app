@@ -2,12 +2,9 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
@@ -34,7 +27,6 @@ import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
@@ -45,16 +37,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
 public class CreateNoteFragment extends Fragment implements
-        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, Observer<Location> {
+        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String SENDER = "notecreationfrag";
     private static final String ARG_USERNAME = "USERNAME";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
@@ -110,7 +99,12 @@ public class CreateNoteFragment extends Fragment implements
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
         this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
-        this.mapManager.addObserver(this);
+        this.mapManager.addObserver(new Observer<Location>() {
+            @Override
+            public void notify(final Location newlocation) {
+                location = newlocation;
+            }
+        });
     }
 
     @Override
@@ -198,8 +192,6 @@ public class CreateNoteFragment extends Fragment implements
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        final CollaborationFragment collaborationFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
-
         final Note simpleNote = new SimpleNoteBuilder(content, state)
                 .setLocation(location)
                 .setExpirationDate(expiration)
@@ -246,10 +238,5 @@ public class CreateNoteFragment extends Fragment implements
 
     private void showTime(){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
-    }
-
-    @Override
-    public void notify(final Location location) {
-        this.location = location;
     }
 }

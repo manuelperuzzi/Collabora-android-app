@@ -52,7 +52,7 @@ import static android.content.ContentValues.TAG;
  * create an instance of this fragment.
  */
 public class EditNoteFragment extends Fragment implements AdapterView.OnItemSelectedListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, Observer<Location> {
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String ERR_STATENOTSELECTED = "Please select state";
 
@@ -115,7 +115,12 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
             } else {
                 this.mapManager = new MapManager(MapManager.NO_LOCATION, getContext());
             }
-            this.mapManager.addObserver(this);
+            this.mapManager.addObserver(new Observer<Location>() {
+                @Override
+                public void notify(final Location location) {
+                    note.modifyLocation(location);
+                }
+            });
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -284,10 +289,5 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
     }
     private void showTime() {
         timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
-    }
-
-    @Override
-    public void notify(final Location location) {
-        this.note.modifyLocation(location);
     }
 }
