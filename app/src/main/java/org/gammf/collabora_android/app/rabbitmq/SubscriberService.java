@@ -3,6 +3,7 @@ package org.gammf.collabora_android.app.rabbitmq;
 import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.rabbitmq.client.AMQP;

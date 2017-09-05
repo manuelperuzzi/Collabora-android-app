@@ -33,7 +33,6 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Concrete
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
@@ -48,7 +47,6 @@ import org.json.JSONException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -58,8 +56,6 @@ public final class MainActivity extends AppCompatActivity
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private NavigationManager navigationManager;
     private User user;
@@ -91,7 +87,8 @@ public final class MainActivity extends AppCompatActivity
                 final String collaborationId = intent.getStringExtra("collaborationId");
 
                 if(collaborationId != null) {
-                    final ShortCollaboration collaboration = getUpdateCollaborationManager().getCollaboration(collaborationId);
+                    final ShortCollaboration collaboration = LocalStorageUtils
+                            .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId);
                     openCollaborationFragment(collaboration);
                 } else {
                     navigationManager.refreshCollaborationLists();
@@ -141,7 +138,8 @@ public final class MainActivity extends AppCompatActivity
 
         final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(
+                LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
         startService(notificationIntent);
 
         final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
@@ -180,7 +178,7 @@ public final class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        return item.getItemId() == R.id.action_settings ? true : super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -272,23 +270,4 @@ public final class MainActivity extends AppCompatActivity
         progress.setVisibility(View.VISIBLE);
     }
 
-    public List<String> getExistingCollaborationsIds() {
-        final List<String> collaborationIds = new ArrayList<>();
-        final CollaborationsManager collaborationsManager = this.getUpdateCollaborationManager();
-        if(collaborationsManager != null) {
-            for (final ShortCollaboration collaboration : collaborationsManager.getAllCollaborations()) {
-                collaborationIds.add(collaboration.getId());
-            }
-        }
-        return collaborationIds;
-    }
-
-    private CollaborationsManager getUpdateCollaborationManager() {
-        try {
-            return LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
-        } catch (final JSONException e) {
-            e.printStackTrace(); // TODO error handling
-            return null;
-        }
-    }
 }

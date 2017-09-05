@@ -1,7 +1,13 @@
 package org.gammf.collabora_android.short_collaborations;
 
+import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -57,5 +63,25 @@ public class ConcreteCollaborationManager implements CollaborationsManager {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<ShortCollaboration> filterByGroup(final CollaborationType collaborationType) {
+        final List<ShortCollaboration> collaborations = new ArrayList<>();
+        for (final ShortCollaboration collaboration : this.getAllCollaborations()) {
+            if (collaboration.getCollaborationType().equals(collaborationType)) {
+                collaborations.add(collaboration);
+            }
+        }
+        return collaborations;
+    }
+
+    @Override
+    public List<String> getCollaborationsId() {
+        final List<String> collaborationIds = new ArrayList<>();
+        for (final ShortCollaboration collaboration : this.getAllCollaborations()) {
+            collaborationIds.add(collaboration.getId());
+        }
+        return collaborationIds;
     }
 }

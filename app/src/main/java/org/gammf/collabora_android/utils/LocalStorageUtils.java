@@ -82,14 +82,12 @@ public class LocalStorageUtils {
      * Retrieves a collaborations manager with all the collaborations from the application local storage.
      * @param context the application context used to access the application local files.
      * @return a collaborations manager containing all the collaborations retrieved from file.
-     * @throws JSONException if the json conversion went wrong.
      */
-    public static CollaborationsManager readShortCollaborationsFromFile(final Context context)
-            throws JSONException {
+    public static CollaborationsManager readShortCollaborationsFromFile(final Context context) {
         try {
             final JSONObject storedJson = readStoredFile(context, COLLABORATIONS_FILENAME);
             return CollaborationsManagerUtils.jsonToCollaborationManager(storedJson);
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             return new ConcreteCollaborationManager();
         }
     }
