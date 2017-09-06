@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +19,18 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.users.SimpleUser;
+import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.gammf.collabora_android.utils.UserUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
@@ -52,9 +59,11 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
     private Calendar calendarEdited;
     private int yearEdited, monthEdited, dayEdited;
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
+    private ProgressBar bar;
+    private Button registerButton;
+    private TextView passToLogin;
 
     public RegistrationFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -77,7 +86,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_registration, container, false);
         initializeGuiComponent(rootView);
-
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnSetDateExpiration);
         btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,8 +94,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                         myDateListenerEdited, yearEdited, monthEdited, dayEdited).show();
             }
         });
-
-        Button registerButton = rootView.findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,9 +104,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                 }
             }
         });
-
-
-        TextView passToLogin = rootView.findViewById(R.id.text_backToLogin);
         passToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +120,9 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
         emailText= rootView.findViewById(R.id.email);
         nameText= rootView.findViewById(R.id.name);
         surnameText= rootView.findViewById(R.id.surname);
+        registerButton = rootView.findViewById(R.id.register_button);
+        bar = rootView.findViewById(R.id.register_progress);
+        passToLogin = rootView.findViewById(R.id.text_backToLogin);
         dateViewEdited = rootView.findViewById(R.id.txtNewDateSelected);
         myDateListenerEdited = this;
         calendarEdited = Calendar.getInstance();
@@ -141,8 +147,8 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
      }
 
      private boolean isPasswordValid(String password) {
-         return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,10}$");
-     }
+        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,10}$");
+    }
 
     private void showDate(int year, int month, int day) {
         dateViewEdited.setText(new StringBuilder().append(day).append("/")
@@ -171,14 +177,36 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             jsonParams.put("surname", surnameText.getText().toString() );
             jsonParams.put("birthday", new DateTime(calendarEdited.getTime()));
             jsonParams.put("hashedPassword", hash);
+            User temporaryUser = null;
+            try {
+                temporaryUser = new SimpleUser.Builder()
+                        .name(nameText.getText().toString())
+                        .surname(surnameText.getText().toString() )
+                        .username(userText.getText().toString())
+                        .birthday(new DateTime(calendarEdited.getTime()))
+                        .email(emailText.getText().toString())
+                        .build();
+            } catch (MandatoryFieldMissingException e) {
+                e.printStackTrace();
+            }
 
             StringEntity entity = new StringEntity(jsonParams.toString());
-
+            final User finalTemporaryUser = temporaryUser;
             client.post(getContext(),AuthenticationUtils.POST, entity,"application/json", new AsyncHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    //aggiunta user in memoria e passaggio ad homepage + ritorno del menu laterale con aggiunta info nuove
+                public void onStart() {
+                    bar.setVisibility(View.VISIBLE);
+                    registerButton.setClickable(false);
+                    passToLogin.setClickable(false);
+                }
 
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    try {
+                        LocalStorageUtils.writeUserToFile(getContext(), finalTemporaryUser);
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
                     ((MainActivity)getActivity()).insertLateralMenu();
                     ((MainActivity)getActivity()).updateUserInfo();
                 }
@@ -192,6 +220,13 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                         e.printStackTrace();
                     }
                     toast.show();
+                }
+
+                @Override
+                public void onFinish() {
+                    bar.setVisibility(View.GONE);
+                    registerButton.setClickable(true);
+                    passToLogin.setClickable(true);
                 }
             });
         }

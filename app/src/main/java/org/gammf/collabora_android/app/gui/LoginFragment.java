@@ -46,8 +46,8 @@ public class LoginFragment extends Fragment {
     private EditText userText;
     private EditText passText;
     private ProgressBar bar;
-    Button loginButton;
-    TextView passToRegister;
+    private Button loginButton;
+    private TextView passToRegister;
 
     public LoginFragment() {
         // Required empty public constructor

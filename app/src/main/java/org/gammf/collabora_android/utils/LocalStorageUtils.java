@@ -3,6 +3,7 @@ package org.gammf.collabora_android.utils;
 import android.content.Context;
 
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
@@ -53,6 +54,21 @@ public class LocalStorageUtils {
 
     public static void deleteUserInFile(final Context context){
         deleteStoredFile(context,USER_FILENAME);
+    }
+
+    public static void deleteAllCollaborations(final Context context){
+        CollaborationsManager manager = null;
+        try {
+            manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
+            if(manager!=null){
+                for (ShortCollaboration collab : manager.getAllCollaborations()) {
+                    deleteStoredFile(context,collab.getId());
+                }
+                deleteStoredFile(context,COLLABORATIONS_FILENAME);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

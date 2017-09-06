@@ -158,9 +158,7 @@ public class MainActivity extends AppCompatActivity
                         Fragment fragment = LoginFragment.newInstance();
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                        drawer.closeDrawers();
-                        LocalStorageUtils.deleteUserInFile(getApplicationContext());
-                        leaveMenu();
+                        deleteUserInfo();
                     }
                 });
                 builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -520,6 +518,17 @@ public class MainActivity extends AppCompatActivity
     public void leaveMenu(){
         this.toolbar.setNavigationIcon(null);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * method used to delete all LocalStorage informations
+     */
+    public void deleteUserInfo(){
+        drawer.closeDrawers();
+        LocalStorageUtils.deleteUserInFile(getApplicationContext());
+        LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
+        leaveMenu();
+        // QUI CANCELLARE I SERVIZI RELATIVI AGLI EXCHANGE !!!
     }
 
     /**
