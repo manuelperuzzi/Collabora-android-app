@@ -3,7 +3,17 @@ package org.gammf.collabora_android.app;
 import android.app.IntentService;
 import android.content.Intent;
 
+import org.gammf.collabora_android.app.alarm.Alarm;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 /**
  * Service that manage rebooting procedure
@@ -12,47 +22,25 @@ import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 
 public class BootService extends IntentService {
 
-    private GeofenceManager geoManager;
-
     public BootService() {
         super("BootService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
-        // reset here all allarms and all geofences...
-        //take from db or saved locally collection...
-
-        /*Alarm utility = new Alarm();
-
-        Calendar firstTry = Calendar.getInstance();
-        firstTry.set(Calendar.YEAR, 2017);
-        firstTry.set(Calendar.MONTH, 7);
-        firstTry.set(Calendar.DAY_OF_MONTH, 4);
-        firstTry.set(Calendar.HOUR_OF_DAY, 10);
-        firstTry.set(Calendar.MINUTE, 53);
-        firstTry.set(Calendar.SECOND, 0);
-
-        Calendar secondTry = Calendar.getInstance();
-        secondTry.set(Calendar.YEAR, 2017);
-        secondTry.set(Calendar.MONTH, 7);
-        secondTry.set(Calendar.DAY_OF_MONTH, 4);
-        secondTry.set(Calendar.HOUR_OF_DAY, 10);
-        secondTry.set(Calendar.MINUTE, 54);
-        secondTry.set(Calendar.SECOND, 0);
-
-        utility.setAlarm(this,"First Event",firstTry);
-        utility.setAlarm(this,"Second Event",secondTry);
-        utility.deleteAlarm(this,secondTry);
-
-
-        this.geoManager = new GeofenceManager(this);
-        this.geoManager.addGeofence("nota1",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("nota2",new LatLng(44.159825, 12.430086));
-        this.geoManager.removeGeofence("nota2");
-
-        */
+        try {
+            CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
+            if(manager!=null){
+                for (ShortCollaboration collab : manager.getAllCollaborations()) {
+                    Collaboration tmpcollab = LocalStorageUtils.readCollaborationFromFile(getApplicationContext(),collab.getId());
+                    for (Note collabnote: tmpcollab.getAllNotes()) {
+                        AlarmAndGeofenceUtils.addAlarmAndGeofences(getApplicationContext(),collabnote,new Alarm(),new GeofenceManager(getApplicationContext()));
+                    }
+                }
+            }
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

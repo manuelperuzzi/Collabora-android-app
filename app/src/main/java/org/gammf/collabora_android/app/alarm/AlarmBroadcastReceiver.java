@@ -36,14 +36,13 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(intent.getExtras().getString("title")+ " -- "+ alarm.getDate(intent.getExtras().getLong("time"), "dd/MM/yyyy hh:mm"))
-                .setContentText("Insert here Note content")
+                .setContentText("Click notification to return to app")
                 .setSound(alarmSound)
                 .setAutoCancel(true)
                 .setWhen(when)
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
         notificationManager.notify( (int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE), mNotifyBuilder.build());
-
     }
 
 }
