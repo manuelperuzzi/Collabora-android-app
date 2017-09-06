@@ -18,7 +18,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.gammf.collabora_android.utils.UserUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.io.IOException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -99,14 +106,14 @@ public class LoginFragment extends Fragment {
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                //tornare a homepage, rimettere menu laterale e aggiornare info utente all'interno!!
-                //Toast in caso si successo solo per ora che non c'è ancora una homepage
-                //final User user = leggere responsebody trasformandolo in Json
-                //LocalStorageUtils.writeUserToFile(getApplicationContext(), user); //inserirlo nel local storage
-                Toast toast = Toast.makeText(getContext(), "Logged correctly!",  Toast.LENGTH_SHORT);
-                toast.show();
+                try {
+                    JSONObject user = new JSONObject(new String(responseBody));
+                    LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(user));
+                } catch (JSONException | IOException | MandatoryFieldMissingException e) {
+                    e.printStackTrace();
+                }
                 ((MainActivity)getActivity()).insertLateralMenu();
-                ((MainActivity)getActivity()).updateMenuInfo();
+                ((MainActivity)getActivity()).updateUserInfo();
             }
 
             @Override
@@ -115,8 +122,6 @@ public class LoginFragment extends Fragment {
                 toast.show();
             }
         });
-
-
 
     }
 }

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
@@ -182,7 +180,7 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                     //aggiunta user in memoria e passaggio ad homepage + ritorno del menu laterale con aggiunta info nuove
 
                     ((MainActivity)getActivity()).insertLateralMenu();
-                    ((MainActivity)getActivity()).updateMenuInfo();
+                    ((MainActivity)getActivity()).updateUserInfo();
                 }
 
                 @Override

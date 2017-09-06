@@ -119,9 +119,7 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
-            //LocalStorageUtils.deleteUserInFile(getApplicationContext());
+            LocalStorageUtils.deleteUserInFile(getApplicationContext()); //solo per debug!!!!!
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
@@ -131,13 +129,14 @@ public class MainActivity extends AppCompatActivity
             leaveMenu();
         } catch (final JSONException | IOException e) {
             //TODO ?
-        } catch (MandatoryFieldMissingException e) {
-            e.printStackTrace();
+        }
+
+        if(user!= null) {
+            updateUserInfo();
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
         btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
 
@@ -146,27 +145,6 @@ public class MainActivity extends AppCompatActivity
                 showNoticeDialog();
             }
         });
-
-        if(user!= null) {
-            TextView username = (TextView) findViewById(R.id.nameOfUser);
-            username.setText(user.getUsername());
-            TextView email = (TextView) findViewById(R.id.emailOfUser);
-            email.setText(user.getEmail());
-
-            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-            notificationIntent.putExtra("username", user.getUsername());
-            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-            startService(notificationIntent);
-
-            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-            collaborationIntent.putExtra("username", user.getUsername());
-            startService(collaborationIntent);
-
-            Fragment fragment = HomepageFragment.newInstance();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        }
-
         Button btnLogout = (Button)findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
 
@@ -191,42 +169,8 @@ public class MainActivity extends AppCompatActivity
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
-
             }
         });
-
-        refreshCollaborationLists();
-
-
-
-
-/*
-        //simple examples, 2 set and 1 delete to test.
-        Utility utility = new Utility();
-
-        Calendar firstTry = Calendar.getInstance();
-        firstTry.set(Calendar.YEAR, 2017);
-        firstTry.set(Calendar.MONTH, 7);
-        firstTry.set(Calendar.DAY_OF_MONTH, 4);
-        firstTry.set(Calendar.HOUR_OF_DAY, 12);
-        firstTry.set(Calendar.MINUTE, 37);
-        firstTry.set(Calendar.SECOND, 0);
-
-        Calendar secondTry = Calendar.getInstance();
-        secondTry.set(Calendar.YEAR, 2017);
-        secondTry.set(Calendar.MONTH, 7);
-        secondTry.set(Calendar.DAY_OF_MONTH, 4);
-        secondTry.set(Calendar.HOUR_OF_DAY, 12);
-        secondTry.set(Calendar.MINUTE, 38);
-        secondTry.set(Calendar.SECOND, 0);
-
-        utility.setAlarm(this,"First Event",firstTry);
-        utility.setAlarm(this,"Second Event",secondTry);
-        utility.deleteAlarm(this,secondTry);
-
-
-        */
     }
 
     /**
@@ -581,7 +525,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * method called after login or registration that update lateral menu with all the user information and collaboration
      */
-    public void updateMenuInfo(){
+    public void updateUserInfo(){
         try {
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (IOException | JSONException e) {
@@ -591,8 +535,21 @@ public class MainActivity extends AppCompatActivity
         username.setText(user.getUsername());
         TextView email = (TextView) findViewById(R.id.emailOfUser);
         email.setText(user.getEmail());
-        //PROBABILMENTE QUA CI DOVREBBERO ANDARE ANCHE LE INIZIALIZZAZIONI DEI SERVIZI DI
-        //COLLABORATIONS E NOTIFICATION + refreshCollaborationLists()
+
+        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+        notificationIntent.putExtra("username", user.getUsername());
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+        startService(notificationIntent);
+
+        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+        collaborationIntent.putExtra("username", user.getUsername());
+        startService(collaborationIntent);
+
+        Fragment fragment = HomepageFragment.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        refreshCollaborationLists();
     }
 }
 
