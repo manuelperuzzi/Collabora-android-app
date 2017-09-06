@@ -23,6 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
+import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
@@ -51,8 +54,9 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
-public final class MainActivity extends AppCompatActivity
-        implements DialogCollabListener{
+public class MainActivity extends AppCompatActivity
+        implements DialogCollabListener, NetworkChangeObserver{
+
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
@@ -61,6 +65,7 @@ public final class MainActivity extends AppCompatActivity
     private User user;
     private ProgressBar progress;
     private PermissionManager permissionManager;
+    private NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
 
     private class MainActivityReceiver extends BroadcastReceiver {
 
@@ -118,6 +123,7 @@ public final class MainActivity extends AppCompatActivity
                 this, this.navigationManager.getDrawer(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         this.navigationManager.getDrawer().addDrawerListener(toggle);
         toggle.syncState();
+        this.networkManager.addNetworkChangeObserver(this);
 
         try {
             final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
@@ -128,7 +134,7 @@ public final class MainActivity extends AppCompatActivity
             //TODO show login/registration page
         } catch (final JSONException e) {
             //TODO ?
-        } catch (IOException e) {
+        } catch (final IOException e) {
             //TODO ?
         } catch (MandatoryFieldMissingException e) {
             e.printStackTrace();
@@ -136,15 +142,7 @@ public final class MainActivity extends AppCompatActivity
 
         this.navigationManager.refreshCollaborationLists();
 
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(
-                LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
-        startService(notificationIntent);
-
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
+        new GeofenceManager(this);
     }
 
     private void openCollaborationFragment(final ShortCollaboration collaboration) {
@@ -243,16 +241,16 @@ public final class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("Test", "MainActiviy onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        this.unregisterReceiver(this.networkManager);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("Test", "MainActiviy onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
         this.progress = (ProgressBar) findViewById(R.id.progressBar);
+        this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
@@ -264,10 +262,30 @@ public final class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 
     public void showLoadingSpinner() {
         progress.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onNetworkAvailable() {
+        Log.i("CIAO", "dovrei entrare here");
+        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+        notificationIntent.putExtra("username", user.getUsername());
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
+        startService(notificationIntent);
+
+        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+        collaborationIntent.putExtra("username", user.getUsername());
+        startService(collaborationIntent);
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
+    }
 }
