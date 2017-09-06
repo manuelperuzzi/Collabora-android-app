@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +19,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.gammf.collabora_android.utils.UserUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.io.IOException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -37,6 +45,9 @@ public class LoginFragment extends Fragment {
     // UI references.
     private EditText userText;
     private EditText passText;
+    private ProgressBar bar;
+    private Button loginButton;
+    private TextView passToRegister;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -63,14 +74,15 @@ public class LoginFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         userText = rootView.findViewById(R.id.username);
         passText = rootView.findViewById(R.id.password);
-        Button loginButton = rootView.findViewById(R.id.email_sign_in_button);
+        bar = rootView.findViewById(R.id.login_progress);
+        loginButton = rootView.findViewById(R.id.email_sign_in_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin(userText.getText().toString(),passText.getText().toString());
             }
         });
-        TextView passToRegister = rootView.findViewById(R.id.text_registerL);
+        passToRegister = rootView.findViewById(R.id.text_registerL);
         passToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,19 +107,25 @@ public class LoginFragment extends Fragment {
     private void attemptLogin(String username, String password) {
         AsyncHttpClient client = new AsyncHttpClient();
         String hash = BCrypt.hashpw(password, "$2a$10$2wymx/003xT1XIndPwFgPe");
-        Log.d("DEBUGGO",hash);
         client.setBasicAuth(username,hash);
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
+            public void onStart() {
+                bar.setVisibility(View.VISIBLE);
+                loginButton.setClickable(false);
+                passToRegister.setClickable(false);
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                //tornare a homepage, rimettere menu laterale e aggiornare info utente all'interno!!
-                //Toast in caso si successo solo per ora che non c'è ancora una homepage
-                //final User user = leggere responsebody trasformandolo in Json
-                //LocalStorageUtils.writeUserToFile(getApplicationContext(), user); //inserirlo nel local storage
-                Toast toast = Toast.makeText(getContext(), "Logged correctly!",  Toast.LENGTH_SHORT);
-                toast.show();
+                try {
+                    JSONObject user = new JSONObject(new String(responseBody));
+                    LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(user));
+                } catch (JSONException | IOException | MandatoryFieldMissingException e) {
+                    e.printStackTrace();
+                }
                 ((MainActivity)getActivity()).insertLateralMenu();
-                ((MainActivity)getActivity()).updateMenuInfo();
+                ((MainActivity)getActivity()).updateUserInfo();
             }
 
             @Override
@@ -115,9 +133,14 @@ public class LoginFragment extends Fragment {
                 Toast toast = Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT);
                 toast.show();
             }
+
+            @Override
+            public void onFinish() {
+                bar.setVisibility(View.GONE);
+                loginButton.setClickable(true);
+                passToRegister.setClickable(true);
+            }
         });
-
-
 
     }
 }
