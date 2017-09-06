@@ -86,10 +86,6 @@ public class MainActivity extends AppCompatActivity
             //TODO ?
         }
 
-        if(user != null) {
-            updateUserInfo();
-        }
-
         this.navigationManager.refreshCollaborationLists();
     }
 
