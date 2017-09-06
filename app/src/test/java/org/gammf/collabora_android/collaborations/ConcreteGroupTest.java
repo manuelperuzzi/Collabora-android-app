@@ -1,11 +1,13 @@
 package org.gammf.collabora_android.collaborations;
 
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleUser;
-import org.gammf.collabora_android.users.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,29 +19,19 @@ import static org.junit.Assert.*;
  */
 public class ConcreteGroupTest {
 
-    private Collaboration group;
-    private User firstUser;
-    private User secondUser;
+    private SharedCollaboration group;
+    private String firstUser = "peru";
+    private String secondUser = "maffone";
     private Note note;
 
     @Before
     public void setUp() throws Exception {
         group = new ConcreteGroup("collaborationId", "collaborationName");
-        firstUser = new SimpleUser.Builder()
-                .username("peru")
-                .email("manuel.peruzzi@studio.unibo.it")
-                .surname("Peruzzi")
-                .name("Manuel")
-                .build();
-        secondUser = new SimpleUser.Builder()
-                .username("maffone")
-                .email("alfredo.maffi@studio.unibo.it")
-                .build();
-        final CollaborationMember fm = new CollaborationMember(firstUser, AccessRight.ADMIN);
-        final CollaborationMember sm = new CollaborationMember(secondUser, AccessRight.READ);
+        final CollaborationMember fm = new SimpleCollaborationMember(firstUser, AccessRight.ADMIN);
+        final CollaborationMember sm = new SimpleCollaborationMember(secondUser, AccessRight.READ);
         group.addMember(fm);
         group.addMember(sm);
-        note = new SimpleNoteBuilder("myNote")
+        note = new SimpleNoteBuilder("myNote", new NoteState("doing", "fone"))
                 .setNoteID("myNoteId")
                 .buildNote();
         group.addNote(note);
@@ -59,15 +51,15 @@ public class ConcreteGroupTest {
 
     @Test
     public void getMember() throws Exception {
-        final CollaborationMember member = new CollaborationMember(firstUser, AccessRight.ADMIN);
-        assertEquals(member, group.getMember(firstUser.getUsername()));
+        final CollaborationMember member = new SimpleCollaborationMember(firstUser, AccessRight.ADMIN);
+        assertEquals(member, group.getMember(firstUser));
     }
 
     @Test
     public void removeMember() throws Exception {
-        assertTrue(group.containsMember(secondUser.getUsername()));
-        assertTrue(group.removeMember(secondUser.getUsername()));
-        assertFalse(group.containsMember(secondUser.getUsername()));
+        assertTrue(group.containsMember(secondUser));
+        assertTrue(group.removeMember(secondUser));
+        assertFalse(group.containsMember(secondUser));
     }
 
     @Test
@@ -77,7 +69,7 @@ public class ConcreteGroupTest {
 
     @Test
     public void getNote() throws Exception {
-        final Note n = new SimpleNoteBuilder("myNote")
+        final Note n = new SimpleNoteBuilder("myNote", new NoteState("doing", "fone"))
                 .setNoteID("myNoteId")
                 .buildNote();
         assertEquals(n, group.getNote(n.getNoteID()));

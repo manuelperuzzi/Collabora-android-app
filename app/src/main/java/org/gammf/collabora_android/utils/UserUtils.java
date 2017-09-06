@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
 import org.joda.time.DateTime;
@@ -27,9 +26,6 @@ public class UserUtils {
         json.put("name", user.getName());
         json.put("surname", user.getSurname());
         json.put("birthday", user.getBirthday());
-        if (user instanceof CollaborationMember) {
-            json.put("right", ((CollaborationMember) user).getAccessRight().name());
-        }
 
         return json;
     }
@@ -48,12 +44,8 @@ public class UserUtils {
         userBuilder.name(json.getString("name"));
         userBuilder.surname(json.getString("surname"));
         userBuilder.birthday(new DateTime(json.get("birthday")));
-        final User user = userBuilder.build();
 
-        if (json.has("right")) {
-            return new CollaborationMember(user, AccessRight.valueOf(json.getString("right")));
-        }
-        return user;
+        return userBuilder.build();
     }
 
 }

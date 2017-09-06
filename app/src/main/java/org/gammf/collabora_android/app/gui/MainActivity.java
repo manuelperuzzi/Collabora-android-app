@@ -1,21 +1,14 @@
 package org.gammf.collabora_android.app.gui;
 
-import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.provider.Settings;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,443 +17,229 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ImageButton;
-import android.widget.ListView;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.SubscriberService;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
+import org.gammf.collabora_android.app.gui.collaboration.CollaborationFragment;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
-import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
-import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
+import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
+import org.gammf.collabora_android.app.utils.IntentConstants;
+import org.gammf.collabora_android.app.utils.PermissionManager;
+import org.gammf.collabora_android.app.utils.TimeoutSender;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.users.SimpleUser;
+import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.joda.time.DateTime;
+import org.json.JSONException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
+        implements NetworkChangeObserver {
+
+    private static final String BACKSTACK_FRAG = "xyz";
+    private static final String SENDER = "MainActivity";
+
+    private NavigationManager navigationManager;
+    private User user;
+    private ProgressBar progress;
+    private PermissionManager permissionManager;
+    private NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
+    private BroadcastReceiver receiver = new MainActivityReceiver();
 
 
-    private ListView mDrawerList;
-    private ArrayList<DataModel> drawerItem;
-    private DrawerItemCustomAdapter adapter;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private GeofenceManager geoManager;
-
-
-    ExpandableListView expandableListView;
-    ExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    List<String> group;
-    List<String> project;
-    HashMap<String, List<String>> expandableListDetail;
+    public static String getReceiverIntentFilter() {
+        return MainActivityReceiver.INTENT_FILTER;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.navigationManager = new NavigationManager(getApplicationContext(), this);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        group = new ArrayList<String>();
-        group.add("Group 1");
-        group.add("Group 2");
-        group.add("Group 3");
-        group.add("Group 4");
-        group.add("Group 5");
-
-        project = new ArrayList<String>();
-        project.add("Project 1");
-        project.add("Project 2");
-        project.add("Project 3");
-        project.add("Project 4");
-        project.add("Project 5");
-
-      /* mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        drawerItem = new ArrayList<DataModel>();
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 1"));
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 2"));
-        drawerItem.add(new DataModel(R.drawable.collaboration32, "Collaboration 3"));
-        adapter = new DrawerItemCustomAdapter(this,R.layout.list_view_item_row, drawerItem);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-*/
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, this.navigationManager.getDrawer(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        this.navigationManager.getDrawer().addDrawerListener(toggle);
         toggle.syncState();
+        this.networkManager.addNetworkChangeObserver(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        try {
+            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            this.user = LocalStorageUtils.readUserFromFile(getApplicationContext());
 
-        ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
-        btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                showNoticeDialog();
-
-            }
-        });
-
-
-        final Intent intent = new Intent(getApplicationContext(), SubscriberService.class);
-        intent.putExtra("username", "fone");
-        startService(intent);
-
-        this.geoManager = new GeofenceManager(this);
-
-/*
-        //simple examples, 2 set and 1 delete to test.
-        Utility utility = new Utility();
-
-        Calendar firstTry = Calendar.getInstance();
-        firstTry.set(Calendar.YEAR, 2017);
-        firstTry.set(Calendar.MONTH, 7);
-        firstTry.set(Calendar.DAY_OF_MONTH, 4);
-        firstTry.set(Calendar.HOUR_OF_DAY, 12);
-        firstTry.set(Calendar.MINUTE, 37);
-        firstTry.set(Calendar.SECOND, 0);
-
-        Calendar secondTry = Calendar.getInstance();
-        secondTry.set(Calendar.YEAR, 2017);
-        secondTry.set(Calendar.MONTH, 7);
-        secondTry.set(Calendar.DAY_OF_MONTH, 4);
-        secondTry.set(Calendar.HOUR_OF_DAY, 12);
-        secondTry.set(Calendar.MINUTE, 38);
-        secondTry.set(Calendar.SECOND, 0);
-
-        utility.setAlarm(this,"First Event",firstTry);
-        utility.setAlarm(this,"Second Event",secondTry);
-        utility.deleteAlarm(this,secondTry);
-
-
-        */
-
-
-        expandableListDetail = new HashMap<>();
-        Resources res = getResources();
-        res.getString(R.string.rg_group);
-        expandableListDetail.put(res.getString(R.string.groups_drawer), group);
-        expandableListDetail.put(res.getString(R.string.project_drawer), project);
-
-        expandableListView = (ExpandableListView) findViewById(R.id.expandableListCollaborations);
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-        for(int i=0; i < expandableListAdapter.getGroupCount(); i++)
-            expandableListView.expandGroup(i);
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                final String listName =
-                        expandableListDetail.get(
-                        expandableListTitle.get(groupPosition)).get(childPosition);
-                selectItem(groupPosition, listName);
-                /*
-                Toast.makeText(
-                        getApplicationContext(),
-                        expandableListTitle.get(groupPosition)
-                                + " -> "
-                                + expandableListDetail.get(
-                                expandableListTitle.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT
-                ).show();
-                */
-                return false;
-            }
-        });
-    }
-
-    private void selectItem(int position, String itemName) {
-
-        Fragment fragment = null;
-        Bundle fragmentArgument = new Bundle();
-        fragment = new CollaborationFragment();
-        fragmentArgument.putString("collabName", itemName);
-        fragmentArgument.putBoolean("BOOLEAN_VALUE",true);
-
-        fragment.setArguments(fragmentArgument);
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-          //  mDrawerList.setItemChecked(position, true);
-          //  mDrawerList.setSelection(position);
-            setTitle(itemName);
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-
-
-        } else {
-            Log.e("MainActivity", "Error in creating fragment");
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    public void updateCollaborationList(Fragment sender, String collabname){
-
-        if(sender instanceof EditCollaborationFragment){
-            // TO-DO qui bisogna rimuovere la collab precedente dalla lista e aggiungere quella nuova
-
+        } catch (final FileNotFoundException e) {
+            //TODO show login/registration page
+        } catch (final JSONException e) {
+            //TODO ?
+        } catch (final IOException e) {
+            //TODO ?
+        } catch (MandatoryFieldMissingException e) {
+            e.printStackTrace();
         }
 
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabname);
-        args.putBoolean("BOOLEAN_VALUE", true);
-        fragment.setArguments(args);
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collabname);
-        }
+        this.navigationManager.refreshCollaborationLists();
 
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.openDrawer(GravityCompat.START);
-
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-/*
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-*/
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        new GeofenceManager(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (!checkPermissions()) {
-            requestPermissions();
+        this.permissionManager = new PermissionManager(this);
+        if (!this.permissionManager.checkPermissions()) {
+            this.permissionManager.requestPermissions();
         }
-
-        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
-
-        //this.geoManager.removeGeofence("id2");
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        /*
-        Log.i("MainActivity", "onActivityResult");
-        switch(requestCode) {
-            case (REQUEST_CODE) : {
-                if (resultCode == Activity.RESULT_OK) {
-                    String listType = data.getStringExtra(LIST_TYPE);
-                    String listName = data.getStringExtra(LIST_NAME);
-                    String listDescription = data.getStringExtra(LIST_DESCRIPTION);
-                    addNewList(listType, listName, listDescription);
-                }
-                break;
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        this.unregisterReceiver(this.networkManager);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
+        this.progress = (ProgressBar) findViewById(R.id.progressBar);
+        this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            if (this.navigationManager.getDrawer().isDrawerOpen(GravityCompat.START)) {
+                this.navigationManager.closeNavigator();
+            } else {
+                super.onBackPressed();
             }
-        }
-        */
-    }
-
-    /**
-     * Shows a {@link Snackbar}.
-     *
-     * @param mainTextStringId The id for the string resource for the Snackbar text.
-     * @param actionStringId   The text of the action item.
-     * @param listener         The listener associated with the Snackbar action.
-     */
-    private void showSnackbar(final int mainTextStringId, final int actionStringId,
-                              View.OnClickListener listener) {
-        Snackbar.make(
-                findViewById(android.R.id.content),
-                getString(mainTextStringId),
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(actionStringId), listener).show();
-    }
-
-    /**
-     * Return the current state of the permissions needed.
-     */
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-            showSnackbar(R.string.permission_rationale, android.R.string.ok,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
-                    });
         } else {
-            Log.i(TAG, "Requesting permission");
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+            getSupportFragmentManager().popBackStack();
         }
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionResult");
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "Permission granted.");
-            } else {
-                showSnackbar(R.string.permission_denied_explanation, R.string.settings,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        });
+        this.permissionManager.processPermissionsRequestResult(requestCode, grantResults);
+    }
+
+    @Override
+    public void onNetworkAvailable() {
+        Log.i("CIAO", "dovrei entrare here");
+        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+        notificationIntent.putExtra("username", user.getUsername());
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
+        startService(notificationIntent);
+
+        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+        collaborationIntent.putExtra("username", user.getUsername());
+        startService(collaborationIntent);
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
+    }
+
+    private void openCollaborationFragment(final ShortCollaboration collaboration) {
+        final Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collaboration.getId());
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        setTitle(collaboration.getName());
+    }
+
+    private class MainActivityReceiver extends BroadcastReceiver {
+
+        private static final String INTENT_FILTER = "update.collaborations.on.gui";
+
+        private static final int TIMEOUT_MILLIS = 5000;
+
+        private int messagesReceived = 0;
+        private int timeouts = 0;
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+
+            switch (intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG)) {
+                case IntentConstants.NETWORK_ERROR:
+                    Toast.makeText(context, intent.getStringExtra(IntentConstants.NETWORK_ERROR), Toast.LENGTH_SHORT).show();
+                    break;
+                case IntentConstants.TIMEOUT:
+                    this.timeouts++;
+                    if (this.timeouts > this.messagesReceived) {
+                        Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
+                        timeouts--;
+                        progress.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
+                    break;
+                case IntentConstants.MESSAGE_SENT:
+                    navigationManager.closeNavigator();
+                    progress.setVisibility(View.VISIBLE);
+                    new TimeoutSender(getApplicationContext(), TIMEOUT_MILLIS);
+                    break;
+                case IntentConstants.NETWORK_MESSAGE_RECEIVED:
+                    this.messagesReceived++;
+                    progress.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    final String collaborationId = intent.getStringExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED);
+                    if (collaborationId != null) {
+                        openCollaborationFragment(LocalStorageUtils
+                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                    } else {
+                        navigationManager.refreshCollaborationLists();
+                        navigationManager.openNavigator();
+                    }
+                    break;
+                case IntentConstants.OPEN_FRAGMENT:
+                    final String collID = intent.getStringExtra(IntentConstants.OPEN_FRAGMENT);
+                    if (collID != null) {
+                        openCollaborationFragment(LocalStorageUtils
+                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
+                    }
+                    break;
             }
         }
     }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String collabName, String collabType) {
-
-
-        for(int i=0; i < expandableListAdapter.getGroupCount(); i++) {
-            expandableListView.collapseGroup(i);
-        }
-        if(collabType.equals("Group")) {
-            group.add(collabName);
-        }else if(collabType.equals("Project")) {
-            project.add(collabName);
-        }
-
-
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-
-        Fragment fragment = new CollaborationFragment();
-        Bundle args = new Bundle();
-        args.putString("collabName", collabName);
-        args.putString("collabType", collabType);
-        args.putBoolean("BOOLEAN_VALUE", true);
-        fragment.setArguments(args);
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collabName);
-        }
-
-        Context context = getApplicationContext();
-        CharSequence text = ""+collabType+" created!";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        Context context = getApplicationContext();
-        CharSequence text = "Creation discarded";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    public void showNoticeDialog() {
-        // Create an instance of the dialog fragment and show it
-        DialogFragment dialog = new DialogNewCollaborationFragment();
-        dialog.show(getSupportFragmentManager(), "NewCollabDialogFragment");
-    }
 }
-
-

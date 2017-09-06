@@ -2,35 +2,44 @@ package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Simple test of the conversions in NoteUtils class.
  */
 public class NoteUtilsTest {
 
     @Test
     public void testNoteToJSON() {
-        Note note = new SimpleNoteBuilder("some content")
+        List<String> list = Arrays.asList("test", "test2");
+        Note note = new SimpleNoteBuilder("some content", new NoteState("doing", "fone"))
                 .setLocation(new NoteLocation(45.24,44.21))
                 .setExpirationDate(new DateTime(772408800000L))
-                .setPreviousNotes(new ArrayList<String>(Arrays.asList("test", "test2")))
+                .setPreviousNotes(Arrays.asList("test", "test2"))
                 .buildNote();
         try {
             JSONObject obj = NoteUtils.noteToJSON(note);
             assertEquals(obj.getString("content"), "some content");
             assertEquals(new DateTime(obj.get("expiration")).getMillis(), 772408800000L);
-            assertEquals((List<String>)obj.get("previousNotes"), Arrays.asList("test", "test2"));
+            JSONObject state = (JSONObject) obj.get("state");
+            assertEquals(state.getString("definition"), "doing");
+            assertEquals(state.getString("responsible"), "fone");
+            JSONArray array = (JSONArray)obj.get("previousNotes");
+            for(int i = 0; i < array.length(); i++) {
+                assertEquals(list.get(i), array.getString(i));
+            }
         } catch (JSONException e) {
             fail();
         }

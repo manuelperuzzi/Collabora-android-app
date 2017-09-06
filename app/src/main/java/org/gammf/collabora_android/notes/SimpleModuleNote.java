@@ -13,6 +13,11 @@ public class SimpleModuleNote implements ModuleNote {
     private final Note note;
     private final String moduleId;
 
+    /**
+     * Class constructor.
+     * @param note the single note.
+     * @param moduleId the identifier of the module that contains the note.
+     */
     public SimpleModuleNote(final Note note, final String moduleId) {
         this.note = note;
         this.moduleId = moduleId;
@@ -90,15 +95,12 @@ public class SimpleModuleNote implements ModuleNote {
 
         SimpleModuleNote that = (SimpleModuleNote) o;
 
-        if (!note.equals(that.note)) return false;
-        return moduleId.equals(that.moduleId);
+        return note != null ? note.equals(that.note) : that.note == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = note.hashCode();
-        result = 31 * result + moduleId.hashCode();
-        return result;
+        return note != null ? note.hashCode() : 0;
     }
 }

@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
+                tools:context="org.gammf.collabora_android.app.gui.note.CreateNoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
@@ -39,10 +39,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/place_autocomplete_fragment"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="11dp"
         android:layout_toEndOf="@+id/imageView3"
+        android:paddingEnd="25dp"
         android:paddingStart="5dp"
-        android:text="@string/newnote_state"
+        android:text="@string/set_state"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     <TextView
@@ -53,7 +54,7 @@
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/imageView7"
         android:paddingStart="5dp"
-        android:text="@string/newnote_content"
+        android:text="@string/insert_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         />
 
@@ -115,45 +116,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textView10"/>
 
-    <RadioGroup
-        android:id="@+id/radioGroupNoteState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_below="@+id/textView3"
-        android:layout_alignStart="@+id/imageView3">
-
-        <RadioButton
-            android:id="@+id/radioButtonToDo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView3"
-            android:layout_below="@+id/textView3"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_todo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-
-        <RadioButton
-            android:id="@+id/radioButtonDoing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonToDo"
-            android:layout_below="@+id/radioButtonToDo"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_doing"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-
-        <RadioButton
-            android:id="@+id/radioButtonDone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/radioButtonDoing"
-            android:layout_below="@+id/radioButtonDoing"
-            android:layout_marginTop="5dp"
-            android:text="@string/rg_done"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"/>
-    </RadioGroup>
-
     <ImageButton
         android:id="@+id/btnSetDateExpiration"
         android:layout_width="55dp"
@@ -197,7 +159,6 @@
         android:layout_width="30dp"
         android:layout_height="25dp"
         android:layout_alignTop="@+id/textView3"
-        android:layout_marginStart="25dp"
         android:layout_toEndOf="@+id/textView3"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/expirationtime32"/>
@@ -231,5 +192,13 @@
         android:layout_alignStart="@+id/txtNoteContent"
         android:layout_alignBottom="@+id/lblInsertContent"
         android:layout_toStartOf="@+id/textView10"/>
+
+    <Spinner
+        android:id="@+id/spinnerNewNoteState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView9"
+        android:layout_alignEnd="@+id/textView3"
+        android:layout_alignStart="@+id/imageView3"/>
 
 </RelativeLayout>

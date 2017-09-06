@@ -15,15 +15,17 @@ import java.util.ArrayList;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
+ *
+ * Custom Adapter for list view
  */
-public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
+public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponentInfo> {
 
     Context mContext;
     int layoutResourceId;
-    ArrayList<DataModel> data = null;
+    ArrayList<CollaborationComponentInfo> data = null;
 
 
-    public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ArrayList<DataModel> data) {
+    public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ArrayList<CollaborationComponentInfo> data) {
 
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
@@ -42,15 +44,15 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
         ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
         TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
 
-        DataModel folder = data.get(position);
+        CollaborationComponentInfo folder = data.get(position);
 
-        imageViewIcon.setImageResource(folder.icon);
-        textViewName.setText(folder.name);
+        imageViewIcon.setImageResource(folder.getIcon());
+        textViewName.setText(folder.getContent());
 
         return listItem;
     }
 
-    public void updateList(DataModel newItem){
+    public void updateList(CollaborationComponentInfo newItem){
         this.data.add(newItem);
     }
 }

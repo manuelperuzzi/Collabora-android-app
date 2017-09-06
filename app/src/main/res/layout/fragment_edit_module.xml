@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context="org.gammf.collabora_android.app.gui.module.EditModuleFragment">
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/txtModuleContentEdited"
+        android:layout_below="@+id/txtModuleContentEdited"
+        android:layout_marginTop="11dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/state32"/>
+
+    <EditText
+        android:id="@+id/txtModuleContentEdited"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:layout_below="@+id/imageView7"
+        android:layout_alignStart="@+id/lblFragmentTitle"
+        android:layout_alignEnd="@+id/lblFragmentTitle"/>
+
+    <TextView
+        android:id="@+id/lblFragmentTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:text="@string/editmodule_title"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView14"
+        android:layout_alignTop="@+id/imageView14"
+        android:layout_toEndOf="@+id/imageView14"
+        android:gravity="center_vertical"
+        android:paddingEnd="25dp"
+        android:paddingStart="10dp"
+        android:text="@string/change_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/lblInsertModuleContentEdited"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtModuleContentEdited"
+        android:layout_alignTop="@+id/imageView7"
+        android:layout_toEndOf="@+id/imageView7"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:text="@string/insert_new_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/contentnote_icon"
+        android:layout_below="@+id/lblFragmentTitle"
+        android:layout_alignStart="@+id/txtModuleContentEdited"
+        android:layout_marginTop="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerModuleStateEdited"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"/>
+
+
+</RelativeLayout>

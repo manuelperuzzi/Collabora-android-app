@@ -1,9 +1,10 @@
 package org.gammf.collabora_android.communication.common;
 
 /**
- * Created by Alfredo on 08/08/2017.
+ * @author Alfredo Maffi
+ * Enumeration containing all the possible types of a Message.
  */
 
 public enum MessageType {
-    UPDATE, NOTIFICATION, COLLABORATION
+    UPDATE, COLLABORATION
 }

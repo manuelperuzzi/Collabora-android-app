@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Alfredo on 05/08/2017.
+ * @author Alfredo Maffi
+ * Concrete builder for notes of the application domain.
  */
 
 public class SimpleNoteBuilder implements NoteBuilder {
@@ -17,8 +18,13 @@ public class SimpleNoteBuilder implements NoteBuilder {
     private State state;
     private List<String> previousNotes;
 
-    public SimpleNoteBuilder(final String content) {
+    /**
+     * Class constructor. Content is required as parameter since it's mandatory for a note.
+     * @param content the content to be set.
+     */
+    public SimpleNoteBuilder(final String content, final State state) {
         this.content = content;
+        this.state = state;
     }
 
 
@@ -39,12 +45,6 @@ public class SimpleNoteBuilder implements NoteBuilder {
     @Override
     public NoteBuilder setExpirationDate(DateTime expirationDate) {
         this.expirationDate = expirationDate;
-        return this;
-    }
-
-    @Override
-    public NoteBuilder setState(State state) {
-        this.state = state;
         return this;
     }
 
