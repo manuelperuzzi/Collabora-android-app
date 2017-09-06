@@ -1,9 +1,10 @@
 package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
+import org.gammf.collabora_android.communication.allCollaborations.ConcreteAllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.collaboration.ConcreteCollaborationMessage;
-import org.gammf.collabora_android.communication.common.MessageType;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -19,8 +20,12 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alfredo Maffi, Manuel Peruzzi
@@ -89,9 +94,31 @@ public class MessageUtils {
         }
     }
 
+    /**
+     * Creates a collaboration message from a json message.
+     * @param json the input json message.
+     * @return a collaboration message built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
     public static CollaborationMessage jsonToCollaborationMessage(final JSONObject json) throws JSONException {
         final String username = json.getString("user");
         final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(json.getJSONObject("collaboration"));
-        return new ConcreteCollaborationMessage(username, MessageType.COLLABORATION, collaboration);
+        return new ConcreteCollaborationMessage(username, collaboration);
+    }
+
+    /**
+     * Creates an all collaborations message from a json message.
+     * @param json the input json message.
+     * @return an all collaborations message built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
+    public static AllCollaborationsMessage jsonToAllCollaborationsMessage(final JSONObject json) throws JSONException {
+        final String username = json.getString("username");
+        final List<Collaboration> collaborations = new ArrayList<>();
+        final JSONArray jCollaborations = json.getJSONArray("collaborationList");
+        for (int i = 0; i < jCollaborations.length(); i++) {
+            collaborations.add(CollaborationUtils.jsonToCollaboration(jCollaborations.getJSONObject(i)));
+        }
+        return new ConcreteAllCollaborationsMessage(username, collaborations);
     }
 }
