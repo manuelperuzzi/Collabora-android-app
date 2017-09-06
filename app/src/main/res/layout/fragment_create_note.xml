@@ -1,0 +1,204 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="org.gammf.collabora_android.app.gui.CreateNoteFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/txtNoteContent"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/lblFragmentTitle"
+        android:layout_alignStart="@+id/lblFragmentTitle"
+        android:layout_below="@+id/lblInsertContent"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"/>
+
+    <TextView
+        android:id="@+id/lblFragmentTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="65dp"
+        android:text="@string/newnote_title"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_marginTop="11dp"
+        android:layout_toEndOf="@+id/imageView3"
+        android:paddingEnd="25dp"
+        android:paddingStart="5dp"
+        android:text="@string/set_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/lblInsertContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblFragmentTitle"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/imageView7"
+        android:paddingStart="5dp"
+        android:text="@string/insert_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        />
+
+    <TextView
+        android:id="@+id/txtNewDateSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnSetDateExpiration"
+        android:layout_alignStart="@+id/textView8"
+        android:text="--/--/----"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/txtNewTimeSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--:--"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"
+        android:layout_below="@+id/textView9"
+        android:layout_alignStart="@+id/textView9"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView2"
+        android:layout_toEndOf="@+id/imageView2"
+        android:paddingStart="5dp"
+        android:text="@string/newnote_date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/txtNewDateSelected"
+        android:layout_below="@+id/txtNewDateSelected"
+        android:layout_marginTop="11dp"
+        android:text="@string/newnote_time"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView5"
+        android:layout_toEndOf="@+id/imageView5"
+        android:paddingStart="5dp"
+        android:text="@string/newnote_location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <FrameLayout
+        android:id="@+id/place_autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView10"/>
+
+    <ImageButton
+        android:id="@+id/btnSetDateExpiration"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@android:color/white"
+        android:cropToPadding="false"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/calendar48"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_toEndOf="@+id/textView8"/>
+
+    <ImageButton
+        android:id="@+id/btnSetTimeExpiration"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@+id/txtNewTimeSelected"
+        android:layout_alignStart="@+id/btnSetDateExpiration"
+        android:adjustViewBounds="false"
+        android:backgroundTint="@android:color/white"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/time48"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnAddNote"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/txtNoteContent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/checkmark48"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/expirationtime32"/>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/state32"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_alignStart="@+id/imageView5"/>
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/location32"
+        android:layout_below="@+id/txtNoteContent"
+        android:layout_alignStart="@+id/txtNoteContent"
+        android:layout_marginTop="14dp"/>
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/contentnote_icon"
+        android:layout_alignTop="@+id/lblInsertContent"
+        android:layout_alignStart="@+id/txtNoteContent"
+        android:layout_alignBottom="@+id/lblInsertContent"
+        android:layout_toStartOf="@+id/textView10"/>
+
+    <Spinner
+        android:id="@+id/spinnerNewNoteState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView9"
+        android:layout_alignEnd="@+id/textView3"
+        android:layout_alignStart="@+id/imageView3"/>
+
+</RelativeLayout>

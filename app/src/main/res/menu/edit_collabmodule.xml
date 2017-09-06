@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:icon="@drawable/edit32toolbar"
+    <item android:id="@+id/action_editcollab"
+          android:title="@string/action_editcollab"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
+
+    <item android:id="@+id/action_editmodule"
+          android:title="@string/action_editmodule"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
+
+</menu>

@@ -1,0 +1,165 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+    <TextView
+        android:id="@+id/contentNote"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="Connect"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/expiration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView6"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_marginStart="9dp"
+        android:layout_toEndOf="@+id/textView6"
+        android:gravity="center_horizontal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBarState"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contentNote"
+        android:layout_alignParentStart="true"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/progressBarState"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lblState"
+        android:layout_alignBottom="@+id/lblState"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_marginTop="16dp"
+        android:text="@string/note_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/lblState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/lblResponsible"
+        android:layout_below="@+id/lblResponsible"
+        android:layout_marginTop="14dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView6"
+        android:layout_below="@+id/textView6"
+        android:layout_marginTop="16dp"
+        android:text="@string/note_responsible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView7"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/imgExpiration"
+        android:text="@string/note_expirationdate"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/lblResponsible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView5"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignStart="@+id/expiration"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"/>
+
+    <ImageView
+        android:id="@+id/imgExpiration"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_above="@+id/textView5"
+        android:layout_alignStart="@+id/contentNote"
+        android:layout_alignTop="@+id/textView6"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/expirationtime32"/>
+
+    <ImageView
+        android:id="@+id/imgResponsible"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignTop="@+id/textView5"
+        android:layout_toStartOf="@+id/textView5"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/responsible32"/>
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_toStartOf="@+id/textView4"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/state32"
+        android:layout_alignBottom="@+id/textView4"/>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView6"
+        android:layout_below="@+id/mapViewLocation"
+        android:layout_marginTop="20dp"
+        android:text="@string/note_location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/expiration"
+        android:layout_alignTop="@+id/textView7"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignTop="@+id/textView7"
+        android:layout_toStartOf="@+id/textView7"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/location32"
+        android:layout_above="@+id/textView6"/>
+
+</RelativeLayout>

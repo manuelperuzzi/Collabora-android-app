@@ -1,0 +1,213 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/txtNoteContentEdit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Connect"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/editnote_timeexpiration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_below="@+id/btnEditDateExpiration"
+                android:layout_alignStart="@+id/txtEditDateSelected"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/editnote_dateexpiration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_above="@+id/txtEditDateSelected"
+                android:layout_toEndOf="@+id/imageView13"/>
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtResponsibleEdit"
+                android:layout_marginTop="28dp"
+                android:layout_toEndOf="@+id/imageView12"
+                android:gravity="center_vertical"
+                android:paddingEnd="15dp"
+                android:paddingStart="5dp"
+                android:text="@string/change_state"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/state32"
+                android:layout_alignTop="@+id/textView22"
+                android:layout_alignStart="@+id/imgExpiration"/>
+
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/expirationtime32"
+                android:layout_alignTop="@+id/textView23"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageButton
+                android:id="@+id/btnEditTimeExpiration"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignStart="@+id/btnEditDateExpiration"
+                android:layout_below="@+id/textView24"
+                android:adjustViewBounds="false"
+                android:backgroundTint="@android:color/white"
+                android:elevation="5dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/time48"/>
+
+            <ImageButton
+                android:id="@+id/btnEditDateExpiration"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:backgroundTint="@android:color/white"
+                android:cropToPadding="false"
+                android:elevation="5dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/calendar48"
+                android:layout_below="@+id/textView23"
+                android:layout_alignEnd="@+id/textView23"/>
+
+            <TextView
+                android:id="@+id/txtEditTimeSelected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView24"
+                android:layout_below="@+id/textView24"
+                android:layout_marginTop="11dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="--:--"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/txtEditDateSelected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="--/--/----"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="20sp"
+                android:layout_below="@+id/textView22"
+                android:layout_alignStart="@+id/imageView13"
+                android:layout_marginStart="19dp"/>
+
+            <EditText
+                android:id="@+id/txtResponsibleEdit"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mapViewLocationEdit"
+                android:layout_toEndOf="@+id/textView6"
+                android:gravity="center_horizontal"
+                android:minWidth="200dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+            <FrameLayout
+                android:id="@+id/place_autocomplete_fragment_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtNoteContentEdit"
+                android:layout_alignParentStart="true"/>
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapViewLocationEdit"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/place_autocomplete_fragment_edit"/>
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/txtResponsibleEdit"
+                android:layout_alignTop="@+id/txtResponsibleEdit"
+                android:layout_toEndOf="@+id/imgExpiration"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/note_responsible"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/imgExpiration"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignBottom="@+id/textView6"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/textView6"
+                android:layout_marginStart="10dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/responsible32"/>
+
+
+            <Spinner
+                android:id="@+id/spinnerEditNoteState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/textView22"
+                android:layout_alignStart="@+id/imageView12"
+                android:layout_alignTop="@+id/txtEditDateSelected"/>
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>
