@@ -21,6 +21,7 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.notes.Note;
@@ -31,6 +32,7 @@ import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -42,8 +44,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements
-        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String ARG_USERNAME = "USERNAME";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
@@ -53,7 +54,7 @@ public class CreateNoteFragment extends Fragment implements
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
-    private Spinner spinnerState;
+    private StateSpinnerManager spinnerManager;
 
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
@@ -126,8 +127,15 @@ public class CreateNoteFragment extends Fragment implements
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
-        spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
-        setSpinner();
+        this.spinnerManager = new StateSpinnerManager(rootView,
+                LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
+        this.spinnerManager.addObserver(new Observer<String>() {
+            @Override
+            public void notify(final String state) {
+                noteState = state;
+            }
+        });
+
         final FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,16 +172,6 @@ public class CreateNoteFragment extends Fragment implements
         });
     }
 
-    private void setSpinner(){
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerState.setAdapter(dataAdapter);
-        spinnerState.setOnItemSelectedListener(this);
-    }
-
     private void processInput(){
         final String insertedNoteName = txtContentNote.getText().toString();
         if (insertedNoteName.equals("")) {
@@ -208,15 +206,6 @@ public class CreateNoteFragment extends Fragment implements
         ((MainActivity)getActivity()).showLoadingSpinner();
         new TimeoutSender(getContext(), 5000);
     }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-        noteState = item.toString();
-    }
-
-    @Override
-    public void onNothingSelected(final AdapterView<?> adapterView) { }
 
     @Override
     public void onDateSet(final DatePicker arg0, final int year, final int month, final int day) {
