@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.utils.AbstractObservableSource;
 import org.gammf.collabora_android.app.utils.NoteGroupState;
 import org.gammf.collabora_android.app.utils.NoteProjectState;
@@ -18,18 +17,22 @@ import java.util.List;
 
 
 /**
- * Created by gab on 9/6/17.
+ * A state spinner manager, that manages the behaviour of a spinner used for selecting the note/module state.
  */
-
 public class StateSpinnerManager extends AbstractObservableSource<String> implements AdapterView.OnItemSelectedListener {
+
+    /**
+     * Represents the unknown state of a note.
+     */
+    public static final String NO_STATE = "";
 
     private static final String ERROR_STATE_NOT_SELECTED = "Please select state";
 
     private final View rootView;
 
-    public StateSpinnerManager(final View rootView, final CollaborationType collaborationType) {
+    public StateSpinnerManager(final String state, final View rootView, final int spinnerId, final CollaborationType collaborationType) {
         this.rootView = rootView;
-        final Spinner spinnerEditState = rootView.findViewById(R.id.spinnerNewNoteState);
+        final Spinner spinnerEditState = rootView.findViewById(spinnerId);
         final List<Enum> stateList = new ArrayList<>();
         if (collaborationType == CollaborationType.PROJECT) {
             stateList.addAll(Arrays.asList(NoteProjectState.values()));
@@ -40,6 +43,17 @@ public class StateSpinnerManager extends AbstractObservableSource<String> implem
                 android.R.layout.simple_spinner_item, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEditState.setAdapter(dataAdapter);
+        if (state.equals(NO_STATE)) {
+            spinnerEditState.setSelection(0);
+        } else {
+            int stateIndex = 0;
+            for (int i = 0; i < stateList.size(); i++) {
+                if (stateList.get(i).toString().equals(state)) {
+                    stateIndex = i;
+                }
+            }
+            spinnerEditState.setSelection(stateIndex);
+        }
         spinnerEditState.setOnItemSelectedListener(this);
     }
 

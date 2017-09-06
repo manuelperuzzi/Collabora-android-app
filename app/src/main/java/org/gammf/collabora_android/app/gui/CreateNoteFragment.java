@@ -8,12 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -22,7 +19,6 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
-import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
@@ -35,10 +31,7 @@ import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +47,6 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
-    private StateSpinnerManager spinnerManager;
 
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
@@ -127,9 +119,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
-        this.spinnerManager = new StateSpinnerManager(rootView,
+        final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
-        this.spinnerManager.addObserver(new Observer<String>() {
+        spinnerManager.addObserver(new Observer<String>() {
             @Override
             public void notify(final String state) {
                 noteState = state;

@@ -5,29 +5,24 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -40,17 +35,14 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link EditNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNoteFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+public class EditNoteFragment extends Fragment implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String ERR_STATENOTSELECTED = "Please select state";
@@ -63,7 +55,6 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
     private String noteStateEdited = "";
     private TextView dateViewEdited, timeViewEdited;
     private EditText txtContentNoteEdited;
-    private Spinner spinnerEditState;
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
 
@@ -163,8 +154,14 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this.mapManager);
 
-        spinnerEditState = rootView.findViewById(R.id.spinnerEditNoteState);
-        setSpinner();
+        final StateSpinnerManager spinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
+                LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
+        spinnerManager.addObserver(new Observer<String>() {
+            @Override
+            public void notify(final String newState) {
+                noteStateEdited = newState;
+            }
+        });
 
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         timeViewEdited = rootView.findViewById(R.id.txtEditTimeSelected);
@@ -215,16 +212,6 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
         myTimeListenerEdited = this;
     }
 
-    private void setSpinner(){
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEditState.setAdapter(dataAdapter);
-        spinnerEditState.setOnItemSelectedListener(this);
-    }
-
     private void checkUserNoteUpdate(){
         String insertedNoteName = txtContentNoteEdited.getText().toString();
         if(insertedNoteName.equals("")){
@@ -252,19 +239,6 @@ public class EditNoteFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocationEdit), savedInstanceState);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-        noteStateEdited = item.toString();
-        Log.println(Log.ERROR, "ERRORONI", ""+noteStateEdited);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(), ERR_STATENOTSELECTED, Toast.LENGTH_LONG);
-        toast.show();
     }
 
     @Override
