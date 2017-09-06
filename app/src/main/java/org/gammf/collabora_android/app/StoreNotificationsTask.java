@@ -180,7 +180,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         if(success) {
-            final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
             if(collaborationId != null) {
                 intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
             }

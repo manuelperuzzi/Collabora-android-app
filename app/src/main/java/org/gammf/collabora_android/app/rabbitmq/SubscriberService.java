@@ -3,8 +3,6 @@ package org.gammf.collabora_android.app.rabbitmq;
 import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -107,7 +105,7 @@ public abstract class SubscriberService extends Service{
     }
 
     private void showNetworkErrorToast() {
-        final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
         intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_ERROR);
         intent.putExtra(IntentConstants.NETWORK_ERROR, "Network Error");
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);

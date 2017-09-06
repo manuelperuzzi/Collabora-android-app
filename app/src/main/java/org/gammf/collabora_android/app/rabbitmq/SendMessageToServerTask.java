@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -53,7 +52,7 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
 
     @Override
     protected void onPostExecute(final Boolean result) {
-        final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
         if (result) {
             intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.MESSAGE_SENT);
         } else {

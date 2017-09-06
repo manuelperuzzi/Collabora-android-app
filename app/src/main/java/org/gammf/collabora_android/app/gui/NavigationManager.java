@@ -16,7 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.gui.collaboration.DialogNewCollaborationFragment;
+import org.gammf.collabora_android.app.gui.collaboration.CreateCollaborationDialogFragment;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
@@ -67,7 +67,7 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
 
             @Override
             public void onClick(View v) {
-                final DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
+                final DialogFragment dialog = CreateCollaborationDialogFragment.newInstance();
                 dialog.show(mainActivity.getSupportFragmentManager(), NEW_COLLABORATION_DIALOG_TAG);
             }
         });
@@ -104,7 +104,7 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
                 final ShortCollaboration selectedCollaboration =
                         collaborationsList.get(groupPosition).second.get(childPosition);
 
-                final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+                final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
                 intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.OPEN_FRAGMENT);
                 intent.putExtra(IntentConstants.OPEN_FRAGMENT, selectedCollaboration.getId());
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
@@ -118,14 +118,9 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
     public void openNavigator() {
         this.getDrawer().openDrawer(GravityCompat.START);
     }
+    
     public void closeNavigator() {
         this.getDrawer().closeDrawer(GravityCompat.START);
-    }
-
-    public void collapseCollaborations() {
-        for (int i = 0; i < this.expandableListAdapter.getGroupCount(); i++) {
-            this.expandableListView.collapseGroup(i);
-        }
     }
 
     public void expandCollaborations() {

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
-import org.gammf.collabora_android.app.utils.IntentConstants;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,7 +20,7 @@ public final class TimeoutSender extends Timer {
         this.schedule(new TimerTask() {
             @Override
             public void run() {
-                final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+                final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
                 intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.TIMEOUT);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
