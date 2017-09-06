@@ -166,7 +166,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             toast.show();
         }else{
             String hash = BCrypt.hashpw(passText.getText().toString(), "$2a$10$2wymx/003xT1XIndPwFgPe");
-            Log.d("DEBUGGO",hash);
             JSONObject jsonParams = new JSONObject();
             jsonParams.put("username", userText.getText().toString());
             jsonParams.put("email", emailText.getText().toString());

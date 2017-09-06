@@ -161,6 +161,10 @@ public class MainActivity extends AppCompatActivity
             final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
             collaborationIntent.putExtra("username", user.getUsername());
             startService(collaborationIntent);
+
+            Fragment fragment = HomepageFragment.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
 
         Button btnLogout = (Button)findViewById(R.id.btnLogout);

@@ -140,6 +140,8 @@
     <string name="dateStr">--/--/----</string>
     <string name="or_back_to_login">or back to Login</string>
     <string name="action_logout">LOGOUT</string>
+    <string name="welcome_to_collabora">Welcome to Collabora</string>
+    <string name="press_the_side_menu_to_manage_your_collaborations">press the side menu to manage your collaborations</string>
 
 
 </resources>
