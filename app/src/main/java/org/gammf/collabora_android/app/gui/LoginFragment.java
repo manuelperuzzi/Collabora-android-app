@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,9 @@ public class LoginFragment extends Fragment {
     // UI references.
     private EditText userText;
     private EditText passText;
+    private ProgressBar bar;
+    Button loginButton;
+    TextView passToRegister;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -70,14 +74,15 @@ public class LoginFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         userText = rootView.findViewById(R.id.username);
         passText = rootView.findViewById(R.id.password);
-        Button loginButton = rootView.findViewById(R.id.email_sign_in_button);
+        bar = rootView.findViewById(R.id.login_progress);
+        loginButton = rootView.findViewById(R.id.email_sign_in_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin(userText.getText().toString(),passText.getText().toString());
             }
         });
-        TextView passToRegister = rootView.findViewById(R.id.text_registerL);
+        passToRegister = rootView.findViewById(R.id.text_registerL);
         passToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +110,13 @@ public class LoginFragment extends Fragment {
         client.setBasicAuth(username,hash);
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
+            public void onStart() {
+                bar.setVisibility(View.VISIBLE);
+                loginButton.setClickable(false);
+                passToRegister.setClickable(false);
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     JSONObject user = new JSONObject(new String(responseBody));
@@ -120,6 +132,13 @@ public class LoginFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Toast toast = Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT);
                 toast.show();
+            }
+
+            @Override
+            public void onFinish() {
+                bar.setVisibility(View.GONE);
+                loginButton.setClickable(true);
+                passToRegister.setClickable(true);
             }
         });
 
