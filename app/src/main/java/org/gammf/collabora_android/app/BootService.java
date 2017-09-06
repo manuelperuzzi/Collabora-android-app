@@ -3,11 +3,13 @@ package org.gammf.collabora_android.app;
 import android.app.IntentService;
 import android.content.Intent;
 
+import org.gammf.collabora_android.app.alarm.Alarm;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -20,8 +22,6 @@ import java.io.IOException;
 
 public class BootService extends IntentService {
 
-    private GeofenceManager geoManager;
-
     public BootService() {
         super("BootService");
     }
@@ -30,10 +30,12 @@ public class BootService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
-            for (ShortCollaboration collab : manager.getAllCollaborations()) {
-                Collaboration tmpcollab = LocalStorageUtils.readCollaborationFromFile(getApplicationContext(),collab.getId())
-                for (Note collabnote: tmpcollab.getAllNotes()) {
-
+            if(manager!=null){
+                for (ShortCollaboration collab : manager.getAllCollaborations()) {
+                    Collaboration tmpcollab = LocalStorageUtils.readCollaborationFromFile(getApplicationContext(),collab.getId());
+                    for (Note collabnote: tmpcollab.getAllNotes()) {
+                        AlarmAndGeofenceUtils.addAlarmAndGeofences(getApplicationContext(),collabnote,new Alarm(),new GeofenceManager(getApplicationContext()));
+                    }
                 }
             }
         } catch (JSONException | IOException e) {
