@@ -118,24 +118,4 @@ public class ConcreteProject extends AbstractSharedCollaboration implements Proj
         }
         return super.removeNote(noteId);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        ConcreteProject that = (ConcreteProject) o;
-
-        return modules.equals(that.modules);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + modules.hashCode();
-        return result;
-    }
-
 }

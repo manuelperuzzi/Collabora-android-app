@@ -2,9 +2,11 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -203,7 +206,8 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
                     username, new SimpleModuleNote(simpleNote, moduleId), UpdateMessageType.CREATION, collaborationId));
         }
 
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collaborationFragment).commit();
+        ((MainActivity)getActivity()).showLoadingSpinner();
+        new TimeoutSender(getContext(), 5000);
     }
 
     @Override

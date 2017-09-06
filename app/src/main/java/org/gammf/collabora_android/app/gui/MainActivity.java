@@ -18,7 +18,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,11 +35,18 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.view.WindowManager;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
-
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.connectivity.NetworkChange;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
@@ -64,20 +70,18 @@ import org.gammf.collabora_android.utils.MessageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.w3c.dom.Text;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
+        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener, NetworkChangeObserver{
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
@@ -95,11 +99,33 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+    private ProgressBar progress;
+    private int messagesReceived;
+    private int timeouts;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            refreshCollaborationLists();
+            if(intent.getLongExtra("timeout", -1) != -1) {
+                timeouts++;
+                if(timeouts > messagesReceived) {
+                    Toast.makeText(getApplicationContext(), "Timeout Error", Toast.LENGTH_SHORT).show();
+                    timeouts--;
+                }
+            } else {
+                messagesReceived++;
+                refreshCollaborationLists();
+                final String collaborationId = intent.getStringExtra("collaborationId");
+                if(collaborationId != null) {
+                    final ShortCollaboration collaboration = collaborationsManager.getCollaboration(collaborationId);
+                    openCollaborationFragment(collaboration);
+                } else {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+            progress.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     };
 
@@ -109,14 +135,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
+        final NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
+        networkManager.addNetworkChangeObserver(this);
+        this.registerReceiver(networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+        messagesReceived = 0;
+        timeouts = 0;
 
         try {
             LocalStorageUtils.deleteUserInFile(getApplicationContext()); //solo per debug!!!!!
@@ -139,7 +168,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
         btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 showNoticeDialog();
@@ -147,7 +175,6 @@ public class MainActivity extends AppCompatActivity
         });
         Button btnLogout = (Button)findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -171,61 +198,21 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    /**
-     * Used for open the collaboration selected
-     *
-     * @param collab collaboration name
-     */
-    private void selectItem(ShortCollaboration collab) {
+    private void openCollaborationFragment(final ShortCollaboration collaboration) {
+        Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collaboration.getId());
 
-        Fragment fragment = null;
-        fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collab.getId());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        setTitle(collaboration.getName());
 
-            setTitle(collab.getName());
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-
-        } else {
-            Log.e(SENDER, CREATIONERROR_FRAG);
-        }
     }
 
-    /**
-     * Used for EDIT collaboration
-     *
-     * @param sender fragment that wants to update the collaboration list.
-     * @param collabId collaborationId
-     */
-    public void updateCollaborationList(Fragment sender, String collabId){
-
-        //dall'id della collaboration recuperare le info per aggiornare il menu a fianco
-
-        if(sender instanceof EditCollaborationFragment){
-            // TO-DO qui bisogna
-            // rimuovere la collab precedente dalla lista
-            // aggiungere quella nuova
-
-
-        }
-
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collabId);
-
-        if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.remove(sender);
-            fragmentTransaction2.commit();
-            getSupportFragmentManager().popBackStack();
-            setTitle("METTERE IL NOME RECUPERATO");
-        }
-
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-
+    private void selectItem(ShortCollaboration collaboration) {
+        this.openCollaborationFragment(collaboration);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -400,21 +387,14 @@ public class MainActivity extends AppCompatActivity
         } catch (final Exception e) {}
         new SendMessageToServerTask().execute(message);
 
-        /*//prepare fragment for new collab inserted
-        Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
-
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            setTitle(collaborationName);
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), ""+collaborationType+TOAST_COLLABCREATED, Toast.LENGTH_SHORT);
-        toast.show();*/
         dialog.dismiss();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        showLoadingSpinner();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        new TimeoutSender(getApplicationContext(), 5000);
     }
 
     @Override
@@ -423,15 +403,41 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("Test", "MainActiviy onPause");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("Test", "MainActiviy onResume");
+        progress = (ProgressBar) findViewById(R.id.progressBar);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 
     public void showNoticeDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = DialogNewCollaborationFragment.newInstance();
         dialog.show(getSupportFragmentManager(), DIALOGNAME);
+    }
+
+    public void showLoadingSpinner() {
+        progress.setVisibility(View.VISIBLE);
     }
 
     private void closeDrawerGroup(){
@@ -502,7 +508,6 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
     /**
      * method used to insert lateral menu after user login
      */
@@ -534,7 +539,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * method called after login or registration that update lateral menu with all the user information and collaboration
      */
-    public void updateUserInfo(){
+    public void updateUserInfo() {
         try {
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (IOException | JSONException e) {
@@ -545,20 +550,33 @@ public class MainActivity extends AppCompatActivity
         TextView email = (TextView) findViewById(R.id.emailOfUser);
         email.setText(user.getEmail());
 
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-        startService(notificationIntent);
-
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
+        onNetworkAvailable();
 
         Fragment fragment = HomepageFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         refreshCollaborationLists();
+    }
+
+    @Override
+    public void onNetworkAvailable() {
+        if(user != null) {
+            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+            notificationIntent.putExtra("username", user.getUsername());
+            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+            startService(notificationIntent);
+
+            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+            collaborationIntent.putExtra("username", user.getUsername());
+            startService(collaborationIntent);
+        }
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 }
 

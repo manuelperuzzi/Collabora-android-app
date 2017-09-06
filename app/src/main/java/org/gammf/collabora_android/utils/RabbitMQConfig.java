@@ -29,14 +29,21 @@ public class RabbitMQConfig {
      * @throws IOException if something went wrong.
      * @throws TimeoutException probably if the server is unreachable.
      */
-    public static Connection getRabbitMQConnection() throws IOException, TimeoutException {
+    public static synchronized Connection getRabbitMQConnection() throws IOException, TimeoutException {
         if(connection == null) {
-            final ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(BROKER_ADDRESS);
-            connection = factory.newConnection();
+            createConnection();
+        } else if(!connection.isOpen()) {
+            connection.abort();
+            createConnection();
         }
         return connection;
     }
 
     private RabbitMQConfig() {}
+
+    private static void createConnection() throws IOException, TimeoutException {
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(BROKER_ADDRESS);
+        connection = factory.newConnection();
+    }
 }
