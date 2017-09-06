@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.gammf.collabora_android.utils.GeofenceUtils;
+import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
@@ -107,11 +107,11 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 .setCircularRegion(
                         coordinates.latitude,
                         coordinates.longitude,
-                        GeofenceUtils.GEOFENCE_RADIUS_IN_METERS
+                        AlarmAndGeofenceUtils.GEOFENCE_RADIUS_IN_METERS
                 )
 
                 //1 year...maybe to change
-                .setExpirationDuration(GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setExpirationDuration(AlarmAndGeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
 
                 // Set the transition types of interest. Alerts are only generated for these
                 // transition. We track entry and exit transitions in this sample.
@@ -138,7 +138,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      */
     private boolean getGeofencesAdded() {
         return PreferenceManager.getDefaultSharedPreferences(this.context).getBoolean(
-                GeofenceUtils.GEOFENCES_ADDED_KEY, false);
+                AlarmAndGeofenceUtils.GEOFENCES_ADDED_KEY, false);
     }
 
     /**
@@ -149,7 +149,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     private void updateGeofencesAdded(boolean added) {
         PreferenceManager.getDefaultSharedPreferences(this.context)
                 .edit()
-                .putBoolean(GeofenceUtils.GEOFENCES_ADDED_KEY, added)
+                .putBoolean(AlarmAndGeofenceUtils.GEOFENCES_ADDED_KEY, added)
                 .apply();
     }
 
