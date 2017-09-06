@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity
         timeouts = 0;
 
         try {
-            LocalStorageUtils.deleteUserInFile(getApplicationContext()); //solo per debug!!!!!
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
