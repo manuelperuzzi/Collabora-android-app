@@ -96,7 +96,7 @@ public abstract class SubscriberService extends Service{
                 });
                 onConfigurationCompleted(this.intent);
             } catch (final Exception e) {
-                //TODO
+                e.printStackTrace();
             }
         }
     }

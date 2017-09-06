@@ -3,9 +3,12 @@ package org.gammf.collabora_android.app.gui;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -19,6 +22,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,15 +30,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.view.WindowManager;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.model.LatLng;
-
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.connectivity.NetworkChange;
@@ -62,7 +69,7 @@ import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
-
+import org.w3c.dom.Text;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,12 +91,14 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private GeofenceManager geoManager;
 
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
     private User user;
     private CollaborationsManager collaborationsManager;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
     private ProgressBar progress;
     private int messagesReceived;
     private int timeouts;
@@ -124,51 +133,69 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
         final NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
         networkManager.addNetworkChangeObserver(this);
         this.registerReceiver(networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
-
         messagesReceived = 0;
         timeouts = 0;
 
         try {
-            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            LocalStorageUtils.deleteUserInFile(getApplicationContext()); //solo per debug!!!!!
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
-            //TODO show login/registration page
-        } catch (final JSONException e) {
+            Fragment fragment = LoginFragment.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            leaveMenu();
+        } catch (final JSONException | IOException e) {
             //TODO ?
-        } catch (IOException e) {
-            //TODO ?
-        } catch (MandatoryFieldMissingException e) {
-            e.printStackTrace();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        if(user!= null) {
+            updateUserInfo();
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         ImageButton btnAddCollaborations = (ImageButton) findViewById(R.id.btnAddCollaborations);
         btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 showNoticeDialog();
             }
         });
-
-        refreshCollaborationLists();
-
-        this.geoManager = new GeofenceManager(this);
+        Button btnLogout = (Button)findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("CAUTION");
+                builder.setMessage("If you press Continue, you will logout from Collabora, are you sure?");
+                builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Fragment fragment = LoginFragment.newInstance();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        deleteUserInfo();
+                    }
+                });
+                builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
     private void openCollaborationFragment(final ShortCollaboration collaboration) {
@@ -241,10 +268,7 @@ public class MainActivity extends AppCompatActivity
             requestPermissions();
         }
 
-        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
 
-        this.geoManager.removeGeofence("id2");
     }
 
     /**
@@ -484,16 +508,69 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * method used to insert lateral menu after user login
+     */
+    public void insertLateralMenu(){
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    /**
+     * method used to hide lateral menu after user logout
+     */
+    public void leaveMenu(){
+        this.toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * method used to delete all LocalStorage informations
+     */
+    public void deleteUserInfo(){
+        drawer.closeDrawers();
+        LocalStorageUtils.deleteUserInFile(getApplicationContext());
+        LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
+        leaveMenu();
+        // QUI CANCELLARE I SERVIZI RELATIVI AGLI EXCHANGE !!!
+    }
+
+    /**
+     * method called after login or registration that update lateral menu with all the user information and collaboration
+     */
+    public void updateUserInfo() {
+        try {
+            user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        TextView username = (TextView) findViewById(R.id.nameOfUser);
+        username.setText(user.getUsername());
+        TextView email = (TextView) findViewById(R.id.emailOfUser);
+        email.setText(user.getEmail());
+
+        onNetworkAvailable();
+
+        Fragment fragment = HomepageFragment.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        refreshCollaborationLists();
+    }
+
     @Override
     public void onNetworkAvailable() {
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-        startService(notificationIntent);
+        if(user != null) {
+            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+            notificationIntent.putExtra("username", user.getUsername());
+            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+            startService(notificationIntent);
 
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
+            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+            collaborationIntent.putExtra("username", user.getUsername());
+            startService(collaborationIntent);
+        }
     }
 
     @Override

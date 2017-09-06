@@ -3,6 +3,7 @@ package org.gammf.collabora_android.utils;
 import android.content.Context;
 
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
@@ -49,6 +50,25 @@ public class LocalStorageUtils {
             throws IOException, JSONException{
         final JSONObject json = UserUtils.userToJson(user);
         writeStoredFile(context, USER_FILENAME, json);
+    }
+
+    public static void deleteUserInFile(final Context context){
+        deleteStoredFile(context,USER_FILENAME);
+    }
+
+    public static void deleteAllCollaborations(final Context context){
+        CollaborationsManager manager = null;
+        try {
+            manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
+            if(manager!=null){
+                for (ShortCollaboration collab : manager.getAllCollaborations()) {
+                    deleteStoredFile(context,collab.getId());
+                }
+                deleteStoredFile(context,COLLABORATIONS_FILENAME);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -123,6 +143,10 @@ public class LocalStorageUtils {
         final FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
         fos.write(json.toString().getBytes());
         fos.close();
+    }
+
+    private static void deleteStoredFile(final Context context, final String filename){
+        context.deleteFile(filename);
     }
 
 }
