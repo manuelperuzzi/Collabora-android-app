@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMQConfig {
 
-    public static final String BROKER_ADDRESS = "192.168.0.128";
+    public static final String BROKER_ADDRESS = "192.168.1.124";
     public static final String NOTIFICATIONS_EXCHANGE_NAME = "notifications";
     public static final String UPDATES_EXCHANGE_NAME = "updates";
     public static final String COLLABORATIONS_EXCHANGE_NAME = "collaborations";
@@ -29,14 +29,21 @@ public class RabbitMQConfig {
      * @throws IOException if something went wrong.
      * @throws TimeoutException probably if the server is unreachable.
      */
-    public static Connection getRabbitMQConnection() throws IOException, TimeoutException {
+    public static synchronized Connection getRabbitMQConnection() throws IOException, TimeoutException {
         if(connection == null) {
-            final ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(BROKER_ADDRESS);
-            connection = factory.newConnection();
+            createConnection();
+        } else if(!connection.isOpen()) {
+            connection.abort();
+            createConnection();
         }
         return connection;
     }
 
     private RabbitMQConfig() {}
+
+    private static void createConnection() throws IOException, TimeoutException {
+        final ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(BROKER_ADDRESS);
+        connection = factory.newConnection();
+    }
 }

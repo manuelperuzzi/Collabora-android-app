@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +37,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.gammf.collabora_android.app.BuildConfig;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.connectivity.NetworkChange;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
+import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
@@ -68,15 +69,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener{
+        implements NavigationView.OnNavigationItemSelectedListener, DialogCollabListener, NetworkChangeObserver{
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";
@@ -129,6 +127,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
+        networkManager.addNetworkChangeObserver(this);
+        this.registerReceiver(networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
         messagesReceived = 0;
         timeouts = 0;
 
@@ -165,15 +167,6 @@ public class MainActivity extends AppCompatActivity
         });
 
         refreshCollaborationLists();
-
-        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-        notificationIntent.putExtra("username", user.getUsername());
-        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
-        startService(notificationIntent);
-
-        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-        collaborationIntent.putExtra("username", user.getUsername());
-        startService(collaborationIntent);
 
         this.geoManager = new GeofenceManager(this);
     }
@@ -396,6 +389,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Log.i("Test", "MainActiviy onResume");
+        progress = (ProgressBar) findViewById(R.id.progressBar);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
     }
 
@@ -408,6 +402,8 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 
     public void showNoticeDialog() {
@@ -417,7 +413,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showLoadingSpinner() {
-        progress = (ProgressBar) findViewById(R.id.progressBar);
         progress.setVisibility(View.VISIBLE);
     }
 
@@ -487,6 +482,24 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onNetworkAvailable() {
+        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+        notificationIntent.putExtra("username", user.getUsername());
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(getExistingCollaborationsIds()));
+        startService(notificationIntent);
+
+        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+        collaborationIntent.putExtra("username", user.getUsername());
+        startService(collaborationIntent);
+    }
+
+    @Override
+    public void onNetworkUnavailable() {
+        stopService(new Intent(this, CollaborationsSubscriberService.class));
+        stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 }
 
