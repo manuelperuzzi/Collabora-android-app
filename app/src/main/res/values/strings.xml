@@ -29,8 +29,8 @@
 
     <string name="insufficient_permissions">Insufficient permissions.</string>
     <string name="permission_rationales">Location permission is needed for core functionality</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core
-        functionality.</string>
+    <string name="permission_denied_explanation">Permissions were denied, but are needed for core
+        functionalities.</string>
     <string name="settings">Settings</string>
 
     <string name="action_addmember">Add member</string>

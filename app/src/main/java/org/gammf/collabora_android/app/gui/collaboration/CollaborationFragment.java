@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.collaboration;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +18,13 @@ import android.widget.TabHost;
 import com.github.clans.fab.FloatingActionMenu;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
+import org.gammf.collabora_android.app.gui.module.CreateModuleFragment;
+import org.gammf.collabora_android.app.gui.module.ModuleFragment;
+import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
+import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;

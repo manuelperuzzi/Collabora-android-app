@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="org.gammf.collabora_android.app.gui.ModuleFragment">
+             tools:context="org.gammf.collabora_android.app.gui.module.ModuleFragment">
     <RelativeLayout
         android:layout_width="642dp"
         android:layout_height="914dp"

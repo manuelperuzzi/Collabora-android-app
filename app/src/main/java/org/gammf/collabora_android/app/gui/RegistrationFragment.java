@@ -24,7 +24,6 @@ import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
-import org.gammf.collabora_android.utils.UserUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,7 +137,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.replace(R.id.content_frame, fragment);
             fragmentTransaction2.commit();
-        } else {
         }
     }
 
@@ -213,13 +211,11 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Toast toast = null;
                     try {
-                        toast = Toast.makeText(getContext(), statusCode +new String(responseBody, "UTF-8")+"Error: username is not available! Change it and retry.", Toast.LENGTH_SHORT);
+                        Toast.makeText(getContext(), statusCode +new String(responseBody, "UTF-8")+"Error: username is not available! Change it and retry.", Toast.LENGTH_SHORT).show();
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    toast.show();
                 }
 
                 @Override

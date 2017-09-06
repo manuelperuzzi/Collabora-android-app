@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-
+import org.gammf.collabora_android.app.gui.MainActivity;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.alarm.Alarm;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
@@ -209,10 +208,11 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         if(success) {
-            final Intent intent = new Intent("update.collaborations.on.gui");
+            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
             if(collaborationId != null) {
-                intent.putExtra("collaborationId", collaborationId);
+                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
             }
+            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }

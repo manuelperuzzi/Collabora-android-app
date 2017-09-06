@@ -5,6 +5,6 @@ package org.gammf.collabora_android.app.gui;
  * Enumeration representing all the types of collaboration components.
  */
 
-enum CollaborationComponentType {
+public enum CollaborationComponentType {
     NOTE, MODULE, MEMBER
 }

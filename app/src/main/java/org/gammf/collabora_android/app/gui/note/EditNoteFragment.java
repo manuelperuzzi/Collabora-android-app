@@ -1,78 +1,49 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.note;
 
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link EditNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNoteFragment extends Fragment implements PlaceSelectionListener,
-        OnMapReadyCallback, AdapterView.OnItemSelectedListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
-
-    private static final String CREATIONERROR_FRAG = "Error in creating fragment";
-    private static final String MAPSEARCH_ERROR = "An error occurred: ";
-    private static final String ERR_STATENOTSELECTED = "Please select state";
-    private static final String SENDER = "editnotefrag";
+public class EditNoteFragment extends Fragment implements
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
@@ -82,23 +53,12 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
     private String noteStateEdited = "";
     private TextView dateViewEdited, timeViewEdited;
     private EditText txtContentNoteEdited;
-    private MapView mapView;
-    private GoogleMap googleMap;
-    private CameraPosition cameraPosition;
-    private Spinner spinnerEditState;
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
 
     private String collaborationId, noteId;
 
-    private static final Double startingLat = 42.50;
-    private static final Double startingLng = 12.50;
-    private static final int startingZoom = 15;
-    private static final int animationZoom = 5;
-    private static final int animationMsDuration = 2000;
-    private static final int zoomNote = 17;
-    private static final int bearingNote = 90;
-    private static final int tiltNote = 30;
+    private MapManager mapManager;
 
     private Note note;
     private int year, month, day, hour, minute;
@@ -138,6 +98,17 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         try {
             final Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             note = collaboration.getNote(noteId);
+            if (note.getLocation() != null) {
+                this.mapManager = new MapManager(note.getLocation(), getContext());
+            } else {
+                this.mapManager = new MapManager(MapManager.NO_LOCATION, getContext());
+            }
+            this.mapManager.addObserver(new Observer<Location>() {
+                @Override
+                public void notify(final Location location) {
+                    note.modifyLocation(location);
+                }
+            });
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -179,10 +150,16 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         txtContentNoteEdited.requestFocus();
         SupportPlaceAutocompleteFragment autocompleteFragmentEdited = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
-        autocompleteFragmentEdited.setOnPlaceSelectedListener(this);
+        autocompleteFragmentEdited.setOnPlaceSelectedListener(this.mapManager);
 
-        spinnerEditState = rootView.findViewById(R.id.spinnerEditNoteState);
-        setSpinner();
+        final StateSpinnerManager spinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
+                LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
+        spinnerManager.addObserver(new Observer<String>() {
+            @Override
+            public void notify(final String newState) {
+                noteStateEdited = newState;
+            }
+        });
 
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         timeViewEdited = rootView.findViewById(R.id.txtEditTimeSelected);
@@ -233,16 +210,6 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
         myTimeListenerEdited = this;
     }
 
-    private void setSpinner(){
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEditState.setAdapter(dataAdapter);
-        spinnerEditState.setOnItemSelectedListener(this);
-    }
-
     private void checkUserNoteUpdate(){
         String insertedNoteName = txtContentNoteEdited.getText().toString();
         if(insertedNoteName.equals("")){
@@ -254,11 +221,8 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
             }
             note.modifyState(new NoteState(noteStateEdited, null));
 
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
-
-            ((MainActivity)getActivity()).showLoadingSpinner();
-            new TimeoutSender(getContext(), 5000);
         }
     }
 
@@ -268,106 +232,8 @@ public class EditNoteFragment extends Fragment implements PlaceSelectionListener
 
 
     @Override
-    public void onPlaceSelected(Place place) {
-        note.modifyLocation(new NoteLocation(place.getLatLng().latitude, place.getLatLng().longitude));
-        updateMap(place.getLatLng());
-    }
-
-    @Override
-    public void onError(Status status) {
-        Log.i(TAG, MAPSEARCH_ERROR + status);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-        mapView = view.findViewById(R.id.mapViewLocationEdit);
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        mapView.getMapAsync(this);//when you already implement OnMapReadyCallback in your fragment
-    }
-
-    @Override
-    public void onMapReady(GoogleMap map) {
-        googleMap = map;
-        setUpMap();
-    }
-
-    private void setUpMap(){
-        if (mapView != null && note.getLocation() != null ) {
-            final Location location = note.getLocation();
-            googleMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                    .position(new LatLng(location.getLatitude(), location.getLongitude())));
-            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            googleMap.setMyLocationEnabled(true);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.getUiSettings().setZoomControlsEnabled(true);
-            MapsInitializer.initialize(this.getActivity());
-
-            LatLng italy = new LatLng(startingLat, startingLng);
-            LatLng coordinates = new LatLng(location.getLatitude(), location.getLongitude());
-            // Move the camera instantly to Italy with a zoom of 15.
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(italy, startingZoom));
-            // Zoom in, animating the camera.
-            googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
-            // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-            cameraPosition = new CameraPosition.Builder()
-                    .target(coordinates)      // Sets the center of the map to Mountain View
-                    .zoom(zoomNote)                   // Sets the zoom
-                    .bearing(bearingNote)                // Sets the orientation of the camera to east
-                    .tilt(tiltNote)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    return false;
-                }
-            });
-
-
-        }
-    }
-
-    private void updateMap(LatLng newCoordinates){
-        googleMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker32))
-                .position(newCoordinates));
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(animationZoom), animationMsDuration, null);
-        // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-        cameraPosition = new CameraPosition.Builder()
-                .target(newCoordinates)     // Sets the center of the map to Mountain View
-                .zoom(zoomNote)             // Sets the zoom
-                .bearing(bearingNote)       // Sets the orientation of the camera to east
-                .tilt(tiltNote)             // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                return false;
-            }
-        });
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-        noteStateEdited = item.toString();
-        Log.println(Log.ERROR, "ERRORONI", ""+noteStateEdited);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(), ERR_STATENOTSELECTED, Toast.LENGTH_LONG);
-        toast.show();
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocationEdit), savedInstanceState);
     }
 
     @Override

@@ -56,6 +56,7 @@ public class CollaborationsSubscriberService extends SubscriberService {
 
     @Override
     protected void handleJsonMessage(final JSONObject message) throws JSONException {
+        Log.i("Coll-S", "MESSAGGIO RICE V UTO");
         final CollaborationMessage convertedMessage = MessageUtils.jsonToCollaborationMessage(message);
         new StoreNotificationsTask(getApplicationContext()).execute(convertedMessage);
         final Intent intent = new Intent("new.binding.for.collaboration");

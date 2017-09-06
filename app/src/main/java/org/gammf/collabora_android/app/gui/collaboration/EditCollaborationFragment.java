@@ -1,9 +1,8 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.collaboration;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +15,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
@@ -161,37 +163,7 @@ public class EditCollaborationFragment extends Fragment {
             collaboration.setName(newName);
             final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
                     username, collaboration, UpdateMessageType.UPDATING);
-            new SendMessageToServerTask().execute(message);
-            ((MainActivity)getActivity()).showLoadingSpinner();
-            new TimeoutSender(getContext(), 5000);
+            new SendMessageToServerTask(getContext()).execute(message);
         }
-
-
-
-
-
-        /*String newName = txtNewTitle.getText().toString();
-        //If newName is empty
-        if(newName.equals("")) {
-            //display error for field required
-            txtNewTitle.setError(res.getString(R.string.fieldempty));
-
-            //if name isn't changed
-        }else if(newName.equals(collaboration.getName())){
-
-            //check if member(s) was added.
-            if(memberHasChanged) {
-                returnToCollabFragment();
-            }else { //members not changed and name not modified
-
-                Toast toast =
-                        Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
-                toast.show();
-
-                returnToCollabFragment();
-            }
-        }else{
-            updateCollaboration(newName);
-        }*/
     }
 }
