@@ -94,7 +94,8 @@ public class LoginFragment extends Fragment {
 
     private void attemptLogin(String username, String password) {
         AsyncHttpClient client = new AsyncHttpClient();
-        String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hash = BCrypt.hashpw(password, "$2a$10$2wymx/003xT1XIndPwFgPe");
+        Log.d("DEBUGGO",hash);
         client.setBasicAuth(username,hash);
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,16 @@ import com.loopj.android.http.RequestParams;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +93,11 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptRegistration();
+                try {
+                    attemptRegistration();
+                } catch (UnsupportedEncodingException | JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -145,7 +156,7 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
         showDate(year, month+1, day);
     }
 
-    private void attemptRegistration(){
+    private void attemptRegistration() throws UnsupportedEncodingException, JSONException {
         AsyncHttpClient client = new AsyncHttpClient();
         if(!isPasswordValid(passText.getText().toString())){
             Toast toast = Toast.makeText(getContext(), "The password is too easy! Remember that a password should have at least upper case, one lower case letter and one digit, and 6 - 10 character long.", Toast.LENGTH_SHORT);
@@ -154,14 +165,19 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
             Toast toast = Toast.makeText(getContext(), "Email is not valid!", Toast.LENGTH_SHORT);
             toast.show();
         }else{
-            RequestParams params = new RequestParams();
-            params.put("username", userText.getText().toString());
-            params.put("password", passText.getText().toString());
-            params.put("email", emailText.getText().toString());
-            params.put("name", nameText.getText().toString());
-            params.put("surname", surnameText.getText().toString() );
-            params.put("birthday", calendarEdited.getTime());
-            client.post(AuthenticationUtils.POST, params, new AsyncHttpResponseHandler() {
+            String hash = BCrypt.hashpw(passText.getText().toString(), "$2a$10$2wymx/003xT1XIndPwFgPe");
+            Log.d("DEBUGGO",hash);
+            JSONObject jsonParams = new JSONObject();
+            jsonParams.put("username", userText.getText().toString());
+            jsonParams.put("email", emailText.getText().toString());
+            jsonParams.put("name", nameText.getText().toString());
+            jsonParams.put("surname", surnameText.getText().toString() );
+            jsonParams.put("birthday", new DateTime(calendarEdited.getTime()));
+            jsonParams.put("hashedPassword", hash);
+
+            StringEntity entity = new StringEntity(jsonParams.toString());
+
+            client.post(getContext(),AuthenticationUtils.POST, entity,"application/json", new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     //aggiunta user in memoria e passaggio ad homepage + ritorno del menu laterale con aggiunta info nuove
@@ -172,7 +188,12 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Toast toast = Toast.makeText(getContext(), "Error: username is not available! Change it and retry.", Toast.LENGTH_SHORT);
+                    Toast toast = null;
+                    try {
+                        toast = Toast.makeText(getContext(), statusCode +new String(responseBody, "UTF-8")+"Error: username is not available! Change it and retry.", Toast.LENGTH_SHORT);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     toast.show();
                 }
             });

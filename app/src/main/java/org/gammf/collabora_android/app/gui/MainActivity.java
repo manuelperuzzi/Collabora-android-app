@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private GeofenceManager geoManager;
 
     private ExpandableListView expandableListView;
     private ExpandableListAdapter expandableListAdapter;
@@ -120,8 +119,8 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("update.collaborations.on.gui"));
 
         try {
-            //final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            //LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            final User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
             //LocalStorageUtils.deleteUserInFile(getApplicationContext());
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
@@ -132,9 +131,9 @@ public class MainActivity extends AppCompatActivity
             leaveMenu();
         } catch (final JSONException | IOException e) {
             //TODO ?
-        } /*catch (MandatoryFieldMissingException e) {
+        } catch (MandatoryFieldMissingException e) {
             e.printStackTrace();
-        }*/
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -197,7 +196,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        this.geoManager = new GeofenceManager(this);
 
 /*
         //simple examples, 2 set and 1 delete to test.
@@ -337,10 +335,7 @@ public class MainActivity extends AppCompatActivity
             requestPermissions();
         }
 
-        this.geoManager.addGeofence("id1","contenuto prima posizione",new LatLng(44.261746, 12.338030));
-        this.geoManager.addGeofence("id2","contenuto seconda posizione",new LatLng(44.159825, 12.430086));
 
-        this.geoManager.removeGeofence("id2");
     }
 
     /**
