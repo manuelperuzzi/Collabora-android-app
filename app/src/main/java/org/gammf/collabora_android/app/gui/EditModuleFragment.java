@@ -1,12 +1,8 @@
 package org.gammf.collabora_android.app.gui;
 
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +18,7 @@ import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;

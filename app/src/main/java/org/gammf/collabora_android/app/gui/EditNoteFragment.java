@@ -27,6 +27,7 @@ import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -43,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.

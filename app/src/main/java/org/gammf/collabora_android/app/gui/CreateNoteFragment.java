@@ -21,6 +21,7 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
