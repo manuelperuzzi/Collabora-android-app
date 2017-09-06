@@ -16,6 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.utils.CollaborationType;
@@ -103,7 +104,8 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
                         collaborationsList.get(groupPosition).second.get(childPosition);
 
                 final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
-                intent.putExtra("collaborationId", selectedCollaboration.getId());
+                intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.OPEN_FRAGMENT);
+                intent.putExtra(IntentConstants.OPEN_FRAGMENT, selectedCollaboration.getId());
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                 getDrawer().closeDrawer(GravityCompat.START);

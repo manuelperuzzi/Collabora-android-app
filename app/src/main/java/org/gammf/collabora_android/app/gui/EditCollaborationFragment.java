@@ -162,36 +162,6 @@ public class EditCollaborationFragment extends Fragment {
             final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
                     username, collaboration, UpdateMessageType.UPDATING);
             new SendMessageToServerTask(getContext()).execute(message);
-            ((MainActivity)getActivity()).showLoadingSpinner();
-            new TimeoutSender(getContext(), 5000);
         }
-
-
-
-
-
-        /*String newName = txtNewTitle.getText().toString();
-        //If newName is empty
-        if(newName.equals("")) {
-            //display error for field required
-            txtNewTitle.setError(res.getString(R.string.fieldempty));
-
-            //if name isn't changed
-        }else if(newName.equals(collaboration.getName())){
-
-            //check if member(s) was added.
-            if(memberHasChanged) {
-                returnToCollabFragment();
-            }else { //members not changed and name not modified
-
-                Toast toast =
-                        Toast.makeText(getActivity().getApplicationContext(), TOAST_ERR_EDITCANCEL, Toast.LENGTH_SHORT);
-                toast.show();
-
-                returnToCollabFragment();
-            }
-        }else{
-            updateCollaboration(newName);
-        }*/
     }
 }

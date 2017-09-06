@@ -13,6 +13,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,7 +108,8 @@ public abstract class SubscriberService extends Service{
 
     private void showNetworkErrorToast() {
         final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
-        intent.putExtra("network-error", "Network Error");
+        intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_ERROR);
+        intent.putExtra(IntentConstants.NETWORK_ERROR, "Network Error");
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }

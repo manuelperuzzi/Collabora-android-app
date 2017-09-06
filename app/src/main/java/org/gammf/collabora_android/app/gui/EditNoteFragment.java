@@ -226,9 +226,6 @@ public class EditNoteFragment extends Fragment implements
 
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
-
-            ((MainActivity)getActivity()).showLoadingSpinner();
-            new TimeoutSender(getContext(), 5000);
         }
     }
 

@@ -131,9 +131,6 @@ public class EditModuleFragment extends Fragment {
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 username, module, UpdateMessageType.UPDATING, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
-
-        ((MainActivity)getActivity()).showLoadingSpinner();
-        new TimeoutSender(getContext(), 5000);
     }
 
     private void checkUserUpdate() {

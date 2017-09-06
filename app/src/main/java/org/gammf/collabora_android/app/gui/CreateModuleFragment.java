@@ -96,11 +96,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 username, module, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
-
-        ((MainActivity)getActivity()).showLoadingSpinner();
-        new TimeoutSender(getContext(), 5000);
-        //CollaborationFragment collabFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
-        //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, collabFragment).commit();
     }
 
     @Override

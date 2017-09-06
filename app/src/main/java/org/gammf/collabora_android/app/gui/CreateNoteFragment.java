@@ -194,9 +194,6 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                     username, new SimpleModuleNote(simpleNote, moduleId), UpdateMessageType.CREATION, collaborationId));
         }
-
-        ((MainActivity)getActivity()).showLoadingSpinner();
-        new TimeoutSender(getContext(), 5000);
     }
 
     @Override

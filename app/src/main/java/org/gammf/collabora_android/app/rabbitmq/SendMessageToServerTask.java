@@ -10,6 +10,7 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
@@ -52,10 +53,13 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
 
     @Override
     protected void onPostExecute(final Boolean result) {
-        if (!result) {
-            final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
-            intent.putExtra("network-error", "Network Error");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        final Intent intent = new Intent(MainActivity.getReceverIntentFilter());
+        if (result) {
+            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.MESSAGE_SENT);
+        } else {
+            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_ERROR);
+            intent.putExtra(IntentConstants.NETWORK_ERROR, "Network Error");
         }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

@@ -29,6 +29,7 @@ import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
@@ -71,37 +72,52 @@ public class MainActivity extends AppCompatActivity
 
         private static final String INTENT_FILTER = "update.collaborations.on.gui";
 
+        private static final int TIMEOUT_MILLIS = 5000;
+
         private int messagesReceived = 0;
         private int timeouts = 0;
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getLongExtra("timeout", -1) != -1) {
-                timeouts++;
-                if(timeouts > messagesReceived) {
-                    Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
-                    timeouts--;
-                }
-            } else if (intent.getStringExtra("network-error") != null) {
-                Toast.makeText(context, intent.getStringExtra("network-error"), Toast.LENGTH_SHORT).show();
-            } else {
-                if (intent.getStringExtra("network-message") != null) {
-                    messagesReceived++;
-                }
+        public void onReceive(final Context context, final Intent intent) {
 
-                final String collaborationId = intent.getStringExtra("collaborationId");
-
-                if(collaborationId != null) {
-                    final ShortCollaboration collaboration = LocalStorageUtils
-                            .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId);
-                    openCollaborationFragment(collaboration);
-                } else {
-                    navigationManager.refreshCollaborationLists();
-                    navigationManager.openNavigator();
-                }
+            switch (intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG)) {
+                case IntentConstants.NETWORK_ERROR:
+                    Toast.makeText(context, intent.getStringExtra(IntentConstants.NETWORK_ERROR), Toast.LENGTH_SHORT).show();
+                    break;
+                case IntentConstants.TIMEOUT:
+                    this.timeouts++;
+                    if (this.timeouts > this.messagesReceived) {
+                        Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
+                        timeouts--;
+                        progress.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
+                    break;
+                case IntentConstants.MESSAGE_SENT:
+                    showLoadingSpinner();
+                    new TimeoutSender(getApplicationContext(), TIMEOUT_MILLIS);
+                    break;
+                case IntentConstants.NETWORK_MESSAGE_RECEIVED:
+                    this.messagesReceived++;
+                    progress.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    final String collaborationId = intent.getStringExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED);
+                    if (collaborationId != null) {
+                        openCollaborationFragment(LocalStorageUtils
+                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                    } else {
+                        navigationManager.refreshCollaborationLists();
+                        navigationManager.openNavigator();
+                    }
+                    break;
+                case IntentConstants.OPEN_FRAGMENT:
+                    final String collID = intent.getStringExtra(IntentConstants.OPEN_FRAGMENT);
+                    if (collID != null) {
+                        openCollaborationFragment(LocalStorageUtils
+                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
+                    }
+                    break;
             }
-            progress.setVisibility(View.GONE);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 
@@ -227,10 +243,6 @@ public class MainActivity extends AppCompatActivity
         dialog.dismiss();
 
         this.navigationManager.closeNavigator();
-        showLoadingSpinner();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-        new TimeoutSender(getApplicationContext(), 5000);
     }
 
     @Override
