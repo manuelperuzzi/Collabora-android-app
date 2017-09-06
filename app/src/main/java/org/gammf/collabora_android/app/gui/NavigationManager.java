@@ -16,6 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.collaboration.DialogNewCollaborationFragment;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;

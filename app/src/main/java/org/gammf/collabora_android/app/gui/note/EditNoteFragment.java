@@ -1,11 +1,10 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.note;
 
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,8 +44,6 @@ import java.util.Calendar;
  */
 public class EditNoteFragment extends Fragment implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-
-    private static final String ERR_STATENOTSELECTED = "Please select state";
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";

@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.module;
 
 
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.collaboration;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.DialogCollabListener;
 import org.gammf.collabora_android.utils.CollaborationType;
 
 /**

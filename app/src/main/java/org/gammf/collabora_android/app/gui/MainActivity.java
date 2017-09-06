@@ -25,12 +25,14 @@ import android.widget.Toast;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
+import org.gammf.collabora_android.app.gui.collaboration.CollaborationFragment;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
+import org.gammf.collabora_android.app.utils.TimeoutSender;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
@@ -56,8 +58,7 @@ import java.util.ArrayList;
  * Created by @MattiaOriani on 12/08/2017
  */
 public class MainActivity extends AppCompatActivity
-        implements DialogCollabListener, NetworkChangeObserver{
-
+        implements DialogCollabListener, NetworkChangeObserver {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "MainActivity";

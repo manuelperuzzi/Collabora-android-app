@@ -1,9 +1,10 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.utils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 
 import java.util.Timer;

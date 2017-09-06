@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.note;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;

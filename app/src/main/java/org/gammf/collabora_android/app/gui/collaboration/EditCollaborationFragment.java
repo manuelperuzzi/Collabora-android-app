@@ -1,9 +1,8 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.collaboration;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +15,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
