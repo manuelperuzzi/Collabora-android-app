@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Alfredo on 05/09/2017.
+ * @author Alfredo Maffi
+ * {@link BroadcastReceiver} meant to manage connectivity changes and notify all the previosly registered {@link NetworkChangeObserver}.
  */
 
 public class NetworkChangeManager extends BroadcastReceiver implements NetworkChangeObservable{
@@ -23,6 +24,10 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
         this.listeners = new HashSet<>();
     }
 
+    /**
+     * Singleton pattern.
+     * @return the {@link NetworkChangeManager} unique instance.
+     */
     public static NetworkChangeManager getInstance() {
         if(instance == null) {
             instance = new NetworkChangeManager();
@@ -46,10 +51,6 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
 
     public boolean addNetworkChangeObserver(final NetworkChangeObserver observer) {
         return this.listeners.add(observer);
-    }
-
-    public boolean removeNetworkChangeObserver(final NetworkChangeObserver observer) {
-        return this.listeners.remove(observer);
     }
 
     private void notifyAllObservers(NetworkChange change) {

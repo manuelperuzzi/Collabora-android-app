@@ -1,7 +1,8 @@
 package org.gammf.collabora_android.app.connectivity;
 
 /**
- * Created by Alfredo on 05/09/2017.
+ * @author Alfredo Maffi
+ * This enumeration contains al the internet connectivity's states of interest for the application.
  */
 
 public enum NetworkChange {

@@ -1,10 +1,18 @@
 package org.gammf.collabora_android.app.connectivity;
 
 /**
- * Created by Alfredo on 05/09/2017.
+ * @author Alfredo Maffi
+ * This interface represents a network change observer, which will be notified when network changes occur.
  */
 
 public interface NetworkChangeObserver {
+    /**
+     * Callback called when the device successfully connects to the internet.
+     */
     void onNetworkAvailable();
+
+    /**
+     * Callback called when the internet connection falls/is aborted.
+     */
     void onNetworkUnavailable();
 }
