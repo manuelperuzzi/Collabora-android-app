@@ -12,11 +12,12 @@ import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.communication.common.MessageType;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
@@ -51,19 +52,37 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Message... messages) {
+    protected Boolean doInBackground(final Message... messages) {
         final Message message = messages[0];
         this.geoManager = new GeofenceManager(context);
 
-        if(message.getMessageType().equals(MessageType.UPDATE)) {
-            return handleUpdateMessage((UpdateMessage)message);
-        } else if(message.getMessageType().equals(MessageType.COLLABORATION)) {
-            return handleCollaborationMessage((CollaborationMessage)message);
+        switch (message.getMessageType()) {
+            case UPDATE:
+                return handleUpdateMessage((UpdateMessage)message);
+            case COLLABORATION:
+                return handleCollaborationMessage((CollaborationMessage)message);
+            case ALL_COLLABORATIONS:
+                return handleAllCollaborationsMessage((AllCollaborationsMessage)message);
+            default:
+                return false;
         }
-        return false;
     }
 
-    private boolean handleCollaborationMessage(CollaborationMessage message) {
+    private boolean handleAllCollaborationsMessage(final AllCollaborationsMessage message) {
+        try {
+            final CollaborationsManager manager = new ConcreteCollaborationManager();
+            for (final Collaboration c: message.getCollaborationList()) {
+                manager.addCollaboration(new ConcreteShortCollaboration(c));
+                LocalStorageUtils.writeCollaborationToFile(context, c);
+            }
+            LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
+            return true;
+        } catch (final IOException | JSONException e) {
+            return false;
+        }
+    }
+
+    private boolean handleCollaborationMessage(final CollaborationMessage message) {
         try {
             final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
             manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
