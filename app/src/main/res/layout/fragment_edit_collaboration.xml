@@ -124,10 +124,9 @@
         android:id="@+id/btnAddMember"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/listViewCollabMember"
-        android:layout_alignEnd="@+id/listViewCollabMember"
         android:backgroundTint="@android:color/transparent"
         android:text="@string/editcollab_btnaddmember"
-        android:layout_below="@+id/textView13"/>
+        android:layout_above="@+id/listViewCollabMember"
+        android:layout_toEndOf="@+id/lblInsertContent"/>
 
 </RelativeLayout>
