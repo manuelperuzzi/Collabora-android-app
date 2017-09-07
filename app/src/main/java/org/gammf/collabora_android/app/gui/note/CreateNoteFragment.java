@@ -28,6 +28,9 @@ import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -189,7 +192,14 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                 final List<Integer> mSelectedItems = new ArrayList<>();
                 try {
                     Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-                    allNotes.addAll(collaboration.getAllNotes());
+                    if (moduleId.equals(NOMODULE)) {
+                        allNotes.addAll(collaboration.getAllNotes());
+                    }else{
+                        for (Module module: ((ConcreteProject)collaboration).getAllModules()){
+                            if(module.getId().equals(moduleId))
+                                allNotes.addAll(module.getAllNotes());
+                        }
+                    }
                     for (Note note : allNotes) {
                         listItems.add(note.getContent());
                     }
