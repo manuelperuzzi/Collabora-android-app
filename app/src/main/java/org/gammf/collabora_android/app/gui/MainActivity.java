@@ -30,9 +30,23 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.ConcretePrivateCollaboration;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.notes.NoteBuilder;
+import org.gammf.collabora_android.notes.NoteLocation;
+import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.notes.SimpleNote;
+import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.notes.State;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,6 +89,17 @@ public class MainActivity extends AppCompatActivity
         this.networkManager.addNetworkChangeObserver(this);
 
         try {
+            User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
+            Collaboration temporaryPCollab = new ConcretePrivateCollaboration("cdcrec3r3r","private peru13","peru13");
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("toDo","peru13")).setNoteID("3424234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio2",new NoteState("toDo","peru13")).setNoteID("5345354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio3",new NoteState("toDo","peru13")).setNoteID("6463453543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            manager.addCollaboration(new ConcreteShortCollaboration(temporaryPCollab));
+            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            LocalStorageUtils.writeCollaborationToFile(getApplicationContext(), temporaryPCollab);
+            LocalStorageUtils.writeShortCollaborationsToFile(getApplicationContext(), manager);
+
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
@@ -84,6 +109,8 @@ public class MainActivity extends AppCompatActivity
             leaveMenu();
         } catch (final JSONException | IOException e) {
             //TODO ?
+        } catch (MandatoryFieldMissingException e) {
+            e.printStackTrace();
         }
 
         this.navigationManager.refreshCollaborationLists();

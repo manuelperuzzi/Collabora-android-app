@@ -1,25 +1,33 @@
 package org.gammf.collabora_android.app.gui.note;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.utils.Observer;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -30,8 +38,13 @@ import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
+import org.json.JSONException;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +60,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
+    private Button btnAddPNote;
+    private ListView previousNotesList;
+    private ArrayList<CollaborationComponentInfo> noteItems;
 
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
@@ -106,7 +122,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
-
+        noteItems = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -115,6 +131,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private void initializeGuiComponent(View rootView){
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
+        previousNotesList = rootView.findViewById(R.id.listViewPNote);
+        btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         final SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
@@ -162,6 +180,62 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                         calendar.get(Calendar.MINUTE), true).show();
             }
         });
+
+        btnAddPNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                List<String> listItems = new ArrayList<>();
+                final List<Note> allNotes = new ArrayList<Note>();
+                final ArrayList<Integer> mSelectedItems = new ArrayList<>();  // Where we track the selected items
+                try {
+                    Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+                    allNotes.addAll(collaboration.getAllNotes());
+                    for (Note note : allNotes) {
+                        listItems.add(note.getContent());
+                    }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final CharSequence[] charSequenceItems = listItems.toArray(new CharSequence[listItems.size()]);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select previous notes")
+                        .setMultiChoiceItems(charSequenceItems, null,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which,
+                                                        boolean isChecked) {
+                                        if (isChecked) {
+                                            mSelectedItems.add(which);
+                                        } else if (mSelectedItems.contains(which)) {
+                                            mSelectedItems.remove(Integer.valueOf(which));
+                                        }
+                                    }
+                                })
+                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                for (int position: mSelectedItems) {
+                                    noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE));
+                                }
+                                final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+                                previousNotesList.setAdapter(noteListAdapter);
+
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
     }
 
     private void processInput(){
