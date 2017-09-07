@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_margin="10dp"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context="org.gammf.collabora_android.app.gui.collaboration.MemberDialogFragment">
+
+<ImageView
+    android:id="@+id/imageRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignStart="@+id/txtInsertUsername"
+    android:layout_below="@+id/txtInsertUsername"
+    android:layout_marginTop="17dp"
+    app:srcCompat="@drawable/right"/>
+
+<TextView
+    android:id="@+id/lblInsertUsername"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/imageUser"
+    android:layout_alignTop="@+id/imageUser"
+    android:layout_toEndOf="@+id/imageUser"
+    android:gravity="center_vertical"
+    android:paddingStart="5dp"
+    android:text="@string/memberfrag_lblname"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+<EditText
+    android:id="@+id/txtInsertUsername"
+    style="@style/Widget.AppCompat.EditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignStart="@+id/imageUser"
+    android:layout_below="@+id/imageUser"
+    android:layout_marginEnd="20dp"
+    android:ems="10"
+    android:inputType="text"
+    android:paddingEnd="5dp"
+    android:paddingStart="5dp"/>
+
+<ImageView
+    android:id="@+id/imageUser"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="17dp"
+    android:layout_marginStart="9dp"
+    app:srcCompat="@drawable/user32"
+    android:layout_below="@+id/lblMemberTitle"
+    android:layout_alignParentStart="true"/>
+
+<TextView
+    android:id="@+id/lblMemberRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/memeberfrag_lblright"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:layout_alignTop="@+id/imageRight"
+    android:layout_toEndOf="@+id/imageRight"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:gravity="center_vertical"
+    android:layout_alignBottom="@+id/imageRight"/>
+
+<Spinner
+    android:id="@+id/spinnerMemberRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@+id/lblMemberRight"
+    android:layout_toEndOf="@+id/lblMemberRight"
+    android:layout_alignBottom="@+id/lblMemberRight" />
+
+<Button
+    android:id="@+id/btnPositiveAddMember"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:background="@android:color/transparent"
+    android:text="Add"
+    android:textColor="@color/colorPrimary"
+    android:layout_below="@+id/spinnerMemberRight"
+    android:layout_alignParentEnd="true"/>
+
+<Button
+    android:id="@+id/btnNegativeAddMember"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:text="Cancel"
+    android:textColor="@color/colorAccent"
+    android:layout_alignBaseline="@+id/btnPositiveAddMember"
+    android:layout_alignBottom="@+id/btnPositiveAddMember"
+    android:layout_toStartOf="@+id/btnPositiveAddMember"/>
+
+<TextView
+    android:id="@+id/lblMemberTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignStart="@+id/imageUser"
+    android:layout_marginTop="15dp"
+    android:text="Member"
+    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+</RelativeLayout>
