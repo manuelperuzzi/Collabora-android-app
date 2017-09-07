@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="org.gammf.collabora_android.app.gui.collaboration.EditCollaborationDialogFragment">
+
+    <TextView
+        android:id="@+id/lblInsertCollaborationName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageUser"
+        android:layout_alignTop="@+id/imageUser"
+        android:layout_toEndOf="@+id/imageUser"
+        android:gravity="center_vertical"
+        android:paddingStart="5dp"
+        android:text="@string/collabfrag_lblname"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <EditText
+        android:id="@+id/txtInsertCollaborationName"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/imageUser"
+        android:layout_below="@+id/imageUser"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"/>
+
+    <ImageView
+        android:id="@+id/imageUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="9dp"
+        app:srcCompat="@drawable/collaboration32"
+        android:layout_below="@+id/lblCollaborationTitle"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/btnPositiveAddCollaboration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        android:text="Edit"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@+id/txtInsertCollaborationName"
+        android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:id="@+id/btnNegativeAddCollaboration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Cancel"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/btnPositiveAddCollaboration"
+        android:layout_alignBottom="@+id/btnPositiveAddCollaboration"
+        android:layout_toStartOf="@+id/btnPositiveAddCollaboration"/>
+
+    <TextView
+        android:id="@+id/lblCollaborationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/imageUser"
+        android:layout_marginTop="15dp"
+        android:text="Collaboration"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+</RelativeLayout>
