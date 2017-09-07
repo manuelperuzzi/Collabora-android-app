@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.app.gui.collaboration;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,8 +30,12 @@ import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,14 +53,7 @@ public class EditCollaborationFragment extends Fragment {
     private String collaborationId;
     private Collaboration collaboration;
     private ListView memberList;
-    private DrawerItemCustomAdapter adapter;
     private EditText txtNewTitle;
-    private Button btnAddMember;
-    private TextView txtCollabType;
-
-    public EditCollaborationFragment() {
-        setHasOptionsMenu(true);
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -123,11 +119,11 @@ public class EditCollaborationFragment extends Fragment {
     }
 
     private void initializeGuiComponent(View rootView){
-        btnAddMember = rootView.findViewById(R.id.btnAddMember);
+        final Button btnAddMember = rootView.findViewById(R.id.btnAddMember);
         txtNewTitle = rootView.findViewById(R.id.txtInsertEditedCollabName);
         memberList = rootView.findViewById(R.id.listViewCollabMember);
         txtNewTitle.setText(collaboration.getName());
-        txtCollabType = rootView.findViewById(R.id.txtCollabType);
+        final TextView txtCollabType = rootView.findViewById(R.id.txtCollabType);
         txtCollabType.setText(new ConcreteShortCollaboration(collaboration).getCollaborationType().name());
         if (! ((SharedCollaboration) collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
             btnAddMember.setVisibility(View.GONE);
@@ -146,12 +142,21 @@ public class EditCollaborationFragment extends Fragment {
 
     private void getMemberAndFillList(){
         final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
-        final Set<CollaborationMember> members = ((SharedCollaboration) collaboration).getAllMembers();
+        final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
+        Collections.sort(members, new MemberComparator());
         for (final CollaborationMember cm: members) {
             memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
         }
-        adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
+
+        final DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
+    }
+
+    public class MemberComparator implements Comparator<CollaborationMember> {
+        public int compare(final CollaborationMember c1, final CollaborationMember c2) {
+            final int comp = c1.getAccessRight().compareTo(c2.getAccessRight());
+            return (comp == 0) ? Collator.getInstance(Locale.US).compare(c1.getUsername(), c2.getUsername()) : comp;
+        }
     }
 
     private void checkUserInput() {
