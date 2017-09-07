@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.MapView;
@@ -62,6 +63,7 @@ public class EditNoteFragment extends Fragment implements
 
     private Note note;
     private int year, month, day, hour, minute;
+    private boolean dateSet = false;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -218,8 +220,11 @@ public class EditNoteFragment extends Fragment implements
             note.modifyContent(insertedNoteName);
             if (isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
+            } else if (!this.dateSet) {
+                note.modifyState(new NoteState(noteStateEdited, null));
+            } else {
+                Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }
-            note.modifyState(new NoteState(noteStateEdited, null));
 
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
@@ -227,8 +232,11 @@ public class EditNoteFragment extends Fragment implements
     }
 
     private boolean isDateTimeValid() {
-        return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
+        final DateTime now = new DateTime();
+        final DateTime expiration = new DateTime(year, month, day, hour, minute);
+        return expiration.compareTo(now) > 0;
     }
+
 
 
     @Override
@@ -241,6 +249,7 @@ public class EditNoteFragment extends Fragment implements
         this.year = year;
         this.month = month + 1;
         this.day = day;
+        this.dateSet = true;
         showDate();
     }
 
@@ -248,6 +257,7 @@ public class EditNoteFragment extends Fragment implements
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
+        this.dateSet = true;
         showTime();
     }
 
