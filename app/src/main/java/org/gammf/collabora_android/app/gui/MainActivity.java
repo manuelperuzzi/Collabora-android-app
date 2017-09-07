@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity
             Module module2 = new ConcreteModule("434343", "blabla2","toDo");
             module1.addNote(new SimpleNoteBuilder("module1note1",new NoteState("toDo","peru13")).setNoteID("4343434324343").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
             module1.addNote(new SimpleNoteBuilder("module1note2",new NoteState("toDo","peru13")).setNoteID("342234324234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            ArrayList<String> preNote = new ArrayList<>();
+            preNote.add("4343434324343");
+            preNote.add("342234324234234");
+            module1.addNote(new SimpleNoteBuilder("popospetz",new NoteState("toDo","peru13")).setNoteID("3423442234222").setLocation(new NoteLocation(43.4343,45.3434)).setPreviousNotes(preNote).buildNote());
             module2.addNote(new SimpleNoteBuilder("module2note1",new NoteState("toDo","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
             tempoprojectcollab.addModule(module1);
             tempoprojectcollab.addModule(module2);

@@ -145,6 +145,7 @@
     <string name="add_previous_notes">Add previous Notes</string>
     <string name="previous_notes">Previous notes</string>
     <string name="add_previous_note">add previous note</string>
+    <string name="nonoteinserted">No previous notes inserted</string>
 
 
 </resources>
