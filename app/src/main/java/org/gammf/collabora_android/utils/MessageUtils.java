@@ -1,9 +1,11 @@
 package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
+import org.gammf.collabora_android.communication.allCollaborations.ConcreteAllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.collaboration.ConcreteCollaborationMessage;
-import org.gammf.collabora_android.communication.common.MessageType;
+import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -19,8 +21,12 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alfredo Maffi, Manuel Peruzzi
@@ -89,9 +95,33 @@ public class MessageUtils {
         }
     }
 
-    public static CollaborationMessage jsonToCollaborationMessage(final JSONObject json) throws JSONException {
+    /**
+     * Creates a message containing one or more collaborations from a json message.
+     * @param json the input json message.
+     * @return a collaborations message built from the json message.
+     * @throws JSONException if the conversion went wrong.
+     */
+    public static Message jsonToCollaborationsMessage(final JSONObject json) throws JSONException {
+        if (json.has("collaboration")) {
+            return jsonToCollaborationMessage(json);
+        } else {
+            return jsonToAllCollaborationsMessage(json);
+        }
+    }
+
+    private static CollaborationMessage jsonToCollaborationMessage(final JSONObject json) throws JSONException {
         final String username = json.getString("user");
         final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(json.getJSONObject("collaboration"));
-        return new ConcreteCollaborationMessage(username, MessageType.COLLABORATION, collaboration);
+        return new ConcreteCollaborationMessage(username, collaboration);
+    }
+
+    private static AllCollaborationsMessage jsonToAllCollaborationsMessage(final JSONObject json) throws JSONException {
+        final String username = json.getString("username");
+        final List<Collaboration> collaborations = new ArrayList<>();
+        final JSONArray jCollaborations = json.getJSONArray("collaborationList");
+        for (int i = 0; i < jCollaborations.length(); i++) {
+            collaborations.add(CollaborationUtils.jsonToCollaboration(jCollaborations.getJSONObject(i)));
+        }
+        return new ConcreteAllCollaborationsMessage(username, collaborations);
     }
 }
