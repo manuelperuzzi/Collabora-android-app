@@ -23,7 +23,7 @@ import android.widget.Toast;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
-import org.gammf.collabora_android.app.gui.authentication.LoginActivity;
+import org.gammf.collabora_android.app.gui.authentication.AuthenticationActivity;
 import org.gammf.collabora_android.app.gui.collaboration.CollaborationFragment;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
@@ -72,17 +72,18 @@ public class MainActivity extends AppCompatActivity
 
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+            this.navigationManager = new NavigationManager(getApplicationContext(), this);
             final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, this.navigationManager.getDrawer(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
-            this.navigationManager = new NavigationManager(getApplicationContext(), this);
+
             this.navigationManager.getDrawer().addDrawerListener(toggle);
             toggle.syncState();
             this.navigationManager.refreshCollaborationLists();
 
             this.networkManager.addNetworkChangeObserver(this);
         } catch (final FileNotFoundException e) {
-            final Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);
             finish();
         } catch (final JSONException | IOException e) {
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         this.navigationManager.closeNavigator();
         LocalStorageUtils.deleteUserInFile(getApplicationContext());
         LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
-        final Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), AuthenticationActivity.class);
         startActivity(intent);
         finish();
     }

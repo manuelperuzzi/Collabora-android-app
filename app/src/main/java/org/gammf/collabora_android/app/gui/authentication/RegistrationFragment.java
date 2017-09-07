@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.authentication;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -19,7 +19,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.gui.authentication.LoginActivity;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
@@ -38,12 +37,8 @@ import java.util.Calendar;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+
+public class    RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -163,8 +158,8 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                 client.post(getContext(), AuthenticationUtils.POST, entity, "application/json", new AsyncHttpResponseHandler() {
                     @Override
                     public void onStart() {
-                        final Intent intent = new Intent(LoginActivity.INTENT_TAG);
-                        intent.putExtra(LoginActivity.INTENT_TAG, "show-progress-bar");
+                        final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                        intent.putExtra(AuthenticationActivity.INTENT_TAG, "show-progress-bar");
                         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                     }
 
@@ -172,8 +167,8 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         try {
                             LocalStorageUtils.writeUserToFile(getContext(), user);
-                            final Intent intent = new Intent(LoginActivity.INTENT_TAG);
-                            intent.putExtra(LoginActivity.INTENT_TAG, "authentication-ok");
+                            final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                            intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
                             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
@@ -182,16 +177,10 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        final Intent intent = new Intent(LoginActivity.INTENT_TAG);
-                        intent.putExtra(LoginActivity.INTENT_TAG, "hide-progress-bar");
+                        final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                        intent.putExtra(AuthenticationActivity.INTENT_TAG, "hide-progress-bar");
                         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                         Toast.makeText(getContext(), statusCode + "Error: username is not available! Change it and retry.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        /*bar.setVisibility(View.GONE);
-                        registerButton.setClickable(true);*/
                     }
                 });
             } catch (final MandatoryFieldMissingException e) {
