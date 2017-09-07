@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="org.gammf.collabora_android.app.gui.collaboration.EditCollaborationFragment">
+             tools:context="org.gammf.collabora_android.app.gui.collaboration.CollaborationInfoFragment">
 
     <TextView
         android:id="@+id/textView15"
@@ -12,7 +12,7 @@
         android:gravity="center_vertical"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:text="@string/editcollab_member"
+        android:text="@string/collabInfo_member_lbl"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_alignTop="@+id/imageView10"
         android:layout_toEndOf="@+id/imageView10"
@@ -40,14 +40,14 @@
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="65dp"
-        android:text="@string/editcollab_title"
+        android:text="@string/collabInfo_title"
         android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold"
         />
 
     <TextView
-        android:id="@+id/lblInsertContent"
+        android:id="@+id/lblCollaborationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageView8"
@@ -55,18 +55,17 @@
         android:layout_toEndOf="@+id/imageView8"
         android:gravity="center_vertical"
         android:paddingStart="5dp"
-        android:text="@string/editcollab_lblname"
+        android:text="@string/collabInfo_name_lbl"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-    <EditText
-        android:id="@+id/txtInsertEditedCollabName"
+    <TextView
+        android:id="@+id/txtCollaborationName"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:inputType="text"
         android:layout_below="@+id/imageView8"
         android:layout_alignStart="@+id/imageView8"
         android:layout_alignEnd="@+id/lblTitleEditedCollab"/>
@@ -98,8 +97,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/typecollabicon"
-        android:layout_below="@+id/txtInsertEditedCollabName"
-        android:layout_alignStart="@+id/txtInsertEditedCollabName"
+        android:layout_below="@+id/txtCollaborationName"
+        android:layout_alignStart="@+id/txtCollaborationName"
         android:layout_marginTop="17dp"/>
 
     <ImageView
@@ -127,7 +126,7 @@
         android:layout_above="@+id/listViewCollabMember"
         android:layout_alignEnd="@+id/listViewCollabMember"
         android:backgroundTint="@android:color/transparent"
-        android:text="@string/editcollab_btnaddmember"
+        android:text="@string/collabInfo_member_btn"
         android:layout_below="@+id/textView13"/>
 
 </RelativeLayout>

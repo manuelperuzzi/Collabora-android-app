@@ -81,7 +81,7 @@ public class NoteFragment extends Fragment {
 
     /*
         Method for editcollaboration click on toolbar
-        trigger the @EditCollaborationFragment
+        trigger the @CollaborationInfoFragment
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
