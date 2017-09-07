@@ -26,6 +26,7 @@ import org.gammf.collabora_android.communication.update.collaborations.ConcreteC
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -40,7 +41,7 @@ import java.util.Set;
  */
 public class EditCollaborationFragment extends Fragment {
 
-    private static final String TOAST_ERR_EDITCANCEL = "Edit discarded";
+    private static final String MEMBER_DIALOG_TAG = "MemberDialogFragment";
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
@@ -49,13 +50,10 @@ public class EditCollaborationFragment extends Fragment {
     private String collaborationId;
     private Collaboration collaboration;
     private ListView memberList;
-    private ArrayList<CollaborationComponentInfo> memberItem;
     private DrawerItemCustomAdapter adapter;
     private EditText txtNewTitle;
     private Button btnAddMember;
     private TextView txtCollabType;
-
-    private boolean memberHasChanged = false;
 
     public EditCollaborationFragment() {
         setHasOptionsMenu(true);
@@ -131,31 +129,32 @@ public class EditCollaborationFragment extends Fragment {
         txtNewTitle.setText(collaboration.getName());
         txtCollabType = rootView.findViewById(R.id.txtCollabType);
         txtCollabType.setText(new ConcreteShortCollaboration(collaboration).getCollaborationType().name());
-
-        memberItem = new ArrayList<>();
+        if (! ((SharedCollaboration) collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
+            btnAddMember.setVisibility(View.GONE);
+            txtNewTitle.setKeyListener(null);
+        }
         getMemberAndFillList();
-        /*btnAddMember.setOnClickListener(new View.OnClickListener() {
+
+        btnAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateMemberList();
+                final MemberDialogFragment dialog = MemberDialogFragment.addMemberInstance(collaborationId, username);
+                dialog.show(getActivity().getSupportFragmentManager(), MEMBER_DIALOG_TAG);
             }
-        });*/
+        });
     }
 
     private void getMemberAndFillList(){
-
+        final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
         final Set<CollaborationMember> members = ((SharedCollaboration) collaboration).getAllMembers();
         for (final CollaborationMember cm: members) {
-            memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername(), CollaborationComponentType.MEMBER));
+            memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
         }
-
-        //setting the list adapter
         adapter = new DrawerItemCustomAdapter(getActivity(),R.layout.member_list_item, memberItem);
         memberList.setAdapter(adapter);
     }
 
     private void checkUserInput() {
-
         final String newName = txtNewTitle.getText().toString();
         if (newName.equals("")) {
             txtNewTitle.setError(getResources().getString(R.string.fieldempty));
@@ -164,6 +163,8 @@ public class EditCollaborationFragment extends Fragment {
             final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
                     username, collaboration, UpdateMessageType.UPDATING);
             new SendMessageToServerTask(getContext()).execute(message);
+        } else {
+            // TODO go back to collaboration fragment
         }
     }
 }
