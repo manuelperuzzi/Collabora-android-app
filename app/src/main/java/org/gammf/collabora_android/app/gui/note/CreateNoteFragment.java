@@ -60,10 +60,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
-    private Button btnAddPNote;
     private ListView previousNotesList;
     private ArrayList<CollaborationComponentInfo> noteItems;
-
+    private ArrayList<String> previousNotesSelected ;
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
 
@@ -123,6 +122,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
         noteItems = new ArrayList<>();
+        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -132,7 +132,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
-        btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
+        Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         final SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
@@ -184,9 +184,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                List<String> listItems = new ArrayList<>();
-                final List<Note> allNotes = new ArrayList<Note>();
-                final ArrayList<Integer> mSelectedItems = new ArrayList<>();  // Where we track the selected items
+                final List<String> listItems = new ArrayList<>();
+                final List<Note> allNotes = new ArrayList<>();
+                final List<Integer> mSelectedItems = new ArrayList<>();
                 try {
                     Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
                     allNotes.addAll(collaboration.getAllNotes());
@@ -196,9 +196,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
-
                 final CharSequence[] charSequenceItems = listItems.toArray(new CharSequence[listItems.size()]);
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Select previous notes")
                         .setMultiChoiceItems(charSequenceItems, null,
@@ -216,7 +214,10 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                         .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                noteItems.clear();
+                                previousNotesSelected.clear();
                                 for (int position: mSelectedItems) {
+                                    previousNotesSelected.add(allNotes.get(position).getNoteID());
                                     noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE));
                                 }
                                 final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
@@ -229,13 +230,10 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                             public void onClick(DialogInterface dialog, int id) {
                             }
                         });
-
-
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
         });
-
     }
 
     private void processInput(){
@@ -244,10 +242,17 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
             if (isDateTimeValid()) {
-                addNote(insertedNoteName, location, new NoteState(noteState, null),
-                        new DateTime(year, month, day, hour, minute));
+                if(previousNotesSelected.isEmpty())
+                    addNote(insertedNoteName, location, new NoteState(noteState, null),
+                            new DateTime(year, month, day, hour, minute),null);
+                else
+                    addNote(insertedNoteName, location, new NoteState(noteState, null),
+                            new DateTime(year, month, day, hour, minute),previousNotesSelected);
             } else {
-                addNote(insertedNoteName, location, new NoteState(noteState, null), null);
+                if(previousNotesSelected.isEmpty())
+                    addNote(insertedNoteName, location, new NoteState(noteState, null), null, null);
+                else
+                    addNote(insertedNoteName, location, new NoteState(noteState, null), null, previousNotesSelected);
             }
         }
     }
@@ -256,10 +261,11 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
     }
 
-    private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
+    private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration, final List<String> previousNotes){
         final Note simpleNote = new SimpleNoteBuilder(content, state)
                 .setLocation(location)
                 .setExpirationDate(expiration)
+                .setPreviousNotes(previousNotes)
                 .buildNote();
         if (moduleId.equals(NOMODULE)) {
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
