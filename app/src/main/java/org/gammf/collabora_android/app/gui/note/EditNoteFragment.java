@@ -62,8 +62,9 @@ public class EditNoteFragment extends Fragment implements
     private MapManager mapManager;
 
     private Note note;
-    private int year, month, day, hour, minute;
+    private int year, month, day, hour, minute ;
     private boolean dateSet = false;
+    private boolean timeSet = false;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -129,10 +130,10 @@ public class EditNoteFragment extends Fragment implements
         int id = item.getItemId();
 
         if (id == R.id.action_editdone) {
-            checkUserNoteUpdate();
-            return true;
+            if (checkUserNoteUpdate()) {
+                return true;
+            }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -212,22 +213,25 @@ public class EditNoteFragment extends Fragment implements
         myTimeListenerEdited = this;
     }
 
-    private void checkUserNoteUpdate(){
+    private boolean checkUserNoteUpdate(){
         String insertedNoteName = txtContentNoteEdited.getText().toString();
         if(insertedNoteName.equals("")){
             txtContentNoteEdited.setError(getResources().getString(R.string.fieldempty));
+            return false;
         }else{
             note.modifyContent(insertedNoteName);
-            if (isDateTimeValid()) {
+            if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
-            } else if (!this.dateSet) {
+            } else if (!this.dateSet && !this.timeSet) {
                 note.modifyState(new NoteState(noteStateEdited, null));
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
+                return false;
             }
 
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
+            return true;
         }
     }
 
@@ -257,7 +261,7 @@ public class EditNoteFragment extends Fragment implements
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
-        this.dateSet = true;
+        this.timeSet = true;
         showTime();
     }
 

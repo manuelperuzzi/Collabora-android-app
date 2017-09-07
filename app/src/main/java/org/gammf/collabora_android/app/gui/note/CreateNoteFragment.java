@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private int year, month, day, hour, minute;
 
     private boolean dateSet = false;
+    private boolean timeSet = false;
 
     public CreateNoteFragment() {
         setHasOptionsMenu(false);
@@ -173,10 +173,10 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         if (insertedNoteName.equals("")) {
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
-            if (isDateTimeValid()) {
+            if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 addNote(insertedNoteName, location, new NoteState(noteState, null),
                         new DateTime(year, month, day, hour, minute));
-            } else if(!this.dateSet) {
+            } else if(!this.dateSet && !this.dateSet) {
                 addNote(insertedNoteName, location, new NoteState(noteState, null), null);
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     public void onTimeSet(final TimePicker timePicker, final int hour, final int minute) {
         this.hour = hour;
         this.minute = minute;
-        this.dateSet = true;
+        this.timeSet = true;
         showTime();
     }
 
