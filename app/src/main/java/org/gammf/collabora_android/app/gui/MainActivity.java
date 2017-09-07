@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeManager;
 import org.gammf.collabora_android.app.connectivity.NetworkChangeObserver;
+import org.gammf.collabora_android.app.gui.authentication.LoginActivity;
 import org.gammf.collabora_android.app.gui.collaboration.CollaborationFragment;
 import org.gammf.collabora_android.app.rabbitmq.CollaborationsSubscriberService;
 import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity
     private PermissionManager permissionManager;
     private NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
     private BroadcastReceiver receiver = new MainActivityReceiver();
-    private Toolbar toolbar;
-    private ActionBarDrawerToggle toggle;
 
 
     public static String getReceiverIntentFilter() {
@@ -65,28 +63,33 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.navigationManager = new NavigationManager(getApplicationContext(), this);
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(this.toolbar);
-        this.toggle = new ActionBarDrawerToggle(
-                this, this.navigationManager.getDrawer(), this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        this.navigationManager.getDrawer().addDrawerListener(toggle);
-        this.toggle.syncState();
-        this.networkManager.addNetworkChangeObserver(this);
-
         try {
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+            final TextView username = (TextView) findViewById(R.id.nameOfUser);
+            username.setText(user.getUsername());
+            final TextView email = (TextView) findViewById(R.id.emailOfUser);
+            email.setText(user.getEmail());
+
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, this.navigationManager.getDrawer(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+            this.navigationManager = new NavigationManager(getApplicationContext(), this);
+            this.navigationManager.getDrawer().addDrawerListener(toggle);
+            toggle.syncState();
+            this.navigationManager.refreshCollaborationLists();
+
+            this.networkManager.addNetworkChangeObserver(this);
         } catch (final FileNotFoundException e) {
-            Fragment fragment = LoginFragment.newInstance();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            leaveMenu();
+            final Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
         } catch (final JSONException | IOException e) {
             //TODO ?
         }
 
-        this.navigationManager.refreshCollaborationLists();
+
     }
 
     @Override
@@ -153,69 +156,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * method used to insert lateral menu after user login
-     */
-    public void insertLateralMenu(){
-        this.navigationManager.getDrawer().addDrawerListener(this.toggle);
-        this.toggle.syncState();
-        this.navigationManager.unlock();
-    }
-
-    /**
-     * method used to hide lateral menu after user logout
-     */
-    public void leaveMenu(){
-        this.toolbar.setNavigationIcon(null);
-        this.navigationManager.lockHidden();
-    }
-
-    /**
      * method used to delete all LocalStorage informations
      */
-    public void deleteUserInfo(){
+    public void onUserLogout(){
         this.navigationManager.closeNavigator();
         LocalStorageUtils.deleteUserInFile(getApplicationContext());
         LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
-        leaveMenu();
-        // QUI CANCELLARE I SERVIZI RELATIVI AGLI EXCHANGE !!!
-    }
-
-    /**
-     * method called after login or registration that update lateral menu with all the user information and collaboration
-     */
-    public void updateUserInfo() {
-        try {
-            user = LocalStorageUtils.readUserFromFile(getApplicationContext());
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-        TextView username = (TextView) findViewById(R.id.nameOfUser);
-        username.setText(user.getUsername());
-        TextView email = (TextView) findViewById(R.id.emailOfUser);
-        email.setText(user.getEmail());
-
-        onNetworkAvailable();
-
-        Fragment fragment = HomepageFragment.newInstance();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        this.navigationManager.refreshCollaborationLists();
+        final Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     public void onNetworkAvailable() {
-        if (user != null) {
-            Log.i("CIAO", "dovrei entrare here");
-            final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
-            notificationIntent.putExtra("username", user.getUsername());
-            notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
-            startService(notificationIntent);
+        final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
+        notificationIntent.putExtra("username", user.getUsername());
+        notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
+        startService(notificationIntent);
 
-            final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
-            collaborationIntent.putExtra("username", user.getUsername());
-            startService(collaborationIntent);
-        }
+        final Intent collaborationIntent = new Intent(getApplicationContext(), CollaborationsSubscriberService.class);
+        collaborationIntent.putExtra("username", user.getUsername());
+        startService(collaborationIntent);
     }
 
     @Override
