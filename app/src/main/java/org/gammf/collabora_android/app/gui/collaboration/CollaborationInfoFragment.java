@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -100,7 +102,6 @@ public class CollaborationInfoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_collaboration_info, container, false);
         initializeGuiComponent(rootView);
 
@@ -108,20 +109,23 @@ public class CollaborationInfoFragment extends Fragment {
     }
 
     private void initializeGuiComponent(View rootView){
-        final TextView txtName = rootView.findViewById(R.id.txtCollaborationName);
+        final EditText txtName = rootView.findViewById(R.id.txtCollaborationName);
         txtName.setText(collaboration.getName());
-
+        txtName.setKeyListener(null);
         final TextView txtCollaborationType = rootView.findViewById(R.id.txtCollabType);
         txtCollaborationType.setText(new ConcreteShortCollaboration(collaboration).getCollaborationType().name());
-
-        final Button btnAddMember = rootView.findViewById(R.id.btnAddMember);
-        if (! ((SharedCollaboration) collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
-            //TODO hide edit collaboration button
-        }
-
         final ListView membersListView = rootView.findViewById(R.id.listViewCollabMember);
         visualizeMembers(membersListView);
 
+        final ImageButton btnEditCollaborationName = rootView.findViewById(R.id.btnEditCollaboration);
+        btnEditCollaborationName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditCollaborationDialogFragment dialog = EditCollaborationDialogFragment.newInstance(collaboration.getId(), username);
+                dialog.show(getActivity().getSupportFragmentManager(), EDIT_COLLABORATION_DIALOG_TAG);
+            }
+        });
+        final ImageButton btnAddMember = rootView.findViewById(R.id.btnAddMember);
         btnAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,6 +133,10 @@ public class CollaborationInfoFragment extends Fragment {
                 dialog.show(getActivity().getSupportFragmentManager(), MEMBER_DIALOG_TAG);
             }
         });
+        if (! ((SharedCollaboration) collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
+            btnEditCollaborationName.setVisibility(View.GONE);
+            btnAddMember.setVisibility(View.GONE);
+        }
     }
 
     private void visualizeMembers(final ListView membersListView) {
@@ -149,18 +157,4 @@ public class CollaborationInfoFragment extends Fragment {
             return (comp == 0) ? Collator.getInstance(Locale.US).compare(c1.getUsername(), c2.getUsername()) : comp;
         }
     }
-
-    /*private void checkUserInput() {
-        final String newName = txtNewTitle.getText().toString();
-        if (newName.equals("")) {
-            txtNewTitle.setError(getResources().getString(R.string.fieldempty));
-        } else if (! newName.equals(collaboration.getName())) {
-            collaboration.setName(newName);
-            final CollaborationUpdateMessage message = new ConcreteCollaborationUpdateMessage(
-                    username, collaboration, UpdateMessageType.UPDATING);
-            new SendMessageToServerTask(getContext()).execute(message);
-        } else {
-            // TODO go back to collaboration fragment
-        }
-    }*/
 }

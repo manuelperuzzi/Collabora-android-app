@@ -12,6 +12,7 @@
         android:gravity="center_vertical"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/collabInfo_member_lbl"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_alignTop="@+id/imageView10"
@@ -58,17 +59,27 @@
         android:text="@string/collabInfo_name_lbl"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-    <TextView
+    <EditText
         android:id="@+id/txtCollaborationName"
         style="@style/Widget.AppCompat.EditText"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:layout_below="@+id/imageView8"
         android:layout_alignStart="@+id/imageView8"
-        android:layout_alignEnd="@+id/lblTitleEditedCollab"/>
+        android:layout_alignEnd="@+id/lblTitleEditedCollab"
+        />
+
+    <ImageButton
+        android:id="@+id/btnEditCollaboration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edit_black"
+        android:layout_alignEnd="@+id/lblTitleEditedCollab"
+        android:layout_below="@+id/imageView8" />
 
     <ImageView
         android:id="@+id/imageView8"
@@ -119,14 +130,14 @@
         android:layout_below="@+id/textView15"
         android:layout_margin="5dp"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/btnAddMember"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:layout_above="@+id/listViewCollabMember"
         android:layout_alignEnd="@+id/listViewCollabMember"
-        android:backgroundTint="@android:color/transparent"
-        android:text="@string/collabInfo_member_btn"
+        android:background="@drawable/add"
         android:layout_below="@+id/textView13"/>
 
 </RelativeLayout>
