@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.Service;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -9,6 +10,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,14 +93,21 @@ public abstract class SubscriberService extends Service{
                             channel.basicAck(envelope.getDeliveryTag(), false);
                             handleJsonMessage(json);
                         } catch (final JSONException e) {
-                            //TODO
+                            showNetworkErrorToast();
                         }
                     }
                 });
                 onConfigurationCompleted(this.intent);
             } catch (final Exception e) {
-                e.printStackTrace();
+                showNetworkErrorToast();
             }
         }
+    }
+
+    private void showNetworkErrorToast() {
+        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+        intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_ERROR);
+        intent.putExtra(IntentConstants.NETWORK_ERROR, "Network Error");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }

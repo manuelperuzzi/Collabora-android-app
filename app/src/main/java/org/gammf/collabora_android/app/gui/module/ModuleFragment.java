@@ -1,4 +1,4 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.module;
 
 
 import android.os.Bundle;
@@ -16,6 +16,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
+import org.gammf.collabora_android.app.gui.collaboration.EditCollaborationFragment;
+import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
+import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;

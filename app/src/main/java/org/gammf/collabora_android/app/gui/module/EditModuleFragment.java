@@ -1,48 +1,38 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.module;
 
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link EditModuleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditModuleFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class EditModuleFragment extends Fragment {
 
-    private static final String ERR_STATENOTSELECTED = "Please select state";
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
     private static final String ARG_MODULEID = "moduleid";
@@ -50,7 +40,6 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
     private String username;
     private Module module;
     private String collaborationId, moduleId;
-    private Spinner spinnerModuleStateEdited;
     private EditText txtEditContentModule;
     private String newStateSelected = "";
 
@@ -125,19 +114,14 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
     private void initializeGuiComponent(View rootView) {
         txtEditContentModule = rootView.findViewById(R.id.txtModuleContentEdited);
         txtEditContentModule.setText(module.getDescription());
-        spinnerModuleStateEdited = rootView.findViewById(R.id.spinnerModuleStateEdited);
-        setSpinner();
-    }
 
-    private void setSpinner(){
-        final List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerModuleStateEdited.setAdapter(dataAdapter);
-        spinnerModuleStateEdited.setSelection(0);
-        spinnerModuleStateEdited.setOnItemSelectedListener(this);
+        final StateSpinnerManager spinnerManager = new StateSpinnerManager(this.module.getStateDefinition(), rootView, R.id.spinnerModuleStateEdited, CollaborationType.PROJECT);
+        spinnerManager.addObserver(new Observer<String>() {
+            @Override
+            public void notify(String newState) {
+                newStateSelected = newState;
+            }
+        });
     }
 
     private void updateModule(final String content, final String stateSelected) {
@@ -146,10 +130,7 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
 
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 username, module, UpdateMessageType.UPDATING, collaborationId);
-        new SendMessageToServerTask().execute(message);
-
-        ((MainActivity)getActivity()).showLoadingSpinner();
-        new TimeoutSender(getContext(), 5000);
+        new SendMessageToServerTask(getContext()).execute(message);
     }
 
     private void checkUserUpdate() {
@@ -159,18 +140,5 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemSe
         } else {
             updateModule(insertedModuleName, newStateSelected);
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-        newStateSelected = item.toString();
-        Log.println(Log.ERROR, "ERRORONI", ""+ newStateSelected);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(), ERR_STATENOTSELECTED, Toast.LENGTH_LONG);
-        toast.show();
     }
 }

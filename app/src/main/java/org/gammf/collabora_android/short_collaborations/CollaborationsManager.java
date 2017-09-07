@@ -1,5 +1,8 @@
 package org.gammf.collabora_android.short_collaborations;
 
+import org.gammf.collabora_android.utils.CollaborationType;
+
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -42,5 +45,18 @@ public interface CollaborationsManager {
      * @return true if the collaboration was in the manager, false otherwise.
      */
     boolean removeCollaboration(String collaborationId);
+
+    /**
+     * Returns a list of {@link ShortCollaboration} filtered by the given {@link CollaborationType}
+     * @param collaborationType the type to filter with.
+     * @return the filtered list.
+     */
+    List<ShortCollaboration> filterByGroup(CollaborationType collaborationType);
+
+    /**
+     * Get a list of all collaborations id.
+     * @return a list of all collaborations id.
+     */
+    List<String> getCollaborationsId();
 
 }

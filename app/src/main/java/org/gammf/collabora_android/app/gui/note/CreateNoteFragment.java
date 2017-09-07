@@ -1,58 +1,44 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.note;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
+import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements PlaceSelectionListener,
-        AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String SENDER = "notecreationfrag";
     private static final String ARG_USERNAME = "USERNAME";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
@@ -61,10 +47,11 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
-    private Spinner spinnerState;
 
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
+
+    private MapManager mapManager;
 
     private String collaborationId, moduleId;
 
@@ -105,6 +92,13 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
+        this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
+        this.mapManager.addObserver(new Observer<Location>() {
+            @Override
+            public void notify(final Location newlocation) {
+                location = newlocation;
+            }
+        });
     }
 
     @Override
@@ -123,10 +117,17 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         txtContentNote.requestFocus();
         final SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
-        autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
-        spinnerState = rootView.findViewById(R.id.spinnerNewNoteState);
-        setSpinner();
+        final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
+                LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
+        spinnerManager.addObserver(new Observer<String>() {
+            @Override
+            public void notify(final String state) {
+                noteState = state;
+            }
+        });
+
         final FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,16 +164,6 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
         });
     }
 
-    private void setSpinner(){
-        List<NoteProjectState> stateList = new ArrayList<>();
-        stateList.addAll(Arrays.asList(NoteProjectState.values()));
-        ArrayAdapter<NoteProjectState> dataAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, stateList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerState.setAdapter(dataAdapter);
-        spinnerState.setOnItemSelectedListener(this);
-    }
-
     private void processInput(){
         final String insertedNoteName = txtContentNote.getText().toString();
         if (insertedNoteName.equals("")) {
@@ -192,42 +183,18 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
-        final CollaborationFragment collaborationFragment = CollaborationFragment.newInstance(SENDER, username, collaborationId);
-
         final Note simpleNote = new SimpleNoteBuilder(content, state)
                 .setLocation(location)
                 .setExpirationDate(expiration)
                 .buildNote();
         if (moduleId.equals(NOMODULE)) {
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                     username, simpleNote, UpdateMessageType.CREATION, collaborationId));
         } else {
-            new SendMessageToServerTask().execute(new ConcreteNoteUpdateMessage(
+            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                     username, new SimpleModuleNote(simpleNote, moduleId), UpdateMessageType.CREATION, collaborationId));
         }
-
-        ((MainActivity)getActivity()).showLoadingSpinner();
-        new TimeoutSender(getContext(), 5000);
     }
-
-    @Override
-    public void onPlaceSelected(final Place place) {
-        location = new NoteLocation(place.getLatLng().latitude, place.getLatLng().longitude);
-    }
-
-    @Override
-    public void onError(final Status status) {
-        Log.i(TAG, "An error occurred: " + status);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        NoteProjectState item = (NoteProjectState) adapterView.getItemAtPosition(i);
-        noteState = item.toString();
-    }
-
-    @Override
-    public void onNothingSelected(final AdapterView<?> adapterView) { }
 
     @Override
     public void onDateSet(final DatePicker arg0, final int year, final int month, final int day) {
@@ -251,5 +218,4 @@ public class CreateNoteFragment extends Fragment implements PlaceSelectionListen
     private void showTime(){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
     }
-
 }
