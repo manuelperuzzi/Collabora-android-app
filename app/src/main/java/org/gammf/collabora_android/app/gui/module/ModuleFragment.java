@@ -167,7 +167,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void selectItem(final String itemId) {
-        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId);
+        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId,moduleId);
         changeFragment(openNoteFragment);
     }
 

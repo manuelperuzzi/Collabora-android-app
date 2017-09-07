@@ -218,7 +218,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         if(itemSelected.getType().equals(CollaborationComponentType.MODULE)){
             openFragment = ModuleFragment.newInstance(SENDER, username, collaborationId, itemSelected.getId());
         }else{
-            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId());
+            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(),NOMODULE);
         }
         changeFragment(openFragment);
     }

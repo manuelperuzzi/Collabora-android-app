@@ -47,9 +47,11 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
+    private static final String ARG_MODULEID = "moduleName";
+    private static final String NOMODULE = "nomodule";
 
     private String username;
-    private String collaborationId;
+    private String collaborationId,moduleId;
     private String noteId;
     private ListView previousNotesList;
     private MapManager mapManager;
@@ -62,12 +64,13 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         setHasOptionsMenu(true);
     }
 
-    public static NoteFragment newInstance(String username, String collabId, String noteId) {
+    public static NoteFragment newInstance(String username, String collabId, String noteId,String moduleId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
+        args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,6 +82,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
         setHasOptionsMenu(true);
     }
@@ -100,7 +104,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         int id = item.getItemId();
 
         if (id == R.id.action_editnote) {
-            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, noteId);
+            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, noteId,moduleId);
             changeFragment(editNoteFragment);
             return true;
         }
@@ -185,7 +189,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     private void selectItem(CollaborationComponentInfo itemSelected) {
-        Fragment openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId());
+        Fragment openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(),moduleId);
         changeFragment(openFragment);
     }
 

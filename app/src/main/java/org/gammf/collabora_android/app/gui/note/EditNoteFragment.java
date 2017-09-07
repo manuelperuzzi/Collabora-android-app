@@ -1,8 +1,10 @@
 package org.gammf.collabora_android.app.gui.note;
 
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,22 +13,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
@@ -35,7 +44,10 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +60,8 @@ public class EditNoteFragment extends Fragment implements
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
+    private static final String ARG_MODULEID = "moduleName";
+    private static final String NOMODULE = "nomodule";
 
     private String username;
     private String noteStateEdited = "";
@@ -55,8 +69,11 @@ public class EditNoteFragment extends Fragment implements
     private EditText txtContentNoteEdited;
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
+    private ListView previousNotesList;
+    private ArrayList<String> previousNotesSelected ;
+    private ArrayList<CollaborationComponentInfo> noteItems;
 
-    private String collaborationId, noteId;
+    private String collaborationId, noteId,moduleId;
 
     private MapManager mapManager;
 
@@ -75,12 +92,13 @@ public class EditNoteFragment extends Fragment implements
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String username, String collabId, String noteId) {
+    public static EditNoteFragment newInstance(String username, String collabId, String noteId,String moduleId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
+        args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,6 +111,7 @@ public class EditNoteFragment extends Fragment implements
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
 
         try {
@@ -139,6 +158,8 @@ public class EditNoteFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_note, container, false);
+        noteItems = new ArrayList<>();
+        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -205,6 +226,93 @@ public class EditNoteFragment extends Fragment implements
                 }
             });
         }
+        previousNotesList = rootView.findViewById(R.id.listViewPNote);
+        Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
+        if(note.getPreviousNotes()!= null){
+            final List<Note> allNotes = new ArrayList<>();
+            try {
+                allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+            for (String pNoteID: note.getPreviousNotes()) {
+                for (Note noteon: allNotes) {
+                    if(noteon.getNoteID().equals(pNoteID)){
+                        noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
+
+                    }
+                }
+            }
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
+
+        btnAddPNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                final List<String> listItems = new ArrayList<>();
+                final List<Note> allNotes = new ArrayList<>();
+                final List<Integer> mSelectedItems = new ArrayList<>();
+                try {
+                    Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+                    if (moduleId.equals(NOMODULE)) {
+                        allNotes.addAll(collaboration.getAllNotes());
+                    }else{
+                        for (Module module: ((ConcreteProject)collaboration).getAllModules()){
+                            if(module.getId().equals(moduleId))
+                                allNotes.addAll(module.getAllNotes());
+                        }
+                    }
+                    for (Iterator<Note> iterator = allNotes.iterator(); iterator.hasNext(); ) {
+                        Note tmpNote = iterator.next();
+                        if(tmpNote.getNoteID().equals(noteId))
+                            iterator.remove();
+                    }
+                    for (Note note : allNotes) {
+                        listItems.add(note.getContent());
+                    }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                final CharSequence[] charSequenceItems = listItems.toArray(new CharSequence[listItems.size()]);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select previous notes")
+                        .setMultiChoiceItems(charSequenceItems, null,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which,
+                                                        boolean isChecked) {
+                                        if (isChecked) {
+                                            mSelectedItems.add(which);
+                                        } else if (mSelectedItems.contains(which)) {
+                                            mSelectedItems.remove(Integer.valueOf(which));
+                                        }
+                                    }
+                                })
+                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                noteItems.clear();
+                                previousNotesSelected.clear();
+                                for (int position: mSelectedItems) {
+                                    previousNotesSelected.add(allNotes.get(position).getNoteID());
+                                    noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE));
+                                }
+                                final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+                                previousNotesList.setAdapter(noteListAdapter);
+
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
 
         myDateListenerEdited = this;
         myTimeListenerEdited = this;
