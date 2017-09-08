@@ -1,24 +1,40 @@
 package org.gammf.collabora_android.app.gui.module;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.utils.Observer;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +49,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
     private String username;
     private String collaborationId;
     private String state;
-
     private EditText txtContentModule;
 
     public CreateModuleFragment() {
@@ -78,7 +93,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
 
     private void initializeGuiComponent(View rootView){
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
-
         final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewModuleState, CollaborationType.PROJECT);
         spinnerManager.addObserver(new Observer<String>() {
             @Override
@@ -86,7 +100,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
                 state = newState;
             }
         });
-
         FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
         btnAddModule.setOnClickListener(this);
     }

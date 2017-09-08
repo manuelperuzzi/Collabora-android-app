@@ -25,6 +25,8 @@ import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -52,6 +54,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private String sender, collaborationId, moduleId;
     private ListView moduleNotesList;
     private ArrayList<CollaborationComponentInfo> listItem;
+    private CollaborationMember member;
+    private Project collaboration;
+
 
     private String username;
     private Module module;
@@ -89,9 +94,10 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         setHasOptionsMenu(true);
 
         try {
-            final Project project = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            module = project.getModule(moduleId);
-            getActivity().setTitle(project.getName() + " - " + module.getDescription());
+            collaboration = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            module = collaboration.getModule(moduleId);
+            this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+            getActivity().setTitle(collaboration.getName() + " - " + module.getDescription());
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -100,7 +106,8 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.edit_collabmodule, menu);
+        if (AccessRightUtils.checkIfUserHasAccessRight(member))
+            inflater.inflate(R.menu.edit_collabmodule, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -147,6 +154,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         listItem = new ArrayList<>();
         FloatingActionButton btnAddNoteModule = rootView.findViewById(R.id.btnAddNoteInModule);
         btnAddNoteModule.setOnClickListener(this);
+        if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
+            btnAddNoteModule.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void fillNoteList() {
@@ -167,7 +177,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void selectItem(final String itemId) {
-        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId);
+        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId,moduleId);
         changeFragment(openNoteFragment);
     }
 

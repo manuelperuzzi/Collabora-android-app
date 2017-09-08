@@ -3,19 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-    >
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:orientation="vertical">
             <EditText
                 android:id="@+id/txtNoteContentEdit"
                 android:layout_width="fill_parent"
@@ -24,6 +12,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="Connect"
+                android:layout_marginTop="65dp"
+
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -40,10 +30,9 @@
                 android:text="@string/editnote_timeexpiration"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:layout_marginTop="8dp"
                 android:layout_below="@+id/btnEditDateExpiration"
-                android:layout_alignStart="@+id/txtEditDateSelected"
-                android:layout_marginTop="10dp"/>
+                android:layout_alignStart="@+id/textView23"/>
 
             <TextView
                 android:id="@+id/textView23"
@@ -55,24 +44,21 @@
                 android:text="@string/editnote_dateexpiration"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:layout_above="@+id/txtEditDateSelected"
-                android:layout_toEndOf="@+id/imageView13"/>
+                android:layout_below="@+id/txtResponsibleEdit"
+                android:layout_alignEnd="@+id/txtNoteContentEdit"/>
 
             <TextView
                 android:id="@+id/textView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtResponsibleEdit"
-                android:layout_marginTop="28dp"
-                android:layout_toEndOf="@+id/imageView12"
                 android:gravity="center_vertical"
                 android:paddingEnd="15dp"
                 android:paddingStart="5dp"
                 android:text="@string/change_state"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"/>
+                android:layout_below="@+id/txtResponsibleEdit"
+                android:layout_toEndOf="@+id/imgExpiration"/>
 
             <ImageView
                 android:id="@+id/imageView12"
@@ -89,8 +75,8 @@
                 android:layout_height="25dp"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/expirationtime32"
-                android:layout_alignTop="@+id/textView23"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@+id/txtResponsibleEdit"
+                android:layout_toStartOf="@+id/textView23"/>
 
             <ImageButton
                 android:id="@+id/btnEditTimeExpiration"
@@ -182,8 +168,7 @@
                 android:paddingStart="5dp"
                 android:text="@string/note_responsible"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"/>
+                android:textColor="@android:color/black"/>
 
             <ImageView
                 android:id="@+id/imgExpiration"
@@ -196,6 +181,39 @@
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/responsible32"/>
 
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="25dp"
+                android:paddingStart="5dp"
+                android:textColor="@android:color/black"
+                android:text="@string/previous_notes"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_alignBaseline="@+id/btnAddPNote"
+                android:layout_alignBottom="@+id/btnAddPNote"
+                android:layout_alignParentStart="true"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:text="@string/manage_notes"
+                android:id="@+id/btnAddPNote"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/btnEditTimeExpiration"
+                android:layout_alignEnd="@+id/btnEditTimeExpiration"/>
+
+            <ListView
+                android:id="@+id/listViewPNote"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/btnAddPNote"
+                android:layout_alignParentEnd="true"/>
+
 
             <Spinner
                 android:id="@+id/spinnerEditNoteState"
@@ -204,10 +222,5 @@
                 android:layout_alignEnd="@+id/textView22"
                 android:layout_alignStart="@+id/imageView12"
                 android:layout_alignTop="@+id/txtEditDateSelected"/>
-
-        </RelativeLayout>
-
-
-    </ScrollView>
 
 </RelativeLayout>
