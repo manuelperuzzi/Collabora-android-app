@@ -26,7 +26,11 @@ import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -53,12 +57,15 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private String username;
     private String collaborationId,moduleId;
     private String noteId;
+    private Note note;
+    private Collaboration collaboration;
     private ListView previousNotesList;
     private MapManager mapManager;
     private ProgressBar progressBarState;
     private TextView stateTextView;
     private TextView noPreviousNoteView;
     private ArrayList<CollaborationComponentInfo> noteItems;
+    private CollaborationMember member;
 
     public NoteFragment() {
         setHasOptionsMenu(true);
@@ -84,13 +91,28 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             this.noteId = getArguments().getString(ARG_NOTEID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
+        try {
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            this.note = collaboration.getNote(noteId);
+            if(collaboration instanceof Project || collaboration instanceof Group){
+                this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.edit_note, menu);
+        if(collaboration instanceof Project || collaboration instanceof Group) {
+            if (AccessRightUtils.checkAccessRight(member)) {
+                inflater.inflate(R.menu.edit_note, menu);
+            }
+        }
+        else
+            inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -123,9 +145,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private void initializeGuiComponent(final View rootView) {
         try {
-            final Note note = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getNote(noteId);
             ((TextView) rootView.findViewById(R.id.contentNote)).setText(note.getContent());
-
             progressBarState = rootView.findViewById(R.id.progressBarState);
             this.noPreviousNoteView = rootView.findViewById(R.id.noPNote);
             this.stateTextView = rootView.findViewById(R.id.lblState);
@@ -135,13 +155,10 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             if (note.getState().getCurrentResponsible() != null) {
                 responsibleTextView.setText(note.getState().getCurrentResponsible());
             }
-
             final TextView expiration = rootView.findViewById(R.id.expiration);
-
             if (note.getExpirationDate() != null) {
                 expiration.setText(note.getExpirationDate().toString());
             }
-
             if(note.getPreviousNotes()!= null){
                 final List<Note> allNotes = new ArrayList<>();
                 allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
@@ -149,7 +166,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
                     for (Note noteon: allNotes) {
                         if(noteon.getNoteID().equals(pNoteID)){
                             noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
-
                         }
                     }
                 }
@@ -158,9 +174,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
                 previousNotesList.setOnItemClickListener(this);
             }else
                 noPreviousNoteView.setText(R.string.nonoteinserted);
-
             this.mapManager = new MapManager(note.getLocation(), this.getContext());
-
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }

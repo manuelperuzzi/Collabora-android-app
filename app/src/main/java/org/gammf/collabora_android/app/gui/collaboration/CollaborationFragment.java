@@ -26,10 +26,13 @@ import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -49,6 +52,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private static final String ARG_COLLABID = "collabid";
     private static final String ARG_USERNAME = "username";
     private static final String NOMODULE = "nomodule";
+    private CollaborationMember member;
 
     private ListView notesList, moduleList;
     private ArrayList<CollaborationComponentInfo> noteItems, moduleItems;
@@ -89,15 +93,25 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
         try {
             collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            if(collaboration instanceof Project || collaboration instanceof Group){
+                this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+            }
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.edit_collaboration, menu);
+        if(collaboration instanceof Project || collaboration instanceof Group) {
+            if (AccessRightUtils.checkAccessRight(member)) {
+                inflater.inflate(R.menu.edit_collaboration, menu);
+            }
+        }else
+            inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -144,11 +158,20 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tab2.setContent(R.id.i_layout_1);
         if(collaboration instanceof Project) {
             tabHost.addTab(tab1);
-            btnMenuAdd.setVisibility(View.VISIBLE);
-            btnAddNote.setVisibility(View.INVISIBLE);
+            if (!AccessRightUtils.checkAccessRight(member)) {
+                btnAddNote.setVisibility(View.INVISIBLE);
+            }else{
+                btnMenuAdd.setVisibility(View.VISIBLE);
+                btnAddNote.setVisibility(View.INVISIBLE);
+            }
             fillModulesList();
         }
         tabHost.addTab(tab2);
+
+        if(collaboration instanceof Project || collaboration instanceof Group) {
+            if (AccessRightUtils.checkAccessRight(member)) {
+            }
+        }
 
         /*if(sender.equals(CALLER_NOTECREATION))
         {
