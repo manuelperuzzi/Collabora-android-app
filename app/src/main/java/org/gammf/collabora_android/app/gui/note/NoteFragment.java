@@ -21,6 +21,7 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -124,7 +125,7 @@ public class NoteFragment extends Fragment {
 
             final TextView expiration = rootView.findViewById(R.id.expiration);
             if (note.getExpirationDate() != null) {
-                expiration.setText(note.getExpirationDate().toString());
+                expiration.setText(note.getExpirationDate().toString(DateTimeFormat.mediumDateTime()));
             }
 
             this.mapManager = new MapManager(note.getLocation(), this.getContext());
