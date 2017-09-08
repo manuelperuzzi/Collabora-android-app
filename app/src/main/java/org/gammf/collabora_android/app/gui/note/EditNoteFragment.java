@@ -70,7 +70,7 @@ public class EditNoteFragment extends Fragment implements
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
     private ListView previousNotesList;
-    private ArrayList<String> previousNotesSelected ;
+    private List<String> previousNotesSelected ;
     private ArrayList<CollaborationComponentInfo> noteItems;
 
     private String collaborationId, noteId,moduleId;
@@ -226,23 +226,21 @@ public class EditNoteFragment extends Fragment implements
                 }
             });
         }
+
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
         Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         if(note.getPreviousNotes()!= null){
             final List<Note> allNotes = new ArrayList<>();
+            this.previousNotesSelected = note.getPreviousNotes();
             try {
                 allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-            for (String pNoteID: note.getPreviousNotes()) {
-                for (Note noteon: allNotes) {
-                    if(noteon.getNoteID().equals(pNoteID)){
+            for (String pNoteID: note.getPreviousNotes())
+                for (Note noteon: allNotes)
+                    if(noteon.getNoteID().equals(pNoteID))
                         noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
-
-                    }
-                }
-            }
             final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
             previousNotesList.setAdapter(noteListAdapter);
         }
@@ -267,9 +265,8 @@ public class EditNoteFragment extends Fragment implements
                         Note tmpNote = iterator.next();
                         if(tmpNote.getNoteID().equals(noteId))
                             iterator.remove();
-                    }
-                    for (Note note : allNotes) {
-                        listItems.add(note.getContent());
+                        else
+                            listItems.add(tmpNote.getContent());
                     }
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -300,7 +297,6 @@ public class EditNoteFragment extends Fragment implements
                                 }
                                 final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
                                 previousNotesList.setAdapter(noteListAdapter);
-
                             }
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -312,8 +308,6 @@ public class EditNoteFragment extends Fragment implements
                 dialog.show();
             }
         });
-
-
         myDateListenerEdited = this;
         myTimeListenerEdited = this;
     }
@@ -328,6 +322,10 @@ public class EditNoteFragment extends Fragment implements
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
             }
             note.modifyState(new NoteState(noteStateEdited, null));
+            if(!previousNotesSelected.isEmpty())
+                note.modifyPreviousNotes(previousNotesSelected);
+            else
+                note.modifyPreviousNotes(null);
 
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
