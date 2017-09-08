@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
             final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
             Collaboration temporaryPCollab = new ConcretePrivateCollaboration("cdcrec3r3r","private peru13","peru13");
             Project tempoprojectcollab = new ConcreteProject("cdc3ec3r3r","progettone");
-            tempoprojectcollab.addMember(new SimpleCollaborationMember("peru13", AccessRight.ADMIN));
+            tempoprojectcollab.addMember(new SimpleCollaborationMember("peru13", AccessRight.READ));
             Module module1 = new ConcreteModule("334343", "blabla1","toDo");
             Module module2 = new ConcreteModule("434343", "blabla2","toDo");
             module1.addNote(new SimpleNoteBuilder("module1note1",new NoteState("toDo","peru13")).setNoteID("4343434324343").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
@@ -232,6 +232,10 @@ public class MainActivity extends AppCompatActivity
         LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
         leaveMenu();
         // QUI CANCELLARE I SERVIZI RELATIVI AGLI EXCHANGE !!!
+    }
+
+    public User getUser(){
+        return this.user;
     }
 
     /**
