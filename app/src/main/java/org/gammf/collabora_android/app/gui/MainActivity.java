@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity
             preNote.add("342234324234234");
             module1.addNote(new SimpleNoteBuilder("popospetz",new NoteState("toDo","peru13")).setNoteID("3423442234222").setLocation(new NoteLocation(43.4343,45.3434)).setPreviousNotes(preNote).buildNote());
             module2.addNote(new SimpleNoteBuilder("module2note1",new NoteState("toDo","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+
             tempoprojectcollab.addModule(module1);
             tempoprojectcollab.addModule(module2);
             tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("toDo","peru13")).setNoteID("3232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
