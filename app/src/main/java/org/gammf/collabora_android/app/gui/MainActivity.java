@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity
         } catch (final JSONException | IOException e) {
             //TODO ?
         }
-
-
     }
 
     @Override
@@ -103,6 +101,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        this.progress = (ProgressBar) findViewById(R.id.progressBar);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
+        this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
@@ -110,17 +116,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
-        this.progress = (ProgressBar) findViewById(R.id.progressBar);
-        this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        this.networkManager.clearObservers();
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
@@ -163,8 +161,12 @@ public class MainActivity extends AppCompatActivity
         this.navigationManager.closeNavigator();
         LocalStorageUtils.deleteUserInFile(getApplicationContext());
         LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
-        final Intent intent = new Intent(getApplicationContext(), AuthenticationActivity.class);
-        startActivity(intent);
+
+        final Intent serviceDeletionIntent = new Intent("subscriber.service.deletion");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(serviceDeletionIntent);
+
+        final Intent authActivityIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
+        startActivity(authActivityIntent);
         finish();
     }
 
