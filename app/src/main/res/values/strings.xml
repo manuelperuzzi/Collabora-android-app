@@ -147,6 +147,9 @@
     <string name="add_previous_note">add previous note</string>
     <string name="nonoteinserted">No previous notes inserted</string>
     <string name="manage_notes">Manage notes</string>
+    <string name="set_previous_modules">Set previous Modules</string>
+    <string name="prevmod">Previous Modules</string>
+    <string name="change_previous_modules">change previous modules</string>
 
 
 </resources>
