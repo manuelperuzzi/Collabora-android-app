@@ -32,36 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="300sp"
             android:layout_below="@+id/label"
-            android:layout_alignStart="@+id/listViewPModules"/>
-
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:textColor="@android:color/black"
-            android:text="@string/prevmod"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_below="@+id/moduleNotesListView"
-            android:layout_alignParentStart="true"/>
-
-        <TextView
-            android:id="@+id/noPNote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_above="@+id/listViewPModules"
-            android:layout_toEndOf="@+id/textView16"/>
-
-        <ListView
-            android:id="@+id/listViewPModules"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_below="@+id/textView16"/>
-
-
+            android:layout_alignParentBottom="true"/>
+        
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

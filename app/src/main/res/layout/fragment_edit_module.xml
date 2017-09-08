@@ -78,36 +78,6 @@
         android:layout_alignStart="@+id/txtModuleContentEdited"
         android:layout_marginTop="8dp"/>
 
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="25dp"
-        android:paddingStart="5dp"
-        android:text="@string/prevmod"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignBaseline="@+id/btnAddPModules"
-        android:layout_alignBottom="@+id/btnAddPModules"
-        android:layout_alignStart="@+id/imageView14"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/transparent"
-        android:text="@string/change_previous_modules"
-        android:id="@+id/btnAddPModules"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/spinnerModuleStateEdited"
-        android:layout_alignEnd="@+id/spinnerModuleStateEdited"/>
-
-    <ListView
-        android:id="@+id/listViewPModules"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_below="@+id/btnAddPModules"/>
-
     <Spinner
         android:id="@+id/spinnerModuleStateEdited"
         android:layout_width="match_parent"
