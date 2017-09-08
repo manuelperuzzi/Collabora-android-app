@@ -1,16 +1,15 @@
-package org.gammf.collabora_android.app.gui;
+package org.gammf.collabora_android.app.gui.authentication;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,18 +35,14 @@ import cz.msebera.android.httpclient.Header;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
-
-    /*
+ /*
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-   // private UserLoginTask mAuthTask = null;
+    // private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText userText;
     private EditText passText;
-    private ProgressBar bar;
-    private Button loginButton;
-    private TextView passToRegister;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -74,73 +69,79 @@ public class LoginFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         userText = rootView.findViewById(R.id.username);
         passText = rootView.findViewById(R.id.password);
-        bar = rootView.findViewById(R.id.login_progress);
-        loginButton = rootView.findViewById(R.id.email_sign_in_button);
+        final Button loginButton = rootView.findViewById(R.id.email_sign_in_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin(userText.getText().toString(),passText.getText().toString());
+                if (checkLoginFields()) {
+                    attemptLogin(userText.getText().toString(), passText.getText().toString());
+                }
+            }
+
+            private boolean checkLoginFields() {
+                if (userText.getText().toString().equals("")) {
+                    userText.setError("Insert a valid username");
+                    return false;
+                }
+                if (passText.getText().toString().equals("")) {
+                    passText.setError("Insert a password");
+                    return false;
+                }
+                return true;
             }
         });
-        passToRegister = rootView.findViewById(R.id.text_registerL);
+        final TextView passToRegister = rootView.findViewById(R.id.text_registerL);
         passToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment registrationFragment = RegistrationFragment.newInstance();
-                changeFragment(registrationFragment);
+                final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                intent.putExtra(AuthenticationActivity.INTENT_TAG, "pass-to-register");
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             }
         });
         return rootView;
     }
 
-    private void changeFragment(Fragment fragment){
-        if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.replace(R.id.content_frame, fragment);
-            fragmentTransaction2.commit();
-            Log.d("loginfragment","passo a register");
-        } else {
-            Log.d("loginfragment","errore nel cambio");
-        }
-    }
 
-    private void attemptLogin(String username, String password) {
+    private void attemptLogin(final String username, final String password) {
         AsyncHttpClient client = new AsyncHttpClient();
         String hash = BCrypt.hashpw(password, "$2a$10$2wymx/003xT1XIndPwFgPe");
         client.setBasicAuth(username,hash);
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
-                bar.setVisibility(View.VISIBLE);
-                loginButton.setClickable(false);
-                passToRegister.setClickable(false);
+                final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                intent.putExtra(AuthenticationActivity.INTENT_TAG, "show-progress-bar");
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
-                    JSONObject user = new JSONObject(new String(responseBody));
+                    final JSONObject user = new JSONObject(new String(responseBody));
                     LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(user));
+                    final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                    intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
+                    LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                 } catch (JSONException | IOException | MandatoryFieldMissingException e) {
                     e.printStackTrace();
                 }
-                ((MainActivity)getActivity()).insertLateralMenu();
-                ((MainActivity)getActivity()).updateUserInfo();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast toast = Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT);
-                toast.show();
+                final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
+                intent.putExtra(AuthenticationActivity.INTENT_TAG, "hide-progress-bar");
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+                Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFinish() {
-                bar.setVisibility(View.GONE);
-                loginButton.setClickable(true);
-                passToRegister.setClickable(true);
+                /*loginButton.setClickable(true);
+                passToRegister.setClickable(true);*/
             }
         });
-
     }
+
 }
