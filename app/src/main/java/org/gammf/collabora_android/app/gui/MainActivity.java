@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("FLUSSOANDROID", "onCreate");
         setContentView(R.layout.activity_main);
         try {
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity
             this.navigationManager.refreshCollaborationLists();
 
             this.networkManager.addNetworkChangeObserver(this);
+            this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
         } catch (final FileNotFoundException e) {
             final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
+        Log.i("FLUSSOANDROID", "onStart");
         this.permissionManager = new PermissionManager(this);
         if (!this.permissionManager.checkPermissions()) {
             this.permissionManager.requestPermissions();
@@ -103,22 +107,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("FLUSSOANDROID", "onResume");
         this.progress = (ProgressBar) findViewById(R.id.progressBar);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
-        this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("FLUSSOANDROID", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-        this.unregisterReceiver(this.networkManager);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("FLUSSOANDROID", "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("FLUSSOANDROID", "onDestry");
         this.networkManager.clearObservers();
+        this.unregisterReceiver(this.networkManager);
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
@@ -172,6 +184,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkAvailable() {
+        Log.i("FLUSSOANDROID", "onNetworkAvailable");
         final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         notificationIntent.putExtra("username", user.getUsername());
         notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
@@ -184,6 +197,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkUnavailable() {
+        Log.i("FLUSSOANDROID", "onNetworkUnavailable");
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
