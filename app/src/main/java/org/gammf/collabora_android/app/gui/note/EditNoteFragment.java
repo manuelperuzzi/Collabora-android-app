@@ -169,6 +169,8 @@ public class EditNoteFragment extends Fragment implements
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnEditDateExpiration);
         ImageButton btnSetTimeExpiration = rootView.findViewById(R.id.btnEditTimeExpiration);
         if (note.getExpirationDate() != null) {
+            this.dateSet = true;
+            this.timeSet = true;
             dateViewEdited.setText(note.getExpirationDate().toLocalDate().toString());
             timeViewEdited.setText(note.getExpirationDate().toLocalTime().toString());
             btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {

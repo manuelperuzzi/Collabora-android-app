@@ -150,23 +150,17 @@ public class NoteFragment extends Fragment {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
-    /***
-     * DA SISTEMARE SIA LA CHIAMATA AL METODO CHE IL METODO STESSO
-     *
-     * La progress bar è da decidere come settare i vari stati in base al valore
-     *
-     * @param state stato della nota contenuto in @NoteProjectState
-     */
+
     private void setStateProgressBar(String state){
-        switch(state){
-            case "Doing" :{
-                progressBarState.setProgress(50);
-                progressBarState.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        switch(state) {
+            case "To Do" :{
+                progressBarState.setProgress(10);
+                progressBarState.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 break;
             }
-            case "To-do" :{
-                progressBarState.setProgress(20);
-                progressBarState.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            case "Doing" :{
+                progressBarState.setProgress(50);
+                progressBarState.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 break;
             }
             case "Done" :{
@@ -174,10 +168,23 @@ public class NoteFragment extends Fragment {
                 progressBarState.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 break;
             }
-            default:{
-                progressBarState.setProgress(80);
-                progressBarState.getIndeterminateDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
+            case "Review" :{
+                progressBarState.setProgress(100);
+                progressBarState.getProgressDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
                 break;
+            }
+            case "Testing" :{
+                progressBarState.setProgress(100);
+                progressBarState.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+                break;
+            }
+            case "Blocked" :{
+                progressBarState.setProgress(100);
+                progressBarState.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                break;
+            }
+            default:{
+                progressBarState.setProgress(0);
             }
         }
     }
