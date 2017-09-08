@@ -22,7 +22,6 @@ import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.collaboration.EditCollaborationFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
@@ -107,7 +106,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        if (AccessRightUtils.checkAccessRight(member))
+        if (AccessRightUtils.checkIfUserHasAccessRight(member))
             inflater.inflate(R.menu.edit_collabmodule, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -155,7 +154,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         listItem = new ArrayList<>();
         FloatingActionButton btnAddNoteModule = rootView.findViewById(R.id.btnAddNoteInModule);
         btnAddNoteModule.setOnClickListener(this);
-        if (!AccessRightUtils.checkAccessRight(member)) {
+        if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
             btnAddNoteModule.setVisibility(View.INVISIBLE);
         }
     }

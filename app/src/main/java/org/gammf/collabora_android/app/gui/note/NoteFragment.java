@@ -24,7 +24,6 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
-import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -37,7 +36,6 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -107,7 +105,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         if(collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkAccessRight(member)) {
+            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 inflater.inflate(R.menu.edit_note, menu);
             }
         }

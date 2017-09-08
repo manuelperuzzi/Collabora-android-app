@@ -107,7 +107,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         if(collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkAccessRight(member)) {
+            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 inflater.inflate(R.menu.edit_collaboration, menu);
             }
         }else
@@ -158,7 +158,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tab2.setContent(R.id.i_layout_1);
         if(collaboration instanceof Project) {
             tabHost.addTab(tab1);
-            if (!AccessRightUtils.checkAccessRight(member)) {
+            if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 btnAddNote.setVisibility(View.INVISIBLE);
             }else{
                 btnMenuAdd.setVisibility(View.VISIBLE);
@@ -169,7 +169,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tabHost.addTab(tab2);
 
         if(collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkAccessRight(member)) {
+            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
             }
         }
 
