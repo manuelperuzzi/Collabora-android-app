@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.app.gui.note;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -199,6 +201,9 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         selectItem(listName);
     }
+
+
+
 
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(),moduleId);

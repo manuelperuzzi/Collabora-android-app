@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.app.gui.collaboration;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,9 +27,13 @@ import org.gammf.collabora_android.app.gui.module.CreateModuleFragment;
 import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
+import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
+import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
@@ -42,7 +48,7 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  */
-public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
@@ -60,6 +66,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private String username;
     private String collaborationId;
     private Collaboration collaboration;
+    private DrawerItemCustomAdapter moduleListAdapter;
+    private DrawerItemCustomAdapter noteListAdapter;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -85,7 +93,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
@@ -93,8 +101,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
         try {
             collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            if(collaboration instanceof Project || collaboration instanceof Group){
-                this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+            if (collaboration instanceof Project || collaboration instanceof Group) {
+                this.member = AccessRightUtils.checkMemebrAccess(collaboration, username);
             }
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
@@ -102,15 +110,14 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     }
 
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        if(collaboration instanceof Project || collaboration instanceof Group) {
+        if (collaboration instanceof Project || collaboration instanceof Group) {
             if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 inflater.inflate(R.menu.edit_collaboration, menu);
             }
-        }else
+        } else
             inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -131,6 +138,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -156,11 +164,11 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tab1.setContent(R.id.i_layout_2);
         tab2.setIndicator(getResources().getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
-        if(collaboration instanceof Project) {
+        if (collaboration instanceof Project) {
             tabHost.addTab(tab1);
             if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 btnAddNote.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 btnMenuAdd.setVisibility(View.VISIBLE);
                 btnAddNote.setVisibility(View.INVISIBLE);
             }
@@ -168,7 +176,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         }
         tabHost.addTab(tab2);
 
-        if(collaboration instanceof Project || collaboration instanceof Group) {
+        if (collaboration instanceof Project || collaboration instanceof Group) {
             if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
             }
         }
@@ -200,34 +208,36 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               changeFragment(CreateModuleFragment.newInstance(username, collaborationId));
+                changeFragment(CreateModuleFragment.newInstance(username, collaborationId));
             }
         });
         return rootView;
     }
 
-    private void fillNotesList(){
-        for (final Note note: collaboration.getAllNotes()) {
-            if (! (note instanceof ModuleNote)) {
+    private void fillNotesList() {
+        for (final Note note : collaboration.getAllNotes()) {
+            if (!(note instanceof ModuleNote)) {
                 noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE));
             }
         }
 
-        final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, noteItems);
+        noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
+        notesList.setOnItemLongClickListener(this);
     }
 
     private void fillModulesList() {
         if (collaboration instanceof Project) {
-            for (final Module module: ((Project) collaboration).getAllModules()) {
+            for (final Module module : ((Project) collaboration).getAllModules()) {
                 moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
             }
         }
 
-        final DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(),R.layout.list_view_item_row, moduleItems);
+        this.moduleListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(this);
+        moduleList.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -238,15 +248,15 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment;
-        if(itemSelected.getType().equals(CollaborationComponentType.MODULE)){
+        if (itemSelected.getType().equals(CollaborationComponentType.MODULE)) {
             openFragment = ModuleFragment.newInstance(SENDER, username, collaborationId, itemSelected.getId());
-        }else{
-            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(),NOMODULE);
+        } else {
+            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(), NOMODULE);
         }
         changeFragment(openFragment);
     }
 
-    private void changeFragment(Fragment fragment){
+    private void changeFragment(Fragment fragment) {
         if (fragment != null) {
             FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
@@ -257,4 +267,48 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        deletingObjectDialog(listName,position);
+        return true;
+    }
+
+    private void deletingObjectDialog(final CollaborationComponentInfo listName, final int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Warning - deleting "+listName.getType()+"!")
+                .setMessage("Are you sure you want to delete the "+listName.getType()+": "+ listName.getContent())
+                .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (listName.getType().equals(CollaborationComponentType.MODULE)) {
+                            deleteModule(((Project)collaboration).getModule(listName.getId()));
+                            moduleListAdapter.remove(moduleListAdapter.getItem(position));
+                            moduleListAdapter.notifyDataSetChanged();
+                        }else{
+                            deleteNote(collaboration.getNote(listName.getId()));
+                            noteListAdapter.remove(noteListAdapter.getItem(position));
+                            noteListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteNote(Note noteToDelete) {
+        new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
+                username, noteToDelete, UpdateMessageType.DELETION, collaborationId));
+    }
+
+    private void deleteModule(Module moduleToDelete) {
+        new SendMessageToServerTask(getContext()).execute(new ConcreteModuleUpdateMessage(
+                username, moduleToDelete, UpdateMessageType.DELETION, collaborationId));
+    }
 }
+
