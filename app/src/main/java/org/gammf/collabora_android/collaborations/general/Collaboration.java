@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.collaborations.general;
 
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.CollaborationType;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -60,4 +61,9 @@ public interface Collaboration {
      */
     boolean removeNote(String noteId);
 
+    /**
+     * Return the {@link CollaborationType} of the collaboration.
+     * @return the {@link CollaborationType} of the collaboration.
+     */
+    CollaborationType getCollaborationType();
 }

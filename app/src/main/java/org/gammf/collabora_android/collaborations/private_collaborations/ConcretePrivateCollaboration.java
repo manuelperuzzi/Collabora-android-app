@@ -4,6 +4,7 @@ import org.gammf.collabora_android.collaborations.general.AbstractCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 
 /**
  * @author Manuel Peruzzi
@@ -29,4 +30,8 @@ public class ConcretePrivateCollaboration extends AbstractCollaboration implemen
         return user;
     }
 
+    @Override
+    public CollaborationType getCollaborationType() {
+        return CollaborationType.PRIVATE;
+    }
 }
