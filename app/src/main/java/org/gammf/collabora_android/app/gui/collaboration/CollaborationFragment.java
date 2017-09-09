@@ -262,7 +262,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void deletingObjectDialog(final CollaborationComponentInfo listName){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Warning - deleting "+listName.getType()+"!")
-                .setMessage("Are you sure you want to delete the "+listName.getType()+": "+ listName.getContent())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage("Are you sure you want to delete the "+listName.getType()+": "+ listName.getContent()+" ? "+"(this operation cannot be undone)")
                 .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

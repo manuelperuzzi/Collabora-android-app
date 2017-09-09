@@ -199,9 +199,10 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
     }
 
     private void deletingCollaborationDialog(final Collaboration collaborationToDelete){
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mainActivity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setTitle("Warning - deleting collaboration!")
-                .setMessage("Are you sure you want to delete the collaboration: " + collaborationToDelete.getName())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage("Are you sure you want to delete the collaboration: " + collaborationToDelete.getName()+" ? "+"(this operation cannot be undone)")
                 .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -214,7 +215,7 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-        android.app.AlertDialog dialog = builder.create();
+        AlertDialog dialog = builder.create();
         dialog.show();
     }
 
