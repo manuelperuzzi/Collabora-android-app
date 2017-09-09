@@ -27,7 +27,6 @@ import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
@@ -37,6 +36,7 @@ import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -104,12 +104,10 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        if (collaboration instanceof SharedCollaboration) {
-            final AccessRight right = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
-            if (! right.equals(AccessRight.ADMIN)) {
-                MenuItem item = menu.findItem(R.id.action_remove);
-                item.setVisible(false);
-            }
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE) ||
+                !((SharedCollaboration)collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
+            final MenuItem item = menu.findItem(R.id.action_remove);
+            item.setVisible(false);
         }
     }
 
@@ -165,7 +163,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tab1.setContent(R.id.i_layout_2);
         tab2.setIndicator(getResources().getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
-        if(collaboration instanceof Project) {
+        if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             tabHost.addTab(tab1);
             btnMenuAdd.setVisibility(View.VISIBLE);
             btnAddNote.setVisibility(View.INVISIBLE);
@@ -219,7 +217,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void fillModulesList() {
-        if (collaboration instanceof Project) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             for (final Module module: ((Project) collaboration).getAllModules()) {
                 moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
             }
