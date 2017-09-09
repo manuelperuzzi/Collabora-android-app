@@ -66,8 +66,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private String username;
     private String collaborationId;
     private Collaboration collaboration;
-    private DrawerItemCustomAdapter moduleListAdapter;
-    private DrawerItemCustomAdapter noteListAdapter;
 
     public CollaborationFragment() {
         setHasOptionsMenu(true);
@@ -175,19 +173,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             fillModulesList();
         }
         tabHost.addTab(tab2);
-
-        if (collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
-            }
-        }
-
-        /*if(sender.equals(CALLER_NOTECREATION))
-        {
-            //FRAGMENT CALLED BY CreateNoteFragment:
-            //  -things to do: add note
-            addNewNote();
-        }*/
-
         fillNotesList();
 
         btnAddNote.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +206,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             }
         }
 
-        noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+        DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
         notesList.setOnItemLongClickListener(this);
@@ -234,7 +219,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             }
         }
 
-        this.moduleListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, moduleItems);
+        DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(this);
         moduleList.setOnItemLongClickListener(this);

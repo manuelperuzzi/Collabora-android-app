@@ -95,38 +95,6 @@ public class MainActivity extends AppCompatActivity
         this.networkManager.addNetworkChangeObserver(this);
 
         try {
-
-            LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
-            LocalStorageUtils.deleteUserInFile(getApplicationContext());
-
-            User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
-            final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
-            Collaboration temporaryPCollab = new ConcretePrivateCollaboration("cdcrec3r3r","private peru13","peru13");
-            Project tempoprojectcollab = new ConcreteProject("cdc3ec3r3r","progettone");
-            tempoprojectcollab.addMember(new SimpleCollaborationMember("peru13", AccessRight.READ));
-            Module module1 = new ConcreteModule("334343", "blabla1","toDo");
-            Module module2 = new ConcreteModule("434343", "blabla2","toDo");
-            module1.addNote(new SimpleNoteBuilder("module1note1",new NoteState("toDo","peru13")).setNoteID("4343434324343").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            module1.addNote(new SimpleNoteBuilder("module1note2",new NoteState("toDo","peru13")).setNoteID("342234324234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            ArrayList<String> preNote = new ArrayList<>();
-            preNote.add("4343434324343");
-            preNote.add("342234324234234");
-            module1.addNote(new SimpleNoteBuilder("popospetz",new NoteState("toDo","peru13")).setNoteID("3423442234222").setLocation(new NoteLocation(43.4343,45.3434)).setPreviousNotes(preNote).buildNote());
-            module2.addNote(new SimpleNoteBuilder("module2note1",new NoteState("toDo","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-
-            tempoprojectcollab.addModule(module1);
-            tempoprojectcollab.addModule(module2);
-            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("toDo","peru13")).setNoteID("3232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("toDo","peru13")).setNoteID("3424234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio2",new NoteState("toDo","peru13")).setNoteID("5345354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio3",new NoteState("toDo","peru13")).setNoteID("6463453543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            manager.addCollaboration(new ConcreteShortCollaboration(temporaryPCollab));
-            manager.addCollaboration(new ConcreteShortCollaboration(tempoprojectcollab));
-            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
-            LocalStorageUtils.writeCollaborationToFile(getApplicationContext(), temporaryPCollab);
-            LocalStorageUtils.writeCollaborationToFile(getApplicationContext(), tempoprojectcollab);
-            LocalStorageUtils.writeShortCollaborationsToFile(getApplicationContext(), manager);
-
             user = LocalStorageUtils.readUserFromFile(getApplicationContext());
         } catch (final FileNotFoundException e) {
             Fragment fragment = LoginFragment.newInstance();
@@ -136,10 +104,7 @@ public class MainActivity extends AppCompatActivity
             leaveMenu();
         } catch (final JSONException | IOException e) {
             //TODO ?
-        } catch (MandatoryFieldMissingException e) {
-            e.printStackTrace();
         }
-
         this.navigationManager.refreshCollaborationLists();
     }
 
