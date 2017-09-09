@@ -139,12 +139,5 @@
         android:layout_alignEnd="@+id/listViewCollabMember"
         android:background="@drawable/add"
         android:layout_below="@+id/textView13"/>
-
-    <!--:app/src/main/res/layout/fragment_edit_collaboration.xml
-        android:backgroundTint="@android:color/transparent"
-        android:text="@string/editcollab_btnaddmember"
-        android:layout_above="@+id/listViewCollabMember"
-        android:layout_toEndOf="@+id/lblInsertContent"/>-->
-
-
+    
 </RelativeLayout>
