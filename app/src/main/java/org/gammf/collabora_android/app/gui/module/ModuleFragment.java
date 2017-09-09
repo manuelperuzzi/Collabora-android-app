@@ -19,7 +19,7 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
-import org.gammf.collabora_android.app.gui.collaboration.EditCollaborationFragment;
+import org.gammf.collabora_android.app.gui.collaboration.CollaborationInfoFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -113,14 +113,14 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
 
     /*
         Method for editcollaboration click on toolbar
-        trigger the @EditCollaborationFragment
+        trigger the @CollaborationInfoFragment
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here.
         int id = item.getItemId();
         if(id == R.id.action_editcollab){
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(username, this.collaborationId);
+            Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, this.collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }else if (id == R.id.action_editmodule){

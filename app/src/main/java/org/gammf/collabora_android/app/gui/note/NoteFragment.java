@@ -33,6 +33,7 @@ import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -118,7 +119,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
 
     /*
         Method for editcollaboration click on toolbar
-        trigger the @EditCollaborationFragment
+        trigger the @CollaborationInfoFragment
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -157,7 +158,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             }
             final TextView expiration = rootView.findViewById(R.id.expiration);
             if (note.getExpirationDate() != null) {
-                expiration.setText(note.getExpirationDate().toString());
+                expiration.setText(note.getExpirationDate().toString(DateTimeFormat.mediumDateTime()));
             }
             if(note.getPreviousNotes()!= null){
                 final List<Note> allNotes = new ArrayList<>();

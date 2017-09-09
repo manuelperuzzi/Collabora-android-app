@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
@@ -76,6 +77,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private String username;
     private Location location;
     private int year, month, day, hour, minute;
+
+    private boolean dateSet = false;
+    private boolean timeSet = false;
 
     public CreateNoteFragment() {
         setHasOptionsMenu(false);
@@ -251,24 +255,29 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         if (insertedNoteName.equals("")) {
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
-            if (isDateTimeValid()) {
-                if(previousNotesSelected.isEmpty())
+            if (this.dateSet && this.timeSet && isDateTimeValid()) {
+                if (previousNotesSelected.isEmpty())
                     addNote(insertedNoteName, location, new NoteState(noteState, null),
-                            new DateTime(year, month, day, hour, minute),null);
+                            new DateTime(year, month, day, hour, minute), null);
                 else
                     addNote(insertedNoteName, location, new NoteState(noteState, null),
-                            new DateTime(year, month, day, hour, minute),previousNotesSelected);
-            } else {
-                if(previousNotesSelected.isEmpty())
+                            new DateTime(year, month, day, hour, minute), previousNotesSelected);
+            } else if (!this.dateSet && !this.dateSet) {
+                if (previousNotesSelected.isEmpty())
                     addNote(insertedNoteName, location, new NoteState(noteState, null), null, null);
                 else
                     addNote(insertedNoteName, location, new NoteState(noteState, null), null, previousNotesSelected);
+
+            } else {
+                Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private boolean isDateTimeValid() {
-        return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
+        final DateTime now = new DateTime();
+        final DateTime expiration = new DateTime(year, month, day, hour, minute);
+        return expiration.compareTo(now) > 0;
     }
 
     private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration, final List<String> previousNotes){
@@ -291,6 +300,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         this.year = year;
         this.month = month + 1;
         this.day = day;
+        this.dateSet = true;
         showDate();
     }
 
@@ -298,6 +308,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     public void onTimeSet(final TimePicker timePicker, final int hour, final int minute) {
         this.hour = hour;
         this.minute = minute;
+        this.timeSet = true;
         showTime();
     }
 

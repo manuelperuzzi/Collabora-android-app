@@ -1,7 +1,10 @@
 package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.rabbitmq.client.AMQP;
@@ -25,9 +28,24 @@ import java.io.IOException;
 
 public abstract class SubscriberService extends Service{
 
+    private BroadcastReceiver deletionReceiver;
+
     protected Channel channel;
     protected String queueName;
     protected String consumerTag;
+
+    public void onCreate() {
+        this.deletionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
+                    channel.queueDelete(queueName);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
 
     /**
      * In this method, RabbitMQ configuration is performed and a basic consumer is registered on the user's queue.
@@ -39,6 +57,7 @@ public abstract class SubscriberService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        LocalBroadcastManager.getInstance(this).registerReceiver(deletionReceiver, new IntentFilter("subscriber.service.deletion"));
         new SubscriberThread(intent).start();
 
         return START_REDELIVER_INTENT;

@@ -112,10 +112,7 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
                 builder.setMessage("If you press Continue, you will logout from Collabora, are you sure?");
                 builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Fragment fragment = LoginFragment.newInstance();
-                        FragmentManager fragmentManager = mainActivity.getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                        mainActivity.deleteUserInfo();
+                        mainActivity.onUserLogout();
                     }
                 });
                 builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {

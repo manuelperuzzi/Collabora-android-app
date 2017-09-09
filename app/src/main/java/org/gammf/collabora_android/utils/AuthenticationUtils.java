@@ -3,7 +3,7 @@ package org.gammf.collabora_android.utils;
 
 public class AuthenticationUtils {
 
-    private static final String SERVERIP = "http://192.168.1.111";
+    private static final String SERVERIP = "http://192.168.1.98";
 
     private static final String SERVERPORT = ":9894";
 
