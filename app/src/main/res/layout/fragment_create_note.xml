@@ -38,7 +38,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_below="@+id/spinnerResponsible"
         android:layout_marginTop="11dp"
         android:layout_toEndOf="@+id/imageView3"
         android:paddingEnd="25dp"
@@ -192,6 +192,39 @@
         android:layout_alignStart="@+id/txtNoteContent"
         android:layout_alignBottom="@+id/lblInsertContent"
         android:layout_toStartOf="@+id/textView10"/>
+
+    <TextView
+        android:id="@+id/textViewResponsible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:text="@string/note_responsible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="11dp"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_toEndOf="@+id/imgResponsible" />
+
+    <ImageView
+        android:id="@+id/imgResponsible"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/responsible32"
+        android:layout_alignTop="@+id/textViewResponsible"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_alignStart="@+id/imageView5" />
+
+    <Spinner
+        android:id="@+id/spinnerResponsible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView8"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_marginTop="11dp"
+        android:layout_toEndOf="@+id/textViewResponsible"
+        android:layout_alignEnd="@id/btnSetDateExpiration" />
 
     <Spinner
         android:id="@+id/spinnerNewNoteState"

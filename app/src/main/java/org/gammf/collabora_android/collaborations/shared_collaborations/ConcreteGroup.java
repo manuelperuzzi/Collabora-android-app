@@ -1,5 +1,7 @@
 package org.gammf.collabora_android.collaborations.shared_collaborations;
 
+import org.gammf.collabora_android.utils.CollaborationType;
+
 /**
  * @author Manuel Peruzzi
  * A simple implementation of a collaboration of type group.
@@ -15,4 +17,8 @@ public class ConcreteGroup extends AbstractSharedCollaboration implements Group 
         super(id, name);
     }
 
+    @Override
+    public CollaborationType getCollaborationType() {
+        return CollaborationType.GROUP;
+    }
 }
