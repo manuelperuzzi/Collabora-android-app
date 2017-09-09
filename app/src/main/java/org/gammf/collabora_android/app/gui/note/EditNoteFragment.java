@@ -308,7 +308,7 @@ public class EditNoteFragment extends Fragment implements
     }
 
     private void setEditResponsibleGone(final View rootView) {
-        rootView.findViewById(R.id.imgResponsible).setVisibility(View.GONE);
+        rootView.findViewById(R.id.imgEditResponsible).setVisibility(View.GONE);
         rootView.findViewById(R.id.textViewEditResponsible).setVisibility(View.GONE);
         rootView.findViewById(R.id.spinnerEditResponsible).setVisibility(View.GONE);
 

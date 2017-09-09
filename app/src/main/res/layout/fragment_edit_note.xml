@@ -81,7 +81,7 @@
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/state32"
                 android:layout_alignTop="@+id/textView22"
-                android:layout_alignStart="@+id/imgExpiration"/>
+                android:layout_alignStart="@+id/imgResponsible"/>
 
             <ImageView
                 android:id="@+id/imageView13"
@@ -150,7 +150,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/txtEditDateSelected"
                 android:layout_below="@+id/mapViewLocationEdit"
-                android:layout_marginVertical="28dp"
                 android:layout_marginTop="28dp"
                 android:layout_toEndOf="@+id/textViewEditResponsible"
                 android:minWidth="200dp" />
@@ -183,10 +182,10 @@
                 android:textSize="20sp"
                 android:layout_marginTop="28dp"
                 android:layout_below="@+id/mapViewLocationEdit"
-                android:layout_toEndOf="@+id/imgResponsible" />
+                android:layout_toEndOf="@+id/imgEditResponsible" />
 
             <ImageView
-                android:id="@+id/imgResponsible"
+                android:id="@+id/imgEditResponsible"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_alignBottom="@+id/textViewEditResponsible"
