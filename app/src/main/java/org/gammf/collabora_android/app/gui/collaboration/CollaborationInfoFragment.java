@@ -86,21 +86,8 @@ public class CollaborationInfoFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.editdone_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_editdone) {
-            checkUserInput();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,7 +121,14 @@ public class CollaborationInfoFragment extends Fragment {
                 dialog.show(getActivity().getSupportFragmentManager(), ADD_MEMBER_DIALOG_TAG);
             }
         });
-        final AccessRight userRight = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
+
+        final AccessRight userRight;
+        if (collaboration instanceof PrivateCollaboration) {
+            userRight = AccessRight.ADMIN;
+        } else {
+            userRight = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
+        }
+
         final boolean isCollaborationEditable = userRight.equals(AccessRight.ADMIN) && collaboration instanceof SharedCollaboration;
         if (! isCollaborationEditable) {
             btnEditCollaborationName.setVisibility(View.GONE);
