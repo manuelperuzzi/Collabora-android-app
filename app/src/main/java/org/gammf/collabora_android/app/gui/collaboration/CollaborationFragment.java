@@ -270,11 +270,11 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
         final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
-        deletingObjectDialog(listName,position);
+        deletingObjectDialog(listName);
         return true;
     }
 
-    private void deletingObjectDialog(final CollaborationComponentInfo listName, final int position){
+    private void deletingObjectDialog(final CollaborationComponentInfo listName){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Warning - deleting "+listName.getType()+"!")
                 .setMessage("Are you sure you want to delete the "+listName.getType()+": "+ listName.getContent())
@@ -283,12 +283,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
                     public void onClick(DialogInterface dialog, int id) {
                         if (listName.getType().equals(CollaborationComponentType.MODULE)) {
                             deleteModule(((Project)collaboration).getModule(listName.getId()));
-                            moduleListAdapter.remove(moduleListAdapter.getItem(position));
-                            moduleListAdapter.notifyDataSetChanged();
                         }else{
                             deleteNote(collaboration.getNote(listName.getId()));
-                            noteListAdapter.remove(noteListAdapter.getItem(position));
-                            noteListAdapter.notifyDataSetChanged();
                         }
                     }
                 })
