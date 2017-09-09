@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="org.gammf.collabora_android.app.gui.collaboration.ChooseMemberActionDialogFragment">
+
+    <Button
+        android:id="@+id/btnEditMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorPrimary"
+        android:text="Edit member rights"/>
+
+    <Button
+        android:id="@+id/btnRemoveMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_alignStart="@+id/btnEditMember"
+        android:layout_below="@+id/btnEditMember"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorPrimary"
+        android:text="Remove member"/>
+
+</RelativeLayout>

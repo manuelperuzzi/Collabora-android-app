@@ -29,17 +29,21 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
+import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
@@ -79,7 +83,9 @@ public class EditNoteFragment extends Fragment implements
     private MapManager mapManager;
 
     private Note note;
+    private Collaboration collaboration;
     private int year, month, day, hour, minute ;
+    private String responsible = "";
     private boolean dateSet = false;
     private boolean timeSet = false;
 
@@ -118,7 +124,7 @@ public class EditNoteFragment extends Fragment implements
         }
 
         try {
-            final Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             note = collaboration.getNote(noteId);
             if (note.getLocation() != null) {
                 this.mapManager = new MapManager(note.getLocation(), getContext());
@@ -131,6 +137,7 @@ public class EditNoteFragment extends Fragment implements
                     note.modifyLocation(location);
                 }
             });
+            this.responsible = note.getState().getCurrentResponsible();
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -168,7 +175,7 @@ public class EditNoteFragment extends Fragment implements
         return rootView;
     }
 
-    private void initializeGuiComponent(View rootView){
+    private void initializeGuiComponent(final View rootView){
         txtContentNoteEdited = rootView.findViewById(R.id.txtNoteContentEdit);
         txtContentNoteEdited.setText(note.getContent());
         txtContentNoteEdited.requestFocus();
@@ -176,20 +183,24 @@ public class EditNoteFragment extends Fragment implements
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this.mapManager);
 
-        final StateSpinnerManager spinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
+        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
-        spinnerManager.addObserver(new Observer<String>() {
+        stateSpinnerManager.addObserver(new Observer<String>() {
             @Override
             public void notify(final String newState) {
                 noteStateEdited = newState;
             }
         });
 
+        this.createResponsibleSpinnerManager(rootView);
+
         dateViewEdited = rootView.findViewById(R.id.txtEditDateSelected);
         timeViewEdited = rootView.findViewById(R.id.txtEditTimeSelected);
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnEditDateExpiration);
         ImageButton btnSetTimeExpiration = rootView.findViewById(R.id.btnEditTimeExpiration);
         if (note.getExpirationDate() != null) {
+            this.dateSet = true;
+            this.timeSet = true;
             dateViewEdited.setText(note.getExpirationDate().toLocalDate().toString());
             timeViewEdited.setText(note.getExpirationDate().toLocalTime().toString());
             btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
@@ -325,7 +336,7 @@ public class EditNoteFragment extends Fragment implements
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
             } else if (!this.dateSet && !this.timeSet) {
-                note.modifyState(new NoteState(noteStateEdited, null));
+                note.modifyState(new NoteState(noteStateEdited, responsible));
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
@@ -377,5 +388,35 @@ public class EditNoteFragment extends Fragment implements
     }
     private void showTime() {
         timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
+    }
+
+    private void createResponsibleSpinnerManager(final View rootView) {
+        if (collaboration.getCollaborationType() != CollaborationType.PRIVATE &&
+                ((SharedCollaboration)collaboration).getMember(username).getAccessRight() == AccessRight.ADMIN) {
+            final ResponsibleSpinnerManager responsibleSpinnerManager = new ResponsibleSpinnerManager(
+                    note.getState().getCurrentResponsible() == null ? ResponsibleSpinnerManager.NO_RESPONSIBLE : note.getState().getCurrentResponsible(),
+                    rootView, R.id.spinnerEditResponsible, this.collaborationId
+            );
+
+            responsibleSpinnerManager.addObserver(new Observer<String>() {
+                @Override
+                public void notify(String newResponsible) {
+                    if (newResponsible.equals(ResponsibleSpinnerManager.NO_RESPONSIBLE)) {
+                        responsible = null;
+                    } else {
+                        responsible = newResponsible;
+                    }
+                }
+            });
+        } else {
+            this.setEditResponsibleGone(rootView);
+        }
+    }
+
+    private void setEditResponsibleGone(final View rootView) {
+        rootView.findViewById(R.id.imgEditResponsible).setVisibility(View.GONE);
+        rootView.findViewById(R.id.textViewEditResponsible).setVisibility(View.GONE);
+        rootView.findViewById(R.id.spinnerEditResponsible).setVisibility(View.GONE);
+
     }
 }

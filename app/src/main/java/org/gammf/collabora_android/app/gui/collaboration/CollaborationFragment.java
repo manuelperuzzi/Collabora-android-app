@@ -39,6 +39,10 @@ import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRightUtils;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
+import org.gammf.collabora_android.communication.update.general.UpdateMessage;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -109,6 +113,18 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        if (collaboration instanceof SharedCollaboration) {
+            final AccessRight right = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
+            if (! right.equals(AccessRight.ADMIN)) {
+                MenuItem item = menu.findItem(R.id.action_remove);
+                item.setVisible(false);
+            }
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         if (collaboration instanceof Project || collaboration instanceof Group) {
@@ -133,13 +149,16 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, collaborationId);
             changeFragment(editCollabFragment);
             return true;
+        } else if (id == R.id.action_remove) {
+            final UpdateMessage message = new ConcreteCollaborationUpdateMessage(username, collaboration, UpdateMessageType.DELETION);
+            new SendMessageToServerTask(getContext()).execute(message);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        getActivity().setTitle(collaboration.getName());
         View rootView = inflater.inflate(R.layout.fragment_collaboration, container, false);
 
         notesList = rootView.findViewById(R.id.notesListView);

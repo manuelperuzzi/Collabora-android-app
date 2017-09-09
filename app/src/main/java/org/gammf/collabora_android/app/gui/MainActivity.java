@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     private PermissionManager permissionManager;
     private NetworkChangeManager networkManager = NetworkChangeManager.getInstance();
     private BroadcastReceiver receiver = new MainActivityReceiver();
-
+    private boolean isNetworkManagerReceiverRegistered = false;
 
     public static String getReceiverIntentFilter() {
         return MainActivityReceiver.INTENT_FILTER;
@@ -98,13 +98,13 @@ public class MainActivity extends AppCompatActivity
             final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, this.navigationManager.getDrawer(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
-
             this.navigationManager.getDrawer().addDrawerListener(toggle);
             toggle.syncState();
             this.navigationManager.refreshCollaborationLists();
 
             this.networkManager.addNetworkChangeObserver(this);
             this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+            this.isNetworkManagerReceiverRegistered = true;
         } catch (final FileNotFoundException e) {
             final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);
@@ -148,9 +148,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("FLUSSOANDROID", "onDestry");
+        Log.i("FLUSSOANDROID", "onDestroy");
         this.networkManager.clearObservers();
-        this.unregisterReceiver(this.networkManager);
+        if (isNetworkManagerReceiverRegistered) {
+            this.unregisterReceiver(this.networkManager);
+        }
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
@@ -175,7 +177,11 @@ public class MainActivity extends AppCompatActivity
                 super.onBackPressed();
             }
         } else {
+            final int fragmentCount = getSupportFragmentManager().getBackStackEntryCount();
             getSupportFragmentManager().popBackStack();
+            if (fragmentCount == 1) {
+                setTitle("Collabora");
+            }
         }
     }
 
@@ -231,12 +237,12 @@ public class MainActivity extends AppCompatActivity
 
     private void openCollaborationFragment(final ShortCollaboration collaboration) {
         final Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collaboration.getId());
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
 
-        fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        setTitle(collaboration.getName());
+        //fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.addToBackStack(BACKSTACK_FRAG);
+        fragmentManager.replace(R.id.content_frame, fragment);
+        fragmentManager.commit();
     }
 
     private class MainActivityReceiver extends BroadcastReceiver {
@@ -275,8 +281,14 @@ public class MainActivity extends AppCompatActivity
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     final String collaborationId = intent.getStringExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED);
                     if (collaborationId != null) {
-                        openCollaborationFragment(LocalStorageUtils
-                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                        if (intent.getStringExtra(IntentConstants.COLLABORATION_DELETION) != null) {
+                            onBackPressed();
+                            navigationManager.refreshCollaborationLists();
+                            navigationManager.openNavigator();
+                        } else {
+                            openCollaborationFragment(LocalStorageUtils
+                                    .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                        }
                     } else {
                         navigationManager.refreshCollaborationLists();
                         navigationManager.openNavigator();

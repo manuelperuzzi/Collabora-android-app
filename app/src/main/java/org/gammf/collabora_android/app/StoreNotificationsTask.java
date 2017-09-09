@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
@@ -15,6 +16,7 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
@@ -41,6 +43,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     private GeofenceManager geoManager;
     private Alarm alarm;
     private String collaborationId;
+    private UpdateMessageType updateType = null;
 
     /**
      * Async task constructor.
@@ -58,7 +61,9 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
         switch (message.getMessageType()) {
             case UPDATE:
-                return handleUpdateMessage((UpdateMessage)message);
+                final UpdateMessage msg = (UpdateMessage) message;
+                updateType = msg.getUpdateType();
+                return handleUpdateMessage(msg);
             case COLLABORATION:
                 return handleCollaborationMessage((CollaborationMessage)message);
             case ALL_COLLABORATIONS:
@@ -230,6 +235,10 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
             if(collaborationId != null) {
                 intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+                if (updateType == UpdateMessageType.DELETION) {
+                    Log.i("FLUSSOANDROID", updateType.name());
+                    intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
+                }
             }
             intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

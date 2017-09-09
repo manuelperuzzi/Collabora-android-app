@@ -5,7 +5,14 @@
     <item
         android:id="@+id/action_edit"
         android:iconTint="@android:color/white"
-        android:title="@string/action_editcollab"
+        android:title="Collaboration info"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_remove"
+        android:iconTint="@android:color/white"
+        android:title="Remove collaboration"
         android:orderInCategory="100"
         app:showAsAction="never"/>
 

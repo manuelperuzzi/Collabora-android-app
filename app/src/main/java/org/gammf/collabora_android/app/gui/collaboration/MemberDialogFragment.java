@@ -89,16 +89,19 @@ public class MemberDialogFragment extends DialogFragment {
 
     private void initializeDialogGuiComponent(final View rootView) {
         txtUsername = rootView.findViewById(R.id.txtInsertUsername);
+        final Button addButton = rootView.findViewById(R.id.btnPositiveAddMember);
         if (previousMemberUsername != null) {
             txtUsername.setText(previousMemberUsername);
             txtUsername.setKeyListener(null);
+            addButton.setText("Edit");
+        } else {
+            addButton.setText("Add");
         }
         initializeSpinnerComponent(rootView);
 
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        final Button addButton = rootView.findViewById(R.id.btnPositiveAddMember);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

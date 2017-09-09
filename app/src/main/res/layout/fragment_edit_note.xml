@@ -44,21 +44,24 @@
                 android:text="@string/editnote_dateexpiration"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:layout_below="@+id/txtResponsibleEdit"
-                android:layout_alignEnd="@+id/txtNoteContentEdit"/>
+                android:textSize="20sp"
+                android:layout_above="@+id/txtEditDateSelected"
+                android:layout_toEndOf="@+id/imageView13"/>
 
             <TextView
                 android:id="@+id/textView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/spinnerEditResponsible"
+                android:layout_marginTop="28dp"
+                android:layout_toEndOf="@+id/imageView12"
                 android:gravity="center_vertical"
                 android:paddingEnd="15dp"
                 android:paddingStart="5dp"
                 android:text="@string/change_state"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@android:color/black"
-                android:layout_below="@+id/txtResponsibleEdit"
-                android:layout_toEndOf="@+id/imgExpiration"/>
+                android:textSize="20sp"/>
 
             <ImageView
                 android:id="@+id/imageView12"
@@ -67,18 +70,19 @@
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/state32"
                 android:layout_alignTop="@+id/textView22"
-                android:layout_alignStart="@+id/imgExpiration"/>
+                android:layout_alignStart="@+id/imgResponsible"/>
 
-            <ImageView
-                android:id="@+id/imageView13"
-                android:layout_width="30dp"
-                android:layout_height="25dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/expirationtime32"
-                android:layout_below="@+id/txtResponsibleEdit"
-                android:layout_toStartOf="@+id/textView23"/>
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/expirationtime32"
+        android:layout_alignTop="@+id/textView23"
+        android:layout_centerHorizontal="true"/>
 
-            <ImageButton
+
+    <ImageButton
                 android:id="@+id/btnEditTimeExpiration"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -129,18 +133,17 @@
                 android:layout_alignStart="@+id/imageView13"
                 android:layout_marginStart="19dp"/>
 
-            <EditText
-                android:id="@+id/txtResponsibleEdit"
-                style="@style/Widget.AppCompat.AutoCompleteTextView"
-                android:layout_width="wrap_content"
+
+            <Spinner
+                android:id="@+id/spinnerEditResponsible"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/txtEditDateSelected"
                 android:layout_below="@+id/mapViewLocationEdit"
-                android:layout_toEndOf="@+id/textView6"
-                android:gravity="center_horizontal"
-                android:minWidth="200dp"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                android:layout_marginTop="28dp"
+                android:layout_toEndOf="@+id/textViewEditResponsible"
+                android:minWidth="200dp" />
+
 
             <FrameLayout
                 android:id="@+id/place_autocomplete_fragment_edit"
@@ -157,29 +160,29 @@
                 android:layout_below="@+id/place_autocomplete_fragment_edit"/>
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/textViewEditResponsible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/txtResponsibleEdit"
-                android:layout_alignTop="@+id/txtResponsibleEdit"
-                android:layout_toEndOf="@+id/imgExpiration"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"
                 android:paddingStart="5dp"
                 android:text="@string/note_responsible"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:layout_marginTop="28dp"
+                android:layout_below="@+id/mapViewLocationEdit"
+                android:layout_toEndOf="@+id/imgEditResponsible" />
 
             <ImageView
-                android:id="@+id/imgExpiration"
+                android:id="@+id/imgEditResponsible"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_alignBottom="@+id/textView6"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/textView6"
-                android:layout_marginStart="10dp"
+                android:layout_alignBottom="@+id/textViewEditResponsible"
+                android:layout_alignTop="@+id/textViewEditResponsible"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/responsible32"/>
+                app:srcCompat="@drawable/responsible32"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -221,6 +224,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/textView22"
                 android:layout_alignStart="@+id/imageView12"
+                android:layout_marginTop="28dp"
                 android:layout_alignTop="@+id/txtEditDateSelected"/>
 
 </RelativeLayout>

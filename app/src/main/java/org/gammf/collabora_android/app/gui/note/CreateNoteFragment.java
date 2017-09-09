@@ -26,12 +26,14 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
+import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -40,6 +42,8 @@ import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
@@ -73,9 +77,11 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private MapManager mapManager;
 
     private String collaborationId, moduleId;
+    private Collaboration collaboration;
 
     private String username;
     private Location location;
+    private String responsible;
     private int year, month, day, hour, minute;
 
     private boolean dateSet = false;
@@ -114,13 +120,18 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
-        this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
-        this.mapManager.addObserver(new Observer<Location>() {
-            @Override
-            public void notify(final Location newlocation) {
-                location = newlocation;
-            }
-        });
+        try {
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext().getApplicationContext(), collaborationId);
+            this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
+            this.mapManager.addObserver(new Observer<Location>() {
+                @Override
+                public void notify(final Location newlocation) {
+                    location = newlocation;
+                }
+            });
+        } catch (IOException | JSONException e) {
+            e.printStackTrace(); // TODO this exception will be deleted.
+        }
     }
 
     @Override
@@ -144,14 +155,16 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
-        final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
+        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
-        spinnerManager.addObserver(new Observer<String>() {
+        stateSpinnerManager.addObserver(new Observer<String>() {
             @Override
             public void notify(final String state) {
                 noteState = state;
             }
         });
+
+        this.createResponsibleSpinnerManager(rootView);
 
         final FloatingActionButton btnAddNote = rootView.findViewById(R.id.btnAddNote);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +280,6 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                     addNote(insertedNoteName, location, new NoteState(noteState, null), null, null);
                 else
                     addNote(insertedNoteName, location, new NoteState(noteState, null), null, previousNotesSelected);
-
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }
@@ -318,5 +330,33 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
 
     private void showTime(){
         timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
+    }
+
+    private void createResponsibleSpinnerManager(final View rootView) {
+        if (collaboration.getCollaborationType() != CollaborationType.PRIVATE &&
+                ((SharedCollaboration)collaboration).getMember(username).getAccessRight() == AccessRight.ADMIN) {
+            new ResponsibleSpinnerManager(
+                    ResponsibleSpinnerManager.NO_RESPONSIBLE,
+                    rootView, R.id.spinnerResponsible, this.collaborationId
+            ).addObserver(new Observer<String>() {
+                @Override
+                public void notify(String newResponsible) {
+                    if (newResponsible.equals(ResponsibleSpinnerManager.NO_RESPONSIBLE)) {
+                        responsible = null;
+                    } else {
+                        responsible = newResponsible;
+                    }
+                }
+            });
+        } else {
+            this.setEditResponsibleGone(rootView);
+        }
+    }
+
+    private void setEditResponsibleGone(final View rootView) {
+        rootView.findViewById(R.id.imgResponsible).setVisibility(View.GONE);
+        rootView.findViewById(R.id.textViewResponsible).setVisibility(View.GONE);
+        rootView.findViewById(R.id.spinnerResponsible).setVisibility(View.GONE);
+
     }
 }
