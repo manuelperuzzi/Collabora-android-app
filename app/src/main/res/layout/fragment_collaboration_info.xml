@@ -139,5 +139,5 @@
         android:layout_alignEnd="@+id/listViewCollabMember"
         android:background="@drawable/add"
         android:layout_below="@+id/textView13"/>
-    
+
 </RelativeLayout>
