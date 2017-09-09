@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,16 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.gammf.collabora_android.utils.CollaborationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.UserUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
@@ -118,14 +125,28 @@ public class LoginFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
-                    final JSONObject user = new JSONObject(new String(responseBody));
-                    LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(user));
+                    writeLoginInfoToFile(new JSONObject(new String(responseBody)));
+
+
                     final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
                     intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
                     LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                 } catch (JSONException | IOException | MandatoryFieldMissingException e) {
                     e.printStackTrace();
                 }
+            }
+
+            private void writeLoginInfoToFile(final JSONObject json) throws JSONException, IOException, MandatoryFieldMissingException {
+                LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(json.getJSONObject("user")));
+
+                final CollaborationsManager manager = new ConcreteCollaborationManager();
+                final JSONArray jCollaborations = json.getJSONArray("collaborations");
+                for (int i = 0; i < jCollaborations.length(); i++) {
+                    final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(jCollaborations.getJSONObject(i));
+                    manager.addCollaboration(new ConcreteShortCollaboration(collaboration));
+                    LocalStorageUtils.writeCollaborationToFile(getContext(), collaboration);
+                }
+                LocalStorageUtils.writeShortCollaborationsToFile(getContext(), manager);
             }
 
             @Override

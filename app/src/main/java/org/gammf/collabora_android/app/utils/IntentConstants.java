@@ -35,6 +35,7 @@ public final class IntentConstants {
      */
     public static final String TIMEOUT = "timeout";
 
+    public static final String COLLABORATION_DELETION = "collaboration-deletion";
 
     private IntentConstants() {}
 }
