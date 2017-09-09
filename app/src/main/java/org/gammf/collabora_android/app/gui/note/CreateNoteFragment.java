@@ -123,9 +123,9 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
 
-        final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
+        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
-        spinnerManager.addObserver(new Observer<String>() {
+        stateSpinnerManager.addObserver(new Observer<String>() {
             @Override
             public void notify(final String state) {
                 noteState = state;
