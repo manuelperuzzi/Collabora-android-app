@@ -93,10 +93,12 @@
     <string name="note_location">Location</string>
 
     <!-- Edit collaboration fragment -->
-    <string name="editcollab_title">Edit Collaboration</string>
-    <string name="editcollab_lblname">Insert new collaboration name</string>
-    <string name="editcollab_member">Members</string>
-    <string name="editcollab_btnaddmember">Add member</string>
+    <string name="collabInfo_title">Collaboration</string>
+    <string name="collabInfo_name_lbl">Name</string>
+    <string name="collabInfo_member_lbl">Members</string>
+    <string name="collabInfo_member_btn">Add member</string>
+    <string name="memberfrag_lblname">Username</string>
+    <string name="memeberfrag_lblright">Access right</string>
 
     <!-- Edit note fragment -->
     <string name="editnote_title">Edit Note</string>

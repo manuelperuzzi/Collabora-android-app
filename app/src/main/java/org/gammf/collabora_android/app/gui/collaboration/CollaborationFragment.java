@@ -103,7 +103,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     /*
         Method for editcollaboration click on toolbar
-        trigger the @EditCollaborationFragment
+        trigger the @CollaborationInfoFragment
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -111,7 +111,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = EditCollaborationFragment.newInstance(username, collaborationId);
+            Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }

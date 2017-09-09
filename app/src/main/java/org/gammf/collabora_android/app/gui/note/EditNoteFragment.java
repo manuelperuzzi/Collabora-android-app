@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.MapView;
@@ -61,7 +62,9 @@ public class EditNoteFragment extends Fragment implements
     private MapManager mapManager;
 
     private Note note;
-    private int year, month, day, hour, minute;
+    private int year, month, day, hour, minute ;
+    private boolean dateSet = false;
+    private boolean timeSet = false;
 
     public EditNoteFragment() {
         setHasOptionsMenu(true);
@@ -127,10 +130,10 @@ public class EditNoteFragment extends Fragment implements
         int id = item.getItemId();
 
         if (id == R.id.action_editdone) {
-            checkUserNoteUpdate();
-            return true;
+            if (checkUserNoteUpdate()) {
+                return true;
+            }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -210,25 +213,34 @@ public class EditNoteFragment extends Fragment implements
         myTimeListenerEdited = this;
     }
 
-    private void checkUserNoteUpdate(){
+    private boolean checkUserNoteUpdate(){
         String insertedNoteName = txtContentNoteEdited.getText().toString();
         if(insertedNoteName.equals("")){
             txtContentNoteEdited.setError(getResources().getString(R.string.fieldempty));
+            return false;
         }else{
             note.modifyContent(insertedNoteName);
-            if (isDateTimeValid()) {
+            if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
+            } else if (!this.dateSet && !this.timeSet) {
+                note.modifyState(new NoteState(noteStateEdited, null));
+            } else {
+                Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
+                return false;
             }
-            note.modifyState(new NoteState(noteStateEdited, null));
 
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
+            return true;
         }
     }
 
     private boolean isDateTimeValid() {
-        return year > 0 && month > 0 && day > 0 && hour >=0 && minute >= 0;
+        final DateTime now = new DateTime();
+        final DateTime expiration = new DateTime(year, month, day, hour, minute);
+        return expiration.compareTo(now) > 0;
     }
+
 
 
     @Override
@@ -241,6 +253,7 @@ public class EditNoteFragment extends Fragment implements
         this.year = year;
         this.month = month + 1;
         this.day = day;
+        this.dateSet = true;
         showDate();
     }
 
@@ -248,6 +261,7 @@ public class EditNoteFragment extends Fragment implements
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
+        this.timeSet = true;
         showTime();
     }
 

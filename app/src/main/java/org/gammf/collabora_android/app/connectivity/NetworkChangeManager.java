@@ -18,10 +18,10 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
 
     private static NetworkChangeManager instance;
 
-    private final Set<NetworkChangeObserver> listeners;
+    private final Set<NetworkChangeObserver> observers;
 
     private NetworkChangeManager() {
-        this.listeners = new HashSet<>();
+        this.observers = new HashSet<>();
     }
 
     /**
@@ -50,11 +50,15 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
     }
 
     public boolean addNetworkChangeObserver(final NetworkChangeObserver observer) {
-        return this.listeners.add(observer);
+        return this.observers.add(observer);
+    }
+
+    public void clearObservers() {
+        this.observers.clear();
     }
 
     private void notifyAllObservers(NetworkChange change) {
-        for(final NetworkChangeObserver listener : this.listeners) {
+        for(final NetworkChangeObserver listener : this.observers) {
             if(change.equals(NetworkChange.AVAILABLE)) {
                 listener.onNetworkAvailable();
             } else if(change.equals(NetworkChange.UNAVAILABLE)) {
