@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -18,6 +18,7 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
@@ -40,7 +41,8 @@ import java.util.Locale;
  */
 public class CollaborationInfoFragment extends Fragment {
 
-    private static final String MEMBER_DIALOG_TAG = "MemberDialogFragment";
+    private static final String ADD_MEMBER_DIALOG_TAG = "AddMemberDialogFragment";
+    private static final String CHOOSE_MEMBER_ACTION_DIALOG_TAG = "ChooseMemberActionDialogTag";
     private static final String EDIT_COLLABORATION_DIALOG_TAG = "EditCollaborationDialogTag";
 
     private static final String ARG_USERNAME = "username";
@@ -115,7 +117,6 @@ public class CollaborationInfoFragment extends Fragment {
         final TextView txtCollaborationType = rootView.findViewById(R.id.txtCollabType);
         txtCollaborationType.setText(new ConcreteShortCollaboration(collaboration).getCollaborationType().name());
         final ListView membersListView = rootView.findViewById(R.id.listViewCollabMember);
-        visualizeMembers(membersListView);
 
         final ImageButton btnEditCollaborationName = rootView.findViewById(R.id.btnEditCollaboration);
         btnEditCollaborationName.setOnClickListener(new View.OnClickListener() {
@@ -130,25 +131,44 @@ public class CollaborationInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final MemberDialogFragment dialog = MemberDialogFragment.addMemberInstance(collaboration.getId(), username);
-                dialog.show(getActivity().getSupportFragmentManager(), MEMBER_DIALOG_TAG);
+                dialog.show(getActivity().getSupportFragmentManager(), ADD_MEMBER_DIALOG_TAG);
             }
         });
-        if (! ((SharedCollaboration) collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
+        final AccessRight userRight = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
+        final boolean isCollaborationEditable = userRight.equals(AccessRight.ADMIN) && collaboration instanceof SharedCollaboration;
+        if (! isCollaborationEditable) {
             btnEditCollaborationName.setVisibility(View.GONE);
             btnAddMember.setVisibility(View.GONE);
         }
+        visualizeMembers(membersListView, isCollaborationEditable);
     }
 
-    private void visualizeMembers(final ListView membersListView) {
+    private void visualizeMembers(final ListView membersListView, final boolean isEditable) {
         final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
-        final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
-        Collections.sort(members, new MemberComparator());
-        for (final CollaborationMember cm: members) {
-            memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
+        if (collaboration instanceof PrivateCollaboration) {
+            memberItem.add(new CollaborationComponentInfo(username, username + " (" + AccessRight.ADMIN + ")", CollaborationComponentType.MEMBER));
+        } else {
+            final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
+            Collections.sort(members, new MemberComparator());
+            for (final CollaborationMember cm: members) {
+                memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
+            }
         }
 
         final DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.member_list_item, memberItem);
         membersListView.setAdapter(adapter);
+        if (isEditable) {
+            membersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    final CollaborationComponentInfo component = (CollaborationComponentInfo) adapterView.getItemAtPosition(i);
+                    final AccessRight memberRight = ((SharedCollaboration) collaboration).getMember(component.getId()).getAccessRight();
+                    final ChooseMemberActionDialogFragment dialog = ChooseMemberActionDialogFragment.newInstance(
+                            collaboration.getId(), username, component.getId(), memberRight.name());
+                    dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_MEMBER_ACTION_DIALOG_TAG);
+                }
+            });
+        }
     }
 
     private class MemberComparator implements Comparator<CollaborationMember> {
