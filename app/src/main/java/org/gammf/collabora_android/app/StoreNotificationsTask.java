@@ -17,6 +17,8 @@ import org.gammf.collabora_android.communication.allCollaborations.AllCollaborat
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
@@ -31,6 +33,8 @@ import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alfredo Maffi, Manuel Peruzzi
@@ -158,11 +162,14 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 }
                 break;
             case UPDATING:
+                final Set<ModuleNote> moduleNotes = storedCollaboration.getModule(message.getModule().getId()).getAllNotes();
                 storedCollaboration.removeModule(message.getModule().getId());
-                storedCollaboration.addModule(message.getModule());
-                for (Note note: message.getModule().getAllNotes()) {
+                final Module newModule = message.getModule();
+                for (final Note note: moduleNotes) {
+                    newModule.addNote(note);
                     AlarmAndGeofenceUtils.updateAlarmAndGeofences(context,note,this.alarm,this.geoManager);
                 }
+                storedCollaboration.addModule(newModule);
                 break;
             case DELETION:
                 storedCollaboration.removeModule(message.getModule().getId());
