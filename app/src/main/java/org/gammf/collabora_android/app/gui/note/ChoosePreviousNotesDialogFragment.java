@@ -66,7 +66,6 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final List<String> listItems = new ArrayList<>();
         final List<Note> allNotes = new ArrayList<>();
         final List<Integer> mSelectedItems = new ArrayList<>();
         try {
@@ -79,23 +78,10 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
                         allNotes.addAll(module.getAllNotes());
                 }
             }
-            if (noteId.equals(NONOTEID)) {
-                for (Note note : allNotes) {
-                    listItems.add(note.getContent());
-                }
-            } else {
-                for (Iterator<Note> iterator = allNotes.iterator(); iterator.hasNext(); ) {
-                    Note tmpNote = iterator.next();
-                    if (tmpNote.getNoteID().equals(noteId))
-                        iterator.remove();
-                    else
-                        listItems.add(tmpNote.getContent());
-                }
-            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-        final CharSequence[] charSequenceItems = listItems.toArray(new CharSequence[listItems.size()]);
+        final CharSequence[] charSequenceItems = fillDialogList(allNotes).toArray(new CharSequence[fillDialogList(allNotes).size()]);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Select previous notes")
                 .setMultiChoiceItems(charSequenceItems, null,
@@ -135,5 +121,23 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
                     }
                 })
        .create();
+    }
+
+    private List<String> fillDialogList(List<Note> allNotes){
+        final List<String> listItems = new ArrayList<>();
+        if (noteId.equals(NONOTEID)) {
+            for (Note note : allNotes) {
+                listItems.add(note.getContent());
+            }
+        } else {
+            for (Iterator<Note> iterator = allNotes.iterator(); iterator.hasNext(); ) {
+                Note tmpNote = iterator.next();
+                if (tmpNote.getNoteID().equals(noteId))
+                    iterator.remove();
+                else
+                    listItems.add(tmpNote.getContent());
+            }
+        }
+        return listItems;
     }
 }
