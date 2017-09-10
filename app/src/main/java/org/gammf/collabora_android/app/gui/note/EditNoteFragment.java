@@ -333,9 +333,7 @@ public class EditNoteFragment extends Fragment implements
             note.modifyContent(insertedNoteName);
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
-            } else if (!this.dateSet && !this.timeSet) {
-
-            } else {
+            } else if (this.dateSet || this.timeSet) {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
             }

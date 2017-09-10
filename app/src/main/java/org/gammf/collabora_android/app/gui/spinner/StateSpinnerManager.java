@@ -31,6 +31,13 @@ public class StateSpinnerManager extends AbstractObservableSource<String> implem
 
     private final View rootView;
 
+    /**
+     * Builds the spinner manager.
+     * @param state the state of the module/note. If no state is selected use NO_STATE
+     * @param rootView the {@link View} where this spinner is.
+     * @param spinnerId the ID of the spinner, in the Android res file.
+     * @param collaborationType the type of the collaboration.
+     */
     public StateSpinnerManager(final String state, final View rootView, final int spinnerId, final CollaborationType collaborationType) {
         this.rootView = rootView;
         final Spinner spinnerEditState = rootView.findViewById(spinnerId);

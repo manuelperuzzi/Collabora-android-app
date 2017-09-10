@@ -195,9 +195,6 @@ public class MainActivity extends AppCompatActivity
     /**
      * method used to delete all LocalStorage informations
      */
-    /**
-     * method used to delete all LocalStorage informations
-     */
     public void onUserLogout(){
         this.navigationManager.closeNavigator();
         LocalStorageUtils.deleteUserInFile(getApplicationContext());
