@@ -262,64 +262,6 @@ public class EditNoteFragment extends Fragment implements
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                /*final List<String> listItems = new ArrayList<>();
-                final List<Note> allNotes = new ArrayList<>();
-                final List<Integer> mSelectedItems = new ArrayList<>();
-                try {
-                    Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-                    if (moduleId.equals(NOMODULE)) {
-                        allNotes.addAll(collaboration.getAllNotes());
-                    }else{
-                        for (Module module: ((ConcreteProject)collaboration).getAllModules()){
-                            if(module.getId().equals(moduleId))
-                                allNotes.addAll(module.getAllNotes());
-                        }
-                    }
-                    for (Iterator<Note> iterator = allNotes.iterator(); iterator.hasNext(); ) {
-                        Note tmpNote = iterator.next();
-                        if(tmpNote.getNoteID().equals(noteId))
-                            iterator.remove();
-                        else
-                            listItems.add(tmpNote.getContent());
-                    }
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-                final CharSequence[] charSequenceItems = listItems.toArray(new CharSequence[listItems.size()]);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Select previous notes")
-                        .setMultiChoiceItems(charSequenceItems, null,
-                                new DialogInterface.OnMultiChoiceClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which,
-                                                        boolean isChecked) {
-                                        if (isChecked) {
-                                            mSelectedItems.add(which);
-                                        } else if (mSelectedItems.contains(which)) {
-                                            mSelectedItems.remove(Integer.valueOf(which));
-                                        }
-                                    }
-                                })
-                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                noteItems.clear();
-                                previousNotesSelected.clear();
-                                for (int position: mSelectedItems) {
-                                    previousNotesSelected.add(allNotes.get(position).getNoteID());
-                                    noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE));
-                                }
-                                final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
-                                previousNotesList.setAdapter(noteListAdapter);
-                            }
-                        })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();*/
                 final ChoosePreviousNotesDialogFragment dialog = ChoosePreviousNotesDialogFragment.newInstance(
                         collaborationId, moduleId,noteItems , (ArrayList<String>) previousNotesSelected, noteId);
                 dialog.setTargetFragment(fragment, REQUEST_CODE);
