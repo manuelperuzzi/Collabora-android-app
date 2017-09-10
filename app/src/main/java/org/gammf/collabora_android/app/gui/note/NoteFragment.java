@@ -25,13 +25,9 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -54,7 +50,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
     private static final String ARG_MODULEID = "moduleName";
-    private static final String NOMODULE = "nomodule";
 
     private String username;
     private String collaborationId,moduleId;
@@ -65,9 +60,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private MapManager mapManager;
     private ProgressBar progressBarState;
     private TextView stateTextView;
-    private TextView noPreviousNoteView;
     private ArrayList<CollaborationComponentInfo> noteItems;
-    private CollaborationMember member;
 
     public NoteFragment() {
         setHasOptionsMenu(true);
@@ -96,9 +89,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         try {
             this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             this.note = collaboration.getNote(noteId);
-            if(collaboration instanceof Project || collaboration instanceof Group){
-                this.member = AccessRightUtils.checkMemberAccess(collaboration,username);
-            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -146,7 +136,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         try {
             ((TextView) rootView.findViewById(R.id.contentNote)).setText(note.getContent());
             progressBarState = rootView.findViewById(R.id.progressBarState);
-            this.noPreviousNoteView = rootView.findViewById(R.id.noPNote);
+            final TextView noPreviousNoteView = rootView.findViewById(R.id.noPNote);
             this.stateTextView = rootView.findViewById(R.id.lblState);
             this.stateTextView.setText(note.getState().getCurrentState());
 
@@ -171,8 +161,9 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
                 final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
                 previousNotesList.setAdapter(noteListAdapter);
                 previousNotesList.setOnItemClickListener(this);
-            }else
+            } else {
                 noPreviousNoteView.setText(R.string.nonoteinserted);
+            }
             this.mapManager = new MapManager(note.getLocation(), this.getContext());
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
@@ -186,10 +177,10 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
-            fragmentTransaction2.replace(R.id.content_frame, fragment);
-            fragmentTransaction2.commit();
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.addToBackStack(BACKSTACK_FRAG);
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            fragmentTransaction.commit();
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
@@ -210,11 +201,8 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     /***
-     * DA SISTEMARE SIA LA CHIAMATA AL METODO CHE IL METODO STESSO
-     *
-     * La progress bar è da decidere come settare i vari stati in base al valore
-     *
-     * @param state stato della nota contenuto in @NoteProjectState
+     * Set the bar over the note title in different colors, based on the note state.
+     * @param state the note state.
      */
     private void setStateProgressBar(String state){
         switch(state) {

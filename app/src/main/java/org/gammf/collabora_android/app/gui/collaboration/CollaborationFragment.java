@@ -58,7 +58,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "collabfrag";
-    //private static final String CALLER_NOTECREATION = "notecreationfrag";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabid";
     private static final String ARG_USERNAME = "username";
@@ -257,10 +256,10 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     private void changeFragment(Fragment fragment) {
         if (fragment != null) {
-            FragmentTransaction fragmentTransaction2 = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction2.addToBackStack(BACKSTACK_FRAG);
-            fragmentTransaction2.replace(R.id.content_frame, fragment);
-            fragmentTransaction2.commit();
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.addToBackStack(BACKSTACK_FRAG);
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            fragmentTransaction.commit();
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }

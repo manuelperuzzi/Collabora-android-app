@@ -60,22 +60,6 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
         this(context);
         this.mainActivity = mainActivity;
 
-       /*final NavigationView navigationView = (NavigationView) this.mainActivity.findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        final ImageButton btnAddCollaborations = (ImageButton) this.mainActivity.findViewById(R.id.btnAddCollaborations);
-        btnAddCollaborations.setOnClickListener( new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                final DialogFragment dialog = CreateCollaborationDialogFragment.newInstance();
-                dialog.show(mainActivity.getSupportFragmentManager(), NEW_COLLABORATION_DIALOG_TAG);
-            }
-        });
-
-
-*/
-
         final NavigationView navigationView = (NavigationView) this.mainActivity.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -166,14 +150,6 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
         for (int i = 0; i < this.expandableListAdapter.getGroupCount(); i++) {
             this.expandableListView.expandGroup(i);
         }
-    }
-
-    public void lockHidden() {
-        this.getDrawer().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
-
-    public void unlock() {
-        this.getDrawer().setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     public DrawerLayout getDrawer() {

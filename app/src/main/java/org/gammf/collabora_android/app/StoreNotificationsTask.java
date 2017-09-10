@@ -35,7 +35,6 @@ import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
