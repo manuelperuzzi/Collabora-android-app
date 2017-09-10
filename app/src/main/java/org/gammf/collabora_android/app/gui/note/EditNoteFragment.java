@@ -1,10 +1,9 @@
 package org.gammf.collabora_android.app.gui.note;
 
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,11 +33,9 @@ import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Location;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteState;
@@ -51,7 +48,6 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -66,7 +62,11 @@ public class EditNoteFragment extends Fragment implements
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
     private static final String ARG_MODULEID = "moduleName";
-    private static final String NOMODULE = "nomodule";
+    private static final String ARG_PREVNOTE = "PREVNOTESELECTED";
+    private static final String ARG_NOTEITEMS = "NOTEITEMS";
+    private static final int REQUEST_CODE = 0;
+    private static final String CHOOSE_PREVIOUS_NOTE_DIALOG_TAG = "ChoosePreviousNotesDialogTag";
+    private EditNoteFragment fragment = this;
 
     private String username;
     private String noteStateEdited = "";
@@ -262,7 +262,7 @@ public class EditNoteFragment extends Fragment implements
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                final List<String> listItems = new ArrayList<>();
+                /*final List<String> listItems = new ArrayList<>();
                 final List<Note> allNotes = new ArrayList<>();
                 final List<Integer> mSelectedItems = new ArrayList<>();
                 try {
@@ -319,11 +319,26 @@ public class EditNoteFragment extends Fragment implements
                             }
                         });
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
+                final ChoosePreviousNotesDialogFragment dialog = ChoosePreviousNotesDialogFragment.newInstance(
+                        collaborationId, moduleId,noteItems , (ArrayList<String>) previousNotesSelected, noteId);
+                dialog.setTargetFragment(fragment, REQUEST_CODE);
+                dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
             }
         });
         myDateListenerEdited = this;
         myTimeListenerEdited = this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Make sure fragment codes match up
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
     }
 
     private boolean checkUserNoteUpdate(){

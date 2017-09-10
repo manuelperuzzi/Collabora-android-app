@@ -1,9 +1,8 @@
 package org.gammf.collabora_android.app.gui.note;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,16 +22,12 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
-import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
-import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
@@ -52,7 +47,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +58,11 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
     private static final String NOMODULE = "nomodule";
+    private static final String ARG_PREVNOTE = "PREVNOTESELECTED";
+    private static final String ARG_NOTEITEMS = "NOTEITEMS";
+    private static final String NONOTEID = "nonote";
+    private static final int REQUEST_CODE = 0;
+    private static final String CHOOSE_PREVIOUS_NOTE_DIALOG_TAG = "ChoosePreviousNotesDialogTag";
 
     private String noteState = "";
     private TextView dateView, timeView;
@@ -73,7 +72,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private ArrayList<String> previousNotesSelected ;
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
-
+    private CreateNoteFragment fragment = this;
     private MapManager mapManager;
 
     private String collaborationId, moduleId;
@@ -204,7 +203,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                final List<String> listItems = new ArrayList<>();
+                /*final List<String> listItems = new ArrayList<>();
                 final List<Note> allNotes = new ArrayList<>();
                 final List<Integer> mSelectedItems = new ArrayList<>();
                 try {
@@ -258,9 +257,24 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                             }
                         });
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
+                final ChoosePreviousNotesDialogFragment dialog = ChoosePreviousNotesDialogFragment.newInstance(
+                        collaborationId, moduleId,noteItems ,previousNotesSelected ,NONOTEID);
+                dialog.setTargetFragment(fragment, REQUEST_CODE);
+                dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Make sure fragment codes match up
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
     }
 
     private void processInput(){
