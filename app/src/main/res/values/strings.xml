@@ -144,6 +144,14 @@
     <string name="action_logout">LOGOUT</string>
     <string name="welcome_to_collabora">Welcome to Collabora</string>
     <string name="press_the_side_menu_to_manage_your_collaborations">press the side menu to manage your collaborations</string>
+    <string name="add_previous_notes">Add previous Notes</string>
+    <string name="previous_notes">Previous notes</string>
+    <string name="add_previous_note">add previous note</string>
+    <string name="nonoteinserted">No previous notes inserted</string>
+    <string name="manage_notes">Manage notes</string>
+    <string name="set_previous_modules">Set previous Modules</string>
+    <string name="prevmod">Previous Modules</string>
+    <string name="change_previous_modules">change previous modules</string>
 
 
 </resources>

@@ -33,7 +33,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
     private String username;
     private String collaborationId;
     private String state;
-
     private EditText txtContentModule;
 
     public CreateModuleFragment() {
@@ -78,7 +77,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
 
     private void initializeGuiComponent(View rootView){
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
-
         final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewModuleState, CollaborationType.PROJECT);
         spinnerManager.addObserver(new Observer<String>() {
             @Override
@@ -86,7 +84,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
                 state = newState;
             }
         });
-
         FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
         btnAddModule.setOnClickListener(this);
     }

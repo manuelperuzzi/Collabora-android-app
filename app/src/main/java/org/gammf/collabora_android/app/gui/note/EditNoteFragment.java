@@ -3,17 +3,22 @@ package org.gammf.collabora_android.app.gui.note;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -21,6 +26,9 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
@@ -40,7 +48,9 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +63,12 @@ public class EditNoteFragment extends Fragment implements
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
+    private static final String ARG_MODULEID = "moduleName";
+    private static final String ARG_PREVNOTE = "PREVNOTESELECTED";
+    private static final String ARG_NOTEITEMS = "NOTEITEMS";
+    private static final int REQUEST_CODE = 0;
+    private static final String CHOOSE_PREVIOUS_NOTE_DIALOG_TAG = "ChoosePreviousNotesDialogTag";
+    private EditNoteFragment fragment = this;
 
     private String username;
     private String noteStateEdited = "";
@@ -60,15 +76,18 @@ public class EditNoteFragment extends Fragment implements
     private EditText txtContentNoteEdited;
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
+    private ListView previousNotesList;
+    private List<String> previousNotesSelected ;
+    private ArrayList<CollaborationComponentInfo> noteItems;
 
-    private String collaborationId, noteId;
+    private String collaborationId, noteId,moduleId;
 
     private MapManager mapManager;
 
     private Note note;
     private Collaboration collaboration;
     private int year, month, day, hour, minute ;
-    private String responsible = "";
+    private String responsible;
     private boolean dateSet = false;
     private boolean timeSet = false;
 
@@ -84,12 +103,13 @@ public class EditNoteFragment extends Fragment implements
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String username, String collabId, String noteId) {
+    public static EditNoteFragment newInstance(String username, String collabId, String noteId,String moduleId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
+        args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,6 +122,7 @@ public class EditNoteFragment extends Fragment implements
             this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
+            this.moduleId = getArguments().getString(ARG_MODULEID);
         }
 
         try {
@@ -149,6 +170,8 @@ public class EditNoteFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_note, container, false);
+        noteItems = new ArrayList<>();
+        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -180,23 +203,25 @@ public class EditNoteFragment extends Fragment implements
         if (note.getExpirationDate() != null) {
             this.dateSet = true;
             this.timeSet = true;
+
+            year = note.getExpirationDate().getYear();
+            month = note.getExpirationDate().getMonthOfYear();
+            day = note.getExpirationDate().getDayOfMonth();
+            hour = note.getExpirationDate().getHourOfDay();
+            minute = note.getExpirationDate().getMinuteOfHour();
+
             dateViewEdited.setText(note.getExpirationDate().toLocalDate().toString());
             timeViewEdited.setText(note.getExpirationDate().toLocalTime().toString());
             btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new DatePickerDialog(getActivity(), myDateListenerEdited,
-                            note.getExpirationDate().getYear(),
-                            note.getExpirationDate().getMonthOfYear(),
-                            note.getExpirationDate().getDayOfMonth()).show();
+                    new DatePickerDialog(getActivity(), myDateListenerEdited, year, month, day).show();
                 }
             });
             btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new TimePickerDialog(getActivity(), myTimeListenerEdited,
-                            note.getExpirationDate().getHourOfDay(),
-                            note.getExpirationDate().getMinuteOfHour(), true).show();
+                    new TimePickerDialog(getActivity(), myTimeListenerEdited, hour, minute, true).show();
                 }
             });
         } else {
@@ -220,8 +245,83 @@ public class EditNoteFragment extends Fragment implements
             });
         }
 
+        previousNotesList = rootView.findViewById(R.id.listViewPNote);
+        Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
+        if(note.getPreviousNotes()!= null){
+            final List<Note> allNotes = new ArrayList<>();
+            this.previousNotesSelected = note.getPreviousNotes();
+            try {
+                allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+            for (String pNoteID: note.getPreviousNotes())
+                for (Note noteon: allNotes)
+                    if(noteon.getNoteID().equals(pNoteID))
+                        noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
+
+        previousNotesList.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        setListViewHeightBasedOnChildren(previousNotesList);
+
+        btnAddPNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                final ChoosePreviousNotesDialogFragment dialog = ChoosePreviousNotesDialogFragment.newInstance(
+                        collaborationId, moduleId,noteItems , (ArrayList<String>) previousNotesSelected, noteId);
+                dialog.setTargetFragment(fragment, REQUEST_CODE);
+                dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
+            }
+        });
         myDateListenerEdited = this;
         myTimeListenerEdited = this;
+    }
+
+    /**** Method for Setting the Height of the ListView dynamically.
+     **** Hack to fix the issue of not showing all the items of the ListView
+     **** when placed inside a ScrollView  ****/
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Make sure fragment codes match up
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+            setListViewHeightBasedOnChildren(previousNotesList);
+        }
     }
 
     private boolean checkUserNoteUpdate(){
@@ -234,12 +334,16 @@ public class EditNoteFragment extends Fragment implements
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
             } else if (!this.dateSet && !this.timeSet) {
-                note.modifyState(new NoteState(noteStateEdited, responsible));
+
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
+            note.modifyState(new NoteState(noteStateEdited, responsible));
+            if(!previousNotesSelected.isEmpty())
+                note.modifyPreviousNotes(previousNotesSelected);
+            else
+                note.modifyPreviousNotes(null);
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                 username, note, UpdateMessageType.UPDATING, collaborationId));
             return true;

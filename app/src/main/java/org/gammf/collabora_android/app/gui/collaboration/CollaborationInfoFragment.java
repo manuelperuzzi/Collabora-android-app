@@ -18,11 +18,11 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.private_collaborations.PrivateCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -123,13 +123,14 @@ public class CollaborationInfoFragment extends Fragment {
         });
 
         final AccessRight userRight;
-        if (collaboration instanceof PrivateCollaboration) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
             userRight = AccessRight.ADMIN;
         } else {
             userRight = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
         }
 
-        final boolean isCollaborationEditable = userRight.equals(AccessRight.ADMIN) && collaboration instanceof SharedCollaboration;
+        final boolean isCollaborationEditable = userRight.equals(AccessRight.ADMIN) &&
+                !(collaboration.getCollaborationType().equals(CollaborationType.PRIVATE));
         if (! isCollaborationEditable) {
             btnEditCollaborationName.setVisibility(View.GONE);
             btnAddMember.setVisibility(View.GONE);
@@ -139,7 +140,7 @@ public class CollaborationInfoFragment extends Fragment {
 
     private void visualizeMembers(final ListView membersListView, final boolean isEditable) {
         final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
-        if (collaboration instanceof PrivateCollaboration) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
             memberItem.add(new CollaborationComponentInfo(username, username + " (" + AccessRight.ADMIN + ")", CollaborationComponentType.MEMBER));
         } else {
             final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
