@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,14 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
+import org.gammf.collabora_android.utils.CollaborationUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.UserUtils;
@@ -167,12 +173,22 @@ public class    RegistrationFragment extends Fragment implements DatePickerDialo
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         try {
                             LocalStorageUtils.writeUserToFile(getContext(), user);
+                            writeRegistrationInfoToFile(new JSONObject(new String(responseBody)));
+
                             final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
                             intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
                             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-                        } catch (IOException | JSONException e) {
+                        } catch (final IOException | JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+
+                    private void writeRegistrationInfoToFile(final JSONObject json) throws JSONException, IOException {
+                        final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(json);
+                        final CollaborationsManager manager = new ConcreteCollaborationManager();
+                        manager.addCollaboration(new ConcreteShortCollaboration(collaboration));
+                        LocalStorageUtils.writeCollaborationToFile(getContext(), collaboration);
+                        LocalStorageUtils.writeShortCollaborationsToFile(getContext(), manager);
                     }
 
                     @Override

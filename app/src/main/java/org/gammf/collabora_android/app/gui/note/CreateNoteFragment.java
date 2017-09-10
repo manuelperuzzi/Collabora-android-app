@@ -2,15 +2,19 @@ package org.gammf.collabora_android.app.gui.note;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -18,6 +22,8 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import org.gammf.collabora_android.app.R;
+import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
+import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
@@ -39,7 +45,9 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,14 +59,21 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
     private static final String NOMODULE = "nomodule";
+    private static final String ARG_PREVNOTE = "PREVNOTESELECTED";
+    private static final String ARG_NOTEITEMS = "NOTEITEMS";
+    private static final String NONOTEID = "nonote";
+    private static final int REQUEST_CODE = 0;
+    private static final String CHOOSE_PREVIOUS_NOTE_DIALOG_TAG = "ChoosePreviousNotesDialogTag";
 
     private String noteState = "";
     private TextView dateView, timeView;
     private EditText txtContentNote;
-
+    private ListView previousNotesList;
+    private ArrayList<CollaborationComponentInfo> noteItems;
+    private ArrayList<String> previousNotesSelected ;
     private DatePickerDialog.OnDateSetListener myDateListener;
     private TimePickerDialog.OnTimeSetListener myTimeListener;
-
+    private CreateNoteFragment fragment = this;
     private MapManager mapManager;
 
     private String collaborationId, moduleId;
@@ -124,7 +139,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_note, container, false);
-
+        noteItems = new ArrayList<>();
+        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -133,6 +149,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private void initializeGuiComponent(View rootView){
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
+        previousNotesList = rootView.findViewById(R.id.listViewPNote);
+        Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         final SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment, autocompleteFragment).commit();
         autocompleteFragment.setOnPlaceSelectedListener(this.mapManager);
@@ -182,6 +200,37 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
                         calendar.get(Calendar.MINUTE), true).show();
             }
         });
+
+        previousNotesList.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        btnAddPNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                final ChoosePreviousNotesDialogFragment dialog = ChoosePreviousNotesDialogFragment.newInstance(
+                        collaborationId, moduleId,noteItems ,previousNotesSelected ,NONOTEID);
+                dialog.setTargetFragment(fragment, REQUEST_CODE);
+                dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Make sure fragment codes match up
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
     }
 
     private void processInput(){
@@ -190,10 +239,17 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                addNote(insertedNoteName, location, new NoteState(noteState, responsible),
-                        new DateTime(year, month, day, hour, minute));
-            } else if(!this.dateSet && !this.dateSet) {
-                addNote(insertedNoteName, location, new NoteState(noteState, responsible), null);
+                if (previousNotesSelected.isEmpty())
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
+                            new DateTime(year, month, day, hour, minute), null);
+                else
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
+                            new DateTime(year, month, day, hour, minute), previousNotesSelected);
+            } else if (!this.dateSet && !this.dateSet) {
+                if (previousNotesSelected.isEmpty())
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, null);
+                else
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, previousNotesSelected);
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }
@@ -206,10 +262,11 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         return expiration.compareTo(now) > 0;
     }
 
-    private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration){
+    private void addNote(final String content, final Location location, final NoteState state, final DateTime expiration, final List<String> previousNotes){
         final Note simpleNote = new SimpleNoteBuilder(content, state)
                 .setLocation(location)
                 .setExpirationDate(expiration)
+                .setPreviousNotes(previousNotes)
                 .buildNote();
         if (moduleId.equals(NOMODULE)) {
             new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(

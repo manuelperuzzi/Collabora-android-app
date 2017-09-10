@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by gab on 09/09/17.
+ * A manager for the spinner used to select the responsible. It is a {@link org.gammf.collabora_android.app.utils.ObservableSource<String>},
+ * and sent the note state to observers when the user change the spinner selection.
  */
-
 public class ResponsibleSpinnerManager extends AbstractObservableSource<String> implements AdapterView.OnItemSelectedListener {
 
     public static final String NO_RESPONSIBLE = "";
@@ -28,6 +28,13 @@ public class ResponsibleSpinnerManager extends AbstractObservableSource<String> 
 
     private View rootView;
 
+    /**
+     * Build a new spinner manager.
+     * @param responsible the responsible, if any. If the note has no responsible setted, use NO_RESPONSIBLE
+     * @param rootView the {@link View} where this spinner is.
+     * @param spinnerId the ID of the spinner, in the Android res file.
+     * @param collaborationId the id of the collaboration, used for retrieve users.
+     */
     public ResponsibleSpinnerManager(final String responsible,
                                      final View rootView,
                                      final int spinnerId,

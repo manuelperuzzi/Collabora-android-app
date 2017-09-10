@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
@@ -15,6 +16,9 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
+import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
@@ -24,11 +28,14 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
+import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * @author Alfredo Maffi, Manuel Peruzzi
@@ -41,6 +48,8 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     private GeofenceManager geoManager;
     private Alarm alarm;
     private String collaborationId;
+    private UpdateMessageType updateType = null;
+    private String senderUsername;
 
     /**
      * Async task constructor.
@@ -56,9 +65,12 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         final Message message = messages[0];
         this.geoManager = new GeofenceManager(context);
 
+        senderUsername = message.getUsername();
         switch (message.getMessageType()) {
             case UPDATE:
-                return handleUpdateMessage((UpdateMessage)message);
+                final UpdateMessage msg = (UpdateMessage) message;
+                updateType = msg.getUpdateType();
+                return handleUpdateMessage(msg);
             case COLLABORATION:
                 return handleCollaborationMessage((CollaborationMessage)message);
             case ALL_COLLABORATIONS:
@@ -103,12 +115,12 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 case NOTE:
                     return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
                 case MODULE:
-                    return storedCollaboration instanceof Project &&
+                    return storedCollaboration.getCollaborationType().equals(CollaborationType.PROJECT) &&
                             storeUpdatedModule((ModuleUpdateMessage) message, (Project) storedCollaboration);
                 case COLLABORATION:
                     return storeUpdatedCollaboration((CollaborationUpdateMessage) message);
                 case MEMBER:
-                    return storedCollaboration instanceof SharedCollaboration &&
+                    return !(storedCollaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) &&
                             storeUpdatedMember((MemberUpdateMessage) message, (SharedCollaboration) storedCollaboration);
                 default:
                     return false;
@@ -153,11 +165,14 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 }
                 break;
             case UPDATING:
+                final Set<ModuleNote> moduleNotes = storedCollaboration.getModule(message.getModule().getId()).getAllNotes();
                 storedCollaboration.removeModule(message.getModule().getId());
-                storedCollaboration.addModule(message.getModule());
-                for (Note note: message.getModule().getAllNotes()) {
+                final Module newModule = message.getModule();
+                for (final Note note: moduleNotes) {
+                    newModule.addNote(note);
                     AlarmAndGeofenceUtils.updateAlarmAndGeofences(context,note,this.alarm,this.geoManager);
                 }
+                storedCollaboration.addModule(newModule);
                 break;
             case DELETION:
                 storedCollaboration.removeModule(message.getModule().getId());
@@ -226,13 +241,23 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean success) {
-        if(success) {
-            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
-            if(collaborationId != null) {
-                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+        try {
+            final User user = LocalStorageUtils.readUserFromFile(context);
+            if(success && user.getUsername().equals(senderUsername)) {
+                Log.i("FLUSSOANDROID", "mandoIntent");
+                final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+                if(collaborationId != null) {
+                    intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+                    if (updateType == UpdateMessageType.DELETION) {
+                        Log.i("FLUSSOANDROID", updateType.name());
+                        intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
+                    }
+                }
+                intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
-            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
         }
     }
 }
