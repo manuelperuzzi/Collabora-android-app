@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.collaboration.CreateCollaborationDialogFragment;
 import org.gammf.collabora_android.app.utils.IntentConstants;
@@ -27,7 +24,6 @@ import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,7 +149,10 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
                 return true;
             }
         });
+
+
     }
+
 
     public void openNavigator() {
         this.getDrawer().openDrawer(GravityCompat.START);

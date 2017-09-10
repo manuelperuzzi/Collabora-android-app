@@ -44,7 +44,7 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapViewLocation"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150sp"
         android:layout_below="@+id/progressBarState"
         android:layout_alignParentStart="true"/>
 
@@ -85,12 +85,12 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView7"
-        android:layout_marginTop="16dp"
-        android:layout_toEndOf="@+id/imgExpiration"
+        android:layout_marginTop="13dp"
         android:text="@string/note_expirationdate"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:layout_below="@+id/textView7"
+        android:layout_toEndOf="@+id/imgExpiration"/>
 
     <TextView
         android:id="@+id/lblResponsible"
@@ -162,4 +162,31 @@
         app:srcCompat="@drawable/location32"
         android:layout_above="@+id/textView6"/>
 
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="25dp"
+        android:paddingStart="5dp"
+        android:text="@string/previous_notes"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="9dp"
+        android:layout_below="@+id/textView4"
+        android:layout_alignStart="@+id/listViewPNote"/>
+
+    <TextView
+        android:id="@+id/noPNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_above="@+id/listViewPNote"
+        android:layout_toEndOf="@+id/textView16"/>
+   <ListView
+        android:id="@+id/listViewPNote"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/textView16"/>
 </RelativeLayout>
