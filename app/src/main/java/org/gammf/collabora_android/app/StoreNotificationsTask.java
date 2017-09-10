@@ -26,6 +26,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
+import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
@@ -45,6 +46,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     private Alarm alarm;
     private String collaborationId;
     private UpdateMessageType updateType = null;
+    private String senderUsername;
 
     /**
      * Async task constructor.
@@ -60,6 +62,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         final Message message = messages[0];
         this.geoManager = new GeofenceManager(context);
 
+        senderUsername = message.getUsername();
         switch (message.getMessageType()) {
             case UPDATE:
                 final UpdateMessage msg = (UpdateMessage) message;
@@ -232,17 +235,23 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean success) {
-        if(success) {
-            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
-            if(collaborationId != null) {
-                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
-                if (updateType == UpdateMessageType.DELETION) {
-                    Log.i("FLUSSOANDROID", updateType.name());
-                    intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
+        try {
+            final User user = LocalStorageUtils.readUserFromFile(context);
+            if(success && user.getUsername().equals(senderUsername)) {
+                Log.i("FLUSSOANDROID", "mandoIntent");
+                final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+                if(collaborationId != null) {
+                    intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+                    if (updateType == UpdateMessageType.DELETION) {
+                        Log.i("FLUSSOANDROID", updateType.name());
+                        intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
+                    }
                 }
+                intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
-            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        } catch (final IOException | JSONException e) {
+            e.printStackTrace();
         }
     }
 }

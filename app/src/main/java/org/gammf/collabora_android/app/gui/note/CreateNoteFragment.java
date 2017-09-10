@@ -242,16 +242,16 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         } else {
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 if (previousNotesSelected.isEmpty())
-                    addNote(insertedNoteName, location, new NoteState(noteState, null),
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
                             new DateTime(year, month, day, hour, minute), null);
                 else
-                    addNote(insertedNoteName, location, new NoteState(noteState, null),
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
                             new DateTime(year, month, day, hour, minute), previousNotesSelected);
             } else if (!this.dateSet && !this.dateSet) {
                 if (previousNotesSelected.isEmpty())
-                    addNote(insertedNoteName, location, new NoteState(noteState, null), null, null);
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, null);
                 else
-                    addNote(insertedNoteName, location, new NoteState(noteState, null), null, previousNotesSelected);
+                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, previousNotesSelected);
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }

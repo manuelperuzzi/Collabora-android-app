@@ -2,6 +2,7 @@ package org.gammf.collabora_android.utils;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.users.CollaborationMember;
 
 /**
@@ -15,11 +16,11 @@ public class AccessRightUtils {
      * @param username the username of the logged user
      * @return return the CollaborationMember
      */
-    public static CollaborationMember checkMemebrAccess(Collaboration collaboration, String username){
+    public static CollaborationMember checkMemberAccess(Collaboration collaboration, String username){
         CollaborationMember user = null;
-        for (CollaborationMember memeber: ((Project) collaboration).getAllMembers()) {
-            if(memeber.getUsername().equals(username))
-               user = memeber;
+        for (CollaborationMember member: ((SharedCollaboration) collaboration).getAllMembers()) {
+            if(member.getUsername().equals(username))
+               user = member;
         }
         return user;
     }

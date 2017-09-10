@@ -96,7 +96,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         try {
             collaboration = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             module = collaboration.getModule(moduleId);
-            this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+            this.member = AccessRightUtils.checkMemberAccess(collaboration,username);
             getActivity().setTitle(collaboration.getName() + " - " + module.getDescription());
         } catch (final IOException | JSONException e) {
             e.printStackTrace();

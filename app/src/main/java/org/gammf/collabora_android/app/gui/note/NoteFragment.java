@@ -1,7 +1,5 @@
 package org.gammf.collabora_android.app.gui.note;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -29,9 +27,12 @@ import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.AccessRightUtils;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
@@ -96,7 +97,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             this.note = collaboration.getNote(noteId);
             if(collaboration instanceof Project || collaboration instanceof Group){
-                this.member = AccessRightUtils.checkMemebrAccess(collaboration,username);
+                this.member = AccessRightUtils.checkMemberAccess(collaboration,username);
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -107,13 +108,10 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        if(collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
-                inflater.inflate(R.menu.edit_note, menu);
-            }
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE) ||
+                !((SharedCollaboration)collaboration).getMember(username).getAccessRight().equals(AccessRight.READ)) {
+            inflater.inflate(R.menu.edit_note, menu);
         }
-        else
-            inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

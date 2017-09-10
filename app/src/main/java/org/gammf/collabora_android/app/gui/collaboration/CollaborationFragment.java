@@ -105,7 +105,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         try {
             collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             if (collaboration instanceof Project || collaboration instanceof Group) {
-                this.member = AccessRightUtils.checkMemebrAccess(collaboration, username);
+                this.member = AccessRightUtils.checkMemberAccess(collaboration, username);
             }
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
@@ -126,12 +126,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        if (collaboration instanceof Project || collaboration instanceof Group) {
-            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
-                inflater.inflate(R.menu.edit_collaboration, menu);
-            }
-        } else
-            inflater.inflate(R.menu.edit_collaboration, menu);
+        inflater.inflate(R.menu.edit_collaboration, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -147,7 +142,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         if (id == R.id.action_edit) {
             Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, collaborationId);
             changeFragment(editCollabFragment);
-            return true;
+            //return true;
         } else if (id == R.id.action_remove) {
             final UpdateMessage message = new ConcreteCollaborationUpdateMessage(username, collaboration, UpdateMessageType.DELETION);
             new SendMessageToServerTask(getContext()).execute(message);

@@ -87,7 +87,7 @@ public class EditNoteFragment extends Fragment implements
     private Note note;
     private Collaboration collaboration;
     private int year, month, day, hour, minute ;
-    private String responsible = "";
+    private String responsible;
     private boolean dateSet = false;
     private boolean timeSet = false;
 
@@ -203,23 +203,25 @@ public class EditNoteFragment extends Fragment implements
         if (note.getExpirationDate() != null) {
             this.dateSet = true;
             this.timeSet = true;
+
+            year = note.getExpirationDate().getYear();
+            month = note.getExpirationDate().getMonthOfYear();
+            day = note.getExpirationDate().getDayOfMonth();
+            hour = note.getExpirationDate().getHourOfDay();
+            minute = note.getExpirationDate().getMinuteOfHour();
+
             dateViewEdited.setText(note.getExpirationDate().toLocalDate().toString());
             timeViewEdited.setText(note.getExpirationDate().toLocalTime().toString());
             btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new DatePickerDialog(getActivity(), myDateListenerEdited,
-                            note.getExpirationDate().getYear(),
-                            note.getExpirationDate().getMonthOfYear(),
-                            note.getExpirationDate().getDayOfMonth()).show();
+                    new DatePickerDialog(getActivity(), myDateListenerEdited, year, month, day).show();
                 }
             });
             btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new TimePickerDialog(getActivity(), myTimeListenerEdited,
-                            note.getExpirationDate().getHourOfDay(),
-                            note.getExpirationDate().getMinuteOfHour(), true).show();
+                    new TimePickerDialog(getActivity(), myTimeListenerEdited, hour, minute, true).show();
                 }
             });
         } else {
@@ -332,12 +334,12 @@ public class EditNoteFragment extends Fragment implements
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
                 note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
             } else if (!this.dateSet && !this.timeSet) {
-                note.modifyState(new NoteState(noteStateEdited, responsible));
+
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            note.modifyState(new NoteState(noteStateEdited, null));
+            note.modifyState(new NoteState(noteStateEdited, responsible));
             if(!previousNotesSelected.isEmpty())
                 note.modifyPreviousNotes(previousNotesSelected);
             else
