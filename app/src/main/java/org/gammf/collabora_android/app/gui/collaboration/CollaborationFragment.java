@@ -43,6 +43,7 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCo
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -115,12 +116,10 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        if (collaboration instanceof SharedCollaboration) {
-            final AccessRight right = ((SharedCollaboration) collaboration).getMember(username).getAccessRight();
-            if (! right.equals(AccessRight.ADMIN)) {
-                MenuItem item = menu.findItem(R.id.action_remove);
-                item.setVisible(false);
-            }
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE) ||
+                !((SharedCollaboration)collaboration).getMember(username).getAccessRight().equals(AccessRight.ADMIN)) {
+            final MenuItem item = menu.findItem(R.id.action_remove);
+            item.setVisible(false);
         }
     }
 
@@ -181,7 +180,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         tab1.setContent(R.id.i_layout_2);
         tab2.setIndicator(getResources().getString(R.string.title_noteslist));
         tab2.setContent(R.id.i_layout_1);
-        if (collaboration instanceof Project) {
+
+        if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             tabHost.addTab(tab1);
             if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 btnAddNote.setVisibility(View.INVISIBLE);
@@ -232,8 +232,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void fillModulesList() {
-        if (collaboration instanceof Project) {
-            for (final Module module : ((Project) collaboration).getAllModules()) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
+            for (final Module module: ((Project) collaboration).getAllModules()) {
                 moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
             }
         }

@@ -6,7 +6,6 @@ import org.gammf.collabora_android.collaborations.private_collaborations.Private
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
@@ -50,9 +49,9 @@ public class CollaborationUtils {
         }
 
         final Set<CollaborationMember> members = new HashSet<>();
-        if (collaboration instanceof PrivateCollaboration) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
             members.add(((PrivateCollaboration) collaboration).getUser());
-        } else if (collaboration instanceof SharedCollaboration) {
+        } else {
             members.addAll(((SharedCollaboration) collaboration).getAllMembers());
         }
         if (!members.isEmpty()) {
@@ -63,11 +62,11 @@ public class CollaborationUtils {
             json.put("users", jMembers);
         }
 
-        if (collaboration instanceof PrivateCollaboration) {
+        if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
             json.put("collaborationType", CollaborationType.PRIVATE.name());
-        } else if (collaboration instanceof Group) {
+        } else if (collaboration.getCollaborationType().equals(CollaborationType.GROUP)) {
             json.put("collaborationType", CollaborationType.GROUP.name());
-        } else if (collaboration instanceof Project) {
+        } else if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             json.put("collaborationType", CollaborationType.PROJECT.name());
             final Set<Module> modules = ((Project) collaboration).getAllModules();
             if (!modules.isEmpty()) {
@@ -132,7 +131,7 @@ public class CollaborationUtils {
             }
         }
 
-        if (collaboration instanceof SharedCollaboration) {
+        if (!collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
             final SharedCollaboration sharedCollaboration = (SharedCollaboration) collaboration;
             for (int i = 0; i < jMembers.length(); i++) {
                 final CollaborationMember member = CollaborationMemberUtils.jsonToMember(jMembers.getJSONObject(i));

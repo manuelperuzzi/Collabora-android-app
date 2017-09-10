@@ -27,6 +27,7 @@ import org.gammf.collabora_android.communication.update.members.MemberUpdateMess
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -108,12 +109,12 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 case NOTE:
                     return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
                 case MODULE:
-                    return storedCollaboration instanceof Project &&
+                    return storedCollaboration.getCollaborationType().equals(CollaborationType.PROJECT) &&
                             storeUpdatedModule((ModuleUpdateMessage) message, (Project) storedCollaboration);
                 case COLLABORATION:
                     return storeUpdatedCollaboration((CollaborationUpdateMessage) message);
                 case MEMBER:
-                    return storedCollaboration instanceof SharedCollaboration &&
+                    return !(storedCollaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) &&
                             storeUpdatedMember((MemberUpdateMessage) message, (SharedCollaboration) storedCollaboration);
                 default:
                     return false;

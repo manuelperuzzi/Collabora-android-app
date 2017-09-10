@@ -282,7 +282,10 @@ public class MainActivity extends AppCompatActivity
                     final String collaborationId = intent.getStringExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED);
                     if (collaborationId != null) {
                         if (intent.getStringExtra(IntentConstants.COLLABORATION_DELETION) != null) {
-                            onBackPressed();
+                            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                                getSupportFragmentManager().popBackStack();
+                            }
+                            setTitle("Collabora");
                             navigationManager.refreshCollaborationLists();
                             navigationManager.openNavigator();
                         } else {
