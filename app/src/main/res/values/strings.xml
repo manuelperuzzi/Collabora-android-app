@@ -156,5 +156,7 @@
     <string name="error_todo">Error: in the previous notes list there are notes with To Do state, modify current state in To Do or edit list!</string>
     <string name="error_done">Error: selected state Done not compliant with previous notes list (with Done state, all list\'s note should has Done in state!</string>
 
-
+    <!-- Strings related to server errors -->
+    <string name="server_error">Server error!</string>
+    <string name="member_not_found">Member not found!</string>
 </resources>
