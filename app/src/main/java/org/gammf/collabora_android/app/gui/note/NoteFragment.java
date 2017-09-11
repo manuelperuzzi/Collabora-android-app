@@ -21,7 +21,6 @@ import com.google.android.gms.maps.MapView;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
-import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
@@ -35,7 +34,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -146,7 +144,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             expiration.setText(note.getExpirationDate().toString(DateTimeFormat.mediumDateTime()));
         }
         if (note.getPreviousNotes() != null) {
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtil.fillListView(getContext(), note, collaborationId));
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtils.fillListView(getContext(), note, collaborationId));
             previousNotesList.setAdapter(noteListAdapter);
             previousNotesList.setOnItemClickListener(this);
         } else {

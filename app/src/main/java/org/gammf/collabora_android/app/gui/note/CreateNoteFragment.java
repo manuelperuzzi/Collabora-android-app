@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +28,6 @@ import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
-import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.app.utils.Observer;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
@@ -253,11 +253,13 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private void checkPreviousNotes(String insertedNoteName, DateTime date) {
         if (previousNotesSelected.isEmpty())
             addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, null);
-        else
-            if(NoteFragmentUtil.checkPreviousNotesState(noteState,previousNotesSelected,collaboration))
+        else {
+            Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(noteState, previousNotesSelected, collaboration);
+            if (checkPrevNotes.first)
                 addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, previousNotesSelected);
             else
-                Toast.makeText(getContext().getApplicationContext(), "Error in state selection in comparison with previous notes selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext().getApplicationContext(),checkPrevNotes.second , Toast.LENGTH_LONG).show();
+        }
 
     }
 

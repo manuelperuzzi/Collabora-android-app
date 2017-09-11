@@ -27,7 +27,6 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
-import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
@@ -248,7 +247,7 @@ public class EditNoteFragment extends Fragment implements
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
         Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         if(note.getPreviousNotes()!= null){
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtil.fillListView(getContext(), note, collaborationId));
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtils.fillListView(getContext(), note, collaborationId));
             previousNotesList.setAdapter(noteListAdapter);
         }
         previousNotesList.setOnTouchListener(new View.OnTouchListener() {
