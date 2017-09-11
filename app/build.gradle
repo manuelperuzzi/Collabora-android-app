@@ -10,7 +10,7 @@ android {
         applicationId "org.gammf.collabora_android.collabora_android_app"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 3
+        versionCode 4
         versionName "0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
