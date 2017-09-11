@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -40,6 +41,7 @@ public abstract class SubscriberService extends Service{
             public void onReceive(Context context, Intent intent) {
                 try {
                     channel.queueDelete(queueName);
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
                 } catch (final IOException e) {
                     e.printStackTrace();
                 }
