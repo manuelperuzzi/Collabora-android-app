@@ -141,6 +141,9 @@ public class EditNoteFragment extends Fragment implements
             });
             this.responsible = note.getState().getCurrentResponsible();
             this.previousNotesSelected = note.getPreviousNotes();
+            if (this.previousNotesSelected == null) {
+                this.previousNotesSelected = new ArrayList<>();
+            }
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
