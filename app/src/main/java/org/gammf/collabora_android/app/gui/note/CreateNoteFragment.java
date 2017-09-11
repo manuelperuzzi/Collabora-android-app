@@ -1,7 +1,5 @@
 package org.gammf.collabora_android.app.gui.note;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,12 +10,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
@@ -25,6 +21,8 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
+import org.gammf.collabora_android.app.gui.datetime_pickers.DatePickerManager;
+import org.gammf.collabora_android.app.gui.datetime_pickers.TimePickerManager;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
@@ -44,16 +42,17 @@ import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
  */
-public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateNoteFragment extends Fragment {
 
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
@@ -70,10 +69,10 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private ListView previousNotesList;
     private ArrayList<CollaborationComponentInfo> noteItems;
     private ArrayList<String> previousNotesSelected ;
-    private DatePickerDialog.OnDateSetListener myDateListener;
-    private TimePickerDialog.OnTimeSetListener myTimeListener;
     private CreateNoteFragment fragment = this;
     private MapManager mapManager;
+    private DatePickerManager datePickerManager;
+    private TimePickerManager timePickerManager;
 
     private String collaborationId, moduleId;
     private Collaboration collaboration;
@@ -81,7 +80,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
     private String username;
     private Location location;
     private String responsible;
-    private int year, month, day, hour, minute;
+    private LocalDate date;
+    private LocalTime time;
 
     private boolean dateSet = false;
     private boolean timeSet = false;
@@ -123,6 +123,24 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void notify(final Location newlocation) {
                 location = newlocation;
+            }
+        });
+        this.datePickerManager = new DatePickerManager(getContext());
+        this.datePickerManager.addObserver(new Observer<LocalDate>() {
+            @Override
+            public void notify(final LocalDate newDate) {
+                date = newDate;
+                dateSet = true;
+                showDate();
+            }
+        });
+        this.timePickerManager = new TimePickerManager(getContext());
+        this.timePickerManager.addObserver(new Observer<LocalTime>() {
+            @Override
+            public void notify(final LocalTime newTime) {
+                time = newTime;
+                timeSet = true;
+                showTime();
             }
         });
     }
@@ -169,18 +187,11 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         dateView = rootView.findViewById(R.id.txtNewDateSelected);
         timeView = rootView.findViewById(R.id.txtNewTimeSelected);
 
-        myDateListener = this;
-        myTimeListener = this;
-
-        final Calendar calendar = Calendar.getInstance();
         ImageButton btnSetDateExpiration = rootView.findViewById(R.id.btnSetDateExpiration);
         btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(getActivity(), myDateListener,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                datePickerManager.showDatePicker(DatePickerManager.NO_DATE);
             }
         });
 
@@ -188,9 +199,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new TimePickerDialog(getActivity(), myTimeListener,
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE), true).show();
+                timePickerManager.showTimePicker(TimePickerManager.NO_TIME);
             }
         });
 
@@ -232,9 +241,10 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                final  DateTime date = new DateTime(year, month, day, hour, minute);
+                final  DateTime date = new DateTime(this.date.getYear(), this.date.getMonthOfYear(),
+                        this.date.getDayOfMonth(), this.time.getHourOfDay(), this.time.getMinuteOfHour());
                 checkPreviousNotes(insertedNoteName,date);
-            } else if (!this.dateSet && !this.dateSet) {
+            } else if (!this.dateSet && !this.timeSet) {
                 checkPreviousNotes(insertedNoteName, null);
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
@@ -257,7 +267,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
 
     private boolean isDateTimeValid() {
         final DateTime now = new DateTime();
-        final DateTime expiration = new DateTime(year, month, day, hour, minute);
+        final DateTime expiration = new DateTime(this.date.getYear(), this.date.getMonthOfYear(),
+                this.date.getDayOfMonth(), this.time.getHourOfDay(), this.time.getMinuteOfHour());
         return expiration.compareTo(now) > 0;
     }
 
@@ -276,29 +287,20 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         }
     }
 
-    @Override
-    public void onDateSet(final DatePicker arg0, final int year, final int month, final int day) {
-        this.year = year;
-        this.month = month + 1;
-        this.day = day;
-        this.dateSet = true;
-        showDate();
-    }
-
-    @Override
-    public void onTimeSet(final TimePicker timePicker, final int hour, final int minute) {
-        this.hour = hour;
-        this.minute = minute;
-        this.timeSet = true;
-        showTime();
-    }
-
     private void showDate() {
-        dateView.setText(new StringBuilder().append(day).append("/").append(month).append("/").append(year));
+        dateView.setText(new StringBuilder()
+                .append(this.date.getDayOfMonth())
+                .append("/")
+                .append(this.date.getMonthOfYear())
+                .append("/")
+                .append(this.date.getYear()));
     }
 
-    private void showTime(){
-        timeView.setText(new StringBuilder().append(hour).append(":").append(minute));
+    private void showTime() {
+        timeView.setText(new StringBuilder()
+                .append(this.time.getHourOfDay())
+                .append(":")
+                .append(this.time.getMinuteOfHour() < 10 ? "0" + this.time.getMinuteOfHour() : this.time.getMinuteOfHour()));
     }
 
     private void createResponsibleSpinnerManager(final View rootView) {
