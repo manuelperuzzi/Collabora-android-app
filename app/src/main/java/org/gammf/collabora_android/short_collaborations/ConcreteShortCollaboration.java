@@ -2,7 +2,6 @@ package org.gammf.collabora_android.short_collaborations;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 
 /**
  * @author Manuel Peruzzi
@@ -31,9 +30,7 @@ public class ConcreteShortCollaboration implements ShortCollaboration {
      * @param collaboration the collaboration.
      */
     public ConcreteShortCollaboration(final Collaboration collaboration) {
-        this (collaboration.getId(),
-              collaboration.getName(),
-              (collaboration instanceof Project) ? CollaborationType.PROJECT : CollaborationType.GROUP);
+        this (collaboration.getId(), collaboration.getName(), collaboration.getCollaborationType());
     }
 
     @Override

@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.widget.Toast;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
+import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.common.MessageType;
 import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
@@ -56,10 +60,20 @@ public class CollaborationsSubscriberService extends SubscriberService {
 
     @Override
     protected void handleJsonMessage(final JSONObject message) throws JSONException {
-        final CollaborationMessage convertedMessage = MessageUtils.jsonToCollaborationMessage(message);
+        final Message convertedMessage = MessageUtils.jsonToCollaborationsMessage(message);
         new StoreNotificationsTask(getApplicationContext()).execute(convertedMessage);
+        if (convertedMessage.getMessageType().equals(MessageType.COLLABORATION)) {
+            sendBinding(((CollaborationMessage) convertedMessage).getCollaboration().getId());
+        } else if (convertedMessage.getMessageType().equals(MessageType.ALL_COLLABORATIONS)) {
+            for (final Collaboration c: ((AllCollaborationsMessage) convertedMessage).getCollaborationList()) {
+                sendBinding(c.getId());
+            }
+        }
+    }
+
+    private void sendBinding(final String routingKey) {
         final Intent intent = new Intent("new.binding.for.collaboration");
-        intent.putExtra("routing-key", convertedMessage.getCollaboration().getId());
+        intent.putExtra("routing-key", routingKey);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -68,7 +82,7 @@ public class CollaborationsSubscriberService extends SubscriberService {
         try {
             this.channel.queueBind(this.queueName, RabbitMQConfig.COLLABORATIONS_EXCHANGE_NAME, intent.getStringExtra("username"));
         } catch (final IOException e) {
-            //TODO
+            Toast.makeText(getApplicationContext(), "Unable to connect to server, try to restart the App!", Toast.LENGTH_SHORT).show();
         }
     }
 

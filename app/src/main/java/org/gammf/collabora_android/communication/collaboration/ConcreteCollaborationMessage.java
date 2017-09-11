@@ -1,6 +1,7 @@
 package org.gammf.collabora_android.communication.collaboration;
 
 import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.common.AbstractMessage;
 import org.gammf.collabora_android.communication.common.MessageType;
 
 /**
@@ -8,26 +9,13 @@ import org.gammf.collabora_android.communication.common.MessageType;
  * Concrete class representing a collaboration message.
  */
 
-public class ConcreteCollaborationMessage implements CollaborationMessage {
+public class ConcreteCollaborationMessage extends AbstractMessage implements CollaborationMessage {
 
-    private final String username;
-    private final MessageType messageType;
     private final Collaboration collaboration;
 
-    public ConcreteCollaborationMessage(final String username, final MessageType messageType, final Collaboration collaboration) {
-        this.username = username;
-        this.messageType = messageType;
+    public ConcreteCollaborationMessage(final String username, final Collaboration collaboration) {
+        super(username, MessageType.COLLABORATION);
         this.collaboration = collaboration;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public MessageType getMessageType() {
-        return this.messageType;
     }
 
     @Override

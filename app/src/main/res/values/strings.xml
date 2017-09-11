@@ -29,8 +29,8 @@
 
     <string name="insufficient_permissions">Insufficient permissions.</string>
     <string name="permission_rationales">Location permission is needed for core functionality</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core
-        functionality.</string>
+    <string name="permission_denied_explanation">Permissions were denied, but are needed for core
+        functionalities.</string>
     <string name="settings">Settings</string>
 
     <string name="action_addmember">Add member</string>
@@ -93,10 +93,12 @@
     <string name="note_location">Location</string>
 
     <!-- Edit collaboration fragment -->
-    <string name="editcollab_title">Edit Collaboration</string>
-    <string name="editcollab_lblname">Insert new collaboration name</string>
-    <string name="editcollab_member">Members</string>
-    <string name="editcollab_btnaddmember">Add member</string>
+    <string name="collabInfo_title">Collaboration</string>
+    <string name="collabInfo_name_lbl">Name</string>
+    <string name="collabInfo_member_lbl">Members</string>
+    <string name="collabInfo_member_btn">Add member</string>
+    <string name="memberfrag_lblname">Username</string>
+    <string name="memeberfrag_lblright">Access right</string>
 
     <!-- Edit note fragment -->
     <string name="editnote_title">Edit Note</string>
@@ -142,6 +144,17 @@
     <string name="action_logout">LOGOUT</string>
     <string name="welcome_to_collabora">Welcome to Collabora</string>
     <string name="press_the_side_menu_to_manage_your_collaborations">press the side menu to manage your collaborations</string>
+    <string name="add_previous_notes">Add previous Notes</string>
+    <string name="previous_notes">Previous notes</string>
+    <string name="add_previous_note">add previous note</string>
+    <string name="nonoteinserted">No previous notes inserted</string>
+    <string name="manage_notes">Manage notes</string>
+    <string name="set_previous_modules">Set previous Modules</string>
+    <string name="prevmod">Previous Modules</string>
+    <string name="change_previous_modules">change previous modules</string>
+    <string name="modulefragment">moduleFragment</string>
+    <string name="error_todo">Error: in the previous notes list there are notes with To Do state, modify current state in To Do or edit list!</string>
+    <string name="error_done">Error: selected state Done not compliant with previous notes list (with Done state, all list\'s note should has Done in state!</string>
 
 
 </resources>

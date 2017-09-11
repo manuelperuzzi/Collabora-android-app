@@ -2,6 +2,7 @@ package org.gammf.collabora_android.collaborations.shared_collaborations;
 
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.CollaborationType;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -117,5 +118,17 @@ public class ConcreteProject extends AbstractSharedCollaboration implements Proj
             }
         }
         return super.removeNote(noteId);
+    }
+
+    @Override
+    public CollaborationType getCollaborationType() {
+        return CollaborationType.PROJECT;
+    }
+
+    @Override
+    public Set<Note> getAllNoteNotInModules() {
+        final Set<Note> allNotes = new HashSet<>();
+        allNotes.addAll(super.getAllNotes());
+        return allNotes;
     }
 }

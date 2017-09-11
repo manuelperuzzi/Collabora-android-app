@@ -1,14 +1,21 @@
 package org.gammf.collabora_android.app.rabbitmq;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.gammf.collabora_android.app.gui.MainActivity;
+import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +29,25 @@ import java.io.IOException;
 
 public abstract class SubscriberService extends Service{
 
+    private BroadcastReceiver deletionReceiver;
+
     protected Channel channel;
     protected String queueName;
     protected String consumerTag;
+
+    public void onCreate() {
+        this.deletionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
+                    channel.queueDelete(queueName);
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
 
     /**
      * In this method, RabbitMQ configuration is performed and a basic consumer is registered on the user's queue.
@@ -36,6 +59,7 @@ public abstract class SubscriberService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        LocalBroadcastManager.getInstance(this).registerReceiver(deletionReceiver, new IntentFilter("subscriber.service.deletion"));
         new SubscriberThread(intent).start();
 
         return START_REDELIVER_INTENT;
@@ -90,14 +114,21 @@ public abstract class SubscriberService extends Service{
                             channel.basicAck(envelope.getDeliveryTag(), false);
                             handleJsonMessage(json);
                         } catch (final JSONException e) {
-                            //TODO
+                            showNetworkErrorToast();
                         }
                     }
                 });
                 onConfigurationCompleted(this.intent);
             } catch (final Exception e) {
-                e.printStackTrace();
+                showNetworkErrorToast();
             }
         }
+    }
+
+    private void showNetworkErrorToast() {
+        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+        intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_ERROR);
+        intent.putExtra(IntentConstants.NETWORK_ERROR, "Network Error");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }
