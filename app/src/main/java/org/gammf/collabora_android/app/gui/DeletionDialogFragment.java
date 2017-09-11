@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -24,19 +23,16 @@ import java.io.IOException;
 public class DeletionDialogFragment  extends android.support.v4.app.DialogFragment{
 
     private String collaborationId,componentId,componentContent;
-    private String username, moduleId;
+    private String username;
     private Collaboration collaboration;
     private CollaborationComponentType componentType;
     private static final String ARG_COLLABORATION_ID = "collaborationId";
-    private static final String ARG_USERNAME = "collaborationId";
+    private static final String ARG_USERNAME = "username";
     private static final String ARG_COMPONENTID = "componentId";
     private static final String ARG_COMPONENTTYPE = "componentType";
     private static final String ARG_COMPONENTCONTENT = "componentContent";
-    private static final String ARG_MODULEID = "moduleid";
-    private static final String NOMODULE = "nomodule";
 
-
-    public static DeletionDialogFragment newInstance(String collaborationId, String username,String componentId, String componentContent, CollaborationComponentType componentType,String moduleId){
+    public static DeletionDialogFragment newInstance(String collaborationId, String username,String componentId, String componentContent, CollaborationComponentType componentType){
         final DeletionDialogFragment fragment = new DeletionDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
@@ -44,7 +40,6 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
         args.putString(ARG_COMPONENTCONTENT,componentContent);
         args.putString(ARG_USERNAME,username);
         args.putSerializable(ARG_COMPONENTTYPE,componentType);
-        args.putString(ARG_MODULEID,moduleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +53,6 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
             this.componentContent = getArguments().getString(ARG_COMPONENTCONTENT);
             this.componentType = (CollaborationComponentType) getArguments().getSerializable(ARG_COMPONENTTYPE);
             this.username = getArguments().getString(ARG_USERNAME);
-            this.moduleId = getArguments().getString(ARG_MODULEID);
             try {
                 collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
             } catch (IOException | JSONException e) {
@@ -81,16 +75,15 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
                         if (componentType.equals(CollaborationComponentType.MODULE)) {
                             deleteModule(((Project)collaboration).getModule(componentId));
                         }else{
-                            if()
-                                deleteNoteInModule(collaboration.getNote(componentId).getNoteID());
-                            else
-                                deleteNote(collaboration.getNote(componentId));
+                            deleteNote(collaboration.getNote(componentId));
                         }
+                        dismiss();
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        dismiss();
                     }
                 })
         .create();
@@ -105,10 +98,4 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
         new SendMessageToServerTask(getContext()).execute(new ConcreteModuleUpdateMessage(
                 username, moduleToDelete, UpdateMessageType.DELETION, collaborationId));
     }
-
-    private void deleteNoteInModule(String noteId) {
-
-    }
-
-
 }
