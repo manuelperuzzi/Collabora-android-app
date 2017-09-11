@@ -20,30 +20,21 @@ import org.gammf.collabora_android.communication.update.collaborations.ConcreteC
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
-
-import java.io.IOException;
-
-/**
- * Created by mperuzzi on 07/09/17.
- */
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 public class EditCollaborationDialogFragment extends DialogFragment {
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
-    private static final String ARG_USERNAME = "username";
 
-    private String username;
     private Collaboration collaboration;
 
     private InputMethodManager inputMethodManager;
     private EditText txtCollaborationName;
 
-    public static EditCollaborationDialogFragment newInstance(final String collaborationId, final String username) {
+    public static EditCollaborationDialogFragment newInstance(final String collaborationId) {
         final EditCollaborationDialogFragment fragment = new EditCollaborationDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
-        args.putString(ARG_USERNAME, username);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,13 +43,8 @@ public class EditCollaborationDialogFragment extends DialogFragment {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             final String collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
-            try {
-                this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            } catch (final IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
         }
     }
 
@@ -109,7 +95,7 @@ public class EditCollaborationDialogFragment extends DialogFragment {
             this.inputMethodManager.hideSoftInputFromWindow(txtCollaborationName.getWindowToken(), 0);
             if (! collaboration.getName().equals(newCollaborationName)) {
                 collaboration.setName(newCollaborationName);
-                final UpdateMessage message = new ConcreteCollaborationUpdateMessage(username, collaboration, UpdateMessageType.UPDATING);
+                final UpdateMessage message = new ConcreteCollaborationUpdateMessage(SingletonAppUser.getInstance().getUsername(), collaboration, UpdateMessageType.UPDATING);
                 new SendMessageToServerTask(getContext()).execute(message);
             }
             dismiss();

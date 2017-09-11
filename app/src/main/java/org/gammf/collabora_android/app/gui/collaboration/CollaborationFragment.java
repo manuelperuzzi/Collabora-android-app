@@ -29,7 +29,6 @@ import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Group;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
@@ -45,9 +44,8 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -60,15 +58,12 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private static final String SENDER = "collabfrag";
     private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabid";
-    private static final String ARG_USERNAME = "username";
     private static final String NOMODULE = "nomodule";
-    private CollaborationMember member;
 
     private ListView notesList, moduleList;
     private ArrayList<CollaborationComponentInfo> noteItems, moduleItems;
 
     private String username;
-    private String collaborationId;
     private Collaboration collaboration;
 
     public CollaborationFragment() {
@@ -82,10 +77,9 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
      * @return A new instance of fragment ModuleFragment.
      */
 
-    public static CollaborationFragment newInstance(String sender, String username, String collaborationId) {
+    public static CollaborationFragment newInstance(String sender, String collaborationId) {
         CollaborationFragment fragment = new CollaborationFragment();
         Bundle arg = new Bundle();
-        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_SENDER, sender);
         arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
@@ -96,19 +90,11 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
-            this.collaborationId = getArguments().getString(ARG_COLLABID);
-        }
-        setHasOptionsMenu(true);
-
-        try {
+            final String collaborationId = getArguments().getString(ARG_COLLABID);
             collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            if (collaboration instanceof Project || collaboration instanceof Group) {
-                this.member = AccessRightUtils.checkMemberAccess(collaboration, username);
-            }
-        } catch (final IOException | JSONException e) {
-            e.printStackTrace();
         }
+        username = SingletonAppUser.getInstance().getUsername();
+        setHasOptionsMenu(true);
     }
 
 
@@ -139,9 +125,8 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, collaborationId);
-            changeFragment(editCollabFragment);
-            //return true;
+            final Fragment collaborationInfoFragment = CollaborationInfoFragment.newInstance(collaboration.getId());
+            changeFragment(collaborationInfoFragment);
         } else if (id == R.id.action_remove) {
             final UpdateMessage message = new ConcreteCollaborationUpdateMessage(username, collaboration, UpdateMessageType.DELETION);
             new SendMessageToServerTask(getContext()).execute(message);
@@ -177,6 +162,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
         if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             tabHost.addTab(tab1);
+            CollaborationMember member = AccessRightUtils.checkMemberAccess(collaboration, username);
             if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 btnAddNote.setVisibility(View.INVISIBLE);
             } else {
@@ -192,7 +178,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 final Fragment newNoteFragment =
-                        CreateNoteFragment.newInstance(username, collaborationId, NOMODULE);
+                        CreateNoteFragment.newInstance(collaboration.getId(), NOMODULE);
                 changeFragment(newNoteFragment);
             }
         });
@@ -200,13 +186,13 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 //qui gli va aggiunto l'id del modulo
-                changeFragment(CreateNoteFragment.newInstance(username, collaborationId, NOMODULE));
+                changeFragment(CreateNoteFragment.newInstance(collaboration.getId(), NOMODULE));
             }
         });
         btnMenuAddModule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(CreateModuleFragment.newInstance(username, collaborationId));
+                changeFragment(CreateModuleFragment.newInstance(collaboration.getId()));
             }
         });
         return rootView;
@@ -247,9 +233,9 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment;
         if (itemSelected.getType().equals(CollaborationComponentType.MODULE)) {
-            openFragment = ModuleFragment.newInstance(SENDER, username, collaborationId, itemSelected.getId());
+            openFragment = ModuleFragment.newInstance(SENDER, collaboration.getId(), itemSelected.getId());
         } else {
-            openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(), NOMODULE);
+            openFragment = NoteFragment.newInstance(collaboration.getId(), itemSelected.getId(), NOMODULE);
         }
         changeFragment(openFragment);
     }
@@ -298,12 +284,12 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     private void deleteNote(Note noteToDelete) {
         new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                username, noteToDelete, UpdateMessageType.DELETION, collaborationId));
+                username, noteToDelete, UpdateMessageType.DELETION, collaboration.getId()));
     }
 
     private void deleteModule(Module moduleToDelete) {
         new SendMessageToServerTask(getContext()).execute(new ConcreteModuleUpdateMessage(
-                username, moduleToDelete, UpdateMessageType.DELETION, collaborationId));
+                username, moduleToDelete, UpdateMessageType.DELETION, collaboration.getId()));
     }
 }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
@@ -81,7 +82,7 @@ public class CollaborationsSubscriberService extends SubscriberService {
         try {
             this.channel.queueBind(this.queueName, RabbitMQConfig.COLLABORATIONS_EXCHANGE_NAME, intent.getStringExtra("username"));
         } catch (final IOException e) {
-            //TODO
+            Toast.makeText(getApplicationContext(), "Unable to connect to server, try to restart the App!", Toast.LENGTH_SHORT).show();
         }
     }
 

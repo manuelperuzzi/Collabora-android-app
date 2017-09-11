@@ -22,9 +22,7 @@ import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMess
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
-
-import java.io.IOException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,11 +31,9 @@ import java.io.IOException;
  */
 public class EditModuleFragment extends Fragment {
 
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
     private static final String ARG_MODULEID = "moduleid";
 
-    private String username;
     private Module module;
     private String collaborationId, moduleId;
     private EditText txtEditContentModule;
@@ -57,10 +53,9 @@ public class EditModuleFragment extends Fragment {
      * @return A new instance of fragment EditModuleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditModuleFragment newInstance(String username, String collaborationId, String moduleId) {
+    public static EditModuleFragment newInstance(String collaborationId, String moduleId) {
         EditModuleFragment fragment = new EditModuleFragment();
         Bundle arg = new Bundle();
-        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_COLLABID, collaborationId);
         arg.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(arg);
@@ -72,17 +67,12 @@ public class EditModuleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
 
-        try {
-            final Project project = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            module = project.getModule(moduleId);
-        } catch (final IOException | JSONException e) {
-            e.printStackTrace();
-        }
+        final Project project = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        module = project.getModule(moduleId);
     }
 
     @Override
@@ -129,7 +119,7 @@ public class EditModuleFragment extends Fragment {
         module.setStateDefinition(stateSelected);
 
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
-                username, module, UpdateMessageType.UPDATING, collaborationId);
+                SingletonAppUser.getInstance().getUsername(), module, UpdateMessageType.UPDATING, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
     }
 

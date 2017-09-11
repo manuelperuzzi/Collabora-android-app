@@ -15,6 +15,7 @@ import org.gammf.collabora_android.communication.update.members.ConcreteMemberUp
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 /**
  * Created by mperuzzi on 09/09/17.
@@ -25,21 +26,19 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
     private static final String EDIT_MEMBER_DIALOG_TAG = "EditMemberDialogTag";
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_MEMBER_USERNAME = "memberUsername";
     private static final String ARG_MEMBER_RIGHT = "right";
 
-    private String username;
     private String collaborationId;
     private String memberUsername;
     private String memberRight;
 
-    public static ChooseMemberActionDialogFragment newInstance(final String collaborationId, final String username,
-                                                                        final String memberUsername, final String memberRight) {
+    public static ChooseMemberActionDialogFragment newInstance(final String collaborationId,
+                                                               final String memberUsername,
+                                                               final String memberRight) {
         final ChooseMemberActionDialogFragment fragment = new ChooseMemberActionDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_MEMBER_USERNAME, memberUsername);
         args.putString(ARG_MEMBER_RIGHT, memberRight);
         fragment.setArguments(args);
@@ -50,7 +49,6 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
-            this.username = getArguments().getString(ARG_USERNAME);
             this.memberUsername = getArguments().getString(ARG_MEMBER_USERNAME);
             this.memberRight = getArguments().getString(ARG_MEMBER_RIGHT);
         }
@@ -69,7 +67,7 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final MemberDialogFragment dialog = MemberDialogFragment.updateMemberInstance(
-                        collaborationId, username, memberUsername, memberRight);
+                        collaborationId, memberUsername, memberRight);
                 dialog.show(getActivity().getSupportFragmentManager(), EDIT_MEMBER_DIALOG_TAG);
                 dismiss();
             }
@@ -79,7 +77,7 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final CollaborationMember member = new SimpleCollaborationMember(memberUsername, AccessRight.valueOf(memberRight));
-                final UpdateMessage message = new ConcreteMemberUpdateMessage(username, member, UpdateMessageType.DELETION, collaborationId);
+                final UpdateMessage message = new ConcreteMemberUpdateMessage(SingletonAppUser.getInstance().getUsername(), member, UpdateMessageType.DELETION, collaborationId);
                 new SendMessageToServerTask(getContext()).execute(message);
                 dismiss();
             }

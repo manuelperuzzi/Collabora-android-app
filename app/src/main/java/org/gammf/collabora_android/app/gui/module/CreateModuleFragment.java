@@ -19,6 +19,7 @@ import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMess
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,10 +28,8 @@ import org.gammf.collabora_android.utils.CollaborationType;
  */
 public class CreateModuleFragment extends Fragment implements View.OnClickListener{
 
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabid";
 
-    private String username;
     private String collaborationId;
     private String state;
     private EditText txtContentModule;
@@ -47,10 +46,9 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
      * @return A new instance of fragment CreateModuleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateModuleFragment newInstance(String username, String collaborationId) {
+    public static CreateModuleFragment newInstance(final String collaborationId) {
         CreateModuleFragment fragment = new CreateModuleFragment();
         Bundle arg = new Bundle();
-        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_COLLABID, collaborationId);
         fragment.setArguments(arg);
         return fragment;
@@ -61,7 +59,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if(getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
         }
     }
@@ -91,7 +88,7 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
     private void addModule(final String content, final String stateSelected) {
         final Module module = new ConcreteModule(null, content, stateSelected);
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
-                username, module, UpdateMessageType.CREATION, collaborationId);
+                SingletonAppUser.getInstance().getUsername(), module, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
     }
 
