@@ -45,12 +45,10 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "notefrag";
-
     private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
     private static final String ARG_MODULEID = "moduleName";
-
     private String username;
     private String collaborationId,moduleId;
     private String noteId;
@@ -178,8 +176,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         selectItem(listName);
     }
-
-
 
 
     private void selectItem(CollaborationComponentInfo itemSelected) {

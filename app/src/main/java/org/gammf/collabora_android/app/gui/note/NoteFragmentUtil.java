@@ -3,6 +3,8 @@ package org.gammf.collabora_android.app.gui.note;
 import android.content.Context;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
@@ -29,5 +31,24 @@ public class NoteFragmentUtil {
             }
         }
         return noteItems;
+    }
+
+    public static boolean checkPreviousNotesState(String actualState, ArrayList<String> previousNotesList, Collaboration collaboration){
+        for (String noteId: previousNotesList ) {
+            Note note = collaboration.getNote(noteId);
+            if (note.getState().getCurrentState().equals(NoteProjectState.TO_DO.toString())) {
+                if (!actualState.equals(NoteProjectState.TO_DO.toString())) {
+                    return false;
+                }
+            }
+        }
+        if (actualState.equals(NoteProjectState.DONE.toString())){
+            for (String noteId: previousNotesList ) {
+                Note note = collaboration.getNote(noteId);
+                if(!note.getState().getCurrentState().equals(NoteProjectState.DONE.toString()))
+                    return false;
+            }
+        }
+        return true;
     }
 }
