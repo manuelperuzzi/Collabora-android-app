@@ -18,6 +18,7 @@ import android.widget.ListView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
+import org.gammf.collabora_android.app.gui.DeletionDialogFragment;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.collaboration.CollaborationInfoFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
@@ -38,12 +39,12 @@ import java.util.ArrayList;
  * Use the {@link ModuleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ModuleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class ModuleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener,AdapterView.OnItemLongClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String SENDER = "ModuleFragment";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
-
+    private static final String DELETION_DIALOG_TAG = "DeletionDialogTag";
     private static final String CALLER_NOTECREATION = "notecreationfrag";
 
     private static final String ARG_SENDER = "sender";
@@ -168,6 +169,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
         moduleNotesList.setAdapter(adapter);
         moduleNotesList.setOnItemClickListener(this);
+        moduleNotesList.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -197,5 +199,14 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        final DeletionDialogFragment dialog = DeletionDialogFragment.newInstance(
+                collaborationId,username,listName.getId(),listName.getContent(),listName.getType());
+        dialog.show(getActivity().getSupportFragmentManager(), DELETION_DIALOG_TAG);
+        return true;
     }
 }

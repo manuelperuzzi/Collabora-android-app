@@ -54,4 +54,12 @@ public interface Project extends SharedCollaboration {
      */
     boolean addNote(Note note, String moduleId);
 
+    /**
+     * Method that returns all notes that don't belong to any Project
+     * @return return set of notes
+     */
+    Set<Note> getAllNoteNotInModules();
+
+
+
 }
