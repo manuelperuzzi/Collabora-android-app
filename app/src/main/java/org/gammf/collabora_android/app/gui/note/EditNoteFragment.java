@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +28,6 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
-import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
@@ -77,7 +77,7 @@ public class EditNoteFragment extends Fragment implements
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
     private ListView previousNotesList;
-    private List<String> previousNotesSelected ;
+    private List<String> previousNotesSelected = new ArrayList<>();
     private ArrayList<CollaborationComponentInfo> noteItems;
 
     private String collaborationId, noteId,moduleId;
@@ -140,6 +140,7 @@ public class EditNoteFragment extends Fragment implements
                 }
             });
             this.responsible = note.getState().getCurrentResponsible();
+            this.previousNotesSelected = note.getPreviousNotes();
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -171,7 +172,6 @@ public class EditNoteFragment extends Fragment implements
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_note, container, false);
         noteItems = new ArrayList<>();
-        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -248,31 +248,17 @@ public class EditNoteFragment extends Fragment implements
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
         Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         if(note.getPreviousNotes()!= null){
-            final List<Note> allNotes = new ArrayList<>();
-            this.previousNotesSelected = note.getPreviousNotes();
-            try {
-                allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-            for (String pNoteID: note.getPreviousNotes())
-                for (Note noteon: allNotes)
-                    if(noteon.getNoteID().equals(pNoteID))
-                        noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtils.fillListView(getContext(), note, collaborationId));
             previousNotesList.setAdapter(noteListAdapter);
         }
-
         previousNotesList.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
         });
-
         setListViewHeightBasedOnChildren(previousNotesList);
 
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
@@ -295,7 +281,6 @@ public class EditNoteFragment extends Fragment implements
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
-
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
@@ -303,7 +288,6 @@ public class EditNoteFragment extends Fragment implements
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
             view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             totalHeight += view.getMeasuredHeight();
         }
@@ -314,7 +298,6 @@ public class EditNoteFragment extends Fragment implements
 
     @SuppressWarnings("unchecked")
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Make sure fragment codes match up
         if (requestCode == REQUEST_CODE) {
             this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
             this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
@@ -338,12 +321,20 @@ public class EditNoteFragment extends Fragment implements
                 return false;
             }
             note.modifyState(new NoteState(noteStateEdited, responsible));
-            if(!previousNotesSelected.isEmpty())
+            if(!previousNotesSelected.isEmpty()) {
                 note.modifyPreviousNotes(previousNotesSelected);
-            else
+                Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteStateEdited, previousNotesSelected, collaboration);
+                if (checkPrevNotes.first)
+                    new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
+                            username, note, UpdateMessageType.UPDATING, collaborationId));
+                else
+                    Toast.makeText(getContext().getApplicationContext(), checkPrevNotes.second, Toast.LENGTH_LONG).show();
+            }
+            else {
                 note.modifyPreviousNotes(null);
-            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                username, note, UpdateMessageType.UPDATING, collaborationId));
+                new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
+                        username, note, UpdateMessageType.UPDATING, collaborationId));
+            }
             return true;
         }
     }
@@ -353,8 +344,6 @@ public class EditNoteFragment extends Fragment implements
         final DateTime expiration = new DateTime(year, month, day, hour, minute);
         return expiration.compareTo(now) > 0;
     }
-
-
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
