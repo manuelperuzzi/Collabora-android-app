@@ -44,10 +44,9 @@ import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.DateTime;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -60,7 +59,6 @@ import java.util.List;
 public class EditNoteFragment extends Fragment implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
     private static final String ARG_MODULEID = "moduleName";
@@ -70,7 +68,6 @@ public class EditNoteFragment extends Fragment implements
     private static final String CHOOSE_PREVIOUS_NOTE_DIALOG_TAG = "ChoosePreviousNotesDialogTag";
     private EditNoteFragment fragment = this;
 
-    private String username;
     private String noteStateEdited = "";
     private TextView dateViewEdited, timeViewEdited;
     private EditText txtContentNoteEdited;
@@ -103,10 +100,9 @@ public class EditNoteFragment extends Fragment implements
      * @return A new instance of fragment EditNoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditNoteFragment newInstance(String username, String collabId, String noteId,String moduleId) {
+    public static EditNoteFragment newInstance(String collabId, String noteId,String moduleId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
         args.putString(ARG_MODULEID, moduleId);
@@ -119,33 +115,28 @@ public class EditNoteFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
 
-        try {
-            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            note = collaboration.getNote(noteId);
-            if (note.getLocation() != null) {
-                this.mapManager = new MapManager(note.getLocation(), getContext());
-            } else {
-                this.mapManager = new MapManager(MapManager.NO_LOCATION, getContext());
+        this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        note = collaboration.getNote(noteId);
+        if (note.getLocation() != null) {
+            this.mapManager = new MapManager(note.getLocation(), getContext());
+        } else {
+            this.mapManager = new MapManager(MapManager.NO_LOCATION, getContext());
+        }
+        this.mapManager.addObserver(new Observer<Location>() {
+            @Override
+            public void notify(final Location location) {
+                note.modifyLocation(location);
             }
-            this.mapManager.addObserver(new Observer<Location>() {
-                @Override
-                public void notify(final Location location) {
-                    note.modifyLocation(location);
-                }
-            });
-            this.responsible = note.getState().getCurrentResponsible();
-            this.previousNotesSelected = note.getPreviousNotes();
-            if (this.previousNotesSelected == null) {
-                this.previousNotesSelected = new ArrayList<>();
-            }
-        } catch (final IOException | JSONException e) {
-            e.printStackTrace();
+        });
+        this.responsible = note.getState().getCurrentResponsible();
+        this.previousNotesSelected = note.getPreviousNotes();
+        if (this.previousNotesSelected == null) {
+            this.previousNotesSelected = new ArrayList<>();
         }
     }
 
@@ -329,14 +320,14 @@ public class EditNoteFragment extends Fragment implements
                 Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteStateEdited, previousNotesSelected, collaboration);
                 if (checkPrevNotes.first)
                     new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                            username, note, UpdateMessageType.UPDATING, collaborationId));
+                            SingletonAppUser.getInstance().getUsername(), note, UpdateMessageType.UPDATING, collaborationId));
                 else
                     Toast.makeText(getContext().getApplicationContext(), checkPrevNotes.second, Toast.LENGTH_LONG).show();
             }
             else {
                 note.modifyPreviousNotes(null);
                 new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                        username, note, UpdateMessageType.UPDATING, collaborationId));
+                        SingletonAppUser.getInstance().getUsername(), note, UpdateMessageType.UPDATING, collaborationId));
             }
             return true;
         }
@@ -380,7 +371,7 @@ public class EditNoteFragment extends Fragment implements
 
     private void createResponsibleSpinnerManager(final View rootView) {
         if (collaboration.getCollaborationType() != CollaborationType.PRIVATE &&
-                ((SharedCollaboration)collaboration).getMember(username).getAccessRight() == AccessRight.ADMIN) {
+                ((SharedCollaboration)collaboration).getMember(SingletonAppUser.getInstance().getUsername()).getAccessRight() == AccessRight.ADMIN) {
             final ResponsibleSpinnerManager responsibleSpinnerManager = new ResponsibleSpinnerManager(
                     note.getState().getCurrentResponsible() == null ? ResponsibleSpinnerManager.NO_RESPONSIBLE : note.getState().getCurrentResponsible(),
                     rootView, R.id.spinnerEditResponsible, this.collaborationId

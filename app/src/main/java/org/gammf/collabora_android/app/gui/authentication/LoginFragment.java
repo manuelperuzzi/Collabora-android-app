@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +23,13 @@ import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationMan
 import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.utils.AuthenticationUtils;
 import org.gammf.collabora_android.utils.CollaborationUtils;
+import org.gammf.collabora_android.app.utils.ExceptionManager;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.UserUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
-
-import java.io.IOException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -126,27 +123,29 @@ public class LoginFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     writeLoginInfoToFile(new JSONObject(new String(responseBody)));
-
-
                     final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
                     intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
                     LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-                } catch (JSONException | IOException | MandatoryFieldMissingException e) {
-                    e.printStackTrace();
+                } catch (final JSONException e) {
+                    ExceptionManager.getInstance().handle(e);
                 }
             }
 
-            private void writeLoginInfoToFile(final JSONObject json) throws JSONException, IOException, MandatoryFieldMissingException {
-                LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(json.getJSONObject("user")));
+            private void writeLoginInfoToFile(final JSONObject json) {
+                try {
+                    LocalStorageUtils.writeUserToFile(getContext(), UserUtils.jsonToUser(json.getJSONObject("user")));
 
-                final CollaborationsManager manager = new ConcreteCollaborationManager();
-                final JSONArray jCollaborations = json.getJSONArray("collaborations");
-                for (int i = 0; i < jCollaborations.length(); i++) {
-                    final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(jCollaborations.getJSONObject(i));
-                    manager.addCollaboration(new ConcreteShortCollaboration(collaboration));
-                    LocalStorageUtils.writeCollaborationToFile(getContext(), collaboration);
+                    final CollaborationsManager manager = new ConcreteCollaborationManager();
+                    final JSONArray jCollaborations = json.getJSONArray("collaborations");
+                    for (int i = 0; i < jCollaborations.length(); i++) {
+                        final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(jCollaborations.getJSONObject(i));
+                        manager.addCollaboration(new ConcreteShortCollaboration(collaboration));
+                        LocalStorageUtils.writeCollaborationToFile(getContext(), collaboration);
+                    }
+                    LocalStorageUtils.writeShortCollaborationsToFile(getContext(), manager);
+                } catch (final JSONException e) {
+                    ExceptionManager.getInstance().handle(e);
                 }
-                LocalStorageUtils.writeShortCollaborationsToFile(getContext(), manager);
             }
 
             @Override

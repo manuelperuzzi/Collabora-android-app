@@ -16,9 +16,6 @@ import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdate
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
-
-import java.io.IOException;
 
 public class DeletionDialogFragment  extends android.support.v4.app.DialogFragment{
 
@@ -53,11 +50,7 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
             this.componentContent = getArguments().getString(ARG_COMPONENTCONTENT);
             this.componentType = (CollaborationComponentType) getArguments().getSerializable(ARG_COMPONENTTYPE);
             this.username = getArguments().getString(ARG_USERNAME);
-            try {
-                collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
         }
     }
 

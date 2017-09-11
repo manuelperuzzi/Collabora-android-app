@@ -10,9 +10,7 @@ import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +29,7 @@ public class NoteFragmentUtils {
     public static ArrayList<CollaborationComponentInfo> fillListView(Context context, Note note, String collaborationId){
         final List<Note> allNotes = new ArrayList<>();
         final ArrayList<CollaborationComponentInfo> noteItems = new ArrayList<>();
-        try {
-            allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(context, collaborationId).getAllNotes());
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
+        allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(context, collaborationId).getAllNotes());
         for (String pNoteID: note.getPreviousNotes()) {
             for (Note singleNote: allNotes) {
                 if(singleNote.getNoteID().equals(pNoteID)){

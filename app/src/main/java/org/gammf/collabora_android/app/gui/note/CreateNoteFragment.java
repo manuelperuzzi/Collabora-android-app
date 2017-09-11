@@ -42,10 +42,9 @@ import org.gammf.collabora_android.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.DateTime;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -56,7 +55,6 @@ import java.util.List;
  */
 public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String ARG_USERNAME = "USERNAME";
     private static final String ARG_COLLABORATION_ID = "COLLABORATION_ID";
     private static final String ARG_MODULEID = "moduleName";
     private static final String NOMODULE = "nomodule";
@@ -101,10 +99,8 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
      *
      * @return A new instance of fragment CreateNoteFragment.
      */
-    public static CreateNoteFragment newInstance(final String username, final String collaborationId,
-                                                 final String moduleId) {
+    public static CreateNoteFragment newInstance(final String collaborationId, final String moduleId) {
         final Bundle arg = new Bundle();
-        arg.putString(ARG_USERNAME, username);
         arg.putString(ARG_COLLABORATION_ID, collaborationId);
         arg.putString(ARG_MODULEID, moduleId);
         final CreateNoteFragment fragment = new CreateNoteFragment();
@@ -117,22 +113,18 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if(getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
-        try {
-            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext().getApplicationContext(), collaborationId);
-            this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
-            this.mapManager.addObserver(new Observer<Location>() {
-                @Override
-                public void notify(final Location newlocation) {
-                    location = newlocation;
-                }
-            });
-        } catch (IOException | JSONException e) {
-            e.printStackTrace(); // TODO this exception will be deleted.
-        }
+        this.username = SingletonAppUser.getInstance().getUsername();
+        this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext().getApplicationContext(), collaborationId);
+        this.mapManager = new MapManager(MapManager.NO_LOCATION, this.getContext());
+        this.mapManager.addObserver(new Observer<Location>() {
+            @Override
+            public void notify(final Location newlocation) {
+                location = newlocation;
+            }
+        });
     }
 
     @Override

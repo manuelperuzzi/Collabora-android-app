@@ -24,9 +24,8 @@ import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
-import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +43,6 @@ public class CollaborationInfoFragment extends Fragment {
     private static final String ADD_MEMBER_DIALOG_TAG = "AddMemberDialogFragment";
     private static final String CHOOSE_MEMBER_ACTION_DIALOG_TAG = "ChooseMemberActionDialogTag";
     private static final String EDIT_COLLABORATION_DIALOG_TAG = "EditCollaborationDialogTag";
-
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABORATION_ID = "collaborationId";
 
     private String username;
@@ -59,10 +56,9 @@ public class CollaborationInfoFragment extends Fragment {
      * @return A new instance of fragment CollaborationInfoFragment.
      */
 
-    public static CollaborationInfoFragment newInstance(final String username, final String collaborationId) {
+    public static CollaborationInfoFragment newInstance(final String collaborationId) {
         final CollaborationInfoFragment fragment = new CollaborationInfoFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABORATION_ID, collaborationId);
         fragment.setArguments(args);
         return fragment;
@@ -73,14 +69,10 @@ public class CollaborationInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             final String collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
-            try {
-                this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            } catch (final IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
         }
+        username = SingletonAppUser.getInstance().getUsername();
     }
 
     @Override
@@ -109,7 +101,7 @@ public class CollaborationInfoFragment extends Fragment {
         btnEditCollaborationName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditCollaborationDialogFragment dialog = EditCollaborationDialogFragment.newInstance(collaboration.getId(), username);
+                final EditCollaborationDialogFragment dialog = EditCollaborationDialogFragment.newInstance(collaboration.getId());
                 dialog.show(getActivity().getSupportFragmentManager(), EDIT_COLLABORATION_DIALOG_TAG);
             }
         });
@@ -117,7 +109,7 @@ public class CollaborationInfoFragment extends Fragment {
         btnAddMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final MemberDialogFragment dialog = MemberDialogFragment.addMemberInstance(collaboration.getId(), username);
+                final MemberDialogFragment dialog = MemberDialogFragment.addMemberInstance(collaboration.getId());
                 dialog.show(getActivity().getSupportFragmentManager(), ADD_MEMBER_DIALOG_TAG);
             }
         });
@@ -159,7 +151,7 @@ public class CollaborationInfoFragment extends Fragment {
                     final CollaborationComponentInfo component = (CollaborationComponentInfo) adapterView.getItemAtPosition(i);
                     final AccessRight memberRight = ((SharedCollaboration) collaboration).getMember(component.getId()).getAccessRight();
                     final ChooseMemberActionDialogFragment dialog = ChooseMemberActionDialogFragment.newInstance(
-                            collaboration.getId(), username, component.getId(), memberRight.name());
+                            collaboration.getId(), component.getId(), memberRight.name());
                     dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_MEMBER_ACTION_DIALOG_TAG);
                 }
             });

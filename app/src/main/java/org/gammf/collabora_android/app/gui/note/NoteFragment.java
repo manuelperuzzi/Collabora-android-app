@@ -29,11 +29,8 @@ import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.format.DateTimeFormat;
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
@@ -43,11 +40,11 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private static final String BACKSTACK_FRAG = "xyz";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String SENDER = "notefrag";
-    private static final String ARG_USERNAME = "username";
+
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
     private static final String ARG_MODULEID = "moduleName";
-    private String username;
+
     private String collaborationId,moduleId;
     private String noteId;
     private Note note;
@@ -56,16 +53,14 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     private MapManager mapManager;
     private ProgressBar progressBarState;
     private TextView stateTextView;
-    private ArrayList<CollaborationComponentInfo> noteItems;
 
     public NoteFragment() {
         setHasOptionsMenu(true);
     }
 
-    public static NoteFragment newInstance(String username, String collabId, String noteId,String moduleId) {
+    public static NoteFragment newInstance(String collabId, String noteId,String moduleId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_NOTEID, noteId);
         args.putString(ARG_MODULEID, moduleId);
@@ -77,17 +72,12 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.noteId = getArguments().getString(ARG_NOTEID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
-        try {
-            this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            this.note = collaboration.getNote(noteId);
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
+        this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        this.note = collaboration.getNote(noteId);
         setHasOptionsMenu(true);
     }
 
@@ -95,7 +85,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE) ||
-                !((SharedCollaboration)collaboration).getMember(username).getAccessRight().equals(AccessRight.READ)) {
+                !((SharedCollaboration)collaboration).getMember(SingletonAppUser.getInstance().getUsername()).getAccessRight().equals(AccessRight.READ)) {
             inflater.inflate(R.menu.edit_note, menu);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -111,7 +101,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         int id = item.getItemId();
 
         if (id == R.id.action_editnote) {
-            Fragment editNoteFragment = EditNoteFragment.newInstance(username, collaborationId, noteId,moduleId);
+            Fragment editNoteFragment = EditNoteFragment.newInstance(collaborationId, noteId,moduleId);
             changeFragment(editNoteFragment);
             return true;
         }
@@ -122,7 +112,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_note, container, false);
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
-        noteItems = new ArrayList<>();
         initializeGuiComponent(rootView);
         setStateProgressBar(stateTextView.getText().toString());
         return rootView;
@@ -177,7 +166,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
 
 
     private void selectItem(CollaborationComponentInfo itemSelected) {
-        Fragment openFragment = NoteFragment.newInstance(username, collaborationId, itemSelected.getId(),moduleId);
+        Fragment openFragment = NoteFragment.newInstance(collaborationId, itemSelected.getId(),moduleId);
         changeFragment(openFragment);
     }
 

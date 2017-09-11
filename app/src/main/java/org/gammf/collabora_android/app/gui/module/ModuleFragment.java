@@ -29,9 +29,8 @@ import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRightUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +47,6 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private static final String CALLER_NOTECREATION = "notecreationfrag";
 
     private static final String ARG_SENDER = "sender";
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
 
@@ -56,10 +54,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private ListView moduleNotesList;
     private ArrayList<CollaborationComponentInfo> listItem;
     private CollaborationMember member;
-    private Project collaboration;
 
-
-    private String username;
     private Module module;
 
     public ModuleFragment() {
@@ -72,11 +67,10 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static ModuleFragment newInstance(String sender, String username, String collabId, String moduleId) {
+    public static ModuleFragment newInstance(String sender, String collabId, String moduleId) {
         ModuleFragment fragment = new ModuleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SENDER, sender);
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
@@ -88,20 +82,15 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
             this.sender = getArguments().getString(ARG_SENDER);
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
         setHasOptionsMenu(true);
 
-        try {
-            collaboration = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
-            module = collaboration.getModule(moduleId);
-            this.member = AccessRightUtils.checkMemberAccess(collaboration,username);
-            getActivity().setTitle(collaboration.getName() + " - " + module.getDescription());
-        } catch (final IOException | JSONException e) {
-            e.printStackTrace();
-        }
+        final Project collaboration = (Project) LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
+        module = collaboration.getModule(moduleId);
+        this.member = AccessRightUtils.checkMemberAccess(collaboration,SingletonAppUser.getInstance().getUsername());
+        getActivity().setTitle(collaboration.getName() + " - " + module.getDescription());
     }
 
     @Override
@@ -121,11 +110,11 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         // Handle action bar item clicks here.
         int id = item.getItemId();
         if(id == R.id.action_editcollab){
-            Fragment editCollabFragment = CollaborationInfoFragment.newInstance(username, this.collaborationId);
+            Fragment editCollabFragment = CollaborationInfoFragment.newInstance(this.collaborationId);
             changeFragment(editCollabFragment);
             return true;
         }else if (id == R.id.action_editmodule){
-            Fragment editModuleFragment = EditModuleFragment.newInstance(username, this.collaborationId, moduleId);
+            Fragment editModuleFragment = EditModuleFragment.newInstance(this.collaborationId, moduleId);
             changeFragment(editModuleFragment);
             return true;
         }
@@ -179,13 +168,13 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void selectItem(final String itemId) {
-        Fragment openNoteFragment = NoteFragment.newInstance(username, collaborationId, itemId,moduleId);
+        Fragment openNoteFragment = NoteFragment.newInstance(collaborationId, itemId,moduleId);
         changeFragment(openNoteFragment);
     }
 
     @Override
     public void onClick(View view) {
-        Fragment newNoteFragment = CreateNoteFragment.newInstance(username, collaborationId, moduleId);
+        Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleId);
         changeFragment(newNoteFragment);
     }
 
@@ -205,7 +194,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
         final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         final DeletionDialogFragment dialog = DeletionDialogFragment.newInstance(
-                collaborationId,username,listName.getId(),listName.getContent(),listName.getType());
+                collaborationId,SingletonAppUser.getInstance().getUsername(),listName.getId(),listName.getContent(),listName.getType());
         dialog.show(getActivity().getSupportFragmentManager(), DELETION_DIALOG_TAG);
         return true;
     }

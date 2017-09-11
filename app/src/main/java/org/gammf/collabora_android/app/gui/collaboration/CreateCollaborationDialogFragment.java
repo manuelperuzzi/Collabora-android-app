@@ -27,10 +27,7 @@ import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
-
-import java.io.IOException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,17 +113,11 @@ public class CreateCollaborationDialogFragment extends DialogFragment {
 
     private void createCollaboration(final String collaborationName, final CollaborationType type) {
         final SharedCollaboration collaboration = type.equals(CollaborationType.GROUP) ? new ConcreteGroup(null, collaborationName) : new ConcreteProject(null, collaborationName);
-        final User user;
-        try {
-            user = LocalStorageUtils.readUserFromFile(getContext().getApplicationContext());
-            collaboration.addMember(new SimpleCollaborationMember(user.getUsername(), AccessRight.ADMIN));
-            final UpdateMessage message = new ConcreteCollaborationUpdateMessage(user.getUsername(),
-                    collaboration, UpdateMessageType.CREATION);
-            new SendMessageToServerTask(getContext().getApplicationContext()).execute(message);
-            this.dismiss();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            // TODO manage this impossible error internally on LocalStorageUtils. (show a Toast and close application).
-        }
+        final User user = SingletonAppUser.getInstance().getUser();
+        collaboration.addMember(new SimpleCollaborationMember(user.getUsername(), AccessRight.ADMIN));
+        final UpdateMessage message = new ConcreteCollaborationUpdateMessage(user.getUsername(),
+                collaboration, UpdateMessageType.CREATION);
+        new SendMessageToServerTask(getContext().getApplicationContext()).execute(message);
+        this.dismiss();
     }
 }

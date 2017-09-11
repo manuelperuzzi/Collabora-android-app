@@ -31,32 +31,13 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.private_collaborations.ConcretePrivateCollaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
-import org.gammf.collabora_android.modules.ConcreteModule;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteBuilder;
-import org.gammf.collabora_android.notes.NoteLocation;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.notes.SimpleNote;
-import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.gammf.collabora_android.notes.State;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
-import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.app.utils.ExceptionManager;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
-import org.joda.time.DateTime;
-import org.json.JSONException;
+import org.gammf.collabora_android.utils.SingletonAppUser;
+
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -85,8 +66,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.i("FLUSSOANDROID", "onCreate");
         setContentView(R.layout.activity_main);
+        ExceptionManager.init(this);
+        Log.i("FLUSSOANDROID", "MainActivity; " + getApplicationContext().toString());
         try {
-            user = LocalStorageUtils.readUserFromFile(getApplicationContext());
+            SingletonAppUser.getInstance().loadUser(getApplicationContext());
+            user = SingletonAppUser.getInstance().getUser();
+
             final TextView username = (TextView) findViewById(R.id.nameOfUser);
             username.setText(user.getUsername());
             final TextView email = (TextView) findViewById(R.id.emailOfUser);
@@ -109,8 +94,6 @@ public class MainActivity extends AppCompatActivity
             final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);
             finish();
-        } catch (final JSONException | IOException e) {
-            //TODO ?
         }
     }
 
@@ -197,7 +180,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void onUserLogout(){
         this.navigationManager.closeNavigator();
-        LocalStorageUtils.deleteUserInFile(getApplicationContext());
+        LocalStorageUtils.deleteUserFromFile(getApplicationContext());
         LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
 
         final Intent serviceDeletionIntent = new Intent("subscriber.service.deletion");
@@ -206,10 +189,6 @@ public class MainActivity extends AppCompatActivity
         final Intent authActivityIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
         startActivity(authActivityIntent);
         finish();
-    }
-
-    public User getUser(){
-        return this.user;
     }
 
     @Override
@@ -233,13 +212,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openCollaborationFragment(final ShortCollaboration collaboration) {
-        final Fragment fragment = CollaborationFragment.newInstance(SENDER, user.getUsername(), collaboration.getId());
+        final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaboration.getId());
         final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
 
         //fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.addToBackStack(BACKSTACK_FRAG);
         fragmentManager.replace(R.id.content_frame, fragment);
         fragmentManager.commit();
+    }
+
+    public void onLocalStorageCorrupted() {
+        Toast.makeText(getApplicationContext(), "Memory corrupted! Logging out.", Toast.LENGTH_LONG).show();
+        onUserLogout();
     }
 
     private class MainActivityReceiver extends BroadcastReceiver {
@@ -253,7 +237,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-
+            Log.i("FLUSSOANDROID", intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG));
             switch (intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG)) {
                 case IntentConstants.NETWORK_ERROR:
                     Toast.makeText(context, intent.getStringExtra(IntentConstants.NETWORK_ERROR), Toast.LENGTH_SHORT).show();
@@ -300,6 +284,11 @@ public class MainActivity extends AppCompatActivity
                         openCollaborationFragment(LocalStorageUtils
                                 .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
                     }
+                    break;
+                case IntentConstants.LOCAL_STORAGE_ERROR:
+                    Log.i("FLUSSOANDROID", "local storage error");
+                    Toast.makeText(context, "Local storage corrupted! Logging out.", Toast.LENGTH_SHORT).show();
+                    onUserLogout();
                     break;
             }
         }

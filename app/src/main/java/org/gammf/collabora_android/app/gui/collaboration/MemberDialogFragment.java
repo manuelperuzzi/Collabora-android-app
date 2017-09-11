@@ -23,6 +23,7 @@ import org.gammf.collabora_android.communication.update.members.MemberUpdateMess
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,11 +36,9 @@ import java.util.List;
 public class MemberDialogFragment extends DialogFragment {
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_MEMBER_USERNAME = "memberUsername";
     private static final String ARG_MEMBER_RIGHT = "right";
 
-    private String username;
     private String collaborationId;
     private String previousMemberUsername;
     private String previousMemberRight;
@@ -48,21 +47,19 @@ public class MemberDialogFragment extends DialogFragment {
     private Spinner spinnerRight;
     private EditText txtUsername;
 
-    public static MemberDialogFragment addMemberInstance(final String collaborationId, final String username) {
+    public static MemberDialogFragment addMemberInstance(final String collaborationId) {
         final MemberDialogFragment fragment = new MemberDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
-        args.putString(ARG_USERNAME, username);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static MemberDialogFragment updateMemberInstance(final String collaborationId, final String username,
+    public static MemberDialogFragment updateMemberInstance(final String collaborationId,
                                                             final String memberUsername, final String memberRight) {
         final MemberDialogFragment fragment = new MemberDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
-        args.putString(ARG_USERNAME, username);
         args.putString(ARG_MEMBER_USERNAME, memberUsername);
         args.putString(ARG_MEMBER_RIGHT, memberRight);
         fragment.setArguments(args);
@@ -74,7 +71,6 @@ public class MemberDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.collaborationId = getArguments().getString(ARG_COLLABORATION_ID);
-            this.username = getArguments().getString(ARG_USERNAME);
             this.previousMemberUsername = getArguments().getString(ARG_MEMBER_USERNAME);
             this.previousMemberRight = getArguments().getString(ARG_MEMBER_RIGHT);
         }
@@ -165,7 +161,7 @@ public class MemberDialogFragment extends DialogFragment {
 
     private void handleMemberOperation(final String memberUsername, final AccessRight memberRight, final UpdateMessageType type) {
         final CollaborationMember member = new SimpleCollaborationMember(memberUsername, memberRight);
-        final MemberUpdateMessage message = new ConcreteMemberUpdateMessage(username, member, type, collaborationId);
+        final MemberUpdateMessage message = new ConcreteMemberUpdateMessage(SingletonAppUser.getInstance().getUsername(), member, type, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
     }
 }
