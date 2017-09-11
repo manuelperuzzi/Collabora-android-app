@@ -248,18 +248,7 @@ public class EditNoteFragment extends Fragment implements
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
         Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
         if(note.getPreviousNotes()!= null){
-            final List<Note> allNotes = new ArrayList<>();
-            this.previousNotesSelected = note.getPreviousNotes();
-            try {
-                allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-            for (String pNoteID: note.getPreviousNotes())
-                for (Note noteon: allNotes)
-                    if(noteon.getNoteID().equals(pNoteID))
-                        noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtil.fillListView(getContext(), note, collaborationId));
             previousNotesList.setAdapter(noteListAdapter);
         }
 
@@ -267,7 +256,6 @@ public class EditNoteFragment extends Fragment implements
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
@@ -314,7 +302,6 @@ public class EditNoteFragment extends Fragment implements
 
     @SuppressWarnings("unchecked")
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Make sure fragment codes match up
         if (requestCode == REQUEST_CODE) {
             this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
             this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);

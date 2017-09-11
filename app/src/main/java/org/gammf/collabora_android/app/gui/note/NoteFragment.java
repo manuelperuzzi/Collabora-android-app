@@ -133,41 +133,28 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     private void initializeGuiComponent(final View rootView) {
-        try {
-            ((TextView) rootView.findViewById(R.id.contentNote)).setText(note.getContent());
-            progressBarState = rootView.findViewById(R.id.progressBarState);
-            final TextView noPreviousNoteView = rootView.findViewById(R.id.noPNote);
-            this.stateTextView = rootView.findViewById(R.id.lblState);
-            this.stateTextView.setText(note.getState().getCurrentState());
+        ((TextView) rootView.findViewById(R.id.contentNote)).setText(note.getContent());
+        progressBarState = rootView.findViewById(R.id.progressBarState);
+        final TextView noPreviousNoteView = rootView.findViewById(R.id.noPNote);
+        this.stateTextView = rootView.findViewById(R.id.lblState);
+        this.stateTextView.setText(note.getState().getCurrentState());
 
-            final TextView responsibleTextView = rootView.findViewById(R.id.lblResponsible);
-            if (note.getState().getCurrentResponsible() != null) {
-                responsibleTextView.setText(note.getState().getCurrentResponsible());
-            }
-            final TextView expiration = rootView.findViewById(R.id.expiration);
-            if (note.getExpirationDate() != null) {
-                expiration.setText(note.getExpirationDate().toString(DateTimeFormat.mediumDateTime()));
-            }
-            if(note.getPreviousNotes()!= null){
-                final List<Note> allNotes = new ArrayList<>();
-                allNotes.addAll(LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId).getAllNotes());
-                for (String pNoteID: note.getPreviousNotes()) {
-                    for (Note noteon: allNotes) {
-                        if(noteon.getNoteID().equals(pNoteID)){
-                            noteItems.add(new CollaborationComponentInfo(noteon.getNoteID(), noteon.getContent(), CollaborationComponentType.NOTE));
-                        }
-                    }
-                }
-                final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
-                previousNotesList.setAdapter(noteListAdapter);
-                previousNotesList.setOnItemClickListener(this);
-            } else {
-                noPreviousNoteView.setText(R.string.nonoteinserted);
-            }
-            this.mapManager = new MapManager(note.getLocation(), this.getContext());
-        } catch (final IOException | JSONException e) {
-            e.printStackTrace();
+        final TextView responsibleTextView = rootView.findViewById(R.id.lblResponsible);
+        if (note.getState().getCurrentResponsible() != null) {
+            responsibleTextView.setText(note.getState().getCurrentResponsible());
         }
+        final TextView expiration = rootView.findViewById(R.id.expiration);
+        if (note.getExpirationDate() != null) {
+            expiration.setText(note.getExpirationDate().toString(DateTimeFormat.mediumDateTime()));
+        }
+        if (note.getPreviousNotes() != null) {
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtil.fillListView(getContext(), note, collaborationId));
+            previousNotesList.setAdapter(noteListAdapter);
+            previousNotesList.setOnItemClickListener(this);
+        } else {
+            noPreviousNoteView.setText(R.string.nonoteinserted);
+        }
+        this.mapManager = new MapManager(note.getLocation(), this.getContext());
     }
 
     @Override
