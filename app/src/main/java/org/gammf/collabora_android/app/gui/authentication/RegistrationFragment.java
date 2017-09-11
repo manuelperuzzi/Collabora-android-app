@@ -36,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
@@ -178,12 +177,12 @@ public class    RegistrationFragment extends Fragment implements DatePickerDialo
                             final Intent intent = new Intent(AuthenticationActivity.INTENT_TAG);
                             intent.putExtra(AuthenticationActivity.INTENT_TAG, "authentication-ok");
                             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-                        } catch (final IOException | JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    private void writeRegistrationInfoToFile(final JSONObject json) throws JSONException, IOException {
+                    private void writeRegistrationInfoToFile(final JSONObject json) throws JSONException {
                         final Collaboration collaboration = CollaborationUtils.jsonToCollaboration(json);
                         final CollaborationsManager manager = new ConcreteCollaborationManager();
                         manager.addCollaboration(new ConcreteShortCollaboration(collaboration));

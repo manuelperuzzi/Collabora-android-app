@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.app.gui.note;
 
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,9 +13,7 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Concrete
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -68,18 +65,15 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final List<Note> allNotes = new ArrayList<>();
         final List<Integer> mSelectedItems = new ArrayList<>();
-        try {
-            Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getActivity().getApplicationContext(), collaborationId);
-            if (moduleId.equals(NOMODULE)) {
-                allNotes.addAll(collaboration.getAllNotes());
-            } else {
-                for (Module module : ((ConcreteProject) collaboration).getAllModules()) {
-                    if (module.getId().equals(moduleId))
-                        allNotes.addAll(module.getAllNotes());
-                }
+
+        Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getActivity().getApplicationContext(), collaborationId);
+        if (moduleId.equals(NOMODULE)) {
+            allNotes.addAll(collaboration.getAllNotes());
+        } else {
+            for (Module module : ((ConcreteProject) collaboration).getAllModules()) {
+                if (module.getId().equals(moduleId))
+                    allNotes.addAll(module.getAllNotes());
             }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
         }
         final CharSequence[] charSequenceItems = fillDialogList(allNotes).toArray(new CharSequence[fillDialogList(allNotes).size()]);
         return new AlertDialog.Builder(getActivity())

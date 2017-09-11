@@ -32,9 +32,8 @@ import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 /**
@@ -70,68 +69,56 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             case UPDATE:
                 final UpdateMessage msg = (UpdateMessage) message;
                 updateType = msg.getUpdateType();
-                return handleUpdateMessage(msg);
+                handleUpdateMessage(msg);
+                return true;
             case COLLABORATION:
-                return handleCollaborationMessage((CollaborationMessage)message);
+                handleCollaborationMessage((CollaborationMessage)message);
+                return true;
             case ALL_COLLABORATIONS:
-                return handleAllCollaborationsMessage((AllCollaborationsMessage)message);
+                handleAllCollaborationsMessage((AllCollaborationsMessage)message);
+                return true;
             default:
                 return false;
         }
     }
 
-    private boolean handleAllCollaborationsMessage(final AllCollaborationsMessage message) {
-        try {
-            final CollaborationsManager manager = new ConcreteCollaborationManager();
-            for (final Collaboration c: message.getCollaborationList()) {
-                manager.addCollaboration(new ConcreteShortCollaboration(c));
-                LocalStorageUtils.writeCollaborationToFile(context, c);
-            }
-            LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
-            return true;
-        } catch (final IOException | JSONException e) {
-            return false;
+    private void handleAllCollaborationsMessage(final AllCollaborationsMessage message) {
+        final CollaborationsManager manager = new ConcreteCollaborationManager();
+        for (final Collaboration c: message.getCollaborationList()) {
+            manager.addCollaboration(new ConcreteShortCollaboration(c));
+            LocalStorageUtils.writeCollaborationToFile(context, c);
         }
+        LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
     }
 
-    private boolean handleCollaborationMessage(final CollaborationMessage message) {
-        try {
-            final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
-            manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
-            LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
-            LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
-            return true;
-        } catch (final IOException | JSONException e) {
-            return false;
-        }
+    private void handleCollaborationMessage(final CollaborationMessage message) {
+        final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
+        manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
+        LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
+        LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
     }
 
     private boolean handleUpdateMessage(final UpdateMessage message) {
-        try {
-            collaborationId = message.getCollaborationId();
-            final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
-                    context, message.getCollaborationId());
-            switch (message.getTarget()) {
-                case NOTE:
-                    return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
-                case MODULE:
-                    return storedCollaboration.getCollaborationType().equals(CollaborationType.PROJECT) &&
-                            storeUpdatedModule((ModuleUpdateMessage) message, (Project) storedCollaboration);
-                case COLLABORATION:
-                    return storeUpdatedCollaboration((CollaborationUpdateMessage) message);
-                case MEMBER:
-                    return !(storedCollaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) &&
-                            storeUpdatedMember((MemberUpdateMessage) message, (SharedCollaboration) storedCollaboration);
-                default:
-                    return false;
-            }
-        } catch (final IOException | JSONException e) {
-            return false;
+        collaborationId = message.getCollaborationId();
+        final Collaboration storedCollaboration = LocalStorageUtils.readCollaborationFromFile(
+                context, message.getCollaborationId());
+        switch (message.getTarget()) {
+            case NOTE:
+                return storeUpdatedNote((NoteUpdateMessage) message, storedCollaboration);
+            case MODULE:
+                return storedCollaboration.getCollaborationType().equals(CollaborationType.PROJECT) &&
+                        storeUpdatedModule((ModuleUpdateMessage) message, (Project) storedCollaboration);
+            case COLLABORATION:
+                return storeUpdatedCollaboration((CollaborationUpdateMessage) message);
+            case MEMBER:
+                return !(storedCollaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) &&
+                        storeUpdatedMember((MemberUpdateMessage) message, (SharedCollaboration) storedCollaboration);
+            default:
+                return false;
         }
     }
 
-    private boolean storeUpdatedNote(final NoteUpdateMessage message, final Collaboration storedCollaboration)
-            throws IOException, JSONException {
+    private boolean storeUpdatedNote(final NoteUpdateMessage message, final Collaboration storedCollaboration) {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addNote(message.getNote());
@@ -155,8 +142,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         return true;
     }
 
-    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final Project storedCollaboration)
-            throws IOException, JSONException {
+    private boolean storeUpdatedModule(final ModuleUpdateMessage message, final Project storedCollaboration) {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addModule(message.getModule());
@@ -188,8 +174,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         return true;
     }
 
-    private boolean storeUpdatedMember(final MemberUpdateMessage message, final SharedCollaboration storedCollaboration)
-            throws IOException, JSONException {
+    private boolean storeUpdatedMember(final MemberUpdateMessage message, final SharedCollaboration storedCollaboration) {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addMember(message.getMember());
@@ -209,8 +194,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         return true;
     }
 
-    private boolean storeUpdatedCollaboration(final CollaborationUpdateMessage message)
-            throws IOException, JSONException {
+    private boolean storeUpdatedCollaboration(final CollaborationUpdateMessage message) {
         final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
 
         switch (message.getUpdateType()) {
@@ -256,7 +240,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
-        } catch (final IOException | JSONException e) {
+        } catch (final FileNotFoundException e) {
             e.printStackTrace();
         }
     }

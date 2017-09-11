@@ -2,6 +2,7 @@ package org.gammf.collabora_android.utils;
 
 import android.content.Context;
 
+import org.gammf.collabora_android.app.utils.ExceptionManager;
 import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.User;
@@ -11,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -22,45 +24,48 @@ public class LocalStorageUtils {
 
     private static final String USER_FILENAME = "user";
     private static final String COLLABORATIONS_FILENAME = "collaborations";
+    private static final ExceptionManager exceptionManager = ExceptionManager.getInstance();
 
     /**
      * Retrieves a user from the application local storage.
      * @param context the application context used to access the application local files.
      * @return the user built from the local storage.
-     * @throws IOException if the file reading went wrong.
-     * @throws JSONException if the json conversion went wrong
      */
-    public static User readUserFromFile(final Context context) throws IOException, JSONException {
-        final JSONObject storedJson = readStoredFile(context, USER_FILENAME);
+    public static User readUserFromFile(final Context context) throws FileNotFoundException {
+        User user = null;
         try {
-            return UserUtils.jsonToUser(storedJson);
-        } catch (final MandatoryFieldMissingException e) {
-            throw new JSONException("Json message not correctly formatted! " + e.toString());
+            final JSONObject storedJson = readStoredFile(context, USER_FILENAME);
+            user = UserUtils.jsonToUser(storedJson);
+        } catch (final FileNotFoundException e) {
+            throw e;
+        } catch (final Exception e) {
+            exceptionManager.handle(e);
         }
+        return  user;
     }
 
     /**
      * Writes a user on a single file in the application local storage.
      * @param context the application context used to access the application local files.
      * @param user the user to be written.
-     * @throws IOException if the file writing went wrong.
-     * @throws JSONException if the json conversion went wrong.
      */
-    public static void writeUserToFile(final Context context, final User user)
-            throws IOException, JSONException{
-        final JSONObject json = UserUtils.userToJson(user);
-        writeStoredFile(context, USER_FILENAME, json);
+    public static void writeUserToFile(final Context context, final User user) {
+        try {
+            writeStoredFile(context, USER_FILENAME, UserUtils.userToJson(user));
+        } catch (final Exception e) {
+            exceptionManager.handle(e);
+        }
     }
 
-    public static void deleteUserInFile(final Context context){
-        deleteStoredFile(context,USER_FILENAME);
+    public static void deleteUserFromFile(final Context context) {
+        deleteStoredFile(context, USER_FILENAME);
     }
 
-    public static void deleteAllCollaborations(final Context context){
+    public static void deleteAllCollaborations(final Context context) {
         final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
-        if(manager!=null){
-            for (final ShortCollaboration collab : manager.getAllCollaborations()) {
-                deleteStoredFile(context,collab.getId());
+        if (manager != null){
+            for (final ShortCollaboration collaboration : manager.getAllCollaborations()) {
+                deleteStoredFile(context, collaboration.getId());
             }
             deleteStoredFile(context,COLLABORATIONS_FILENAME);
         }
@@ -71,26 +76,30 @@ public class LocalStorageUtils {
      * @param context the application context used to access the application local files.
      * @param collaborationId the identifier of the collaboration.
      * @return the collaboration built from the local storage.
-     * @throws IOException if the file reading from file went wrong.
-     * @throws JSONException if the json conversion went wrong.
      */
-    public static Collaboration readCollaborationFromFile(final Context context, final String collaborationId)
-            throws IOException, JSONException {
-        final JSONObject storedJson = readStoredFile(context, collaborationId);
-        return CollaborationUtils.jsonToCollaboration(storedJson);
+    public static Collaboration readCollaborationFromFile(final Context context, final String collaborationId) {
+        Collaboration collaboration = null;
+        try {
+            final JSONObject storedJson = readStoredFile(context, collaborationId);
+             collaboration = CollaborationUtils.jsonToCollaboration(storedJson);
+        } catch (final Exception e) {
+            exceptionManager.handle(e);
+        }
+        return collaboration;
     }
 
     /**
      * Writes a collaboration on a single file in the application local storage.
      * @param context the application context used to access the application local files.
      * @param collaboration the collaboration to be written.
-     * @throws IOException if the file writing went wrong.
-     * @throws JSONException if the json conversion went wrong.
      */
-    public static void writeCollaborationToFile(final Context context, final Collaboration collaboration)
-            throws IOException, JSONException{
-        final JSONObject json = CollaborationUtils.collaborationToJson(collaboration);
-        writeStoredFile(context, collaboration.getId(), json);
+    public static void writeCollaborationToFile(final Context context, final Collaboration collaboration) {
+        try {
+            final JSONObject json = CollaborationUtils.collaborationToJson(collaboration);
+            writeStoredFile(context, collaboration.getId(), json);
+        } catch (final Exception e) {
+            exceptionManager.handle(e);
+        }
     }
 
     /**
@@ -102,7 +111,7 @@ public class LocalStorageUtils {
         try {
             final JSONObject storedJson = readStoredFile(context, COLLABORATIONS_FILENAME);
             return CollaborationsManagerUtils.jsonToCollaborationManager(storedJson);
-        } catch (IOException | JSONException e) {
+        } catch (final IOException | JSONException e) {
             return new ConcreteCollaborationManager();
         }
     }
@@ -112,13 +121,14 @@ public class LocalStorageUtils {
      * local storage.
      * @param context the application context used to access the application local files.
      * @param manager the manager containing the collaborations to be written.
-     * @throws IOException if the file writing went wrong.
-     * @throws JSONException if the json conversion went wrong.
      */
-    public static void writeShortCollaborationsToFile(final Context context, final CollaborationsManager manager)
-            throws IOException, JSONException {
-        final JSONObject json = CollaborationsManagerUtils.collaborationsManagerToJson(manager);
-        writeStoredFile(context, COLLABORATIONS_FILENAME, json);
+    public static void writeShortCollaborationsToFile(final Context context, final CollaborationsManager manager) {
+        try {
+            final JSONObject json = CollaborationsManagerUtils.collaborationsManagerToJson(manager);
+            writeStoredFile(context, COLLABORATIONS_FILENAME, json);
+        } catch (final Exception e) {
+            exceptionManager.handle(e);
+        }
     }
 
     private static JSONObject readStoredFile(final Context context, final String filename)

@@ -1,5 +1,6 @@
 package org.gammf.collabora_android.utils;
 
+import org.gammf.collabora_android.app.utils.ExceptionManager;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.users.SimpleCollaborationMember;
 import org.json.JSONException;
@@ -15,14 +16,15 @@ public class CollaborationMemberUtils {
      * Provides a json with all the member information.
      * @param member the member.
      * @return a json message with all the member information.
-     * @throws JSONException if the conversion went wrong.
      */
-    public static JSONObject memberToJson(final CollaborationMember member) throws JSONException {
+    public static JSONObject memberToJson(final CollaborationMember member) {
         final JSONObject json = new JSONObject();
-
-        json.put("user", member.getUsername());
-        json.put("right", member.getAccessRight().name());
-
+        try {
+            json.put("user", member.getUsername());
+            json.put("right", member.getAccessRight().name());
+        } catch (final JSONException e) {
+            ExceptionManager.getInstance().handle(e);
+        }
         return json;
     }
 
@@ -30,13 +32,16 @@ public class CollaborationMemberUtils {
      * Create a member class from a json message.
      * @param json the input json message.
      * @return a member built from the json message.
-     * @throws JSONException if the conversion went wrong.
      */
-    public static CollaborationMember jsonToMember(final JSONObject json) throws JSONException {
-        final String username = json.getString("user");
-        final AccessRight right = AccessRight.valueOf(json.getString("right"));
-
-        return new SimpleCollaborationMember(username, right);
+    public static CollaborationMember jsonToMember(final JSONObject json) {
+        CollaborationMember member = null;
+        try {
+            final String username = json.getString("user");
+            final AccessRight right = AccessRight.valueOf(json.getString("right"));
+            member = new SimpleCollaborationMember(username, right);
+        } catch(final JSONException e) {
+            ExceptionManager.getInstance().handle(e);
+        }
+        return member;
     }
-
 }

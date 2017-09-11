@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -119,8 +119,9 @@ public class NotificationsSubscriberService extends SubscriberService {
     private void createBinding(final String routingKey) {
         try {
             channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, routingKey);
-        } catch (IOException e) {
-            //TODO better error strategy
+        } catch (final IOException e) {
+            Toast.makeText(getApplicationContext(), "Unable to connect to server, try to restart the App!", Toast.LENGTH_SHORT).show();
+
         }
     }
 }

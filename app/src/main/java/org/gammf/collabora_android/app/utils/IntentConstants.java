@@ -37,5 +37,7 @@ public final class IntentConstants {
 
     public static final String COLLABORATION_DELETION = "collaboration-deletion";
 
+    public static final String LOCAL_STORAGE_ERROR = "local-storage-error";
+
     private IntentConstants() {}
 }
