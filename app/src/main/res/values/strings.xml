@@ -152,6 +152,7 @@
     <string name="set_previous_modules">Set previous Modules</string>
     <string name="prevmod">Previous Modules</string>
     <string name="change_previous_modules">change previous modules</string>
+    <string name="modulefragment">moduleFragment</string>
 
 
 </resources>
