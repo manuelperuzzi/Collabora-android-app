@@ -124,4 +124,11 @@ public class ConcreteProject extends AbstractSharedCollaboration implements Proj
     public CollaborationType getCollaborationType() {
         return CollaborationType.PROJECT;
     }
+
+    @Override
+    public Set<Note> getAllNoteNotInModules() {
+        final Set<Note> allNotes = new HashSet<>();
+        allNotes.addAll(super.getAllNotes());
+        return allNotes;
+    }
 }

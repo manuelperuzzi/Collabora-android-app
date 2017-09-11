@@ -11,8 +11,10 @@ import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.json.JSONException;
 
@@ -71,7 +73,10 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
         try {
             Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getActivity().getApplicationContext(), collaborationId);
             if (moduleId.equals(NOMODULE)) {
-                allNotes.addAll(collaboration.getAllNotes());
+                if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)){
+                    allNotes.addAll(((Project)collaboration).getAllNoteNotInModules());
+                }else
+                    allNotes.addAll(collaboration.getAllNotes());
             } else {
                 for (Module module : ((ConcreteProject) collaboration).getAllModules()) {
                     if (module.getId().equals(moduleId))
