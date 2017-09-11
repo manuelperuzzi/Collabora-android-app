@@ -153,6 +153,8 @@
     <string name="prevmod">Previous Modules</string>
     <string name="change_previous_modules">change previous modules</string>
     <string name="modulefragment">moduleFragment</string>
+    <string name="error_todo">Error: in the previous notes list there are notes with To Do state, modify current state in To Do or edit list!</string>
+    <string name="error_done">Error: selected state Done not compliant with previous notes list (with Done state, all list\'s note should has Done in state!</string>
 
 
 </resources>

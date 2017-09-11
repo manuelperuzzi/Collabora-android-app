@@ -254,7 +254,7 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
         if (previousNotesSelected.isEmpty())
             addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, null);
         else {
-            Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(noteState, previousNotesSelected, collaboration);
+            Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteState, previousNotesSelected, collaboration);
             if (checkPrevNotes.first)
                 addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, previousNotesSelected);
             else

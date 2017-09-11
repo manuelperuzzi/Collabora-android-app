@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +77,7 @@ public class EditNoteFragment extends Fragment implements
     private DatePickerDialog.OnDateSetListener myDateListenerEdited;
     private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
     private ListView previousNotesList;
-    private List<String> previousNotesSelected ;
+    private List<String> previousNotesSelected = new ArrayList<>();
     private ArrayList<CollaborationComponentInfo> noteItems;
 
     private String collaborationId, noteId,moduleId;
@@ -139,6 +140,7 @@ public class EditNoteFragment extends Fragment implements
                 }
             });
             this.responsible = note.getState().getCurrentResponsible();
+            this.previousNotesSelected = note.getPreviousNotes();
         } catch (final IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -170,7 +172,6 @@ public class EditNoteFragment extends Fragment implements
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_note, container, false);
         noteItems = new ArrayList<>();
-        previousNotesSelected = new ArrayList<>();
         initializeGuiComponent(rootView);
 
         return rootView;
@@ -320,12 +321,20 @@ public class EditNoteFragment extends Fragment implements
                 return false;
             }
             note.modifyState(new NoteState(noteStateEdited, responsible));
-            if(!previousNotesSelected.isEmpty())
+            if(!previousNotesSelected.isEmpty()) {
                 note.modifyPreviousNotes(previousNotesSelected);
-            else
+                Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteStateEdited, previousNotesSelected, collaboration);
+                if (checkPrevNotes.first)
+                    new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
+                            username, note, UpdateMessageType.UPDATING, collaborationId));
+                else
+                    Toast.makeText(getContext().getApplicationContext(), checkPrevNotes.second, Toast.LENGTH_LONG).show();
+            }
+            else {
                 note.modifyPreviousNotes(null);
-            new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                username, note, UpdateMessageType.UPDATING, collaborationId));
+                new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
+                        username, note, UpdateMessageType.UPDATING, collaborationId));
+            }
             return true;
         }
     }

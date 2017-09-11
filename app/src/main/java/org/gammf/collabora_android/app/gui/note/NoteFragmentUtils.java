@@ -3,6 +3,7 @@ package org.gammf.collabora_android.app.gui.note;
 import android.content.Context;
 import android.util.Pair;
 
+import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.utils.NoteProjectState;
@@ -35,20 +36,18 @@ public class NoteFragmentUtils {
         return noteItems;
     }
 
-    public static Pair<Boolean,String> checkPreviousNotesState(String actualState, ArrayList<String> previousNotesList, Collaboration collaboration){
+    public static Pair<Boolean,String> checkPreviousNotesState(Context context,String actualState, List<String> previousNotesList, Collaboration collaboration){
         for (String noteId: previousNotesList ) {
             Note note = collaboration.getNote(noteId);
             if (note.getState().getCurrentState().equals(NoteProjectState.TO_DO.toString())) {
                 if (!actualState.equals(NoteProjectState.TO_DO.toString())) {
-                    return new Pair<>(false,"Error: in the previous notes list there are notes with To Do state, modify current state in To Do or edit list!");
+                    return new Pair<>(false,context.getString(R.string.error_todo));
                 }
             }
-        }
-        if (actualState.equals(NoteProjectState.DONE.toString())){
-            for (String noteId: previousNotesList ) {
-                Note note = collaboration.getNote(noteId);
-                if(!note.getState().getCurrentState().equals(NoteProjectState.DONE.toString()))
-                    return new Pair<>(false,"Error: selected state Done not compliant with previous notes list (with Done state, all list's note should has Done in state!");
+            if (!note.getState().getCurrentState().equals(NoteProjectState.DONE.toString())) {
+                if (actualState.equals(NoteProjectState.DONE.toString())) {
+                    return new Pair<>(false,context.getString(R.string.error_done));
+                }
             }
         }
         return new Pair<>(true,"");
