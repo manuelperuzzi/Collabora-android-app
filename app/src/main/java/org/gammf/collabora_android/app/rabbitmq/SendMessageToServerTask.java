@@ -40,7 +40,6 @@ public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Bool
     @Override
     protected Boolean doInBackground(final UpdateMessage... messages) {
         try {
-            Log.d("DEBUGGO", MessageUtils.updateMessageToJSON(messages[0]).toString());
             final Channel channel = RabbitMQConfig.getRabbitMQConnection().createChannel();
             channel.exchangeDeclare(RabbitMQConfig.UPDATES_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true);
             channel.basicPublish(RabbitMQConfig.UPDATES_EXCHANGE_NAME, RabbitMQConfig.UPDATES_ROUTING_KEY, null, MessageUtils.updateMessageToJSON(messages[0]).toString().getBytes());
