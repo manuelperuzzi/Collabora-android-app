@@ -239,21 +239,21 @@ public class CreateNoteFragment extends Fragment implements DatePickerDialog.OnD
             txtContentNote.setError(getResources().getString(R.string.fieldempty));
         } else {
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                if (previousNotesSelected.isEmpty())
-                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
-                            new DateTime(year, month, day, hour, minute), null);
-                else
-                    addNote(insertedNoteName, location, new NoteState(noteState, responsible),
-                            new DateTime(year, month, day, hour, minute), previousNotesSelected);
+                final  DateTime date = new DateTime(year, month, day, hour, minute);
+                checkPreviousNotes(insertedNoteName,date);
             } else if (!this.dateSet && !this.dateSet) {
-                if (previousNotesSelected.isEmpty())
-                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, null);
-                else
-                    addNote(insertedNoteName, location, new NoteState(noteState, responsible), null, previousNotesSelected);
+                checkPreviousNotes(insertedNoteName, null);
             } else {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void checkPreviousNotes(String insertedNoteName, DateTime date){
+        if (previousNotesSelected.isEmpty())
+            addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, null);
+        else
+            addNote(insertedNoteName, location, new NoteState(noteState, responsible), date, previousNotesSelected);
     }
 
     private boolean isDateTimeValid() {

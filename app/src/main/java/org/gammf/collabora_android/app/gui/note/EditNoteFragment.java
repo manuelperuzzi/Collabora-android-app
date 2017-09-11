@@ -251,7 +251,6 @@ public class EditNoteFragment extends Fragment implements
             final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, NoteFragmentUtil.fillListView(getContext(), note, collaborationId));
             previousNotesList.setAdapter(noteListAdapter);
         }
-
         previousNotesList.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
@@ -260,7 +259,6 @@ public class EditNoteFragment extends Fragment implements
                 return false;
             }
         });
-
         setListViewHeightBasedOnChildren(previousNotesList);
 
         btnAddPNote.setOnClickListener(new View.OnClickListener() {
@@ -283,7 +281,6 @@ public class EditNoteFragment extends Fragment implements
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
-
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
@@ -291,7 +288,6 @@ public class EditNoteFragment extends Fragment implements
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
             view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             totalHeight += view.getMeasuredHeight();
         }
@@ -340,8 +336,6 @@ public class EditNoteFragment extends Fragment implements
         final DateTime expiration = new DateTime(year, month, day, hour, minute);
         return expiration.compareTo(now) > 0;
     }
-
-
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
