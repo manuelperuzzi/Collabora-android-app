@@ -250,7 +250,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
         final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
         final DeletionDialogFragment dialog = DeletionDialogFragment.newInstance(
-                collaboration.getId(),username,listName.getId(),listName.getContent(),listName.getType());
+                collaboration.getId(),listName.getId(),listName.getContent(),listName.getType());
         dialog.show(getActivity().getSupportFragmentManager(), DELETION_DIALOG_TAG);
         return true;
     }
