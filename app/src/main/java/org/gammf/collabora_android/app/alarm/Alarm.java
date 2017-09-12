@@ -32,23 +32,23 @@ public class Alarm {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
         calendar.set(timeToSpawn.getYear(), timeToSpawn.getMonthOfYear(), timeToSpawn.getDayOfMonth(),
-                timeToSpawn.getHourOfDay(), timeToSpawn.getMinuteOfHour(), timeToSpawn.getSecondOfMinute());
+              timeToSpawn.getHourOfDay(), timeToSpawn.getMinuteOfHour(), timeToSpawn.getSecondOfMinute());
 
         Intent intent = new Intent(context , AlarmBroadcastReceiver.class);
         intent.putExtra("title",message);
-        intent.putExtra("time",calendar.getTimeInMillis());
+        intent.putExtra("time",timeToSpawn.getMillis());
 
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),System.currentTimeMillis());
+        editor.putLong(getDate(timeToSpawn.getMillis(), "dd/MM/yyyy hh:mm:ss"),System.currentTimeMillis());
         editor.apply();
 
         // pendingIntend MUST have different id if we want multiple allarms to set
         final int _id = (int) System.currentTimeMillis();
         Log.d("DEBUG ID START", String.valueOf(_id));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if(calendar.getTimeInMillis()>System.currentTimeMillis()) {
-            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        if(timeToSpawn.getMillis()>System.currentTimeMillis()) {
+            am.set(AlarmManager.RTC_WAKEUP, timeToSpawn.getMillis(), pendingIntent);
         }
     }
 
@@ -66,8 +66,8 @@ public class Alarm {
         calendar.set(timeToSpawn.getYear(), timeToSpawn.getMonthOfYear(), timeToSpawn.getDayOfMonth(),
                 timeToSpawn.getHourOfDay(), timeToSpawn.getMinuteOfHour(), timeToSpawn.getSecondOfMinute());
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Log.d("DEBUG ID CANCEL", String.valueOf((int) prefs.getLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE)));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) prefs.getLong(getDate(calendar.getTimeInMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE),intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Log.d("DEBUG ID CANCEL", String.valueOf((int) prefs.getLong(getDate(timeToSpawn.getMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE)));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) prefs.getLong(getDate(timeToSpawn.getMillis(), "dd/MM/yyyy hh:mm:ss"),Long.MIN_VALUE),intent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.cancel(pendingIntent);
 
     }
