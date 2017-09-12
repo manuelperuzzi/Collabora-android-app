@@ -16,26 +16,24 @@ import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdate
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 public class DeletionDialogFragment  extends android.support.v4.app.DialogFragment{
 
     private String collaborationId,componentId,componentContent;
-    private String username;
     private Collaboration collaboration;
     private CollaborationComponentType componentType;
     private static final String ARG_COLLABORATION_ID = "collaborationId";
-    private static final String ARG_USERNAME = "username";
     private static final String ARG_COMPONENTID = "componentId";
     private static final String ARG_COMPONENTTYPE = "componentType";
     private static final String ARG_COMPONENTCONTENT = "componentContent";
 
-    public static DeletionDialogFragment newInstance(String collaborationId, String username,String componentId, String componentContent, CollaborationComponentType componentType){
+    public static DeletionDialogFragment newInstance(String collaborationId,String componentId, String componentContent, CollaborationComponentType componentType){
         final DeletionDialogFragment fragment = new DeletionDialogFragment();
         final Bundle args = new Bundle();
         args.putString(ARG_COLLABORATION_ID, collaborationId);
         args.putString(ARG_COMPONENTID,componentId);
         args.putString(ARG_COMPONENTCONTENT,componentContent);
-        args.putString(ARG_USERNAME,username);
         args.putSerializable(ARG_COMPONENTTYPE,componentType);
         fragment.setArguments(args);
         return fragment;
@@ -49,7 +47,6 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
             this.componentId = getArguments().getString(ARG_COMPONENTID);
             this.componentContent = getArguments().getString(ARG_COMPONENTCONTENT);
             this.componentType = (CollaborationComponentType) getArguments().getSerializable(ARG_COMPONENTTYPE);
-            this.username = getArguments().getString(ARG_USERNAME);
             this.collaboration = LocalStorageUtils.readCollaborationFromFile(getContext(), collaborationId);
         }
     }
@@ -84,11 +81,11 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
 
     private void deleteNote(Note noteToDelete) {
         new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
-                username, noteToDelete, UpdateMessageType.DELETION, collaborationId));
+                SingletonAppUser.getInstance().getUsername(), noteToDelete, UpdateMessageType.DELETION, collaborationId));
     }
 
     private void deleteModule(Module moduleToDelete) {
         new SendMessageToServerTask(getContext()).execute(new ConcreteModuleUpdateMessage(
-                username, moduleToDelete, UpdateMessageType.DELETION, collaborationId));
+                SingletonAppUser.getInstance().getUsername(), moduleToDelete, UpdateMessageType.DELETION, collaborationId));
     }
 }
