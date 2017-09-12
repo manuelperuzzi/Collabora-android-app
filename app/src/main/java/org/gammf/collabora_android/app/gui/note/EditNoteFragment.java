@@ -1,8 +1,5 @@
 package org.gammf.collabora_android.app.gui.note;
 
-
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,13 +12,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
@@ -29,6 +24,8 @@ import com.google.android.gms.maps.MapView;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
+import org.gammf.collabora_android.app.gui.datetime_pickers.DatePickerManager;
+import org.gammf.collabora_android.app.gui.datetime_pickers.TimePickerManager;
 import org.gammf.collabora_android.app.gui.map.MapManager;
 import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
@@ -46,9 +43,10 @@ import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -56,8 +54,7 @@ import java.util.List;
  * Use the {@link EditNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditNoteFragment extends Fragment implements
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EditNoteFragment extends Fragment {
 
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_NOTEID = "noteId";
@@ -71,8 +68,6 @@ public class EditNoteFragment extends Fragment implements
     private String noteStateEdited = "";
     private TextView dateViewEdited, timeViewEdited;
     private EditText txtContentNoteEdited;
-    private DatePickerDialog.OnDateSetListener myDateListenerEdited;
-    private TimePickerDialog.OnTimeSetListener myTimeListenerEdited;
     private ListView previousNotesList;
     private List<String> previousNotesSelected = new ArrayList<>();
     private ArrayList<CollaborationComponentInfo> noteItems;
@@ -80,11 +75,14 @@ public class EditNoteFragment extends Fragment implements
     private String collaborationId, noteId,moduleId;
 
     private MapManager mapManager;
+    private DatePickerManager datePickerManager;
+    private TimePickerManager timePickerManager;
 
     private Note note;
     private Collaboration collaboration;
-    private int year, month, day, hour, minute ;
     private String responsible;
+    private LocalDate date;
+    private LocalTime time;
     private boolean dateSet = false;
     private boolean timeSet = false;
 
@@ -133,6 +131,25 @@ public class EditNoteFragment extends Fragment implements
                 note.modifyLocation(location);
             }
         });
+        this.datePickerManager = new DatePickerManager(getContext());
+        this.datePickerManager.addObserver(new Observer<LocalDate>() {
+            @Override
+            public void notify(final LocalDate newDate) {
+                date = newDate;
+                dateSet = true;
+                showDate();
+            }
+        });
+        this.timePickerManager = new TimePickerManager(getContext());
+        this.timePickerManager.addObserver(new Observer<LocalTime>() {
+            @Override
+            public void notify(final LocalTime newTime) {
+                time = newTime;
+                timeSet = true;
+                showTime();
+            }
+        });
+
         this.responsible = note.getState().getCurrentResponsible();
         this.previousNotesSelected = note.getPreviousNotes();
         if (this.previousNotesSelected == null) {
@@ -197,47 +214,26 @@ public class EditNoteFragment extends Fragment implements
         if (note.getExpirationDate() != null) {
             this.dateSet = true;
             this.timeSet = true;
+            this.date = new LocalDate(this.note.getExpirationDate().getYear(), this.note.getExpirationDate().getMonthOfYear(),
+                    this.note.getExpirationDate().getDayOfMonth());
+            this.time = new LocalTime(this.note.getExpirationDate().getHourOfDay(), this.note.getExpirationDate().getMinuteOfHour());
 
-            year = note.getExpirationDate().getYear();
-            month = note.getExpirationDate().getMonthOfYear();
-            day = note.getExpirationDate().getDayOfMonth();
-            hour = note.getExpirationDate().getHourOfDay();
-            minute = note.getExpirationDate().getMinuteOfHour();
-
-            dateViewEdited.setText(note.getExpirationDate().toLocalDate().toString());
-            timeViewEdited.setText(note.getExpirationDate().toLocalTime().toString());
-            btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new DatePickerDialog(getActivity(), myDateListenerEdited, year, month, day).show();
-                }
-            });
-            btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new TimePickerDialog(getActivity(), myTimeListenerEdited, hour, minute, true).show();
-                }
-            });
-        } else {
-            final Calendar calendar = Calendar.getInstance();
-            btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new DatePickerDialog(getActivity(), myDateListenerEdited,
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH)).show();
-                }
-            });
-            btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new TimePickerDialog(getActivity(), myTimeListenerEdited,
-                            calendar.get(Calendar.HOUR_OF_DAY),
-                            calendar.get(Calendar.MINUTE), true).show();
-                }
-            });
+            showDate();
+            showTime();
         }
+
+        btnSetDateExpiration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerManager.showDatePicker(date == DatePickerManager.NO_DATE ? DatePickerManager.NO_DATE : date);
+            }
+        });
+        btnSetTimeExpiration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerManager.showTimePicker(time == TimePickerManager.NO_TIME ? TimePickerManager.NO_TIME : time);
+            }
+        });
 
         previousNotesList = rootView.findViewById(R.id.listViewPNote);
         Button btnAddPNote = rootView.findViewById(R.id.btnAddPNote);
@@ -264,8 +260,6 @@ public class EditNoteFragment extends Fragment implements
                 dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
             }
         });
-        myDateListenerEdited = this;
-        myTimeListenerEdited = this;
     }
 
     /**** Method for Setting the Height of the ListView dynamically.
@@ -309,7 +303,8 @@ public class EditNoteFragment extends Fragment implements
         }else{
             note.modifyContent(insertedNoteName);
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                note.modifyExpirationDate(new DateTime(year, month, day, hour, minute));
+                note.modifyExpirationDate(new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
+                        this.time.getHourOfDay(), this.time.getMinuteOfHour()));
             } else if (this.dateSet || this.timeSet) {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
@@ -335,7 +330,8 @@ public class EditNoteFragment extends Fragment implements
 
     private boolean isDateTimeValid() {
         final DateTime now = new DateTime();
-        final DateTime expiration = new DateTime(year, month, day, hour, minute);
+        final DateTime expiration = new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
+                this.time.getHourOfDay(), this.time.getMinuteOfHour());
         return expiration.compareTo(now) > 0;
     }
 
@@ -344,29 +340,19 @@ public class EditNoteFragment extends Fragment implements
         this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocationEdit), savedInstanceState);
     }
 
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        this.year = year;
-        this.month = month + 1;
-        this.day = day;
-        this.dateSet = true;
-        showDate();
-    }
-
-    @Override
-    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-        this.hour = hour;
-        this.minute = minute;
-        this.timeSet = true;
-        showTime();
-    }
-
     private void showDate() {
-        dateViewEdited.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
+        dateViewEdited.setText(new StringBuilder()
+                .append(this.date.getDayOfMonth())
+                .append("/")
+                .append(this.date.getMonthOfYear())
+                .append("/")
+                .append(this.date.getYear()));
     }
     private void showTime() {
-        timeViewEdited.setText(new StringBuilder().append(hour).append(":").append(minute));
+        timeViewEdited.setText(new StringBuilder()
+                .append(this.time.getHourOfDay())
+                .append(":")
+                .append(this.time.getMinuteOfHour() < 10 ? "0" + this.time.getMinuteOfHour() : this.time.getMinuteOfHour()));
     }
 
     private void createResponsibleSpinnerManager(final View rootView) {
