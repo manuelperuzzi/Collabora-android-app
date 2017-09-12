@@ -1,18 +1,13 @@
 package org.gammf.collabora_android.utils;
 
 import android.content.Context;
-
 import com.google.android.gms.maps.model.LatLng;
-
 import org.gammf.collabora_android.app.alarm.Alarm;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.notes.Note;
 
-import java.util.HashMap;
-
 /**
  * AlarmAndGeofenceUtils used in this project.
- * Created by Federico on 07/08/2017.
  */
 
 public class AlarmAndGeofenceUtils {
@@ -26,7 +21,7 @@ public class AlarmAndGeofenceUtils {
 
     public static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
 
-    public static final float GEOFENCE_RADIUS_IN_METERS = 1000; //1km
+    public static final float GEOFENCE_RADIUS_IN_METERS = 200; //200m
 
     /**
      * Used to set an expiration time for a geofence. After this amount of time Location Services

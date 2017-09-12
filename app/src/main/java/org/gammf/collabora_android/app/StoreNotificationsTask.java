@@ -87,6 +87,9 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         for (final Collaboration c: message.getCollaborationList()) {
             manager.addCollaboration(new ConcreteShortCollaboration(c));
             LocalStorageUtils.writeCollaborationToFile(context, c);
+            for (Note note: c.getAllNotes()) {
+                AlarmAndGeofenceUtils.addAlarmAndGeofences(context,note,this.alarm,this.geoManager);
+            }
         }
         LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
     }
@@ -95,6 +98,9 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
         manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
         LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
+        for (Note note: message.getCollaboration().getAllNotes()) {
+            AlarmAndGeofenceUtils.addAlarmAndGeofences(context,note,this.alarm,this.geoManager);
+        }
         LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
     }
 
