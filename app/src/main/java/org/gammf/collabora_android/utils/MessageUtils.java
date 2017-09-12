@@ -7,6 +7,8 @@ import org.gammf.collabora_android.communication.allCollaborations.ConcreteAllCo
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.collaboration.ConcreteCollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.error.ConcreteErrorMessage;
+import org.gammf.collabora_android.communication.error.ErrorMessage;
 import org.gammf.collabora_android.communication.update.collaborations.CollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
@@ -112,11 +114,25 @@ public class MessageUtils {
      * @return a collaborations message built from the json message.
      */
     public static Message jsonToCollaborationsMessage(final JSONObject json) {
-        if (json.has("collaboration")) {
+        if (json.has("errorCode")) {
+            return jsonToErrorMessage(json);
+        } else if (json.has("collaboration")) {
             return jsonToCollaborationMessage(json);
         } else {
             return jsonToAllCollaborationsMessage(json);
         }
+    }
+
+    private static ErrorMessage jsonToErrorMessage(final JSONObject json) {
+        ErrorMessage message = null;
+        try {
+            final String username = json.getString("user");
+            final CollaborationError error = CollaborationError.valueOf(json.getString("errorCode"));
+            message = new ConcreteErrorMessage(username, error);
+        } catch (final JSONException e) {
+            ExceptionManager.getInstance().handle(e);
+        }
+        return message;
     }
 
     private static CollaborationMessage jsonToCollaborationMessage(final JSONObject json) {

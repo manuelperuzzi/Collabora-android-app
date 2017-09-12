@@ -16,6 +16,7 @@ import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
+import org.gammf.collabora_android.communication.error.ErrorMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.ModuleNote;
@@ -32,6 +33,7 @@ import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.SingletonAppUser;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -74,12 +76,22 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             case COLLABORATION:
                 handleCollaborationMessage((CollaborationMessage)message);
                 return true;
+            case ERROR:
+                handleErrorMessage((ErrorMessage)message);
+                return false;
             case ALL_COLLABORATIONS:
                 handleAllCollaborationsMessage((AllCollaborationsMessage)message);
                 return true;
             default:
                 return false;
         }
+    }
+
+    private void handleErrorMessage(final ErrorMessage message) {
+        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+        intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.SERVER_ERROR);
+        intent.putExtra(IntentConstants.SERVER_ERROR, message.getError().getErrorResource());
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     private void handleAllCollaborationsMessage(final AllCollaborationsMessage message) {
@@ -225,23 +237,18 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean success) {
-        try {
-            final User user = LocalStorageUtils.readUserFromFile(context);
-            if(success && user.getUsername().equals(senderUsername)) {
-                Log.i("FLUSSOANDROID", "mandoIntent");
-                final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
-                if(collaborationId != null) {
-                    intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
-                    if (updateType == UpdateMessageType.DELETION) {
-                        Log.i("FLUSSOANDROID", updateType.name());
-                        intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
-                    }
+        if(success && SingletonAppUser.getInstance().getUsername().equals(senderUsername)) {
+            Log.i("FLUSSOANDROID", "mandoIntent");
+            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+            if(collaborationId != null) {
+                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+                if (updateType == UpdateMessageType.DELETION) {
+                    Log.i("FLUSSOANDROID", updateType.name());
+                    intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
                 }
-                intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
-        } catch (final FileNotFoundException e) {
-            e.printStackTrace();
+            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
 }

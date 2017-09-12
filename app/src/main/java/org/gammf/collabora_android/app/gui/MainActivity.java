@@ -285,10 +285,11 @@ public class MainActivity extends AppCompatActivity
                                 .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
                     }
                     break;
-                case IntentConstants.LOCAL_STORAGE_ERROR:
-                    Log.i("FLUSSOANDROID", "local storage error");
-                    Toast.makeText(context, "Local storage corrupted! Logging out.", Toast.LENGTH_SHORT).show();
-                    onUserLogout();
+                case IntentConstants.SERVER_ERROR:
+                    final String errorString = getString(intent.getIntExtra(IntentConstants.SERVER_ERROR, 0));
+                    Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show();
+                    this.messagesReceived++;
+                    progress.setVisibility(View.GONE);
                     break;
             }
         }
