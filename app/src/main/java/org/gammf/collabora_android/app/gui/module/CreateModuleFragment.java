@@ -8,17 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.app.utils.Observer;
+import org.gammf.collabora_android.app.utils.NoteGroupState;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.modules.ConcreteModule;
 import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
 /**
@@ -31,7 +28,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
     private static final String ARG_COLLABID = "collabid";
 
     private String collaborationId;
-    private String state;
     private EditText txtContentModule;
 
     public CreateModuleFragment() {
@@ -74,19 +70,12 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
 
     private void initializeGuiComponent(View rootView){
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
-        final StateSpinnerManager spinnerManager = new StateSpinnerManager(StateSpinnerManager.NO_STATE, rootView, R.id.spinnerNewModuleState, CollaborationType.PROJECT);
-        spinnerManager.addObserver(new Observer<String>() {
-            @Override
-            public void notify(String newState) {
-                state = newState;
-            }
-        });
         FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
         btnAddModule.setOnClickListener(this);
     }
 
-    private void addModule(final String content, final String stateSelected) {
-        final Module module = new ConcreteModule(null, content, stateSelected);
+    private void addModule(final String content) {
+        final Module module = new ConcreteModule(null, content, NoteGroupState.TO_DO.toString());
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 SingletonAppUser.getInstance().getUsername(), module, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
@@ -98,7 +87,7 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
         if (insertedModuleName.equals("")) {
             txtContentModule.setError(getResources().getString(R.string.fieldempty));
         } else {
-            addModule(insertedModuleName, this.state);
+            addModule(insertedModuleName);
         }
     }
 }
