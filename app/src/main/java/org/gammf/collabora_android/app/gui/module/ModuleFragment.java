@@ -23,8 +23,10 @@ import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
 import org.gammf.collabora_android.app.gui.collaboration.CollaborationInfoFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
+import org.gammf.collabora_android.app.utils.NoteComparator;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.users.CollaborationMember;
 import org.gammf.collabora_android.utils.AccessRightUtils;
@@ -32,6 +34,8 @@ import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,7 +137,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE));
+            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE,""));
         }
 
         return rootView;
@@ -150,9 +154,10 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void fillNoteList() {
-
-        for (final Note n: module.getAllNotes()) {
-            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE));
+        final List<ModuleNote> allNotes = new ArrayList<>(module.getAllNotes());
+        Collections.sort(allNotes, new NoteComparator());
+        for (final Note n: allNotes) {
+            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentState()));
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
