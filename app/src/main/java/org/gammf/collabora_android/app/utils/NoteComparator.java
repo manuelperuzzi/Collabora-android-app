@@ -6,7 +6,9 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
-
+/**
+ * Class that implement Java comparator and add a comparison based on Note state Type
+ */
 public class NoteComparator implements Comparator<Note> {
     public int compare(final Note c1, final Note c2) {
         final int comp = getEnum(c1.getState().getCurrentState()).compareTo(getEnum(c2.getState().getCurrentState()));

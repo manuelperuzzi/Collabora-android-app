@@ -6,6 +6,9 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
+/**
+ * Class that implement Java comparator and add a comparison based on Module state Type
+ */
 public class ModuleComparator implements Comparator<Module> {
     public int compare(final Module c1, final Module c2) {
         final int comp = getEnum(c1.getStateDefinition()).compareTo(getEnum(c2.getStateDefinition()));
