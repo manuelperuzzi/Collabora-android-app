@@ -27,6 +27,7 @@ import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.ModuleComparator;
 import org.gammf.collabora_android.app.utils.NoteComparator;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
@@ -212,11 +213,12 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     private void fillModulesList() {
         if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
-            for (final Module module: ((Project) collaboration).getAllModules()) {
+            final List<Module> allModules = new ArrayList<>(((Project) collaboration).getAllModules());
+            Collections.sort(allModules, new ModuleComparator());
+            for (final Module module: allModules) {
                 moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE,module.getStateDefinition()));
             }
         }
-
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(this);
