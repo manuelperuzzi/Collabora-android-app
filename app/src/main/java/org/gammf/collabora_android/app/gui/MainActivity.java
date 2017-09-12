@@ -118,23 +118,27 @@ public class MainActivity extends AppCompatActivity
             Collaboration temporaryPCollab = new ConcretePrivateCollaboration("cdcrec3r3r","private peru13","peru13");
             Project tempoprojectcollab = new ConcreteProject("cdc3ec3r3r","progettone");
             tempoprojectcollab.addMember(new SimpleCollaborationMember("peru13", AccessRight.ADMIN));
-            Module module1 = new ConcreteModule("334343", "blablRFFFFFFFFFFFFFFFFFFFFa1","To Do");
-            Module module2 = new ConcreteModule("434343", "blabRFEFEFRFERFREFREFREFla2","To Do");
+            Module module1 = new ConcreteModule("334343", "blablRFFFFFFFFFFFFFFa1","To Do");
+            Module module2 = new ConcreteModule("434343", "blabRFERFREFREFREFla2","To Do");
             module1.addNote(new SimpleNoteBuilder("module1note1",new NoteState("To Do","peru13")).setNoteID("4343434324343").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
             module1.addNote(new SimpleNoteBuilder("module1note2",new NoteState("To Do","peru13")).setNoteID("342234324234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
             ArrayList<String> preNote = new ArrayList<>();
             preNote.add("4343434324343");
             preNote.add("342234324234234");
             module1.addNote(new SimpleNoteBuilder("poposFRFREFERFREFpetz",new NoteState("To Do","peru13")).setNoteID("3423442234222").setLocation(new NoteLocation(43.4343,45.3434)).setPreviousNotes(preNote).buildNote());
-            module2.addNote(new SimpleNoteBuilder("moduERFREFREFREFle2note1",new NoteState("To Do","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            module2.addNote(new SimpleNoteBuilder("moduERFREFFREFle2note1",new NoteState("To Do","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
 
             tempoprojectcollab.addModule(module1);
             tempoprojectcollab.addModule(module2);
-            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("To Do","peru13")).setNoteID("3232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio2",new NoteState("To Do","peru13")).setNoteID("4232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("EsemEFRFRFRFRFRFRFRFRFRpio1",new NoteState("To Do","peru13")).setNoteID("3424234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("EsemFREFREFREFREFRREFREFREpio2",new NoteState("To Do","peru13")).setNoteID("5345354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
-            temporaryPCollab.addNote(new SimpleNoteBuilder("EsempFREFREFREFio3",new NoteState("To Do","peru13")).setNoteID("6463453543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("Doing","peru13")).setNoteID("3232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio2",new NoteState("Done","peru13")).setNoteID("4232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio spetz",new NoteState("Doing","peru13")).setNoteID("3424234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio dede",new NoteState("To Do","peru13")).setNoteID("5345354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio fefe",new NoteState("Doing","peru13")).setNoteID("6463412543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio gege",new NoteState("Done","peru13")).setNoteID("3424232234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio rege",new NoteState("Done","peru13")).setNoteID("5344354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("Esempio queue",new NoteState("To Do","peru13")).setNoteID("6454453543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+
             manager.addCollaboration(new ConcreteShortCollaboration(temporaryPCollab));
             manager.addCollaboration(new ConcreteShortCollaboration(tempoprojectcollab));
             LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);

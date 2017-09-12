@@ -27,6 +27,7 @@ import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.NoteProjectState;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -43,7 +44,12 @@ import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
@@ -194,7 +200,9 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void fillNotesList() {
-        for (final Note note : collaboration.getAllNotes()) {
+        final List<Note> allNotes = new ArrayList<>(collaboration.getAllNotes());
+        Collections.sort(allNotes, new NoteComparator());
+        for (final Note note : allNotes) {
             if (!(note instanceof ModuleNote)) {
                 noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentState()));
             }
@@ -204,6 +212,19 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
         notesList.setOnItemLongClickListener(this);
+    }
+
+    private class NoteComparator implements Comparator<Note> {
+        public int compare(final Note c1, final Note c2) {
+            final int comp = getEnum(c1.getState().getCurrentState()).compareTo(getEnum(c2.getState().getCurrentState()));
+            return (comp == 0) ? Collator.getInstance(Locale.US).compare(c1.getContent(), c2.getContent()) : comp;
+        }
+
+        private NoteProjectState getEnum(String state){
+            return NoteProjectState.of(state);
+        }
+
+
     }
 
     private void fillModulesList() {
