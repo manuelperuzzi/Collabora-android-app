@@ -27,7 +27,7 @@ import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.app.utils.NoteProjectState;
+import org.gammf.collabora_android.app.utils.NoteComparator;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -44,12 +44,9 @@ import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
@@ -207,24 +204,10 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
                 noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentState()));
             }
         }
-
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
         notesList.setOnItemLongClickListener(this);
-    }
-
-    private class NoteComparator implements Comparator<Note> {
-        public int compare(final Note c1, final Note c2) {
-            final int comp = getEnum(c1.getState().getCurrentState()).compareTo(getEnum(c2.getState().getCurrentState()));
-            return (comp == 0) ? Collator.getInstance(Locale.US).compare(c1.getContent(), c2.getContent()) : comp;
-        }
-
-        private NoteProjectState getEnum(String state){
-            return NoteProjectState.of(state);
-        }
-
-
     }
 
     private void fillModulesList() {
