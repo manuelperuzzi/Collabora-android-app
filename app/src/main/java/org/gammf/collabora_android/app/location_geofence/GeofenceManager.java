@@ -16,15 +16,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
-import org.gammf.collabora_android.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Federico on 08/08/2017.
+ * Manager of geofences logic in the application
  */
-
 public class GeofenceManager implements OnCompleteListener<Void> {
 
     private static final String TAG = "GeofenceManagerDEBUG";
@@ -34,12 +32,8 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     private PendingIntent mGeofencePendingIntent;
 
     public GeofenceManager(Context context){
-
         this.context = context;
-
-        // Initially set the PendingIntent used in addGeofence() and removeGeofence() to null.
         mGeofencePendingIntent = null;
-
         mGeofencingClient = LocationServices.getGeofencingClient(context);
     }
 
@@ -64,10 +58,6 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     public void onComplete(@NonNull Task<Void> task) {
         if (task.isSuccessful()) {
             updateGeofencesAdded(!getGeofencesAdded());
-
-            int messageId = getGeofencesAdded() ? R.string.geofences_added :
-                    R.string.geofences_removed;
-            //Toast.makeText(this.context, this.context.getString(messageId), Toast.LENGTH_SHORT).show();
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(this.context, task.getException());
             Log.w(TAG, errorMessage);
@@ -100,26 +90,15 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     @SuppressWarnings("MissingPermission")
     public void addGeofence(String noteID, String contentToDisplay, LatLng coordinates) {
         Geofence geofence = new Geofence.Builder()
-                // Set the request ID of the geofence. USE NOTE ID
                 .setRequestId(noteID)
-
-                // Set the circular region of this geofence.
                 .setCircularRegion(
                         coordinates.latitude,
                         coordinates.longitude,
                         AlarmAndGeofenceUtils.GEOFENCE_RADIUS_IN_METERS
                 )
-
-                //1 year...maybe to change
                 .setExpirationDuration(AlarmAndGeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-
-                // Set the transition types of interest. Alerts are only generated for these
-                // transition. We track entry and exit transitions in this sample.
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-
-                // Create the geofence.
                 .build();
-
         mGeofencingClient.addGeofences(getGeofencingRequest(geofence), getGeofencePendingIntent(noteID,contentToDisplay))
                 .addOnCompleteListener(this);
     }
