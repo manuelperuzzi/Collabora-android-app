@@ -196,7 +196,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void fillNotesList() {
         for (final Note note : collaboration.getAllNotes()) {
             if (!(note instanceof ModuleNote)) {
-                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE));
+                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentState()));
             }
         }
 
@@ -209,7 +209,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void fillModulesList() {
         if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             for (final Module module: ((Project) collaboration).getAllModules()) {
-                moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
+                moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE,module.getStateDefinition()));
             }
         }
 

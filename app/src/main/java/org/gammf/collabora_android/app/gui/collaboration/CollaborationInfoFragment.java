@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.gui.collaboration;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -133,12 +134,12 @@ public class CollaborationInfoFragment extends Fragment {
     private void visualizeMembers(final ListView membersListView, final boolean isEditable) {
         final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
         if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
-            memberItem.add(new CollaborationComponentInfo(username, username + " (" + AccessRight.ADMIN + ")", CollaborationComponentType.MEMBER));
+            memberItem.add(new CollaborationComponentInfo(username, username , CollaborationComponentType.MEMBER,"("+AccessRight.ADMIN+")"));
         } else {
             final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
             Collections.sort(members, new MemberComparator());
             for (final CollaborationMember cm: members) {
-                memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
+                memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername(), CollaborationComponentType.MEMBER,"("+cm.getAccessRight()+")"));
             }
         }
 

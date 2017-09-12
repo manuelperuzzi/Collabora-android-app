@@ -33,15 +33,27 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.collaborations.private_collaborations.ConcretePrivateCollaboration;
+import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.modules.ConcreteModule;
+import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.NoteLocation;
 import org.gammf.collabora_android.notes.NoteState;
 import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.users.SimpleUser;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.app.utils.ExceptionManager;
+import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -99,10 +111,42 @@ public class MainActivity extends AppCompatActivity
             this.networkManager.addNetworkChangeObserver(this);
             this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
             this.isNetworkManagerReceiverRegistered = true;
+            LocalStorageUtils.deleteAllCollaborations(getApplicationContext());
+
+            User temporaryUser = new SimpleUser.Builder().name("peru").surname("peruperu").username("peru13").birthday(new DateTime(675748765489L)).email("manuel.peruzzi@studio.unibo.it").build();
+            final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext());
+            Collaboration temporaryPCollab = new ConcretePrivateCollaboration("cdcrec3r3r","private peru13","peru13");
+            Project tempoprojectcollab = new ConcreteProject("cdc3ec3r3r","progettone");
+            tempoprojectcollab.addMember(new SimpleCollaborationMember("peru13", AccessRight.ADMIN));
+            Module module1 = new ConcreteModule("334343", "blablRFFFFFFFFFFFFFFFFFFFFa1","To Do");
+            Module module2 = new ConcreteModule("434343", "blabRFEFEFRFERFREFREFREFla2","To Do");
+            module1.addNote(new SimpleNoteBuilder("module1note1",new NoteState("To Do","peru13")).setNoteID("4343434324343").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            module1.addNote(new SimpleNoteBuilder("module1note2",new NoteState("To Do","peru13")).setNoteID("342234324234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            ArrayList<String> preNote = new ArrayList<>();
+            preNote.add("4343434324343");
+            preNote.add("342234324234234");
+            module1.addNote(new SimpleNoteBuilder("poposFRFREFERFREFpetz",new NoteState("To Do","peru13")).setNoteID("3423442234222").setLocation(new NoteLocation(43.4343,45.3434)).setPreviousNotes(preNote).buildNote());
+            module2.addNote(new SimpleNoteBuilder("moduERFREFREFREFle2note1",new NoteState("To Do","peru13")).setNoteID("2322224243333").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+
+            tempoprojectcollab.addModule(module1);
+            tempoprojectcollab.addModule(module2);
+            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio1",new NoteState("To Do","peru13")).setNoteID("3232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            tempoprojectcollab.addNote(new SimpleNoteBuilder("Esempio2",new NoteState("To Do","peru13")).setNoteID("4232").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("EsemEFRFRFRFRFRFRFRFRFRpio1",new NoteState("To Do","peru13")).setNoteID("3424234234").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("EsemFREFREFREFREFRREFREFREpio2",new NoteState("To Do","peru13")).setNoteID("5345354354").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            temporaryPCollab.addNote(new SimpleNoteBuilder("EsempFREFREFREFio3",new NoteState("To Do","peru13")).setNoteID("6463453543").setLocation(new NoteLocation(43.4343,45.3434)).buildNote());
+            manager.addCollaboration(new ConcreteShortCollaboration(temporaryPCollab));
+            manager.addCollaboration(new ConcreteShortCollaboration(tempoprojectcollab));
+            LocalStorageUtils.writeUserToFile(getApplicationContext(), temporaryUser);
+            LocalStorageUtils.writeCollaborationToFile(getApplicationContext(), temporaryPCollab);
+            LocalStorageUtils.writeCollaborationToFile(getApplicationContext(), tempoprojectcollab);
+            LocalStorageUtils.writeShortCollaborationsToFile(getApplicationContext(), manager);
         } catch (final FileNotFoundException e) {
             final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);
             finish();
+        } catch (MandatoryFieldMissingException e) {
+            e.printStackTrace();
         }
     }
 

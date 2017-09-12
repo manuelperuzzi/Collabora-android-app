@@ -133,7 +133,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         if(sender.equals(CALLER_NOTECREATION))
         {
             //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE));
+            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE,""));
         }
 
         return rootView;
@@ -152,7 +152,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private void fillNoteList() {
 
         for (final Note n: module.getAllNotes()) {
-            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE));
+            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentState()));
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);
