@@ -99,10 +99,6 @@ public class MainActivity extends AppCompatActivity
             this.networkManager.addNetworkChangeObserver(this);
             this.registerReceiver(this.networkManager, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
             this.isNetworkManagerReceiverRegistered = true;
-            Note note = new SimpleNoteBuilder("Esempio1",new NoteState("To Do","peru13")).setNoteID("3232").setExpirationDate(new DateTime(2017,9,12,10,39)).setLocation(new NoteLocation(43.4343,45.3434)).buildNote();
-            GeofenceManager geoManager = new GeofenceManager(this);
-            Alarm alarm = new Alarm();
-            AlarmAndGeofenceUtils.addAlarmAndGeofences(this,note,alarm,geoManager);
         } catch (final FileNotFoundException e) {
             final Intent loginIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
             startActivity(loginIntent);

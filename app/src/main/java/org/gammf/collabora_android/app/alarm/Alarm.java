@@ -38,13 +38,15 @@ public class Alarm {
         intent.putExtra("title",message);
         intent.putExtra("time",timeToSpawn.getMillis());
 
+        final long curretTime = System.currentTimeMillis();
+
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong(getDate(timeToSpawn.getMillis(), "dd/MM/yyyy hh:mm:ss"),System.currentTimeMillis());
+        editor.putLong(getDate(timeToSpawn.getMillis(), "dd/MM/yyyy hh:mm:ss"),curretTime);
         editor.apply();
 
         // pendingIntend MUST have different id if we want multiple allarms to set
-        final int _id = (int) System.currentTimeMillis();
+        final int _id = (int) curretTime;
         Log.d("DEBUG ID START", String.valueOf(_id));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, _id,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if(timeToSpawn.getMillis()>System.currentTimeMillis()) {
