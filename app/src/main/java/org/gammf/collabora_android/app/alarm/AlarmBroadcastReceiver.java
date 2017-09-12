@@ -8,17 +8,14 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.utils.IntentConstants;
-
 import java.util.Date;
 
-/**
- * Created by Federico on 03/08/2017.
- */
 
+/**
+ * BroadcastReceiver that receive notification when an alarm is fired
+ */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     @Override

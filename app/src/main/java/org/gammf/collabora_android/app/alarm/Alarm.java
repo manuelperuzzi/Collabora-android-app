@@ -65,7 +65,7 @@ public class Alarm {
      * @param dateFormat Date format
      * @return String representing date in specified format
      */
-    private String getDate(long milliSeconds, String dateFormat){
+    public String getDate(long milliSeconds, String dateFormat){
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.ITALIAN);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
