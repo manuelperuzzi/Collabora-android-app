@@ -27,9 +27,7 @@ import java.util.List;
  * Receives geofence transition events from Location Services in the form of an Intent containing
  * the transition type and geofence id(s) that triggered the transition. Creates a notification
  * as the output.
- *
- * Created by Federico on 07/08/2017.
- */
+ **/
 public class GeofenceTransitionsIntentService extends IntentService {
 
     private static final String TAG = "GeofenceTransitionsIS";
