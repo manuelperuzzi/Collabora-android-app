@@ -29,4 +29,10 @@ public interface CollaborationComponent {
      * @return the component icon.
      */
     Integer getIcon();
+
+    /**
+     * Gets an additional information about the component
+     * @return the additional information
+     */
+    String getAdditionalInfo();
 }
