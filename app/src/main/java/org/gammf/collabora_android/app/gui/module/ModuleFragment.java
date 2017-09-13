@@ -48,13 +48,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     private static final String SENDER = "ModuleFragment";
     private static final String CREATIONERROR_FRAG = "Error in creating fragment";
     private static final String DELETION_DIALOG_TAG = "DeletionDialogTag";
-    private static final String CALLER_NOTECREATION = "notecreationfrag";
-
-    private static final String ARG_SENDER = "sender";
     private static final String ARG_COLLABID = "collabId";
     private static final String ARG_MODULEID = "moduleId";
-
-    private String sender, collaborationId, moduleId;
+    private String collaborationId, moduleId;
     private ListView moduleNotesList;
     private ArrayList<CollaborationComponentInfo> listItem;
     private CollaborationMember member;
@@ -71,10 +67,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
      *
      * @return A new instance of fragment ModuleFragment.
      */
-    public static ModuleFragment newInstance(String sender, String collabId, String moduleId) {
+    public static ModuleFragment newInstance(String collabId, String moduleId) {
         ModuleFragment fragment = new ModuleFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SENDER, sender);
         args.putString(ARG_COLLABID, collabId);
         args.putString(ARG_MODULEID, moduleId);
         fragment.setArguments(args);
@@ -85,7 +80,6 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            this.sender = getArguments().getString(ARG_SENDER);
             this.collaborationId = getArguments().getString(ARG_COLLABID);
             this.moduleId = getArguments().getString(ARG_MODULEID);
         }
@@ -131,15 +125,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_module, container, false);
         initializeGuiComponent(rootView);
-
         fillNoteList();
-
-        if(sender.equals(CALLER_NOTECREATION))
-        {
-            //VALUE RECEIVED FROM CREATE NOTE FRAGMENT
-            listItem.add(new CollaborationComponentInfo("FintoID", "New Note Content", CollaborationComponentType.NOTE,""));
-        }
-
         return rootView;
     }
 
