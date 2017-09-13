@@ -43,13 +43,13 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
 
         ImageView imageViewIcon = listItem.findViewById(R.id.imageViewIcon);
         TextView textViewName = listItem.findViewById(R.id.textViewName);
-        TextView textViewAI = listItem.findViewById(R.id.textViewAD);
+        TextView textViewAdditionalInfo = listItem.findViewById(R.id.textViewAdditionalInfo);
 
         CollaborationComponentInfo folder = data.get(position);
 
         imageViewIcon.setImageResource(folder.getIcon());
         textViewName.setText(folder.getContent());
-        textViewAI.setText(folder.getAdditionalInfo());
+        textViewAdditionalInfo.setText(folder.getAdditionalInfo());
 
         return listItem;
     }

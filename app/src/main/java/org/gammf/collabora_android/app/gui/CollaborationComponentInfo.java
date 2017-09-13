@@ -12,7 +12,7 @@ public class CollaborationComponentInfo implements CollaborationComponent{
     private final CollaborationComponentType componentType;
     private final String additionalInfo;
 
-    public CollaborationComponentInfo(final String id,final String content, final CollaborationComponentType componentType, String additionalInfo) {
+    public CollaborationComponentInfo(final String id,final String content, final CollaborationComponentType componentType,final String additionalInfo) {
         this.id = id;
         this.content = content;
         this.componentType =  componentType;
