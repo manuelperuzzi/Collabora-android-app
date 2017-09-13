@@ -33,7 +33,7 @@ public class NoteFragmentUtils {
         for (String pNoteID: note.getPreviousNotes()) {
             for (Note singleNote: allNotes) {
                 if(singleNote.getNoteID().equals(pNoteID)){
-                    noteItems.add(new CollaborationComponentInfo(singleNote.getNoteID(), singleNote.getContent(), CollaborationComponentType.NOTE));
+                    noteItems.add(new CollaborationComponentInfo(singleNote.getNoteID(), singleNote.getContent(), CollaborationComponentType.NOTE,singleNote.getState().getCurrentState()));
                 }
             }
         }

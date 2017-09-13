@@ -41,13 +41,15 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
         listItem = inflater.inflate(layoutResourceId, parent, false);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
+        ImageView imageViewIcon = listItem.findViewById(R.id.imageViewIcon);
+        TextView textViewName = listItem.findViewById(R.id.textViewName);
+        TextView textViewAdditionalInfo = listItem.findViewById(R.id.textViewAdditionalInfo);
 
         CollaborationComponentInfo folder = data.get(position);
 
         imageViewIcon.setImageResource(folder.getIcon());
         textViewName.setText(folder.getContent());
+        textViewAdditionalInfo.setText(folder.getAdditionalInfo());
 
         return listItem;
     }

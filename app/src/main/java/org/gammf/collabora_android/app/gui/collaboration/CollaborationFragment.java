@@ -27,6 +27,8 @@ import org.gammf.collabora_android.app.gui.module.ModuleFragment;
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
+import org.gammf.collabora_android.app.utils.ModuleComparator;
+import org.gammf.collabora_android.app.utils.NoteComparator;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
@@ -44,6 +46,8 @@ import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
@@ -194,12 +198,13 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void fillNotesList() {
-        for (final Note note : collaboration.getAllNotes()) {
+        final List<Note> allNotes = new ArrayList<>(collaboration.getAllNotes());
+        Collections.sort(allNotes, new NoteComparator());
+        for (final Note note : allNotes) {
             if (!(note instanceof ModuleNote)) {
-                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE));
+                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentState()));
             }
         }
-
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
         notesList.setAdapter(noteListAdapter);
         notesList.setOnItemClickListener(this);
@@ -208,11 +213,12 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
 
     private void fillModulesList() {
         if (collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
-            for (final Module module: ((Project) collaboration).getAllModules()) {
-                moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE));
+            final List<Module> allModules = new ArrayList<>(((Project) collaboration).getAllModules());
+            Collections.sort(allModules, new ModuleComparator());
+            for (final Module module: allModules) {
+                moduleItems.add(new CollaborationComponentInfo(module.getId(), module.getDescription(), CollaborationComponentType.MODULE,module.getStateDefinition()));
             }
         }
-
         DrawerItemCustomAdapter moduleListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, moduleItems);
         moduleList.setAdapter(moduleListAdapter);
         moduleList.setOnItemClickListener(this);
@@ -228,7 +234,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment;
         if (itemSelected.getType().equals(CollaborationComponentType.MODULE)) {
-            openFragment = ModuleFragment.newInstance(SENDER, collaboration.getId(), itemSelected.getId());
+            openFragment = ModuleFragment.newInstance(collaboration.getId(), itemSelected.getId());
         } else {
             openFragment = NoteFragment.newInstance(collaboration.getId(), itemSelected.getId(), NOMODULE);
         }
