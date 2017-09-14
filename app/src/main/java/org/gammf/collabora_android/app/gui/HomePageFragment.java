@@ -18,8 +18,7 @@ public class HomePageFragment extends  Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of this fragment
      *
      * @return A new instance of fragment HomePageFragment.
      */
@@ -35,12 +34,6 @@ public class HomePageFragment extends  Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_homepage, container, false);
-        initializeGuiComponent(rootView);
-        return rootView;
-    }
-
-    private void initializeGuiComponent(View rootView) {
-
+        return inflater.inflate(R.layout.fragment_homepage, container, false);
     }
 }
