@@ -21,4 +21,13 @@ public enum NoteProjectState {
     public String toString() {
         return this.stateName;
     }
+
+    public static NoteProjectState of(String name) {
+        for (NoteProjectState stateName : values()) {
+            if (stateName.toString().equals(name)) {
+                return stateName;
+            }
+        }
+        throw new IllegalArgumentException(name);
+    }
 };

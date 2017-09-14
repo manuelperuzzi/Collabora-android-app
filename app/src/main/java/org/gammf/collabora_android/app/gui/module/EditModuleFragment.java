@@ -104,20 +104,10 @@ public class EditModuleFragment extends Fragment {
     private void initializeGuiComponent(View rootView) {
         txtEditContentModule = rootView.findViewById(R.id.txtModuleContentEdited);
         txtEditContentModule.setText(module.getDescription());
-
-        final StateSpinnerManager spinnerManager = new StateSpinnerManager(this.module.getStateDefinition(), rootView, R.id.spinnerModuleStateEdited, CollaborationType.PROJECT);
-        spinnerManager.addObserver(new Observer<String>() {
-            @Override
-            public void notify(String newState) {
-                newStateSelected = newState;
-            }
-        });
     }
 
-    private void updateModule(final String content, final String stateSelected) {
+    private void updateModule(final String content) {
         module.setDescription(content);
-        module.setStateDefinition(stateSelected);
-
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 SingletonAppUser.getInstance().getUsername(), module, UpdateMessageType.UPDATING, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
@@ -128,7 +118,7 @@ public class EditModuleFragment extends Fragment {
         if(insertedModuleName.equals("")) {
             txtEditContentModule.setError(getResources().getString(R.string.fieldempty));
         } else {
-            updateModule(insertedModuleName, newStateSelected);
+            updateModule(insertedModuleName);
         }
     }
 }

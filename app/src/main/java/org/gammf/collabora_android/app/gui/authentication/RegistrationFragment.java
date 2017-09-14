@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ import org.gammf.collabora_android.utils.UserUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
@@ -158,7 +156,7 @@ public class    RegistrationFragment extends Fragment implements DatePickerDialo
                         .email(emailText.getText().toString())
                         .build();
                 final JSONObject jsonUser = UserUtils.userToJson(user);
-                jsonUser.put("hashedPassword", BCrypt.hashpw(passText.getText().toString(), "$2a$10$2wymx/003xT1XIndPwFgPe"));
+                jsonUser.put("hashedPassword", HashingUtils.hashString(passText.getText().toString()));
                 StringEntity entity = new StringEntity(jsonUser.toString());
                 client.post(getContext(), AuthenticationUtils.POST, entity, "application/json", new AsyncHttpResponseHandler() {
                     @Override

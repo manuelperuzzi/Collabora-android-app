@@ -127,8 +127,6 @@ public class ConcreteProject extends AbstractSharedCollaboration implements Proj
 
     @Override
     public Set<Note> getAllNoteNotInModules() {
-        final Set<Note> allNotes = new HashSet<>();
-        allNotes.addAll(super.getAllNotes());
-        return allNotes;
+        return super.getAllNotes();
     }
 }
