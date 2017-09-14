@@ -159,4 +159,5 @@
     <!-- Strings related to server errors -->
     <string name="server_error">Server error!</string>
     <string name="member_not_found">Member not found!</string>
+    <string name="swipe_right_to_manage_your_collaborations">Swipe right to manage your collaborations</string>
 </resources>
