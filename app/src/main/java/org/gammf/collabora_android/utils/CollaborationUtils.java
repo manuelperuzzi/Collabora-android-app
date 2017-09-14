@@ -20,15 +20,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * Utily class providing methods to convert from collaboration class to json message and vice versa.
+ * Utility class providing methods to convert from a {@link Collaboration} object to a json object and vice versa.
  */
 public class CollaborationUtils {
 
     /**
-     * Provides a json with all the collaboration information.
-     * @param collaboration the collaboration.
-     * @return a json message with all the collaboration information.
+     * Provides a json with all the {@link Collaboration} information.
+     * @param collaboration the {@link Collaboration}.
+     * @return a json object with all the {@link Collaboration} information.
      */
     public static JSONObject collaborationToJson(final Collaboration collaboration) {
         final JSONObject json = new JSONObject();
@@ -84,9 +83,9 @@ public class CollaborationUtils {
     }
 
     /**
-     * Create a collaboration class from a json message.
-     * @param json the input json message.
-     * @return a collaboration built from the json message.
+     * Create a {@link Collaboration} object from a json object.
+     * @param json the input json object.
+     * @return a {@link Collaboration} built from the json object.
      */
     public static Collaboration jsonToCollaboration(final JSONObject json) {
         Collaboration collaboration = null;

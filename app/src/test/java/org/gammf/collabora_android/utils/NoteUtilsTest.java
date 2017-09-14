@@ -54,7 +54,7 @@ public class NoteUtilsTest {
             obj.put("content", "someContent").put("title", "someTitle").put("state", state);
             Note note = NoteUtils.jsonToNote(obj);
             assertEquals(note.getContent(), "someContent");
-            assertEquals(note.getState().getCurrentState(), "doing");
+            assertEquals(note.getState().getCurrentDefinition(), "doing");
             assertEquals(note.getState().getCurrentResponsible(), "fone");
             assertNull(note.getPreviousNotes());
         } catch (JSONException e) {

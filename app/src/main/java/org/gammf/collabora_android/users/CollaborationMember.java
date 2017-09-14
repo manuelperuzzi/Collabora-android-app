@@ -1,10 +1,10 @@
 package org.gammf.collabora_android.users;
 
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 /**
- * @author Manuel Peruzzi
- * Represents a user member of a collaboration with a certain access right.
+ * Represents a member of a {@link Collaboration} with a certain {@link AccessRight}.
  */
 public interface CollaborationMember {
 

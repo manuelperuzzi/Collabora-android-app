@@ -1,8 +1,7 @@
 package org.gammf.collabora_android.notes;
 
 /**
- * @author Alfredo Maffi
- * Concrete location representing a note's location.
+ * Concrete location representing a {@link Note}'s location.
  */
 
 public class NoteLocation implements Location {

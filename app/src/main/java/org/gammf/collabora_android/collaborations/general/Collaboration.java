@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
  * Simple interface that represents a collaboration.
  */
 public interface Collaboration {

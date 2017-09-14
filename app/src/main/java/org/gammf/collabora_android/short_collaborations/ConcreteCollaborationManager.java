@@ -1,8 +1,7 @@
 package org.gammf.collabora_android.short_collaborations;
 
 import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.json.JSONException;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * An implementation of a collaboration manager that handles all the application collaborations in
+ * An implementation of a {@link CollaborationsManager} that handles all the application {@link Collaboration}s in
  * their short format.
  */
 public class ConcreteCollaborationManager implements CollaborationsManager {

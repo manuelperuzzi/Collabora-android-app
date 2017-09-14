@@ -4,8 +4,7 @@ import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.utils.CollaborationType;
 
 /**
- * @author Manuel Peruzzi
- * An implementation of a short collaboration defining the basic operations allowed.
+ * An implementation of a {@link ShortCollaboration} defining the basic operations allowed.
  */
 public class ConcreteShortCollaboration implements ShortCollaboration {
 
@@ -15,9 +14,9 @@ public class ConcreteShortCollaboration implements ShortCollaboration {
 
     /**
      * Class constructor.
-     * @param id the identifier of the collaboration.
-     * @param name the name of the collaboration.
-     * @param collaborationType the type of the collaboration.
+     * @param id the identifier of the {@link Collaboration}.
+     * @param name the name of the {@link Collaboration}.
+     * @param collaborationType the type of the {@link Collaboration}.
      */
     public ConcreteShortCollaboration(final String id, final String name, final CollaborationType collaborationType) {
         this.id = id;
@@ -26,8 +25,8 @@ public class ConcreteShortCollaboration implements ShortCollaboration {
     }
 
     /**
-     * Builds a class object from an existing collaboration.
-     * @param collaboration the collaboration.
+     * Builds a class object from an existing {@link Collaboration}.
+     * @param collaboration the {@link Collaboration}.
      */
     public ConcreteShortCollaboration(final Collaboration collaboration) {
         this (collaboration.getId(), collaboration.getName(), collaboration.getCollaborationType());

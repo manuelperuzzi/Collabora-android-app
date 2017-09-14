@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.notes;
 
 /**
- * @author Alfredo Maffi
  * Interface representing a well-defined position on planet earth.
  */
 

@@ -4,8 +4,7 @@ import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
 import org.joda.time.DateTime;
 
 /**
- * @author Manuel Peruzzi
- * Simple class representing a standard user.
+ * Simple class representing a standard {@link User}.
  */
 public class SimpleUser implements User {
 
@@ -66,8 +65,7 @@ public class SimpleUser implements User {
     }
 
     /**
-     * @author Manuel Peruzzi
-     * This nested class is used as a builder to create an object of type SimpleUser.
+     * This nested class is used as a builder to create an object of type {@link SimpleUser}.
      */
     public static class Builder {
 
@@ -78,7 +76,7 @@ public class SimpleUser implements User {
         private DateTime birthday = new DateTime();
 
         /**
-         * @param username the username of the user.
+         * @param username the username of the {@link User}.
          * @return the builder object.
          */
         public Builder username(final String username) {
@@ -87,7 +85,7 @@ public class SimpleUser implements User {
         }
 
         /**
-         * @param email the email of the user.
+         * @param email the email of the {@link User}.
          * @return the builder object.
          */
         public Builder email(final String email) {
@@ -96,7 +94,7 @@ public class SimpleUser implements User {
         }
 
         /**
-         * @param name the name of the user.
+         * @param name the name of the {@link User}.
          * @return the builder object.
          */
         public Builder name(final String name) {
@@ -105,7 +103,7 @@ public class SimpleUser implements User {
         }
 
         /**
-         * @param surname the surname of the user.
+         * @param surname the surname of the {@link User}.
          * @return the builder object.
          */
         public Builder surname(final String surname) {
@@ -114,17 +112,17 @@ public class SimpleUser implements User {
         }
 
         /**
-         * @param birthday the date of birth of the user.
+         * @param birthday the date of birth of the {@link User}.
          * @return the builder object.
          */
         public Builder birthday(final DateTime birthday) {
             this.birthday = birthday;
             return this;
         }
-
+        //TODO
         /**
-         * Builds an object of type SimpleUser with the supplied fields.
-         * @return an object of type SimpleUser.
+         * Builds an object of type {@link SimpleUser} with the supplied fields.
+         * @return an object of type {@link SimpleUser}.
          * @throws MandatoryFieldMissingException if one or more mandatory fields have not been inserted.
          */
         public SimpleUser build() throws MandatoryFieldMissingException {

@@ -143,7 +143,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         final List<ModuleNote> allNotes = new ArrayList<>(module.getAllNotes());
         Collections.sort(allNotes, new NoteComparator());
         for (final Note n: allNotes) {
-            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentState()));
+            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentDefinition()));
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);

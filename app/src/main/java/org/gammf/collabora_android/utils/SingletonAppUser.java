@@ -7,7 +7,7 @@ import org.gammf.collabora_android.users.User;
 import java.io.FileNotFoundException;
 
 /**
- * Created by mperuzzi on 11/09/17.
+ * Singleton class which represents the application {@link User}, accessible from anywhere.
  */
 
 public class SingletonAppUser {
@@ -17,10 +17,16 @@ public class SingletonAppUser {
 
     private SingletonAppUser() { }
 
+    //TODO remove get instance?
     public static SingletonAppUser getInstance() {
         return SINGLETON_APP_USER;
     }
 
+    /**
+     * Read all the {@link User}'s related information from local storage, if present.
+     * @param context the application context, needed to read from local storage.
+     * @throws FileNotFoundException thrown if no {@link User} was found.
+     */
     public void loadUser(final Context context) throws FileNotFoundException {
         user = LocalStorageUtils.readUserFromFile(context);
     }

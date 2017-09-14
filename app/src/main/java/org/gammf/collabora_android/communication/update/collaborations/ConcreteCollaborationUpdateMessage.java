@@ -6,8 +6,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTar
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 
 /**
- * @author ManuelPeruzzi
- * A concrete message representing an update in a collaboration.
+ * A concrete message representing an update carried out on a {@link Collaboration}.
  */
 public class ConcreteCollaborationUpdateMessage extends AbstractUpdateMessage
         implements CollaborationUpdateMessage {

@@ -1,10 +1,10 @@
 package org.gammf.collabora_android.collaborations.shared_collaborations;
 
 import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 /**
- * @author Manuel Peruzzi
- * A simple implementation of a collaboration of type group.
+ * A simple implementation of a {@link Collaboration} of type group.
  */
 public class ConcreteGroup extends AbstractSharedCollaboration implements Group {
 

@@ -5,8 +5,7 @@ import org.gammf.collabora_android.communication.common.AbstractMessage;
 import org.gammf.collabora_android.communication.common.MessageType;
 
 /**
- * @author Alfredo Maffi
- * Concrete class representing a collaboration message.
+ * Concrete class representing a {@link CollaborationMessage}.
  */
 
 public class ConcreteCollaborationMessage extends AbstractMessage implements CollaborationMessage {

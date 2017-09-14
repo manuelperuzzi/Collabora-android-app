@@ -6,8 +6,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTyp
 import org.gammf.collabora_android.modules.Module;
 
 /**
- * @author ManuelPeruzzi
- * A concrete message representing an update in a module.
+ * A concrete message representing an update operation carried out on a {@link Module}.
  */
 public class ConcreteModuleUpdateMessage extends AbstractUpdateMessage implements ModuleUpdateMessage {
 

@@ -17,16 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
- * Utily class providing methods to convert from note class to json message and vice versa.
+ * Utility class providing methods to convert from a {@link Note} object to a json object and vice versa.
  */
 
 public class NoteUtils {
 
     /**
-     * Provides a json with all the note information.
-     * @param note the note.
-     * @return a json message with all the note information.
+     * Provides a json with all the {@link Note} information.
+     * @param note the {@link Note} to be converted.
+     * @return a json object with all the {@link Note} information.
      */
     public static JSONObject noteToJSON(final Note note) {
         final JSONObject jsn = new JSONObject();
@@ -48,7 +47,7 @@ public class NoteUtils {
             }
             if (note.getState() != null) {
                 final JSONObject state = new JSONObject();
-                state.put("definition", note.getState().getCurrentState());
+                state.put("definition", note.getState().getCurrentDefinition());
                 if (note.getState().getCurrentResponsible() != null) {
                     state.put("responsible", note.getState().getCurrentResponsible());
                 }
@@ -67,9 +66,9 @@ public class NoteUtils {
     }
 
     /**
-     * Creates a note class from a json message.
-     * @param jsn the input json message.
-     * @return a note built from the json message.
+     * Creates a {@link Note} class from a json object.
+     * @param jsn the input json object.
+     * @return a {@link Note} built from the json object.
      */
     public static Note jsonToNote(final JSONObject jsn) {
         Note note = null;

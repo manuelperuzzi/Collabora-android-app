@@ -32,15 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utily class providing methods to convert from UpdateMessage class to json message and vice versa.
+ * Utility class providing methods to convert from an {@link UpdateMessage} object to a json object and vice versa.
  */
 
 public class MessageUtils {
 
     /**
-     * Provides a json with all the update message information.
-     * @param message the update message.
-     * @return a json message with all the update message information.
+     * Provides a json with all the {@link UpdateMessage} information.
+     * @param message the {@link UpdateMessage} to be converted.
+     * @return a json object with all the {@link UpdateMessage} information.
      */
     public static JSONObject updateMessageToJSON(final UpdateMessage message) {
         final JSONObject jsn = new JSONObject();
@@ -70,9 +70,9 @@ public class MessageUtils {
     }
 
     /**
-     * Creates an update message from a json message.
-     * @param json the input json message.
-     * @return an update message built from the json message.
+     * Creates an {@link UpdateMessage} from a json object.
+     * @param json the input json object.
+     * @return an {@link UpdateMessage} built from the json object.
      */
     public static UpdateMessage jsonToUpdateMessage(final JSONObject json) {
         UpdateMessage message = null;
@@ -109,9 +109,14 @@ public class MessageUtils {
     }
 
     /**
-     * Creates a message containing one or more collaborations from a json message.
-     * @param json the input json message.
-     * @return a collaborations message built from the json message.
+     * Creates a {@link Message} containing one, more or no {@link Collaboration}s from a json object.
+     * @param json the input json object.
+     * @return a {@link Message} built from the json message, which can be a
+     * <ul>
+     *     <li>{@link CollaborationMessage} if a single {@link Collaboration} was contained in the json object.</li>
+     *     <li>{@link AllCollaborationsMessage} if more {@link Collaboration}s were contained in the json object.</li>
+     *     <li>{@link CollaborationMessage} if the json object contained no {@link Collaboration}s at all.</li>
+     * </ul>.
      */
     public static Message jsonToCollaborationsMessage(final JSONObject json) {
         if (json.has("errorCode")) {

@@ -11,7 +11,7 @@ public class NoteState implements State {
     private String responsibleUsername;
 
     /**
-     * First class constructor, only the textual state is set.
+     * Class constructor, only the textual state is set.
      * @param state the textual state to be set.
      */
     public NoteState(final String state) {
@@ -19,7 +19,7 @@ public class NoteState implements State {
     }
 
     /**
-     * Second class constructor, the NoteState is fully set.
+     * Class constructor, the state is fully set.
      * @param state the textual state to be set.
      * @param responsibleUsername the responsible's username to be set.
      */
@@ -29,7 +29,7 @@ public class NoteState implements State {
     }
 
     @Override
-    public String getCurrentState() {
+    public String getCurrentDefinition() {
         return this.state;
     }
 
@@ -39,7 +39,7 @@ public class NoteState implements State {
     }
 
     @Override
-    public void setState(String newState) {
+    public void setDefinition(String newState) {
         this.state = newState;
     }
 

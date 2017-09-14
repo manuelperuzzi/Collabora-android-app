@@ -37,9 +37,8 @@ import org.gammf.collabora_android.utils.SingletonAppUser;
 import java.util.Set;
 
 /**
- * @author Alfredo Maffi, Manuel Peruzzi
- * This is an asynchronous task that parses an update message, storing in the local application
- * memory the new collaborations data deriving from the server notification.
+ * This is an asynchronous task that parses an {@link UpdateMessage}, storing in the local application
+ * memory new/updated data deriving from the server notification.
  */
 public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 

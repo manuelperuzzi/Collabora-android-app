@@ -205,7 +205,7 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         Collections.sort(allNotes, new NoteComparator());
         for (final Note note : allNotes) {
             if (!(note instanceof ModuleNote)) {
-                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentState()));
+                noteItems.add(new CollaborationComponentInfo(note.getNoteID(), note.getContent(), CollaborationComponentType.NOTE,note.getState().getCurrentDefinition()));
             }
         }
         DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);

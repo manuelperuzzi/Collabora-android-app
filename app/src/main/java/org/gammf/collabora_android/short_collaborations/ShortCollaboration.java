@@ -1,25 +1,25 @@
 package org.gammf.collabora_android.short_collaborations;
 
 import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 /**
- * @author Manuel Peruzzi
- * Represents a collaboration containing only its descriptive state.
+ * Represents a {@link Collaboration} containing only its descriptive state.
  */
 public interface ShortCollaboration {
 
     /**
-     * @return the collaboration identifier.
+     * @return the {@link Collaboration} identifier.
      */
     String getId();
 
     /**
-     * @return the name of the collaboration.
+     * @return the name of the {@link Collaboration}.
      */
     String getName();
 
     /**
-     * @return the type of the collaboration.
+     * @return the {@link CollaborationType} of the {@link Collaboration}.
      */
     CollaborationType getCollaborationType();
 

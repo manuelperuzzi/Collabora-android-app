@@ -7,15 +7,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author Manuel Peruzzi
- * Utily class providing methods to convert from short collaboration class to json message and vice versa.
+ * Utility class providing methods to convert from {@link ShortCollaboration} class to json message and vice versa.
  */
 public class ShortCollaborationUtils {
 
     /**
-     * Provides a json with all the short collaboration information.
-     * @param collaboration the short collaboration.
-     * @return a json message with all the short collaboration information.
+     * Provides a json with all the {@link ShortCollaboration} information.
+     * @param collaboration the {@link ShortCollaboration}.
+     * @return a json message with all the {@link ShortCollaboration} information.
      */
     public static JSONObject shortCollaborationToJson(final ShortCollaboration collaboration) {
         final JSONObject json = new JSONObject();
@@ -30,9 +29,9 @@ public class ShortCollaborationUtils {
     }
 
     /**
-     * Create a short collaboration class from a json message.
+     * Creates a {@link ShortCollaboration} object from a json message.
      * @param json the input json message.
-     * @return a short collaboration built from the json message.
+     * @return a {@link ShortCollaboration} built from the json message.
      */
     public static ShortCollaboration jsonToShortCollaboration(final JSONObject json){
         ShortCollaboration collaboration = null;
@@ -46,4 +45,5 @@ public class ShortCollaborationUtils {
         }
         return collaboration;
     }
+
 }

@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
- * @author Alfredo Maffi
  * This class represents an abstract service listening for incoming messages from the server.
  */
 

@@ -7,15 +7,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author Alfredo Maffi, Manuel Peruzzi
- * Utily class providing methods to convert from collaboration member class to json message and vice versa.
+ * Utility class providing methods to convert from a {@link CollaborationMember} object to json object and vice versa.
  */
 public class CollaborationMemberUtils {
 
     /**
-     * Provides a json with all the member information.
-     * @param member the member.
-     * @return a json message with all the member information.
+     * Provides a json with all the {@link CollaborationMember} information.
+     * @param member the {@link CollaborationMember}.
+     * @return a json object with all the {@link CollaborationMember} information.
      */
     public static JSONObject memberToJson(final CollaborationMember member) {
         final JSONObject json = new JSONObject();
@@ -29,9 +28,9 @@ public class CollaborationMemberUtils {
     }
 
     /**
-     * Create a member class from a json message.
+     * Create a {@link CollaborationMember} object from a json object.
      * @param json the input json message.
-     * @return a member built from the json message.
+     * @return a {@link CollaborationMember} built from the json message.
      */
     public static CollaborationMember jsonToMember(final JSONObject json) {
         CollaborationMember member = null;

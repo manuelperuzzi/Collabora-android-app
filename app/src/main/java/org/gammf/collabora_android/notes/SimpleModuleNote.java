@@ -1,12 +1,12 @@
 package org.gammf.collabora_android.notes;
 
 import org.joda.time.DateTime;
+import org.gammf.collabora_android.modules.Module;
 
 import java.util.List;
 
 /**
- * @author Manuel Peruzzi
- * Simple class representing a note contained in a module.
+ * Simple class representing a {@link Note} contained in a {@link Module}.
  */
 public class SimpleModuleNote implements ModuleNote {
 
@@ -15,8 +15,8 @@ public class SimpleModuleNote implements ModuleNote {
 
     /**
      * Class constructor.
-     * @param note the single note.
-     * @param moduleId the identifier of the module that contains the note.
+     * @param note the single {@link Note}.
+     * @param moduleId the identifier of the {@link Module} that contains the {@link Note}.
      */
     public SimpleModuleNote(final Note note, final String moduleId) {
         this.note = note;

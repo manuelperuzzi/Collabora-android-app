@@ -122,7 +122,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         progressBarState = rootView.findViewById(R.id.progressBarState);
         final TextView noPreviousNoteView = rootView.findViewById(R.id.noPNote);
         this.stateTextView = rootView.findViewById(R.id.lblState);
-        this.stateTextView.setText(note.getState().getCurrentState());
+        this.stateTextView.setText(note.getState().getCurrentDefinition());
 
         final TextView responsibleTextView = rootView.findViewById(R.id.lblResponsible);
         if (note.getState().getCurrentResponsible() != null) {

@@ -1,18 +1,19 @@
 package org.gammf.collabora_android.notes;
 
+import org.gammf.collabora_android.modules.Module;
+
 /**
- * @author Manuel Peruzzi
- * Represents a note belonging to a module.
+ * Represents a {@link Note} belonging to a {@link Module}.
  */
 public interface ModuleNote extends Note {
 
     /**
-     * @return the single note.
+     * @return the single {@link Note}.
      */
     Note getNote();
 
     /**
-     * @return the identifier of the module that contains the note.
+     * @return the identifier of the {@link Module} that contains the {@link Note}.
      */
     String getModuleId();
 

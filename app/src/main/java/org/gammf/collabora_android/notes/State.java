@@ -1,30 +1,29 @@
 package org.gammf.collabora_android.notes;
 
 /**
- * @author Alfredo Maffi
- * Interface representing the state of a note.
+ * Interface representing the state of a {@link Note}, which is composed by a textual definition and a responsible.
  */
 
 public interface State {
 
     /**
-     * @return the note's textual state.
+     * @return the {@link Note}'s textual state.
      */
-    String getCurrentState();
+    String getCurrentDefinition();
 
     /**
-     * @return the current note's responsible for the actual state.
+     * @return the current {@link Note}'s responsible for the actual state.
      */
     String getCurrentResponsible();
 
     /**
-     * Changes the note's state.
+     * Changes the {@link Note}'s textual state.
      * @param newState the new textual state to be set.
      */
-    void setState(String newState);
+    void setDefinition(String newState);
 
     /**
-     * Changes the note's responsible.
+     * Changes the {@link Note}'s responsible.
      * @param newResponsibleUsername the new responsible to be set.
      */
     void setResponsible(String newResponsibleUsername);

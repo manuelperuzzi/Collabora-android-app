@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.utils;
 
 /**
- * @author Manuel Peruzzi
  * Simple exception thrown when an object instantiation does not contain all the mandatory parameters.
  */
 public class MandatoryFieldMissingException extends Exception {

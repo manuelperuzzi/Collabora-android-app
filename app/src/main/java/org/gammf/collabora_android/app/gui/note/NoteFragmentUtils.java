@@ -33,7 +33,7 @@ public class NoteFragmentUtils {
         for (String pNoteID: note.getPreviousNotes()) {
             for (Note singleNote: allNotes) {
                 if(singleNote.getNoteID().equals(pNoteID)){
-                    noteItems.add(new CollaborationComponentInfo(singleNote.getNoteID(), singleNote.getContent(), CollaborationComponentType.NOTE,singleNote.getState().getCurrentState()));
+                    noteItems.add(new CollaborationComponentInfo(singleNote.getNoteID(), singleNote.getContent(), CollaborationComponentType.NOTE,singleNote.getState().getCurrentDefinition()));
                 }
             }
         }
@@ -51,12 +51,12 @@ public class NoteFragmentUtils {
     public static Pair<Boolean,String> checkPreviousNotesState(Context context,String actualState, List<String> previousNotesList, Collaboration collaboration){
         for (String noteId: previousNotesList ) {
             Note note = collaboration.getNote(noteId);
-            if (note.getState().getCurrentState().equals(NoteProjectState.TO_DO.toString())) {
+            if (note.getState().getCurrentDefinition().equals(NoteProjectState.TO_DO.toString())) {
                 if (!actualState.equals(NoteProjectState.TO_DO.toString())) {
                     return new Pair<>(false,context.getString(R.string.error_todo));
                 }
             }
-            if (!note.getState().getCurrentState().equals(NoteProjectState.DONE.toString())) {
+            if (!note.getState().getCurrentDefinition().equals(NoteProjectState.DONE.toString())) {
                 if (actualState.equals(NoteProjectState.DONE.toString())) {
                     return new Pair<>(false,context.getString(R.string.error_done));
                 }

@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
- * Concrete builder for notes of the application domain.
+ * Concrete builder for {@link Note}s of the application domain.
  */
 
 public class SimpleNoteBuilder implements NoteBuilder {
@@ -19,7 +18,7 @@ public class SimpleNoteBuilder implements NoteBuilder {
     private List<String> previousNotes;
 
     /**
-     * Class constructor. Content is required as parameter since it's mandatory for a note.
+     * Class constructor. Content is required as parameter since it's mandatory for a {@link Note}.
      * @param content the content to be set.
      */
     public SimpleNoteBuilder(final String content, final State state) {

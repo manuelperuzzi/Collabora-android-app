@@ -2,13 +2,13 @@ package org.gammf.collabora_android.modules;
 
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * Represents a module as a set of notes in a collaboration.
+ * Represents a module as a set of {@link Note}s in a {@link Collaboration}.
  */
 public interface Module {
 
@@ -33,31 +33,31 @@ public interface Module {
     Set<ModuleNote> getAllNotes();
 
     /**
-     * Checks if the module contains a certain note.
-     * @param noteId the identifier of the note.
-     * @return true if the note is in the module, false otherwise.
+     * Checks if the module contains a certain {@link Note}.
+     * @param noteId the identifier of the {@link Note}.
+     * @return true if the {@link Note} is in the module, false otherwise.
      */
     boolean containsNote(String noteId);
 
     /**
-     * Returns a note identified by its id.
-     * @param noteId the identifier of the requested note.
-     * @return the requested note.
-     * @throws NoSuchElementException if the noteId does not exist.
+     * Returns a {@link Note} identified by its id.
+     * @param noteId the identifier of the requested {@link Note}.
+     * @return the requested {@link Note}.
+     * @throws NoSuchElementException if the {@link Note} with the given noteID does not exist.
      */
     ModuleNote getNote(String noteId) throws NoSuchElementException;
 
     /**
-     * Adds a note to the module. If the note already exist, it will be overwritten.
-     * @param note the note to be added to the module.
-     * @return true if the note is not in the module, false otherwise.
+     * Adds a {@link Note} to the module. If the {@link Note} already exist, it will be overwritten.
+     * @param note the {@link Note} to be added to the module.
+     * @return true if the {@link Note} is not in the module, false otherwise.
      */
     boolean addNote(Note note);
 
     /**
-     * Removes a note from the module.
-     * @param noteId the identifier of the note to be removed from the module.
-     * @return true if the note was in the module, false otherwise.
+     * Removes a {@link Note} from the module.
+     * @param noteId the identifier of the {@link Note} to be removed from the module.
+     * @return true if the {@link Note} was in the module, false otherwise.
      */
     boolean removeNote(String noteId);
 

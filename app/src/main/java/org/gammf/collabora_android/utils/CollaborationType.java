@@ -1,23 +1,26 @@
 package org.gammf.collabora_android.utils;
 
+import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+
 /**
- * @author Manuel Peruzzi
- * Simple enumeration that defines the types of a collaboration.
+ * Simple enumeration that defines the types of a {@link Collaboration}.
  */
 public enum CollaborationType {
 
     /**
-     * Unique collaboration for personal and private notes.
+     * Unique {@link Collaboration} for personal and private {@link Note}s.
      */
     PRIVATE,
 
     /**
-     * Simple collaboration for everyday situations.
+     * Simple {@link Collaboration} for everyday situations.
      */
     GROUP,
 
     /**
-     * Elaborate collaboration for projects.
+     * Elaborate collaboration for {@link Project}s.
      */
     PROJECT
 

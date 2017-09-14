@@ -6,13 +6,12 @@ import org.gammf.collabora_android.communication.common.Message;
 import java.util.List;
 
 /**
- * @author Manuel Peruzzi
- * Represents a message containing the information about all the user collaborations.
+ * Represents a message containing the information about all the user {@link Collaboration}s.
  */
 public interface AllCollaborationsMessage extends Message {
 
     /**
-     * Returns all the user collaborations.
+     * Returns all the user {@link Collaboration}s.
      */
     List<Collaboration> getCollaborationList();
 }

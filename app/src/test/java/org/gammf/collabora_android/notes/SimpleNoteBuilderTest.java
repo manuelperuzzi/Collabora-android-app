@@ -25,7 +25,7 @@ public class SimpleNoteBuilderTest {
     @Test
     public void buildANote() {
         assertEquals(n.getContent(),"content");
-        assertEquals(n.getState().getCurrentState(), "todo");
+        assertEquals(n.getState().getCurrentDefinition(), "todo");
         assertNull(n.getState().getCurrentResponsible());
         assertEquals(n.getPreviousNotes(), Arrays.asList("test","test2","test3"));
         assertEquals(n.getLocation().getLatitude(), 42.22, 0.000001);
@@ -41,7 +41,7 @@ public class SimpleNoteBuilderTest {
         n.setLocation(new NoteLocation(32.32,12.23));
 
         assertEquals(n.getContent(),"new content");
-        assertEquals(n.getState().getCurrentState(), "doing");
+        assertEquals(n.getState().getCurrentDefinition(), "doing");
         assertEquals(n.getState().getCurrentResponsible(), "fone");
         assertEquals(n.getPreviousNotes(), Arrays.asList("test3","test2","test1"));
         assertEquals(n.getLocation().getLatitude(), 32.32, 0.000001);

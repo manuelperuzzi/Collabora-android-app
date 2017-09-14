@@ -1,10 +1,10 @@
 package org.gammf.collabora_android.users;
 
 import org.gammf.collabora_android.utils.AccessRight;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 /**
- * @author Manuel Peruzzi
- * Simple class that represents a user member of a collaboration with a certain access right.
+ * Simple class that represents a member of a {@link Collaboration} with a certain {@link AccessRight}.
  */
 public class SimpleCollaborationMember implements CollaborationMember {
 
@@ -13,8 +13,8 @@ public class SimpleCollaborationMember implements CollaborationMember {
 
     /**
      * Class constructor.
-     * @param username the identifier of the user.
-     * @param accessRight the access right of the user.
+     * @param username the identifier of the member.
+     * @param accessRight the access right of the member.
      */
     public SimpleCollaborationMember(final String username, final AccessRight accessRight) {
         this.username = username;
@@ -38,9 +38,7 @@ public class SimpleCollaborationMember implements CollaborationMember {
 
         SimpleCollaborationMember that = (SimpleCollaborationMember) o;
 
-        if (username != null ? !username.equals(that.username) : that.username != null)
-            return false;
-        return accessRight == that.accessRight;
+        return username != null ? username.equals(that.username) : that.username == null && accessRight == that.accessRight;
 
     }
 

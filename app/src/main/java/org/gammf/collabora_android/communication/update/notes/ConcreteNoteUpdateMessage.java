@@ -6,8 +6,7 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTyp
 import org.gammf.collabora_android.notes.Note;
 
 /**
- * @author Alfredo Maffi
- * A concrete message representing an update in a note.
+ * A concrete message representing an update operation carried out on a {@link Note}.
  */
 
 public class ConcreteNoteUpdateMessage extends AbstractUpdateMessage implements NoteUpdateMessage {

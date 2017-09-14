@@ -10,8 +10,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @author Alfredo Maffi
  * A simple class meant to send a network timeout to the MainActivity after a certain amount of time.
+ * Useful to understand when a message gets lost in the net.
  */
 
 public final class TimeoutSender extends Timer {

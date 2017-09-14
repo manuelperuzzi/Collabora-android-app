@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
- * @author Alfredo Maffi
  * This class represent a service whose task is to listen for incoming collaboration messages from the server, acting accordingly.
  */
 

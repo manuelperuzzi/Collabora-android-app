@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import org.gammf.collabora_android.users.User;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -16,8 +16,7 @@ import org.gammf.collabora_android.utils.MessageUtils;
 import org.gammf.collabora_android.utils.RabbitMQConfig;
 
 /**
- * @author Alfredo Maffi
- * AsyncTask meant to send a message to the server whenever the user performs a modification while using the app.
+ * AsyncTask meant to send a message to the server whenever the {@link User} performs a modification while using the app.
  */
 
 public class SendMessageToServerTask extends AsyncTask<UpdateMessage, Void, Boolean> {

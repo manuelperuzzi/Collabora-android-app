@@ -32,7 +32,7 @@ public interface Note {
     DateTime getExpirationDate();
 
     /**
-     * @return the note's state.
+     * @return the note's {@link State}.
      */
     State getState();
 
@@ -48,7 +48,7 @@ public interface Note {
     void setContent(String newContent);
 
     /**
-     * Sets a new location to the note.
+     * Sets a new {@link Location} to the note.
      * @param location the location to be set.
      */
     void setLocation(Location location);

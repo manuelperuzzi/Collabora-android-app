@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
- * This class represent a service whose task is to listen for incoming notifications from the server, acting accordingly.
+ * This class represent a service whose task is to listen for incoming notification messages from the server, acting accordingly.
  */
 
 public class NotificationsSubscriberService extends SubscriberService {

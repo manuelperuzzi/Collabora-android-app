@@ -1,7 +1,5 @@
 package org.gammf.collabora_android.modules;
 
-import android.util.Log;
-
 import org.gammf.collabora_android.notes.ModuleNote;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.notes.SimpleModuleNote;
@@ -12,7 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
  * An implementation of a module in a collaboration.
  */
 public class ConcreteModule implements Module {

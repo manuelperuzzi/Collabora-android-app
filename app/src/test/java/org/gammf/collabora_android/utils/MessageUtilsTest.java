@@ -62,7 +62,7 @@ public class MessageUtilsTest {
                 NoteUpdateMessage updateMessage = (NoteUpdateMessage) message;
                 assertEquals(updateMessage.getUsername(), "peru");
                 assertEquals(updateMessage.getNote().getExpirationDate(), new DateTime(772408800000L));
-                assertEquals(updateMessage.getNote().getState().getCurrentState(), "doing");
+                assertEquals(updateMessage.getNote().getState().getCurrentDefinition(), "doing");
                 assertEquals(updateMessage.getUpdateType().name(), UpdateMessageType.CREATION.name());
                 assertEquals(updateMessage.getNote().getLocation().getLongitude(), 53.21, 0.000001);
             } else {

@@ -3,6 +3,7 @@ package org.gammf.collabora_android.collaborations.shared_collaborations;
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,8 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * An implementation of a collaboration of type project.
+ * An implementation of a {@link Collaboration} of type project.
  */
 public class ConcreteProject extends AbstractSharedCollaboration implements Project {
 

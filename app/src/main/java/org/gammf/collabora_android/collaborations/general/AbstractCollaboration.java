@@ -8,8 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * This is an abstract class that defines the basic operations of a generic collaboration.
+ * This is an abstract class that defines the basic operations of a generic {@link Collaboration}.
  */
 public abstract class AbstractCollaboration implements Collaboration {
 

@@ -2,61 +2,62 @@ package org.gammf.collabora_android.collaborations.shared_collaborations;
 
 import org.gammf.collabora_android.modules.Module;
 import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.collaborations.general.Collaboration;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+//TODO
 /**
- * @author Manuel Peruzzi
- * Represents a collaboration of type project.
+ * Represents a {@link Collaboration} of type project.
  */
 public interface Project extends SharedCollaboration {
 
     /**
-     * @return a list containing each module of the collaboration.
+     * @return a list containing each {@link Module} of the {@link Collaboration}.
      */
     Set<Module> getAllModules();
 
     /**
-     * Checks if the given module belongs to the collaboration.
-     * @param moduleId the identifier of the module.
-     * @return true if the module belongs to the collaboration, otherwise false.
+     * Checks if the given {@link Module} belongs to the {@link Collaboration}.
+     * @param moduleId the identifier of the {@link Module}.
+     * @return true if the {@link Module} belongs to the {@link Collaboration}, otherwise false.
      */
     boolean containsModule(String moduleId);
 
     /**
-     * Returns a module identified by its id.
-     * @param moduleId the identifier of the requested module.
-     * @return the requested module.
-     * @throws NoSuchElementException if the module id does not exist.
+     * Returns a {@link Module} identified by its id.
+     * @param moduleId the identifier of the requested {@link Module}.
+     * @return the requested {@link Module}.
+     * @throws NoSuchElementException if the {@link Module} does not exist.
      */
     Module getModule(String moduleId) throws NoSuchElementException;
 
     /**
-     * Adds a module to the collaboration. If the module already exist, it will be overwritten.
-     * @param module the module to be added to the collaboration.
-     * @return true if the module is not in the collaboration, false otherwise.
+     * Adds a {@link Module} to the {@link Collaboration}. If the {@link Module} already exist, it will be overwritten.
+     * @param module the {@link Module} to be added to the {@link Collaboration}.
+     * @return true if the {@link Module} is not in the {@link Collaboration}, false otherwise.
      */
     boolean addModule(Module module);
 
     /**
-     * Removes a module from the collaboration.
-     * @param moduleId the identifier of the module to be removed from the collaboration.
-     * @return true if the module was in the collaboration, false otherwise.
+     * Removes a {@link Module} from the {@link Collaboration}.
+     * @param moduleId the identifier of the {@link Module} to be removed from the {@link Collaboration}.
+     * @return true if the {@link Module} was in the {@link Collaboration}, false otherwise.
      */
     boolean removeModule(String moduleId);
 
     /**
-     * Adds a note to the specified module in the collaboration.
-     * @param note the note to be added.
-     * @param moduleId the identifier of the module that will contain the note.
-     * @return true if the note is inserted in the module.
+     * Adds a {@link Note} to the specified {@link Module} in the {@link Collaboration}.
+     * @param note the {@link Note} to be added.
+     * @param moduleId the identifier of the {@link Module} that will contain the {@link Note}.
+     * @return true if the {@link Note} is inserted in the {@link Module}.
      */
     boolean addNote(Note note, String moduleId);
 
     /**
-     * Method that returns all notes that don't belong to any Project
-     * @return return set of notes
+     * Method that returns all {@link Note}s that don't belong to any {@link Module},
+     * @return return set of {@link Note}s.
      */
     Set<Note> getAllNoteNotInModules();
 

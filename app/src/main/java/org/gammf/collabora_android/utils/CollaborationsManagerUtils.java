@@ -11,16 +11,15 @@ import org.json.JSONObject;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * Utily class providing methods to convert from collaborations set in a collaborations manager to
- * json message and vice versa.
+ * Utility class providing methods to convert all the {@link ShortCollaboration}s contained in a {@link CollaborationsManager} to
+ * a json object and vice versa.
  */
 public class CollaborationsManagerUtils {
 
     /**
-     * Provides a json with all the short collaborations included in the manager.
-     * @param manager the collaborations manager.
-     * @return a json message with all the short collaborations in the manager.
+     * Provides a json with all the {@link ShortCollaboration}s included in the {@link CollaborationsManager}.
+     * @param manager the {@link CollaborationsManager}.
+     * @return a json message with all the {@link ShortCollaboration} in the {@link CollaborationsManager}.
      */
     public static JSONObject collaborationsManagerToJson(final CollaborationsManager manager) {
         final JSONObject json = new JSONObject();
@@ -40,9 +39,9 @@ public class CollaborationsManagerUtils {
     }
 
     /**
-     * Creates a collaborations manager instance from a json message.
-     * @param json the input json message.
-     * @return a collaborations manager built from the json message.
+     * Creates a {@link CollaborationsManager} instance from a json object.
+     * @param json the input json object.
+     * @return a {@link CollaborationsManager} built from the json object.
      */
     public static CollaborationsManager jsonToCollaborationManager(final JSONObject json) {
         final CollaborationsManager manager = new ConcreteCollaborationManager();
@@ -60,5 +59,4 @@ public class CollaborationsManagerUtils {
         }
         return manager;
     }
-
 }

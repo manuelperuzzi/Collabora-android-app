@@ -17,8 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * @author Manuel Peruzzi
- * Utility class providing methods to read and write collaborations data in the application local storage.
+ * Utility class providing methods to read and write {@link Collaboration}s data from and to the application local storage.
  */
 public class LocalStorageUtils {
 
@@ -27,9 +26,9 @@ public class LocalStorageUtils {
     private static final ExceptionManager exceptionManager = ExceptionManager.getInstance();
 
     /**
-     * Retrieves a user from the application local storage.
+     * Retrieves a {@link User} from the application local storage.
      * @param context the application context used to access the application local files.
-     * @return the user built from the local storage.
+     * @return the {@link User} built from the local storage.
      */
     public static User readUserFromFile(final Context context) throws FileNotFoundException {
         User user = null;
@@ -45,9 +44,9 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Writes a user on a single file in the application local storage.
+     * Writes a {@link User} on a single file in the application local storage.
      * @param context the application context used to access the application local files.
-     * @param user the user to be written.
+     * @param user the {@link User} to be written.
      */
     public static void writeUserToFile(final Context context, final User user) {
         try {
@@ -57,10 +56,18 @@ public class LocalStorageUtils {
         }
     }
 
+    /**
+     * Deletes the application {@link User} from the application local storage.
+     * @param context the application context used to access the application local files.
+     */
     public static void deleteUserFromFile(final Context context) {
         deleteStoredFile(context, USER_FILENAME);
     }
 
+    /**
+     * Deletes all the {@link Collaboration}s from the application local storage.
+     * @param context the application context used to access the application local files.
+     */
     public static void deleteAllCollaborations(final Context context) {
         final CollaborationsManager manager = LocalStorageUtils.readShortCollaborationsFromFile(context);
         if (manager != null){
@@ -72,10 +79,10 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Retrieves a collaboration from the application local storage.
+     * Retrieves a {@link Collaboration} from the application local storage.
      * @param context the application context used to access the application local files.
-     * @param collaborationId the identifier of the collaboration.
-     * @return the collaboration built from the local storage.
+     * @param collaborationId the identifier of the {@link Collaboration}.
+     * @return the {@link Collaboration} built from the local storage.
      */
     public static Collaboration readCollaborationFromFile(final Context context, final String collaborationId) {
         Collaboration collaboration = null;
@@ -89,9 +96,9 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Writes a collaboration on a single file in the application local storage.
+     * Writes a {@link Collaboration} on a single file in the application local storage.
      * @param context the application context used to access the application local files.
-     * @param collaboration the collaboration to be written.
+     * @param collaboration the {@link Collaboration} to be written.
      */
     public static void writeCollaborationToFile(final Context context, final Collaboration collaboration) {
         try {
@@ -103,9 +110,9 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Retrieves a collaborations manager with all the collaborations from the application local storage.
+     * Retrieves a {@link CollaborationsManager} with all the {@link Collaboration}s from the application local storage.
      * @param context the application context used to access the application local files.
-     * @return a collaborations manager containing all the collaborations retrieved from file.
+     * @return a {@link CollaborationsManager} containing all the {@link Collaboration}s retrieved from file.
      */
     public static CollaborationsManager readShortCollaborationsFromFile(final Context context) {
         try {
@@ -117,10 +124,10 @@ public class LocalStorageUtils {
     }
 
     /**
-     * Writes all the short collaborations contained in a manager on a single file in the application
+     * Writes all the {@link ShortCollaboration}s contained in a {@link CollaborationsManager} on a single file in the application
      * local storage.
      * @param context the application context used to access the application local files.
-     * @param manager the manager containing the collaborations to be written.
+     * @param manager the {@link CollaborationsManager} containing the {@link Collaboration}s to be written.
      */
     public static void writeShortCollaborationsToFile(final Context context, final CollaborationsManager manager) {
         try {

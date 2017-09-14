@@ -103,7 +103,7 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
                         previousNotesSelected.clear();
                         for (int position: mSelectedItems) {
                             previousNotesSelected.add(allNotes.get(position).getNoteID());
-                            noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE,allNotes.get(position).getState().getCurrentState()));
+                            noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE,allNotes.get(position).getState().getCurrentDefinition()));
                         }
                         Intent intent = new Intent();
                         intent.putExtra(ARG_NOTEITEMS,noteItems);

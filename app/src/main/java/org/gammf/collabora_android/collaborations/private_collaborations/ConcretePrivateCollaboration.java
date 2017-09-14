@@ -7,8 +7,7 @@ import org.gammf.collabora_android.utils.AccessRight;
 import org.gammf.collabora_android.utils.CollaborationType;
 
 /**
- * @author Manuel Peruzzi
- * A simple implementation of a private collaboration.
+ * A simple implementation of a {@link PrivateCollaboration}.
  */
 public class ConcretePrivateCollaboration extends AbstractCollaboration implements PrivateCollaboration {
 

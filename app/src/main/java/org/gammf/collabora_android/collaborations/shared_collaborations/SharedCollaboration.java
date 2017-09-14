@@ -7,42 +7,42 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author Manuel Peruzzi
- * Simple interface that represents a collaboration shared between users.
+ * Simple interface that represents a {@link Collaboration} shared between users.
  */
 public interface SharedCollaboration extends Collaboration {
 
     /**
-     * @return a list containing each member of the collaboration.
+     * @return a list containing each {@link CollaborationMember} of the {@link Collaboration}.
      */
     Set<CollaborationMember> getAllMembers();
 
     /**
-     * Checks if the given user is a member of the collaboration.
+     * Checks if the user corresponding to the given username is a member of the {@link Collaboration}.
      * @param username the identifier of the user.
      * @return true if the user is a member of the collaboration, false otherwise.
      */
     boolean containsMember(String username);
 
     /**
-     * Returns a member of the collaboration identified by its user id.
+     * Returns a {@link CollaborationMember} of the {@link Collaboration} identified by its username.
      * @param username the identifier of the user.
-     * @return the requested member.
-     * @throws NoSuchElementException if the userId does not exist.
+     * @return the requested {@link CollaborationMember}.
+     * @throws NoSuchElementException if the {@link CollaborationMember} does not exist.
      */
     CollaborationMember getMember(String username) throws NoSuchElementException;
 
     /**
-     * Adds a user to the collaboration with the specified access right. If the user already exists, it will be overwritten.
-     * @param member the user to be added to the collaboration.
-     * @return true if the user is not in the collaboration, false otherwise.
+     * Adds a {@link CollaborationMember} to the {@link Collaboration} with the specified access right.
+     * If the member already belongs to the it, it will be overwritten.
+     * @param member the {@link CollaborationMember} to be added to the {@link Collaboration}.
+     * @return true if the {@link CollaborationMember} is not in the {@link Collaboration}, false otherwise.
      */
     boolean addMember(CollaborationMember member);
 
     /**
-     * Removes a member from the collaboration.
-     * @param username the identifier of the user to be removed from the collaboration.
-     * @return true if the user was in the collaboration, false otherwise.
+     * Removes a {@link CollaborationMember} from the collaboration.
+     * @param username the username of the {@link CollaborationMember} to be removed from the collaboration.
+     * @return true if the {@link CollaborationMember} was in the {@link Collaboration}, false otherwise.
      */
     boolean removeMember(String username);
 

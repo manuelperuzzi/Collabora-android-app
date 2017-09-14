@@ -196,7 +196,7 @@ public class EditNoteFragment extends Fragment {
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this.mapManager);
 
-        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
+        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(this.note.getState().getCurrentDefinition(), rootView, R.id.spinnerEditNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
         stateSpinnerManager.addObserver(new Observer<String>() {
             @Override

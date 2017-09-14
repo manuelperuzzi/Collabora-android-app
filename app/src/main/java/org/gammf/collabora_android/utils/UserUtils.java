@@ -8,14 +8,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Utily class providing methods to convert from user class to json message and vice versa.
+ * Utility class providing methods to convert a {@link User} to a json message and vice versa.
  */
 public class UserUtils {
 
     /**
-     * Provides a json with all the user information.
-     * @param user the user.
-     * @return a json message with all the user information.
+     * Provides a json with all the {@link User} information.
+     * @param user the {@link User}.
+     * @return a json message with all the {@link User} information.
      */
     public static JSONObject userToJson(final User user) {
         final JSONObject json = new JSONObject();
@@ -32,9 +32,9 @@ public class UserUtils {
     }
 
     /**
-     * Create a user class from a json message.
+     * Create a {@link User} class from a json message.
      * @param json the input json message.
-     * @return a user built from the json message.
+     * @return a {@link User} built from the json message.
      */
     public static User jsonToUser(final JSONObject json) {
         User user = null;

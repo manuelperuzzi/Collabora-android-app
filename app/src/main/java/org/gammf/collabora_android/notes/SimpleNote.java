@@ -5,8 +5,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
- * Concrete note representing a note of the application domain.
+ * Concrete class representing a {@link Note} of the application domain.
  */
 
 public class SimpleNote implements Note {
@@ -103,7 +102,7 @@ public class SimpleNote implements Note {
                 (this.content != null ? "\n\tcontent: " + this.content : "") +
                 (this.location != null ? "\n\tlocation: {latitude: " + this.location.getLatitude() + ", longitude: " + this.location.getLongitude()+ "}" : "") +
                 (this.expirationDate != null ? "\n\texpiration date: " + this.expirationDate : "") +
-                (this.state != null ? "\n\tstate: {current state: " + this.state.getCurrentState() + ", responsible: " + this.state.getCurrentResponsible() + "}" : "") +
+                (this.state != null ? "\n\tstate: {current state: " + this.state.getCurrentDefinition() + ", responsible: " + this.state.getCurrentResponsible() + "}" : "") +
                 (this.getPreviousNotes() != null ? "previous notes: " + this.previousNotes : "") + "\n}";
 
     }

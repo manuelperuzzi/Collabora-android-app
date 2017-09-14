@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * @author Alfredo Maffi
- * Simple class meant to contain all RabbitMQ configuration values
+ * Simple class meant to contain all RabbitMQ configuration values and manage a single RabbitMQ connection.
  */
 
 public class RabbitMQConfig {
