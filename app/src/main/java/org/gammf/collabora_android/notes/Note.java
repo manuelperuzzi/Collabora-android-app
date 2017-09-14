@@ -45,29 +45,29 @@ public interface Note {
      * Sets a new content to the note.
      * @param newContent the new content to be set.
      */
-    void modifyContent(String newContent);
+    void setContent(String newContent);
 
     /**
      * Sets a new location to the note.
      * @param location the location to be set.
      */
-    void modifyLocation(Location location);
+    void setLocation(Location location);
 
     /**
      * Sets a new expiration date to the note.
      * @param expirationDate the expiration date to be set.
      */
-    void modifyExpirationDate(DateTime expirationDate);
+    void setExpirationDate(DateTime expirationDate);
 
     /**
      * Sets a new state to the note.
      * @param state the state to be set.
      */
-    void modifyState(State state);
+    void setState(State state);
 
     /**
      * Sets new previous notes to the note.
      * @param previousNotes the previous notes to be set.
      */
-    void modifyPreviousNotes(List<String> previousNotes);
+    void setPreviousNotes(List<String> previousNotes);
 }

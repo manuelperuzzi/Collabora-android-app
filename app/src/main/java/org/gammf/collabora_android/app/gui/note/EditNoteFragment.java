@@ -128,7 +128,7 @@ public class EditNoteFragment extends Fragment {
         this.mapManager.addObserver(new Observer<Location>() {
             @Override
             public void notify(final Location location) {
-                note.modifyLocation(location);
+                note.setLocation(location);
             }
         });
         this.datePickerManager = new DatePickerManager(getContext());
@@ -301,17 +301,17 @@ public class EditNoteFragment extends Fragment {
             txtContentNoteEdited.setError(getResources().getString(R.string.fieldempty));
             return false;
         }else{
-            note.modifyContent(insertedNoteName);
+            note.setContent(insertedNoteName);
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                note.modifyExpirationDate(new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
+                note.setExpirationDate(new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
                         this.time.getHourOfDay(), this.time.getMinuteOfHour()));
             } else if (this.dateSet || this.timeSet) {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            note.modifyState(new NoteState(noteStateEdited, responsible));
+            note.setState(new NoteState(noteStateEdited, responsible));
             if(!previousNotesSelected.isEmpty()) {
-                note.modifyPreviousNotes(previousNotesSelected);
+                note.setPreviousNotes(previousNotesSelected);
                 Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteStateEdited, previousNotesSelected, collaboration);
                 if (checkPrevNotes.first)
                     new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
@@ -320,7 +320,7 @@ public class EditNoteFragment extends Fragment {
                     Toast.makeText(getContext().getApplicationContext(), checkPrevNotes.second, Toast.LENGTH_LONG).show();
             }
             else {
-                note.modifyPreviousNotes(null);
+                note.setPreviousNotes(null);
                 new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                         SingletonAppUser.getInstance().getUsername(), note, UpdateMessageType.UPDATING, collaborationId));
             }

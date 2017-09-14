@@ -72,27 +72,27 @@ public class SimpleNote implements Note {
     }
 
     @Override
-    public void modifyContent(String newContent) {
+    public void setContent(String newContent) {
         this.content = newContent;
     }
 
     @Override
-    public void modifyLocation(Location location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
     @Override
-    public void modifyExpirationDate(DateTime expirationDate) {
+    public void setExpirationDate(DateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
     @Override
-    public void modifyState(State state) {
+    public void setState(State state) {
         this.state = state;
     }
 
     @Override
-    public void modifyPreviousNotes(List<String> previousNotes) {
+    public void setPreviousNotes(List<String> previousNotes) {
         this.previousNotes = previousNotes;
     }
 

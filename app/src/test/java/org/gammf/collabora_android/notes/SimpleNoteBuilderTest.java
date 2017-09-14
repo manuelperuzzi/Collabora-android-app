@@ -34,11 +34,11 @@ public class SimpleNoteBuilderTest {
 
     @Test
     public void modifyNoteData() {
-        n.modifyContent("new content");
-        n.modifyState(new NoteState("doing", "fone"));
-        n.modifyExpirationDate(new DateTime(2547362525325L));
-        n.modifyPreviousNotes(Arrays.asList("test3","test2","test1"));
-        n.modifyLocation(new NoteLocation(32.32,12.23));
+        n.setContent("new content");
+        n.setState(new NoteState("doing", "fone"));
+        n.setExpirationDate(new DateTime(2547362525325L));
+        n.setPreviousNotes(Arrays.asList("test3","test2","test1"));
+        n.setLocation(new NoteLocation(32.32,12.23));
 
         assertEquals(n.getContent(),"new content");
         assertEquals(n.getState().getCurrentState(), "doing");

@@ -121,7 +121,6 @@ public class NotificationsSubscriberService extends SubscriberService {
             channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, routingKey);
         } catch (final IOException e) {
             Toast.makeText(getApplicationContext(), "Unable to connect to server, try to restart the App!", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

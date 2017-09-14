@@ -54,28 +54,28 @@ public class SimpleModuleNote implements ModuleNote {
     }
 
     @Override
-    public void modifyContent(String newContent) {
-        note.modifyContent(newContent);
+    public void setContent(String newContent) {
+        note.setContent(newContent);
     }
 
     @Override
-    public void modifyLocation(Location location) {
-        this.note.modifyLocation(location);
+    public void setLocation(Location location) {
+        this.note.setLocation(location);
     }
 
     @Override
-    public void modifyExpirationDate(DateTime expirationDate) {
-        this.note.modifyExpirationDate(expirationDate);
+    public void setExpirationDate(DateTime expirationDate) {
+        this.note.setExpirationDate(expirationDate);
     }
 
     @Override
-    public void modifyState(State state) {
-        this.note.modifyState(state);
+    public void setState(State state) {
+        this.note.setState(state);
     }
 
     @Override
-    public void modifyPreviousNotes(List<String> previousNotes) {
-        this.note.modifyPreviousNotes(previousNotes);
+    public void setPreviousNotes(List<String> previousNotes) {
+        this.note.setPreviousNotes(previousNotes);
     }
 
     @Override
