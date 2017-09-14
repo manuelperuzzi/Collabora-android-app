@@ -36,7 +36,7 @@
         android:paddingRight="10dp"
         android:layout_alignTop="@+id/imageViewIcon"
         android:gravity="center_vertical"
-        android:paddingLeft="10dp"
+        android:paddingLeft="5dp"
         android:textSize="18sp"
         android:typeface="normal"
         android:layout_alignBottom="@+id/textViewName"
