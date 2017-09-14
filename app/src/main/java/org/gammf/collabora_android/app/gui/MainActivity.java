@@ -31,7 +31,6 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
 import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.app.utils.ExceptionManager;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
@@ -71,6 +70,9 @@ public class MainActivity extends AppCompatActivity
         try {
             SingletonAppUser.getInstance().loadUser(getApplicationContext());
             user = SingletonAppUser.getInstance().getUser();
+
+            final Fragment fragment = HomePageFragment.newInstance();
+            openFragment(fragment);
 
             final TextView username = (TextView) findViewById(R.id.nameOfUser);
             username.setText(user.getUsername());
@@ -211,11 +213,8 @@ public class MainActivity extends AppCompatActivity
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 
-    private void openCollaborationFragment(final ShortCollaboration collaboration) {
-        final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaboration.getId());
+    private void openFragment(final Fragment fragment){
         final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
-
-        //fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.addToBackStack(BACKSTACK_FRAG);
         fragmentManager.replace(R.id.content_frame, fragment);
         fragmentManager.commit();
@@ -270,8 +269,10 @@ public class MainActivity extends AppCompatActivity
                             navigationManager.refreshCollaborationLists();
                             navigationManager.openNavigator();
                         } else {
-                            openCollaborationFragment(LocalStorageUtils
-                                    .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                            //openCollaborationFragment(LocalStorageUtils
+                             //       .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                            final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
+                            openFragment(fragment);
                         }
                     } else {
                         navigationManager.refreshCollaborationLists();
@@ -281,8 +282,10 @@ public class MainActivity extends AppCompatActivity
                 case IntentConstants.OPEN_FRAGMENT:
                     final String collID = intent.getStringExtra(IntentConstants.OPEN_FRAGMENT);
                     if (collID != null) {
-                        openCollaborationFragment(LocalStorageUtils
-                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
+                        //openCollaborationFragment(LocalStorageUtils
+                         //       .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
+                        final Fragment fragment = CollaborationFragment.newInstance(SENDER, collID);
+                        openFragment(fragment);
                     }
                     break;
                 case IntentConstants.SERVER_ERROR:

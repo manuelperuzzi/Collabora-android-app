@@ -162,13 +162,17 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)) {
             tabHost.addTab(tab1);
             CollaborationMember member = AccessRightUtils.checkMemberAccess(collaboration, username);
+            if (AccessRightUtils.checkIfUserHasAccessRight(member)) {
+                btnMenuAdd.setVisibility(View.VISIBLE);
+            }
+            btnAddNote.setVisibility(View.INVISIBLE);
+            fillModulesList();
+        }
+        if(collaboration.getCollaborationType().equals(CollaborationType.GROUP)) {
+            CollaborationMember member = AccessRightUtils.checkMemberAccess(collaboration, username);
             if (!AccessRightUtils.checkIfUserHasAccessRight(member)) {
                 btnAddNote.setVisibility(View.INVISIBLE);
-            } else {
-                btnMenuAdd.setVisibility(View.VISIBLE);
-                btnAddNote.setVisibility(View.INVISIBLE);
             }
-            fillModulesList();
         }
         tabHost.addTab(tab2);
         fillNotesList();
@@ -184,7 +188,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         btnMenuAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //qui gli va aggiunto l'id del modulo
                 changeFragment(CreateNoteFragment.newInstance(collaboration.getId(), NOMODULE));
             }
         });

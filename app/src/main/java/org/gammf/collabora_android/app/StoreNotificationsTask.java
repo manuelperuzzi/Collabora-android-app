@@ -29,13 +29,11 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
-import org.gammf.collabora_android.users.User;
 import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
 import org.gammf.collabora_android.utils.CollaborationType;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 import org.gammf.collabora_android.utils.SingletonAppUser;
 
-import java.io.FileNotFoundException;
 import java.util.Set;
 
 /**
