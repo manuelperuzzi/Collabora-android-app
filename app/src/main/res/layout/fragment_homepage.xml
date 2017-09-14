@@ -9,10 +9,10 @@
         android:text="@string/welcome_to_collabora"
         android:textSize="35sp"
         android:id="@+id/textView"
-        android:layout_marginEnd="9dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="46dp"/>
+        android:textColor="#000000"
+        android:layout_marginTop="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/textView17"/>
 
     <ImageView
         android:id="@+id/imageView2"
@@ -29,9 +29,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Swipe right to manage your collaborations"
+        android:text="@string/swipe_right_to_manage_your_collaborations"
         android:textSize="20sp"
         android:id="@+id/textView17"
+        android:textColor="#000000"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"/>
@@ -49,5 +50,4 @@
         android:layout_below="@+id/imageView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"/>
-
 </RelativeLayout>

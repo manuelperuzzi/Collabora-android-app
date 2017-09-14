@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity
             SingletonAppUser.getInstance().loadUser(getApplicationContext());
             user = SingletonAppUser.getInstance().getUser();
 
+            openHomePageFragment();
+
             final TextView username = (TextView) findViewById(R.id.nameOfUser);
             username.setText(user.getUsername());
             final TextView email = (TextView) findViewById(R.id.emailOfUser);
@@ -216,6 +218,14 @@ public class MainActivity extends AppCompatActivity
         final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
 
         //fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.addToBackStack(BACKSTACK_FRAG);
+        fragmentManager.replace(R.id.content_frame, fragment);
+        fragmentManager.commit();
+    }
+
+    private void openHomePageFragment() {
+        final Fragment fragment = HomePageFragment.newInstance();
+        final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
         fragmentManager.addToBackStack(BACKSTACK_FRAG);
         fragmentManager.replace(R.id.content_frame, fragment);
         fragmentManager.commit();
