@@ -9,7 +9,8 @@ import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
 import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
 import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
-import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
+import org.gammf.collabora_android.utils.AlarmUtils;
+import org.gammf.collabora_android.utils.GeofenceUtils;
 import org.gammf.collabora_android.utils.LocalStorageUtils;
 
 /**
@@ -30,7 +31,8 @@ public class BootService extends IntentService {
             for (ShortCollaboration collab : manager.getAllCollaborations()) {
                 Collaboration tmpcollab = LocalStorageUtils.readCollaborationFromFile(getApplicationContext(),collab.getId());
                 for (Note collabnote: tmpcollab.getAllNotes()) {
-                    AlarmAndGeofenceUtils.addAlarmAndGeofences(getApplicationContext(),collabnote,new Alarm(),new GeofenceManager(getApplicationContext()));
+                    AlarmUtils.setAlarm(getApplicationContext(), collabnote, new Alarm());
+                    GeofenceUtils.setGeofence(collabnote, new GeofenceManager(getApplicationContext()));
                 }
             }
         }

@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.gammf.collabora_android.utils.AlarmAndGeofenceUtils;
+import org.gammf.collabora_android.utils.GeofenceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,9 +94,9 @@ public class GeofenceManager implements OnCompleteListener<Void> {
                 .setCircularRegion(
                         coordinates.latitude,
                         coordinates.longitude,
-                        AlarmAndGeofenceUtils.GEOFENCE_RADIUS_IN_METERS
+                        GeofenceUtils.GEOFENCE_RADIUS_IN_METERS
                 )
-                .setExpirationDuration(AlarmAndGeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setExpirationDuration(GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
         mGeofencingClient.addGeofences(getGeofencingRequest(geofence), getGeofencePendingIntent(noteID,contentToDisplay))
@@ -117,7 +117,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
      */
     private boolean getGeofencesAdded() {
         return PreferenceManager.getDefaultSharedPreferences(this.context).getBoolean(
-                AlarmAndGeofenceUtils.GEOFENCES_ADDED_KEY, false);
+                GeofenceUtils.GEOFENCES_ADDED_KEY, false);
     }
 
     /**
@@ -128,7 +128,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     private void updateGeofencesAdded(boolean added) {
         PreferenceManager.getDefaultSharedPreferences(this.context)
                 .edit()
-                .putBoolean(AlarmAndGeofenceUtils.GEOFENCES_ADDED_KEY, added)
+                .putBoolean(GeofenceUtils.GEOFENCES_ADDED_KEY, added)
                 .apply();
     }
 

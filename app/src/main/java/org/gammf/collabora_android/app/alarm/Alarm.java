@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.gammf.collabora_android.utils.AlarmAndGeofenceUtils.PREFS_NAME;
+import static org.gammf.collabora_android.utils.AlarmUtils.PREFS_NAME;
 
 /**
  * Class that represent Allarm management

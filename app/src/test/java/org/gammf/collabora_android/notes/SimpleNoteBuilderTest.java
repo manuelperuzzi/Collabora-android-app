@@ -23,7 +23,7 @@ public class SimpleNoteBuilderTest {
     }
 
     @Test
-    public void buildANote() {
+    public void noteIsBuiltCorrectly() {
         assertEquals(n.getContent(),"content");
         assertEquals(n.getState().getCurrentDefinition(), "todo");
         assertNull(n.getState().getCurrentResponsible());
