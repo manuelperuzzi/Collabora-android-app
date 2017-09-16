@@ -3,7 +3,7 @@ package org.gammf.collabora_android.app;
 import android.app.IntentService;
 import android.content.Intent;
 
-import org.gammf.collabora_android.app.alarm.Alarm;
+import org.gammf.collabora_android.app.alarm.AlarmController;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.notes.Note;
@@ -31,7 +31,7 @@ public class BootService extends IntentService {
             for (ShortCollaboration collab : manager.getAllCollaborations()) {
                 Collaboration tmpcollab = LocalStorageUtils.readCollaborationFromFile(getApplicationContext(),collab.getId());
                 for (Note collabnote: tmpcollab.getAllNotes()) {
-                    AlarmUtils.setAlarm(getApplicationContext(), collabnote, new Alarm());
+                    AlarmUtils.setAlarm(getApplicationContext(), collabnote, new AlarmController());
                     GeofenceUtils.setGeofence(collabnote, new GeofenceManager(getApplicationContext()));
                 }
             }

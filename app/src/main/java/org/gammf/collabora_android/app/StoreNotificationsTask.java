@@ -6,9 +6,9 @@ import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import org.gammf.collabora_android.app.alarm.AlarmController;
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
-import org.gammf.collabora_android.app.alarm.Alarm;
 import org.gammf.collabora_android.app.location_geofence.GeofenceManager;
 import org.gammf.collabora_android.collaborations.general.Collaboration;
 import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
@@ -45,7 +45,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
     private final Context context;
     private GeofenceManager geoManager;
-    private Alarm alarm;
+    private AlarmController alarmController;
     private String collaborationId;
     private UpdateMessageType updateType = null;
     private String senderUsername;
@@ -56,7 +56,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
      */
     public StoreNotificationsTask(final Context context) {
         this.context = context;
-        this.alarm = new Alarm();
+        this.alarmController = new AlarmController();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             manager.addCollaboration(new ConcreteShortCollaboration(c));
             LocalStorageUtils.writeCollaborationToFile(context, c);
             for (Note note: c.getAllNotes()) {
-                AlarmUtils.setAlarm(context, note, alarm);
+                AlarmUtils.setAlarm(context, note, alarmController);
                 GeofenceUtils.setGeofence(note, geoManager);
             }
         }
@@ -110,7 +110,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
         LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
         for (Note note: message.getCollaboration().getAllNotes()) {
-            AlarmUtils.setAlarm(context, note, alarm);
+            AlarmUtils.setAlarm(context, note, alarmController);
             GeofenceUtils.setGeofence(note, geoManager);
         }
         LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
@@ -140,18 +140,18 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         switch (message.getUpdateType()) {
             case CREATION:
                 storedCollaboration.addNote(message.getNote());
-                AlarmUtils.setAlarm(context, message.getNote(), alarm);
+                AlarmUtils.setAlarm(context, message.getNote(), alarmController);
                 GeofenceUtils.setGeofence(message.getNote(), geoManager);
                 break;
             case UPDATING:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
                 storedCollaboration.addNote(message.getNote());
-                AlarmUtils.updateAlarm(context, message.getNote(), alarm);
+                AlarmUtils.updateAlarm(context, message.getNote(), alarmController);
                 GeofenceUtils.updateGeofence(message.getNote(), geoManager);
                 break;
             case DELETION:
                 storedCollaboration.removeNote(message.getNote().getNoteID());
-                AlarmUtils.deleteAlarm(context, message.getNote(), alarm);
+                AlarmUtils.deleteAlarm(context, message.getNote(), alarmController);
                 GeofenceUtils.deleteGeofence(message.getNote(), geoManager);
                 break;
             default:
@@ -167,7 +167,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             case CREATION:
                 storedCollaboration.addModule(message.getModule());
                 for (Note note: message.getModule().getAllNotes()) {
-                    AlarmUtils.setAlarm(context, note, alarm);
+                    AlarmUtils.setAlarm(context, note, alarmController);
                     GeofenceUtils.setGeofence(note, geoManager);
                 }
                 break;
@@ -177,7 +177,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 final Module newModule = message.getModule();
                 for (final Note note: moduleNotes) {
                     newModule.addNote(note);
-                    AlarmUtils.updateAlarm(context, note, alarm);
+                    AlarmUtils.updateAlarm(context, note, alarmController);
                     GeofenceUtils.updateGeofence(note, geoManager);
                 }
                 storedCollaboration.addModule(newModule);
@@ -185,7 +185,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
             case DELETION:
                 storedCollaboration.removeModule(message.getModule().getId());
                 for (Note note: message.getModule().getAllNotes()) {
-                    AlarmUtils.deleteAlarm(context, note, alarm);
+                    AlarmUtils.deleteAlarm(context, note, alarmController);
                     GeofenceUtils.deleteGeofence(note, geoManager);
                 }
                 break;
@@ -226,7 +226,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 manager.addCollaboration(new ConcreteShortCollaboration(message.getCollaboration()));
                 LocalStorageUtils.writeCollaborationToFile(context, message.getCollaboration());
                 for (Note note: message.getCollaboration().getAllNotes()) {
-                    AlarmUtils.updateAlarm(context, note, alarm);
+                    AlarmUtils.updateAlarm(context, note, alarmController);
                     GeofenceUtils.updateGeofence(note, geoManager);
                 }
                 break;
@@ -234,7 +234,7 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
                 manager.removeCollaboration(message.getCollaborationId());
                 context.deleteFile(message.getCollaborationId());
                 for (Note note: message.getCollaboration().getAllNotes()) {
-                    AlarmUtils.deleteAlarm(context, note, alarm);
+                    AlarmUtils.deleteAlarm(context, note, alarmController);
                     GeofenceUtils.deleteGeofence(note, geoManager);
                 }
                 break;

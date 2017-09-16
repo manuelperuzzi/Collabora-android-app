@@ -7,19 +7,20 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
 import org.gammf.collabora_android.app.R;
 import java.util.Date;
 
 
 /**
- * BroadcastReceiver that receive notification when an alarm is fired
+ * {@link BroadcastReceiver} that receives notifications when an alarm is fired by the system.
  */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Alarm alarm = new Alarm();
+        AlarmController alarmController = new AlarmController();
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         intent.setAction(Intent.ACTION_MAIN);
@@ -28,7 +29,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Note expired! " + alarm.getDate(intent.getExtras().getLong("time"), "dd/MM/yyyy hh:mm"))
+                .setContentTitle("Note expired! " + alarmController.getDate(intent.getExtras().getLong("time"), "dd/MM/yyyy hh:mm"))
                 .setContentText(intent.getExtras().getString("title"))
                 .setSound(alarmSound)
                 .setAutoCancel(true)

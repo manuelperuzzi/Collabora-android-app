@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.i("FLUSSOANDROID", "onCreate");
         setContentView(R.layout.activity_main);
-        ExceptionManager.init(this);
+        ExceptionManager.getInstance().init(this);
         Log.i("FLUSSOANDROID", "MainActivity; " + getApplicationContext().toString());
         try {
             SingletonAppUser.getInstance().loadUser(getApplicationContext());
