@@ -9,6 +9,10 @@ import org.gammf.collabora_android.model.notes.Note;
 import org.gammf.collabora_android.model.notes.NoteState;
 import org.gammf.collabora_android.model.notes.SimpleModuleNote;
 import org.gammf.collabora_android.model.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.model.CollaborationType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +23,9 @@ import static org.junit.Assert.*;
  * Simple tests for the project implementation of a collaboration.
  */
 public class ConcreteProjectTest {
+
+    private static final String FIRST_USER = "Wayne Rooney";
+    private static final String SECOND_USER = "Nelson Dida";
 
     private Project project;
     private Note singleNote;
@@ -54,6 +61,11 @@ public class ConcreteProjectTest {
                 .setNoteID("thirdNoteId")
                 .buildNote();
         project.addNote(thirdNote, firstModule.getId());
+
+        final CollaborationMember firstMember = new SimpleCollaborationMember(FIRST_USER, AccessRight.ADMIN);
+        final CollaborationMember secondMember = new SimpleCollaborationMember(SECOND_USER, AccessRight.READ);
+        project.addMember(firstMember);
+        project.addMember(secondMember);
     }
 
     @Test
@@ -92,6 +104,29 @@ public class ConcreteProjectTest {
 
         assertTrue(project.removeNote(thirdNote.getNoteID()));
         assertFalse(project.containsNote(thirdNote.getNoteID()));
+    }
+
+    @Test
+    public void checkCollaborationType() {
+        assertEquals(project.getCollaborationType(), CollaborationType.PROJECT);
+    }
+
+    @Test
+    public void getAllMembers() throws Exception {
+        assertEquals(2, project.getAllMembers().size());
+    }
+
+    @Test
+    public void getMember() throws Exception {
+        final CollaborationMember member = new SimpleCollaborationMember(FIRST_USER, AccessRight.ADMIN);
+        assertEquals(member, project.getMember(FIRST_USER));
+    }
+
+    @Test
+    public void removeMember() throws Exception {
+        assertTrue(project.containsMember(SECOND_USER));
+        assertTrue(project.removeMember(SECOND_USER));
+        assertFalse(project.containsMember(SECOND_USER));
     }
 
 }

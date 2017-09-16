@@ -8,6 +8,7 @@ import org.gammf.collabora_android.model.notes.SimpleNoteBuilder;
 import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
 import org.gammf.collabora_android.utils.model.AccessRight;
 import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.utils.model.CollaborationType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,6 +81,11 @@ public class ConcreteGroupTest {
         assertTrue(group.containsNote(note.getNoteID()));
         assertTrue(group.removeNote(note.getNoteID()));
         assertFalse(group.containsNote(note.getNoteID()));
+    }
+
+    @Test
+    public void checkType() {
+        assertEquals(group.getCollaborationType(), CollaborationType.GROUP);
     }
 
 }
