@@ -26,6 +26,7 @@ public class SimpleNoteBuilderTest {
 
     @Test
     public void noteIsBuiltCorrectly() {
+        assertEquals(n.getNoteID(), "noteId");
         assertEquals(n.getContent(),"content");
         assertEquals(n.getState().getCurrentDefinition(), "todo");
         assertNull(n.getState().getCurrentResponsible());
