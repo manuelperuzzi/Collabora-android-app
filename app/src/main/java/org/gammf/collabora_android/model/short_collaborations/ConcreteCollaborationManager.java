@@ -64,7 +64,7 @@ public class ConcreteCollaborationManager implements CollaborationsManager {
     }
 
     @Override
-    public List<ShortCollaboration> filterByGroup(final CollaborationType collaborationType) {
+    public List<ShortCollaboration> filterByType(final CollaborationType collaborationType) {
         final List<ShortCollaboration> collaborations = new ArrayList<>();
         for (final ShortCollaboration collaboration : this.getAllCollaborations()) {
             if (collaboration.getCollaborationType().equals(collaborationType)) {

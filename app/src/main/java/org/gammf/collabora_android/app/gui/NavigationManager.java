@@ -106,11 +106,11 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
         final CollaborationsManager collaborationsManager = LocalStorageUtils.readShortCollaborationsFromFile(this.context);
         final List<Pair<String, List<ShortCollaboration>>> collaborationsList = new ArrayList<>();
         collaborationsList.add(new Pair<>(getResources().getString(R.string.personal_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.PRIVATE)));
+                collaborationsManager.filterByType(CollaborationType.PRIVATE)));
         collaborationsList.add(new Pair<>(getResources().getString(R.string.groups_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.GROUP)));
+                collaborationsManager.filterByType(CollaborationType.GROUP)));
         collaborationsList.add(new Pair<>(getResources().getString(R.string.project_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.PROJECT)));
+                collaborationsManager.filterByType(CollaborationType.PROJECT)));
 
         this.expandableListView = (ExpandableListView) this.mainActivity.findViewById(R.id.expandableListCollaborations);
         this.expandableListAdapter = new CustomExpandableListAdapter(this.context, collaborationsList);
