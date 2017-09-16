@@ -19,7 +19,7 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.MainActivity;
 
 /**
- * A login screen that offers login via email/password.
+ * A login activity that offers login via email/password.
  */
 public class AuthenticationActivity extends AppCompatActivity {
 

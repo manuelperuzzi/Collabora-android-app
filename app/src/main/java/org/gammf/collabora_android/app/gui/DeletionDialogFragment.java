@@ -38,6 +38,11 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
     private static final String ARG_COMPONENTTYPE = "componentType";
     private static final String ARG_COMPONENTCONTENT = "componentContent";
 
+    /**
+     * Use this factory method to create a new instance of this fragment
+     *
+     * @return A new instance of fragment DeletionDialogFragment.
+     */
     public static DeletionDialogFragment newInstance(String collaborationId,String componentId, String componentContent, CollaborationComponentType componentType){
         final DeletionDialogFragment fragment = new DeletionDialogFragment();
         final Bundle args = new Bundle();

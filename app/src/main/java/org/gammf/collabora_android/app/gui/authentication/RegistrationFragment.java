@@ -40,8 +40,12 @@ import java.util.Calendar;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-
-public class    RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link RegistrationFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.

@@ -28,6 +28,12 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
     private ArrayList<CollaborationComponentInfo> data = null;
 
 
+    /**
+     * Build a new adapter for expandable list in navigation menu
+     * @param mContext the application context
+     * @param layoutResourceId represent the component resource layout id
+     * @param data the collaboration component list, a list can be filled with note(s) or member(s) or module(s)
+     */
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ArrayList<CollaborationComponentInfo> data) {
 
         super(mContext, layoutResourceId, data);

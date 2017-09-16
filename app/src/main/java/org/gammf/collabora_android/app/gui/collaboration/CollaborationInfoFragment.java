@@ -55,7 +55,6 @@ public class CollaborationInfoFragment extends Fragment {
      * @param collaborationId collaboration id
      * @return A new instance of fragment CollaborationInfoFragment.
      */
-
     public static CollaborationInfoFragment newInstance(final String collaborationId) {
         final CollaborationInfoFragment fragment = new CollaborationInfoFragment();
         Bundle args = new Bundle();

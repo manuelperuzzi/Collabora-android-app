@@ -94,7 +94,9 @@ public class EditNoteFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
+     * @param collabId the collaboration ID that contain the note
+     * @param noteId the note ID
+     * @param moduleId the Module ID of the note
      * @return A new instance of fragment EditNoteFragment.
      */
     public static EditNoteFragment newInstance(String collabId, String noteId,String moduleId) {

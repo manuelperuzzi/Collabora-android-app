@@ -65,6 +65,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
+     * @param collabId the ID of the collaboration that contains the module
+     * @param moduleId the id of the module that will be showed on GUI
+     *
      * @return A new instance of fragment ModuleFragment.
      */
     public static ModuleFragment newInstance(String collabId, String moduleId) {

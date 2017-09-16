@@ -54,6 +54,7 @@ public class MapManager extends AbstractObservableSource<Location> implements Pl
     /**
      * Builds a MapManager, starting with the given start {@link Location}. If no location is known, use MapManager.NO_LOCATION
      * @param initialLocation the initial location, displayed by this map.
+     * @param context the application context.
      */
     public MapManager(final Location initialLocation, final Context context) {
         this.initialLocation = initialLocation;

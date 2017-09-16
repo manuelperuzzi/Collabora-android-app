@@ -28,6 +28,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<Pair<String, List<ShortCollaboration>>> collaborationList;
 
+    /**
+     * Build a new adapter for expandable list in navigation menu
+     * @param context the application context
+     * @param collaborationList the list to be visualized in navigation menu
+     */
     public CustomExpandableListAdapter(final Context context,
                                        final List<Pair<String, List<ShortCollaboration>>> collaborationList) {
         this.context = context;

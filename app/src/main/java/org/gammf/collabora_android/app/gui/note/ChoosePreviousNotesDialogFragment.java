@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.model.collaborations.general.Collaboration;
@@ -20,6 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Fragment for note creation user interface
+ *
+ * Use the {@link ChoosePreviousNotesDialogFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.DialogFragment{
 
     private String collaborationId;
@@ -35,7 +44,18 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
     private ArrayList<CollaborationComponentInfo> noteItems;
     private ArrayList<String> previousNotesSelected ;
 
-
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param collaborationId the ID of the collaboration that contains the notes.
+     * @param moduleId the id of the module if the notes is contained in a module.
+     * @param noteItems represents the list of the notes
+     * @param previousNotesSelected the previous notes selected
+     * @param noteId the ID of the note
+     *
+     * @return A new instance of fragment CreateNoteFragment.
+     */
     public static ChoosePreviousNotesDialogFragment newInstance(String collaborationId,String moduleId,ArrayList<CollaborationComponentInfo> noteItems,ArrayList<String> previousNotesSelected,String noteId ){
         final ChoosePreviousNotesDialogFragment fragment = new ChoosePreviousNotesDialogFragment();
         final Bundle args = new Bundle();

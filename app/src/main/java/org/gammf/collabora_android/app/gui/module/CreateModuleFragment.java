@@ -39,6 +39,7 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
      * this fragment using the provided parameters.
      *
      * @param collaborationId collaboration id where the module will be added
+     *
      * @return A new instance of fragment CreateModuleFragment.
      */
     public static CreateModuleFragment newInstance(final String collaborationId) {
