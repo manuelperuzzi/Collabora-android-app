@@ -66,4 +66,11 @@ public class ConcreteModuleTest {
         assertFalse(module.containsNote(secondNote.getNoteID()));
     }
 
+    @Test
+    public void checkModuleState() {
+        assertEquals(module.getStateDefinition(), "toDo");
+        module.setStateDefinition("Doing");
+        assertEquals(module.getStateDefinition(), "Doing");
+    }
+
 }
