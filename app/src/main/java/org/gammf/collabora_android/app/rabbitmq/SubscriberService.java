@@ -74,7 +74,7 @@ public abstract class SubscriberService extends Service{
             this.channel.basicCancel(this.consumerTag);
             this.channel.close();
         } catch (final Exception e) {
-            //TODO better error strategy
+            e.printStackTrace();
         }
     }
 

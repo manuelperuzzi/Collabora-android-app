@@ -119,7 +119,7 @@ public class SimpleUser implements User {
             this.birthday = birthday;
             return this;
         }
-        //TODO
+
         /**
          * Builds an object of type {@link SimpleUser} with the supplied fields.
          * @return an object of type {@link SimpleUser}.

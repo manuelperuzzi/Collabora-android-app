@@ -41,7 +41,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
      * @param collaborationId collaboration id where the module will be added
      * @return A new instance of fragment CreateModuleFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CreateModuleFragment newInstance(final String collaborationId) {
         CreateModuleFragment fragment = new CreateModuleFragment();
         Bundle arg = new Bundle();

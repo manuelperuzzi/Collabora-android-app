@@ -11,4 +11,9 @@ public interface NetworkChangeObservable {
      * @return true if the {@link NetworkChangeObserver} is registered with success. False otherwise.
      */
     boolean addNetworkChangeObserver(NetworkChangeObserver observer);
+
+    /**
+     * Cancels all the previously added observers.
+     */
+    void clearObservers();
 }

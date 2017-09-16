@@ -97,7 +97,6 @@ public class EditNoteFragment extends Fragment {
      *
      * @return A new instance of fragment EditNoteFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EditNoteFragment newInstance(String collabId, String noteId,String moduleId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();

@@ -16,12 +16,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.gammf.collabora_android.utils.GeofenceUtils;
+import org.gammf.collabora_android.users.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manager of geofences logic in the application
+ * Manager of geofences logic in the application.
  */
 public class GeofenceManager implements OnCompleteListener<Void> {
 
@@ -44,16 +45,10 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     private GeofencingRequest getGeofencingRequest(Geofence geofence) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        Log.d(TAG, String.valueOf(geofence));
         builder.addGeofence(geofence);
         return builder.build();
     }
 
-    /**
-     * Runs when the result of calling of addGeofence
-     * is available.
-     * @param task the resulting Task, containing either a result or error.
-     */
     @Override
     public void onComplete(@NonNull Task<Void> task) {
         if (task.isSuccessful()) {
@@ -79,12 +74,11 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
         intent.putExtra(noteID ,contentToDisplay);
         final int _id = (int) System.currentTimeMillis();
-        Log.d("INTENT PRIMA", noteID + " - "+ contentToDisplay);
         return PendingIntent.getService(this.context, _id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
-     * Adds geofences. This method should be called after the user has granted the location
+     * Adds geofence. This method should be called only after the {@link User} has granted the location
      * permission.
      */
     @SuppressWarnings("MissingPermission")
@@ -104,7 +98,7 @@ public class GeofenceManager implements OnCompleteListener<Void> {
     }
 
     /**
-     * Removes geofence
+     * Removes geofence.
      */
     public void removeGeofence(String idNote) {
         List<String> tmp = new ArrayList<>();

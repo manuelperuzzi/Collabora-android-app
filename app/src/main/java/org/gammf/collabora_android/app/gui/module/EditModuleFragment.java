@@ -52,7 +52,6 @@ public class EditModuleFragment extends Fragment {
      * @param moduleId module id
      * @return A new instance of fragment EditModuleFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EditModuleFragment newInstance(String collaborationId, String moduleId) {
         EditModuleFragment fragment = new EditModuleFragment();
         Bundle arg = new Bundle();

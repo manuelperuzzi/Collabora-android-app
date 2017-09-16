@@ -49,7 +49,7 @@ public class NotificationsSubscriberService extends SubscriberService {
                     channel.queueUnbind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, intent.getStringExtra("routing-key"));
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(intent.getStringExtra("routing-key"));
                 } catch (final Exception e) {
-                    //TODO better error strategy
+                    e.printStackTrace();
                 }
             }
         };

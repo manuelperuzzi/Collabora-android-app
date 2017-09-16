@@ -16,7 +16,7 @@ public interface CollaborationsManager {
      * @return a set containing each {@link Collaboration}.
      */
     Set<ShortCollaboration> getAllCollaborations();
-    //TODO
+
     /**
      * Checks a certain {@link Collaboration} is present.
      * @param collaborationId the identifier of the {@link Collaboration}.

@@ -17,7 +17,6 @@ public class SingletonAppUser {
 
     private SingletonAppUser() { }
 
-    //TODO remove get instance?
     public static SingletonAppUser getInstance() {
         return SINGLETON_APP_USER;
     }

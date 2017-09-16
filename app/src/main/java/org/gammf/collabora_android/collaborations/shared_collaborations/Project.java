@@ -7,7 +7,6 @@ import org.gammf.collabora_android.collaborations.general.Collaboration;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-//TODO
 /**
  * Represents a {@link Collaboration} of type project.
  */
