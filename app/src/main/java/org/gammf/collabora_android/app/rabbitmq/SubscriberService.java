@@ -16,7 +16,7 @@ import com.rabbitmq.client.Envelope;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
-import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.gammf.collabora_android.utils.communication.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 

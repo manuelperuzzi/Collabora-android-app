@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.communication.update.general;
 
 import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
 
 /**
  * Simple interface which defines the contract of an message wrapping an update operation.

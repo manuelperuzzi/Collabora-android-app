@@ -20,10 +20,10 @@ import android.widget.ImageButton;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.collaboration.CreateCollaborationDialogFragment;
 import org.gammf.collabora_android.app.utils.IntentConstants;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.model.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 import java.util.ArrayList;
 import java.util.List;
 

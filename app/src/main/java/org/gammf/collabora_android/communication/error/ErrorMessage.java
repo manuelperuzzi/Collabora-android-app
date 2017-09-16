@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.communication.error;
 
 import org.gammf.collabora_android.communication.common.Message;
-import org.gammf.collabora_android.utils.CollaborationError;
+import org.gammf.collabora_android.utils.communication.CollaborationError;
 
 /**
  * Interface representing a message containing information about a server error.

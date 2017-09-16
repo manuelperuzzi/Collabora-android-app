@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 public class DeletionDialogFragment  extends android.support.v4.app.DialogFragment{
 

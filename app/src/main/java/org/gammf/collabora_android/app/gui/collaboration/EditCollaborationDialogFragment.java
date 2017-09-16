@@ -15,12 +15,12 @@ import android.widget.EditText;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 public class EditCollaborationDialogFragment extends DialogFragment {
 

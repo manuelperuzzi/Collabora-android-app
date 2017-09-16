@@ -1,14 +1,16 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
-import org.gammf.collabora_android.modules.ConcreteModule;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.notes.SimpleNoteBuilder;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.modules.ConcreteModule;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.model.notes.NoteState;
+import org.gammf.collabora_android.model.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.model.CollaborationUtils;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;

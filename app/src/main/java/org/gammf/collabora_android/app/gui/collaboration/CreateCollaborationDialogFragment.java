@@ -17,17 +17,17 @@ import android.widget.RadioGroup;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteGroup;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.ConcreteGroup;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.collaborations.ConcreteCollaborationUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.users.User;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.model.users.User;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.

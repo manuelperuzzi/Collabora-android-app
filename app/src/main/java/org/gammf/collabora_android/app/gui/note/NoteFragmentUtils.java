@@ -7,9 +7,9 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.utils.NoteProjectState;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 
 import java.util.ArrayList;
 import java.util.List;

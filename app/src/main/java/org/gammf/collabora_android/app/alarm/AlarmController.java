@@ -5,15 +5,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import org.joda.time.DateTime;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.gammf.collabora_android.utils.AlarmUtils.PREFS_NAME;
-import org.gammf.collabora_android.users.User;
+import static org.gammf.collabora_android.utils.app.AlarmUtils.PREFS_NAME;
+import org.gammf.collabora_android.model.users.User;
 
 /**
  * Class that represents an alarm controller which manages all the alarms set by the {@link User}.

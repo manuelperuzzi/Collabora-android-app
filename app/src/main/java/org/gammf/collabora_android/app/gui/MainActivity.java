@@ -31,10 +31,10 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
-import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.model.users.User;
 import org.gammf.collabora_android.app.utils.ExceptionManager;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

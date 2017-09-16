@@ -15,8 +15,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.gammf.collabora_android.utils.GeofenceUtils;
-import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.utils.app.GeofenceUtils;
+import org.gammf.collabora_android.model.users.User;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,9 +14,9 @@ import org.gammf.collabora_android.app.utils.NoteGroupState;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
-import org.gammf.collabora_android.modules.ConcreteModule;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.modules.ConcreteModule;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.

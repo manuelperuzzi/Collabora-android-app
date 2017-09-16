@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.model.users.User;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -12,8 +12,8 @@ import com.rabbitmq.client.Channel;
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
-import org.gammf.collabora_android.utils.MessageUtils;
-import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.gammf.collabora_android.utils.communication.MessageUtils;
+import org.gammf.collabora_android.utils.communication.RabbitMQConfig;
 
 /**
  * AsyncTask meant to send a message to the server whenever the {@link User} performs a modification while using the app.

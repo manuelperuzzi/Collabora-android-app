@@ -1,6 +1,6 @@
 package org.gammf.collabora_android.communication.collaboration;
 
-import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.common.Message;
 
 /**

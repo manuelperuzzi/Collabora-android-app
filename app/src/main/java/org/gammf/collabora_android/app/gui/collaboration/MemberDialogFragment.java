@@ -20,10 +20,10 @@ import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.members.ConcreteMemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;

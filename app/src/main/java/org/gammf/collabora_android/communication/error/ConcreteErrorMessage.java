@@ -2,7 +2,7 @@ package org.gammf.collabora_android.communication.error;
 
 import org.gammf.collabora_android.communication.common.AbstractMessage;
 import org.gammf.collabora_android.communication.common.MessageType;
-import org.gammf.collabora_android.utils.CollaborationError;
+import org.gammf.collabora_android.utils.communication.CollaborationError;
 
 /**
  * Concrete implementation of a server error message.
