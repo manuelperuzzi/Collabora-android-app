@@ -14,7 +14,7 @@ import org.gammf.collabora_android.app.R;
 import java.util.ArrayList;
 
 /**
- * Created by @MattiaOriani on 12/08/2017
+ * @author @MattiaOriani on 12/08/2017
  *
  * A simple {@link ArrayAdapter} subclass.
  *

@@ -16,7 +16,7 @@ import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration
 
 /**
  *
- * Created by @MattiaOriani on 21/08/2017.
+ * @author @MattiaOriani on 21/08/2017.
  *
  * A simple {@link BaseExpandableListAdapter} subclass.
  *

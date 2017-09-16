@@ -8,12 +8,10 @@ import org.gammf.collabora_android.app.utils.AbstractObservableSource;
 import org.joda.time.LocalTime;
 
 /**
- * Created by Mattia Oriani on 15/08/17.
- * Reviewed and updated by Gabriele Graffieti on 12/09/17.
  *
  * Represent a Time Picker Manager used to set a time expiration.
  * Handle time representation and picker showing.
- * Implements a {@link org.gammf.collabora_android.app.utils.ObservableSource} of {@link org.joda.time.LocalTime}
+ * Implements a {@link org.gammf.collabora_android.app.utils.ObservableSource} of {@link org.joda.time.DateTime}
  *
  */
 public class TimePickerManager extends AbstractObservableSource<LocalTime> implements TimePickerDialog.OnTimeSetListener {
@@ -36,7 +34,7 @@ public class TimePickerManager extends AbstractObservableSource<LocalTime> imple
 
     /**
      * Shows a time picker, initially setted on the given {@link LocalTime}
-     * @param timeToShow the time initially setted in the date picker. If no particular date
+     * @param timeToShow the time initially setted in the time picker. If no particular time
      *                   have to be showed, use NO_TIME.
      */
     public void showTimePicker(final LocalTime timeToShow) {

@@ -31,7 +31,6 @@ import java.util.List;
  * A class that manages the navigator. The navigator is the left menu, which contains user's
  * collaborations.
  */
-
 public class NavigationManager extends View implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String NEW_COLLABORATION_DIALOG_TAG = "NewCollaborationDialogFragment";

@@ -70,7 +70,8 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @return A new instance of fragment LoginFragment.
+     *
+     * @return A new instance of fragment RegistrationFragment.
      */
     public static RegistrationFragment newInstance() {
         return new RegistrationFragment();

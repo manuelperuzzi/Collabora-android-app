@@ -68,6 +68,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
      * @param collabId the collaboration ID that contain the note
      * @param noteId the note ID
      * @param moduleId the Module ID of the note
+     *
      * @return A new instance of fragment NoteFragment.
      */
     public static NoteFragment newInstance(String collabId, String noteId,String moduleId) {

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.model.collaborations.general.Collaboration;
@@ -21,7 +20,7 @@ import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  *
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.support.v4.app.DialogFragment} subclass.
  * Use the {@link DeletionDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  *

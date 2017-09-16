@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
@@ -23,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.support.v4.app.DialogFragment} subclass.
  * Fragment for note creation user interface
  *
  * Use the {@link ChoosePreviousNotesDialogFragment#newInstance} factory method to
@@ -54,7 +53,7 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
      * @param previousNotesSelected the previous notes selected
      * @param noteId the ID of the note
      *
-     * @return A new instance of fragment CreateNoteFragment.
+     * @return A new instance of fragment ChoosePreviousNotesDialogFragment.
      */
     public static ChoosePreviousNotesDialogFragment newInstance(String collaborationId,String moduleId,ArrayList<CollaborationComponentInfo> noteItems,ArrayList<String> previousNotesSelected,String noteId ){
         final ChoosePreviousNotesDialogFragment fragment = new ChoosePreviousNotesDialogFragment();
