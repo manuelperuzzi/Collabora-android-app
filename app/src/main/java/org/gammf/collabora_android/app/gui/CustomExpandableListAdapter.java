@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration;
 
 /**
  * Created by Mattia on 21/08/2017.

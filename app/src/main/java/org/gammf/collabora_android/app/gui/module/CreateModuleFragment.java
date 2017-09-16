@@ -14,9 +14,9 @@ import org.gammf.collabora_android.app.utils.NoteGroupState;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
-import org.gammf.collabora_android.modules.ConcreteModule;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.modules.ConcreteModule;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +41,6 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
      * @param collaborationId collaboration id where the module will be added
      * @return A new instance of fragment CreateModuleFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CreateModuleFragment newInstance(final String collaborationId) {
         CreateModuleFragment fragment = new CreateModuleFragment();
         Bundle arg = new Bundle();

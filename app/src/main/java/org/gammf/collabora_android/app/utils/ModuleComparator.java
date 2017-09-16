@@ -1,7 +1,7 @@
 package org.gammf.collabora_android.app.utils;
 
 
-import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.model.modules.Module;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;

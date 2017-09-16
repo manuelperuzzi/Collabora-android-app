@@ -7,9 +7,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.utils.AbstractObservableSource;
-import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 
 import java.util.ArrayList;
 import java.util.List;

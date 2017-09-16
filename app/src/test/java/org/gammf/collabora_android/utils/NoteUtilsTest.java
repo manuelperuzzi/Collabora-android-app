@@ -1,9 +1,10 @@
 package org.gammf.collabora_android.utils;
 
-import org.gammf.collabora_android.notes.NoteLocation;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.model.notes.NoteLocation;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.model.notes.NoteState;
+import org.gammf.collabora_android.model.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.model.NoteUtils;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +55,7 @@ public class NoteUtilsTest {
             obj.put("content", "someContent").put("title", "someTitle").put("state", state);
             Note note = NoteUtils.jsonToNote(obj);
             assertEquals(note.getContent(), "someContent");
-            assertEquals(note.getState().getCurrentState(), "doing");
+            assertEquals(note.getState().getCurrentDefinition(), "doing");
             assertEquals(note.getState().getCurrentResponsible(), "fone");
             assertNull(note.getPreviousNotes());
         } catch (JSONException e) {

@@ -1,13 +1,12 @@
 package org.gammf.collabora_android.communication.update.collaborations;
 
-import org.gammf.collabora_android.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
 import org.gammf.collabora_android.communication.update.general.AbstractUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 
 /**
- * @author ManuelPeruzzi
- * A concrete message representing an update in a collaboration.
+ * A concrete message representing an update carried out on a {@link Collaboration}.
  */
 public class ConcreteCollaborationUpdateMessage extends AbstractUpdateMessage
         implements CollaborationUpdateMessage {

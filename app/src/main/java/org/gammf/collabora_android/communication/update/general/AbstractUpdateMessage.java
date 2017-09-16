@@ -4,8 +4,7 @@ import org.gammf.collabora_android.communication.common.AbstractMessage;
 import org.gammf.collabora_android.communication.common.MessageType;
 
 /**
- * @author Manuel Peruzzi
- * Abstract class that defines a basic behaviour of an update message.
+ * Abstract class that defines a basic behaviour of an {@link UpdateMessage}.
  */
 public abstract class AbstractUpdateMessage extends AbstractMessage implements UpdateMessage {
 

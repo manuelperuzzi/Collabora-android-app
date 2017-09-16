@@ -5,7 +5,6 @@
                 android:layout_height="match_parent"
                 tools:context="org.gammf.collabora_android.app.gui.note.CreateNoteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <EditText
         android:id="@+id/txtNoteContent"
         style="@style/Widget.AppCompat.EditText"

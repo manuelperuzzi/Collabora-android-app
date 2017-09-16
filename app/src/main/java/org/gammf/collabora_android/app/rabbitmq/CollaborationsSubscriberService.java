@@ -7,20 +7,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.communication.allCollaborations.AllCollaborationsMessage;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.communication.all_collaborations.AllCollaborationsMessage;
 import org.gammf.collabora_android.communication.collaboration.CollaborationMessage;
 import org.gammf.collabora_android.communication.common.Message;
 import org.gammf.collabora_android.communication.common.MessageType;
-import org.gammf.collabora_android.utils.MessageUtils;
-import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.gammf.collabora_android.utils.communication.MessageUtils;
+import org.gammf.collabora_android.utils.communication.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 /**
- * @author Alfredo Maffi
  * This class represent a service whose task is to listen for incoming collaboration messages from the server, acting accordingly.
  */
 

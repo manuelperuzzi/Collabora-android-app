@@ -1,8 +1,7 @@
 package org.gammf.collabora_android.communication.update.general;
 
 /**
- * @author Alfredo Maffi
- * Enumeration containing all the possible targets of an UpdateMessage.
+ * Enumeration containing all the possible targets of an {@link UpdateMessage}.
  */
 
 public enum UpdateMessageTarget {

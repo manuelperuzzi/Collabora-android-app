@@ -16,14 +16,13 @@ import com.rabbitmq.client.Envelope;
 
 import org.gammf.collabora_android.app.gui.MainActivity;
 import org.gammf.collabora_android.app.utils.IntentConstants;
-import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.gammf.collabora_android.utils.communication.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 /**
- * @author Alfredo Maffi
  * This class represents an abstract service listening for incoming messages from the server.
  */
 
@@ -75,7 +74,7 @@ public abstract class SubscriberService extends Service{
             this.channel.basicCancel(this.consumerTag);
             this.channel.close();
         } catch (final Exception e) {
-            //TODO better error strategy
+            e.printStackTrace();
         }
     }
 

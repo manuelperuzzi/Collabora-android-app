@@ -12,17 +12,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.app.utils.Observer;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.modules.ModuleUpdateMessage;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +49,6 @@ public class EditModuleFragment extends Fragment {
      * @param moduleId module id
      * @return A new instance of fragment EditModuleFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EditModuleFragment newInstance(String collaborationId, String moduleId) {
         EditModuleFragment fragment = new EditModuleFragment();
         Bundle arg = new Bundle();

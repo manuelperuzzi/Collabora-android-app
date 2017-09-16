@@ -1,16 +1,15 @@
 package org.gammf.collabora_android.communication.update.members;
 
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
-import org.gammf.collabora_android.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.CollaborationMember;
 
 /**
- * @author Manuel Peruzzi
- * A simple interface that represents a message containing an update in a collaboration about one of its members.
+ * A simple interface that represents a message containing an update operation carried out on a {@link CollaborationMember}.
  */
 public interface MemberUpdateMessage extends UpdateMessage {
 
     /**
-     * @return the updated member.
+     * @return the updated {@link CollaborationMember}.
      */
     CollaborationMember getMember();
 

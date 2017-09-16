@@ -20,9 +20,9 @@ import java.util.ArrayList;
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponentInfo> {
 
-    Context mContext;
-    int layoutResourceId;
-    ArrayList<CollaborationComponentInfo> data = null;
+    private Context mContext;
+    private int layoutResourceId;
+    private ArrayList<CollaborationComponentInfo> data = null;
 
 
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ArrayList<CollaborationComponentInfo> data) {

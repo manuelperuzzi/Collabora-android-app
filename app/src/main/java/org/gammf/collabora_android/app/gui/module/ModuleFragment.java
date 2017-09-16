@@ -24,14 +24,14 @@ import org.gammf.collabora_android.app.gui.collaboration.CollaborationInfoFragme
 import org.gammf.collabora_android.app.gui.note.CreateNoteFragment;
 import org.gammf.collabora_android.app.gui.note.NoteFragment;
 import org.gammf.collabora_android.app.utils.NoteComparator;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.ModuleNote;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.utils.AccessRightUtils;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.model.notes.ModuleNote;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRightUtils;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,7 +143,7 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         final List<ModuleNote> allNotes = new ArrayList<>(module.getAllNotes());
         Collections.sort(allNotes, new NoteComparator());
         for (final Note n: allNotes) {
-            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentState()));
+            listItem.add(new CollaborationComponentInfo(n.getNoteID(), n.getContent(), CollaborationComponentType.NOTE, n.getState().getCurrentDefinition()));
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, listItem);

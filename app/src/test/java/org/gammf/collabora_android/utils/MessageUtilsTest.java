@@ -6,10 +6,12 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.NoteUpdateMessage;
-import org.gammf.collabora_android.notes.NoteLocation;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.model.notes.NoteLocation;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.model.notes.NoteState;
+import org.gammf.collabora_android.model.notes.SimpleNoteBuilder;
+import org.gammf.collabora_android.utils.communication.MessageUtils;
+import org.gammf.collabora_android.utils.model.NoteUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +64,7 @@ public class MessageUtilsTest {
                 NoteUpdateMessage updateMessage = (NoteUpdateMessage) message;
                 assertEquals(updateMessage.getUsername(), "peru");
                 assertEquals(updateMessage.getNote().getExpirationDate(), new DateTime(772408800000L));
-                assertEquals(updateMessage.getNote().getState().getCurrentState(), "doing");
+                assertEquals(updateMessage.getNote().getState().getCurrentDefinition(), "doing");
                 assertEquals(updateMessage.getUpdateType().name(), UpdateMessageType.CREATION.name());
                 assertEquals(updateMessage.getNote().getLocation().getLongitude(), 53.21, 0.000001);
             } else {

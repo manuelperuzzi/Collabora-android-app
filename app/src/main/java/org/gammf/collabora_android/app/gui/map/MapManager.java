@@ -21,8 +21,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.utils.AbstractObservableSource;
-import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.NoteLocation;
+import org.gammf.collabora_android.model.notes.Location;
+import org.gammf.collabora_android.model.notes.NoteLocation;
 
 /**
  * A class that manages Google Map, used for searching and set location in notes.

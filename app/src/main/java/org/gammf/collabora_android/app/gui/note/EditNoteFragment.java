@@ -31,17 +31,17 @@ import org.gammf.collabora_android.app.gui.spinner.ResponsibleSpinnerManager;
 import org.gammf.collabora_android.app.gui.spinner.StateSpinnerManager;
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.app.utils.Observer;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.SharedCollaboration;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.notes.NoteState;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.notes.Location;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.model.notes.NoteState;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -97,7 +97,6 @@ public class EditNoteFragment extends Fragment {
      *
      * @return A new instance of fragment EditNoteFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EditNoteFragment newInstance(String collabId, String noteId,String moduleId) {
         EditNoteFragment fragment = new EditNoteFragment();
         Bundle args = new Bundle();
@@ -128,7 +127,7 @@ public class EditNoteFragment extends Fragment {
         this.mapManager.addObserver(new Observer<Location>() {
             @Override
             public void notify(final Location location) {
-                note.modifyLocation(location);
+                note.setLocation(location);
             }
         });
         this.datePickerManager = new DatePickerManager(getContext());
@@ -196,7 +195,7 @@ public class EditNoteFragment extends Fragment {
         getFragmentManager().beginTransaction().replace(R.id.place_autocomplete_fragment_edit, autocompleteFragmentEdited).commit();
         autocompleteFragmentEdited.setOnPlaceSelectedListener(this.mapManager);
 
-        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(this.note.getState().getCurrentState(), rootView, R.id.spinnerEditNoteState,
+        final StateSpinnerManager stateSpinnerManager = new StateSpinnerManager(this.note.getState().getCurrentDefinition(), rootView, R.id.spinnerEditNoteState,
                 LocalStorageUtils.readShortCollaborationsFromFile(getContext().getApplicationContext()).getCollaboration(this.collaborationId).getCollaborationType());
         stateSpinnerManager.addObserver(new Observer<String>() {
             @Override
@@ -301,17 +300,17 @@ public class EditNoteFragment extends Fragment {
             txtContentNoteEdited.setError(getResources().getString(R.string.fieldempty));
             return false;
         }else{
-            note.modifyContent(insertedNoteName);
+            note.setContent(insertedNoteName);
             if (this.dateSet && this.timeSet && isDateTimeValid()) {
-                note.modifyExpirationDate(new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
+                note.setExpirationDate(new DateTime(this.date.getYear(), this.date.getMonthOfYear(), this.date.getDayOfMonth(),
                         this.time.getHourOfDay(), this.time.getMinuteOfHour()));
             } else if (this.dateSet || this.timeSet) {
                 Toast.makeText(getContext().getApplicationContext(), "Choose a valid expiration date", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            note.modifyState(new NoteState(noteStateEdited, responsible));
+            note.setState(new NoteState(noteStateEdited, responsible));
             if(!previousNotesSelected.isEmpty()) {
-                note.modifyPreviousNotes(previousNotesSelected);
+                note.setPreviousNotes(previousNotesSelected);
                 Pair<Boolean, String> checkPrevNotes = NoteFragmentUtils.checkPreviousNotesState(getContext(),noteStateEdited, previousNotesSelected, collaboration);
                 if (checkPrevNotes.first)
                     new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
@@ -320,7 +319,7 @@ public class EditNoteFragment extends Fragment {
                     Toast.makeText(getContext().getApplicationContext(), checkPrevNotes.second, Toast.LENGTH_LONG).show();
             }
             else {
-                note.modifyPreviousNotes(null);
+                note.setPreviousNotes(null);
                 new SendMessageToServerTask(getContext()).execute(new ConcreteNoteUpdateMessage(
                         SingletonAppUser.getInstance().getUsername(), note, UpdateMessageType.UPDATING, collaborationId));
             }
