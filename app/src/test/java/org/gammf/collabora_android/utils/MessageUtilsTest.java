@@ -25,25 +25,36 @@ import static org.junit.Assert.*;
  * Simple test of the conversions in MessageUtils class.
  */
 public class MessageUtilsTest {
+
+    private static final String DOING_STATE = "doing";
+    private static final String RESPONSIBLE = "Alfredo";
+    private static final String USERNAME = "peru";
+    private static final String COLLABORATION_ID = "collaborationId";
+    private static final String NOTE_CONTENT = "this is a test";
+    private static final Long FAKE_DATETIME = 772408800000L;
+    private static final Double LATITUDE = 44.24;
+    private static final Double LONGITUDE = 53.21;
+    private static final Double NO_COORDINATE = 0.00001;
+
     private Note note;
 
     @Before
     public void init() {
-        this.note = new SimpleNoteBuilder("this is a test", new NoteState("doing", "fone"))
-                .setExpirationDate(new DateTime(772408800000L))
-                .setLocation(new NoteLocation(44.24,53.21))
+        this.note = new SimpleNoteBuilder(NOTE_CONTENT, new NoteState(DOING_STATE, RESPONSIBLE))
+                .setExpirationDate(new DateTime(FAKE_DATETIME))
+                .setLocation(new NoteLocation(LATITUDE,LONGITUDE))
                 .buildNote();
     }
 
     @Test
     public void testMessageToJSON() {
-        UpdateMessage message = new ConcreteNoteUpdateMessage("fone", this.note, UpdateMessageType.CREATION, "collaborationId");
+        UpdateMessage message = new ConcreteNoteUpdateMessage(RESPONSIBLE, this.note, UpdateMessageType.CREATION, COLLABORATION_ID);
         try {
             JSONObject jsn = MessageUtils.updateMessageToJSON(message);
             System.out.println("[MessageUtilsTest]: Update message is ->" + jsn.toString());
             JSONObject noteJSON = (JSONObject)jsn.get("note");
-            assertEquals(((JSONObject)noteJSON.get("location")).getDouble("latitude"), 44.24, 0.00001);
-            assertEquals(noteJSON.get("content"), "this is a test");
+            assertEquals(((JSONObject)noteJSON.get("location")).getDouble("latitude"), LATITUDE, NO_COORDINATE);
+            assertEquals(noteJSON.get("content"), NOTE_CONTENT);
             assertEquals(jsn.get("target"), UpdateMessageTarget.NOTE.name());
         } catch (JSONException e) {
             fail();
@@ -53,20 +64,21 @@ public class MessageUtilsTest {
     @Test
     public void testJSONtoMessage() {
         try {
-            final JSONObject jsn = new JSONObject().put("user", "peru")
+            final JSONObject jsn = new JSONObject().put("user", USERNAME)
                                                    .put("note", NoteUtils.noteToJSON(note))
                                                    .put("target", UpdateMessageTarget.NOTE.name())
                                                    .put("messageType", UpdateMessageType.CREATION.name())
-                                                   .put("collaborationId", "id");
+                                                   .put("collaborationId", COLLABORATION_ID);
 
             Message message = MessageUtils.jsonToUpdateMessage(jsn);
             if(jsn.has("messageType")) {
                 NoteUpdateMessage updateMessage = (NoteUpdateMessage) message;
-                assertEquals(updateMessage.getUsername(), "peru");
-                assertEquals(updateMessage.getNote().getExpirationDate(), new DateTime(772408800000L));
-                assertEquals(updateMessage.getNote().getState().getCurrentDefinition(), "doing");
+                assertEquals(updateMessage.getUsername(), USERNAME);
+                assertEquals(updateMessage.getNote().getExpirationDate(), new DateTime(FAKE_DATETIME));
+                assertEquals(updateMessage.getNote().getState().getCurrentDefinition(), DOING_STATE);
+                assertEquals(updateMessage.getNote().getState().getCurrentResponsible(), RESPONSIBLE);
                 assertEquals(updateMessage.getUpdateType().name(), UpdateMessageType.CREATION.name());
-                assertEquals(updateMessage.getNote().getLocation().getLongitude(), 53.21, 0.000001);
+                assertEquals(updateMessage.getNote().getLocation().getLongitude(), LONGITUDE, NO_COORDINATE);
             } else {
                 fail();
             }

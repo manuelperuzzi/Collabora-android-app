@@ -21,28 +21,41 @@ import static org.junit.Assert.assertTrue;
 
 public class ConcretePrivateCollaborationTest {
 
+    private static final String PRIVATE_COLLAB_ID = "privateCollaborationID";
+    private static final String PRIVATE_COLLAB_NAME = "myCollaboration";
+    private static final String NEW_PRIVATE_COLLAB_NAME = "myShoppingList";
+
     private static final String USERNAME = "mrashford";
+
+    private static final String FIRST_NOTE_CONTENT = "myNote";
+    private static final String FIRST_NOTE_ID = "myNoteId";
+    private static final String DENTIST_NOTE_CONTENT = "Go to dentist";
+    private static final String DENTIST_NOTE_ID = "dentistNoteId";
+
+    private static final String DOING_STATE = "doing";
+    private static final String TODO_STATE = "todo";
+
     private PrivateCollaboration privateCollaboration;
     private Note myFirstNote;
     private Note dentistNote;
 
     @Before
     public void setUp() {
-        privateCollaboration = new ConcretePrivateCollaboration("privateCollaborationID", "myCollaboration", USERNAME);
-        myFirstNote = new SimpleNoteBuilder("myNote", new NoteState("doing", USERNAME))
-                .setNoteID("myNoteId")
+        privateCollaboration = new ConcretePrivateCollaboration(PRIVATE_COLLAB_ID, PRIVATE_COLLAB_NAME, USERNAME);
+        myFirstNote = new SimpleNoteBuilder(FIRST_NOTE_CONTENT, new NoteState(DOING_STATE, USERNAME))
+                .setNoteID(FIRST_NOTE_ID)
                 .buildNote();
-        dentistNote = new SimpleNoteBuilder("Go to dentist", new NoteState("todo", USERNAME))
-                .setNoteID("dentistNoteId")
+        dentistNote = new SimpleNoteBuilder(DENTIST_NOTE_CONTENT, new NoteState(TODO_STATE, USERNAME))
+                .setNoteID(DENTIST_NOTE_ID)
                 .buildNote();
         privateCollaboration.addNote(myFirstNote);
     }
 
     @Test
     public void handleName() throws Exception {
-        assertEquals("myCollaboration", privateCollaboration.getName());
-        privateCollaboration.setName("myShoppingList");
-        assertEquals("myShoppingList", privateCollaboration.getName());
+        assertEquals(PRIVATE_COLLAB_NAME, privateCollaboration.getName());
+        privateCollaboration.setName(NEW_PRIVATE_COLLAB_NAME);
+        assertEquals(NEW_PRIVATE_COLLAB_NAME, privateCollaboration.getName());
     }
 
     @Test
@@ -59,8 +72,8 @@ public class ConcretePrivateCollaborationTest {
 
     @Test
     public void getNote() throws Exception {
-        final Note n = new SimpleNoteBuilder("myNote", new NoteState("doing", USERNAME))
-                .setNoteID("myNoteId")
+        final Note n = new SimpleNoteBuilder(FIRST_NOTE_CONTENT, new NoteState(DOING_STATE, USERNAME))
+                .setNoteID(FIRST_NOTE_ID)
                 .buildNote();
         assertEquals(n, privateCollaboration.getNote(n.getNoteID()));
     }

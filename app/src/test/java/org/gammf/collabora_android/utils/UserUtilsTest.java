@@ -20,7 +20,11 @@ public class UserUtilsTest {
     private static final String EMAIL = "mrashford@manutd.en";
     private static final String NAME = "Marcus";
     private static final String SURNAME = "Rashford";
-    private static final DateTime BIRTHDAY = new DateTime(1998, 8, 02, 0, 0);
+    private static final Integer BIRTH_YEAR = 1994;
+    private static final Integer BIRTH_MONTH = 3;
+    private static final Integer BIRTH_DAY = 7;
+    private static final Integer NO_HOUR = 0;
+    private static final Integer NO_MINUTE = 0;
 
     private User user;
 
@@ -31,7 +35,7 @@ public class UserUtilsTest {
                 .email(EMAIL)
                 .name(NAME)
                 .surname(SURNAME)
-                .birthday(BIRTHDAY)
+                .birthday(new DateTime(BIRTH_YEAR, BIRTH_MONTH, BIRTH_DAY, NO_HOUR, NO_MINUTE))
                 .build();
     }
 
