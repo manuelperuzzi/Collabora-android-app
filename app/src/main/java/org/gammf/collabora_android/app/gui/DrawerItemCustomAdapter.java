@@ -16,7 +16,10 @@ import java.util.ArrayList;
 /**
  * Created by @MattiaOriani on 12/08/2017
  *
- * Custom Adapter for list view
+ * A simple {@link ArrayAdapter} subclass.
+ *
+ * Use this class as a custom adapter for list view
+ *
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponentInfo> {
 

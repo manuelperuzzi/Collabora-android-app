@@ -15,11 +15,14 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration;
 
 /**
- * Created by Mattia on 21/08/2017.
  *
- * Expandable list adapter customized for collaboration list drawer in main menu
+ * Created by @MattiaOriani on 21/08/2017.
+ *
+ * A simple {@link BaseExpandableListAdapter} subclass.
+ *
+ * This is an expandable list adapter customized for collaboration list drawer in navigation menu
+ *
  */
-
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;

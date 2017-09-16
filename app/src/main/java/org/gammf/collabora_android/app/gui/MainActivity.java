@@ -41,6 +41,9 @@ import java.util.ArrayList;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
+ *
+ * This is the app entry point.
+ *
  */
 public class MainActivity extends AppCompatActivity
         implements NetworkChangeObserver {
