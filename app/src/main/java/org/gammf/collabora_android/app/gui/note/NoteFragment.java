@@ -34,6 +34,10 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * Created by @MattiaOriani on 12/08/2017
+ *
+ * A simple {@link Fragment} subclass.
+ * Use the {@link NoteFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
 public class NoteFragment extends Fragment implements AdapterView.OnItemClickListener{
 
@@ -58,6 +62,15 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Use this factory method to create a new instance of this fragment
+     *
+     * @param collabId the collaboration ID that contain the note
+     * @param noteId the note ID
+     * @param moduleId the Module ID of the note
+     *
+     * @return A new instance of fragment NoteFragment.
+     */
     public static NoteFragment newInstance(String collabId, String noteId,String moduleId) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();

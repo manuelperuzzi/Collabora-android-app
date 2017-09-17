@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,11 @@ import org.gammf.collabora_android.communication.update.general.UpdateMessageTyp
 import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link EditCollaborationDialogFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class EditCollaborationDialogFragment extends DialogFragment {
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
@@ -31,6 +37,14 @@ public class EditCollaborationDialogFragment extends DialogFragment {
     private InputMethodManager inputMethodManager;
     private EditText txtCollaborationName;
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param collaborationId the id of the collaboration to be edited.
+     *
+     * @return a new istance of EditCollaborationDialogFragment.
+     */
     public static EditCollaborationDialogFragment newInstance(final String collaborationId) {
         final EditCollaborationDialogFragment fragment = new EditCollaborationDialogFragment();
         final Bundle args = new Bundle();

@@ -23,35 +23,59 @@ import static org.junit.Assert.*;
  */
 public class CollaborationUtilsTest {
 
+    private static final String CONCRETE_PROJECT_ID = "myProjectId";
+    private static final String CONCRETE_PROJECT_NAME = "MyProject";
+
+    private static final String MEMBER_USERNAME = "myUsername";
+
+    private static final String TODO_STATE = "toDo";
+
+    private static final String SINGLE_NOTE_CONTENT = "SingleNote";
+    private static final String SINGLE_NOTE_ID = "singleNoteId";
+
+    private static final String FIRST_MODULE_ID = "firstModuleId";
+    private static final String FIRST_MODULE_NAME = "FirstModule";
+    private static final String SECOND_MODULE_ID = "secondModuleId";
+    private static final String SECOND_MODULE_NAME = "SecondModule";
+
+    private static final String FIRST_NOTE_CONTENT = "FirstNote";
+    private static final String FIRST_NOTE_ID = "firstNoteId";
+
+    private static final String SECOND_NOTE_CONTENT = "SecondNote";
+    private static final String SECOND_NOTE_ID = "secondNoteId";
+
+    private static final String THIRD_NOTE_CONTENT = "ThirdNote";
+    private static final String THIRD_NOTE_ID = "thirdNoteId";
+
     private Project project;
 
     @Before
     public void setUp() throws Exception {
-        project = new ConcreteProject("myProjectId", "MyProject");
+        project = new ConcreteProject(CONCRETE_PROJECT_ID, CONCRETE_PROJECT_NAME);
 
-        final CollaborationMember member = new SimpleCollaborationMember("myUsername", AccessRight.ADMIN);
+        final CollaborationMember member = new SimpleCollaborationMember(MEMBER_USERNAME, AccessRight.ADMIN);
         project.addMember(member);
-        final Note singleNote = new SimpleNoteBuilder("SingleNote", new NoteState("toDo"))
-                .setNoteID("singleNoteId")
+        final Note singleNote = new SimpleNoteBuilder(SINGLE_NOTE_CONTENT, new NoteState(TODO_STATE))
+                .setNoteID(SINGLE_NOTE_ID)
                 .buildNote();
         project.addNote(singleNote);
 
-        final Module firstModule = new ConcreteModule("firstModuleId", "FirstModule", "toDo");
-        final Note firstNote = new SimpleNoteBuilder("FirstNote", new NoteState("toDo"))
-                .setNoteID("firstNoteId")
+        final Module firstModule = new ConcreteModule(FIRST_MODULE_ID, FIRST_MODULE_NAME, TODO_STATE);
+        final Note firstNote = new SimpleNoteBuilder(FIRST_NOTE_CONTENT, new NoteState(TODO_STATE))
+                .setNoteID(FIRST_NOTE_ID)
                 .buildNote();
         firstModule.addNote(firstNote);
         project.addModule(firstModule);
 
-        final Module secondModule = new ConcreteModule("secondModuleId", "SecondModule", "toDo");
-        final Note secondNote = new SimpleNoteBuilder("SecondNote", new NoteState("toDo"))
-                .setNoteID("secondNoteId")
+        final Module secondModule = new ConcreteModule(SECOND_MODULE_ID, SECOND_MODULE_NAME, TODO_STATE);
+        final Note secondNote = new SimpleNoteBuilder(SECOND_NOTE_CONTENT, new NoteState(TODO_STATE))
+                .setNoteID(SECOND_NOTE_ID)
                 .buildNote();
         secondModule.addNote(secondNote);
         project.addModule(secondModule);
 
-        final Note thirdNote = new SimpleNoteBuilder("ThirdNote", new NoteState("toDo"))
-                .setNoteID("thirdNoteId")
+        final Note thirdNote = new SimpleNoteBuilder(THIRD_NOTE_CONTENT, new NoteState(TODO_STATE))
+                .setNoteID(THIRD_NOTE_ID)
                 .buildNote();
         project.addNote(thirdNote, firstModule.getId());
     }

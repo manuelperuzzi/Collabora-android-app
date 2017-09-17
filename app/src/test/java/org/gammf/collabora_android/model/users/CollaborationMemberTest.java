@@ -12,16 +12,18 @@ import static org.junit.Assert.*;
  */
 public class CollaborationMemberTest {
 
+    private static final String USERNAME = "peru";
+
     private CollaborationMember member;
 
     @Before
     public void setUp() throws Exception {
-        member = new SimpleCollaborationMember("peru", AccessRight.ADMIN);
+        member = new SimpleCollaborationMember(USERNAME, AccessRight.ADMIN);
     }
 
     @Test
     public void getUsername() throws Exception {
-        assertEquals(member.getUsername(), member.getUsername());
+        assertEquals(USERNAME, member.getUsername());
     }
 
     @Test
