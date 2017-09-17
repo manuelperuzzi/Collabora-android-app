@@ -20,10 +20,10 @@ import org.gammf.collabora_android.utils.app.SingletonAppUser;
 /**
  * Created by mperuzzi on 09/09/17.
  *
- * /**
  * A simple {@link DialogFragment} subclass.
  * Use the {@link ChooseMemberActionDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
  */
 public class ChooseMemberActionDialogFragment extends DialogFragment {
 

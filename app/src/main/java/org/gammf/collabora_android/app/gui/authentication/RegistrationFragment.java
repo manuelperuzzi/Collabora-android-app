@@ -50,7 +50,6 @@ public class RegistrationFragment extends Fragment implements DatePickerDialog.O
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    // private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText userText;
