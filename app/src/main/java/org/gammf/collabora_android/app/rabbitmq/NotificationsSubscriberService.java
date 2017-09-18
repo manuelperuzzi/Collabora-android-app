@@ -12,8 +12,8 @@ import android.widget.Toast;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.gammf.collabora_android.app.StoreNotificationsTask;
-import org.gammf.collabora_android.utils.MessageUtils;
-import org.gammf.collabora_android.utils.RabbitMQConfig;
+import org.gammf.collabora_android.utils.communication.MessageUtils;
+import org.gammf.collabora_android.utils.communication.RabbitMQConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
- * This class represent a service whose task is to listen for incoming notifications from the server, acting accordingly.
+ * This class represent a service whose task is to listen for incoming notification messages from the server, acting accordingly.
  */
 
 public class NotificationsSubscriberService extends SubscriberService {
@@ -50,7 +49,7 @@ public class NotificationsSubscriberService extends SubscriberService {
                     channel.queueUnbind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, intent.getStringExtra("routing-key"));
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(intent.getStringExtra("routing-key"));
                 } catch (final Exception e) {
-                    //TODO better error strategy
+                    e.printStackTrace();
                 }
             }
         };
@@ -121,7 +120,6 @@ public class NotificationsSubscriberService extends SubscriberService {
             channel.queueBind(queueName, RabbitMQConfig.NOTIFICATIONS_EXCHANGE_NAME, routingKey);
         } catch (final IOException e) {
             Toast.makeText(getApplicationContext(), "Unable to connect to server, try to restart the App!", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

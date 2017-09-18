@@ -3,11 +3,10 @@ package org.gammf.collabora_android.communication.update.notes;
 import org.gammf.collabora_android.communication.update.general.AbstractUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.notes.Note;
+import org.gammf.collabora_android.model.notes.Note;
 
 /**
- * @author Alfredo Maffi
- * A concrete message representing an update in a note.
+ * A concrete message representing an update operation carried out on a {@link Note}.
  */
 
 public class ConcreteNoteUpdateMessage extends AbstractUpdateMessage implements NoteUpdateMessage {

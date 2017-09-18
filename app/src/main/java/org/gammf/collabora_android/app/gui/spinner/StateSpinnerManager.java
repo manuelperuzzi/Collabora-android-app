@@ -1,6 +1,5 @@
 package org.gammf.collabora_android.app.gui.spinner;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,7 +9,7 @@ import android.widget.Toast;
 import org.gammf.collabora_android.app.utils.AbstractObservableSource;
 import org.gammf.collabora_android.app.utils.NoteGroupState;
 import org.gammf.collabora_android.app.utils.NoteProjectState;
-import org.gammf.collabora_android.utils.CollaborationType;
+import org.gammf.collabora_android.utils.model.CollaborationType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Simple abstract class that provides basic implementation of a {@link ObservableSource}
+ * Simple abstract class that provides basic implementation of a {@link ObservableSource}.
  * @param <T> the type of notified events.
  */
 public class AbstractObservableSource<T> implements ObservableSource<T> {

@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.app.gui;
 
 /**
- * @author Alfredo Maffi
  * Simple interface used to represent a collaboration component to be visualized on GUI.
  */
 
@@ -29,4 +28,10 @@ public interface CollaborationComponent {
      * @return the component icon.
      */
     Integer getIcon();
+
+    /**
+     * Gets an additional information about the component
+     * @return the additional information
+     */
+    String getAdditionalInfo();
 }

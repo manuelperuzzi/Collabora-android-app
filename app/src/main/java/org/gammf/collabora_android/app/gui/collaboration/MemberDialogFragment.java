@@ -20,19 +20,21 @@ import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.members.ConcreteMemberUpdateMessage;
 import org.gammf.collabora_android.communication.update.members.MemberUpdateMessage;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by mperuzzi on 07/09/17.
+ *
+ * A simple {@link DialogFragment} subclass.
+ * Use the {@link MemberDialogFragment#addMemberInstance} factory method to
+ * create an instance of this fragment.
  */
-
 public class MemberDialogFragment extends DialogFragment {
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
@@ -47,6 +49,14 @@ public class MemberDialogFragment extends DialogFragment {
     private Spinner spinnerRight;
     private EditText txtUsername;
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param collaborationId the id of the collaboration.
+     *
+     * @return a new istance of MemberDialogFragment.
+     */
     public static MemberDialogFragment addMemberInstance(final String collaborationId) {
         final MemberDialogFragment fragment = new MemberDialogFragment();
         final Bundle args = new Bundle();
@@ -152,7 +162,7 @@ public class MemberDialogFragment extends DialogFragment {
             this.inputMethodManager.hideSoftInputFromWindow(txtUsername.getWindowToken(), 0);
             if (previousMemberUsername == null) {
                 handleMemberOperation(newUsername, newRight, UpdateMessageType.CREATION);
-            } else if (! previousMemberRight.equals(newRight)) {
+            } else if (! previousMemberRight.equals(newRight.toString())) {
                 handleMemberOperation(newUsername, newRight, UpdateMessageType.UPDATING);
             }
             dismiss();

@@ -17,14 +17,14 @@ import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
 import org.gammf.collabora_android.app.gui.DrawerItemCustomAdapter;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.SharedCollaboration;
-import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.SharedCollaboration;
+import org.gammf.collabora_android.model.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -55,7 +55,6 @@ public class CollaborationInfoFragment extends Fragment {
      * @param collaborationId collaboration id
      * @return A new instance of fragment CollaborationInfoFragment.
      */
-
     public static CollaborationInfoFragment newInstance(final String collaborationId) {
         final CollaborationInfoFragment fragment = new CollaborationInfoFragment();
         Bundle args = new Bundle();
@@ -133,12 +132,12 @@ public class CollaborationInfoFragment extends Fragment {
     private void visualizeMembers(final ListView membersListView, final boolean isEditable) {
         final ArrayList<CollaborationComponentInfo> memberItem = new ArrayList<>();
         if (collaboration.getCollaborationType().equals(CollaborationType.PRIVATE)) {
-            memberItem.add(new CollaborationComponentInfo(username, username + " (" + AccessRight.ADMIN + ")", CollaborationComponentType.MEMBER));
+            memberItem.add(new CollaborationComponentInfo(username, username , CollaborationComponentType.MEMBER,"("+AccessRight.ADMIN+")"));
         } else {
             final List<CollaborationMember> members = new ArrayList<>(((SharedCollaboration) collaboration).getAllMembers());
             Collections.sort(members, new MemberComparator());
             for (final CollaborationMember cm: members) {
-                memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername() + " (" + cm.getAccessRight() + ")", CollaborationComponentType.MEMBER));
+                memberItem.add(new CollaborationComponentInfo(cm.getUsername(), cm.getUsername(), CollaborationComponentType.MEMBER,"("+cm.getAccessRight()+")"));
             }
         }
 

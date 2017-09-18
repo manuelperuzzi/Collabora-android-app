@@ -12,19 +12,25 @@ import android.widget.TextView;
 import java.util.List;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration;
 
 /**
- * Created by Mattia on 21/08/2017.
  *
- * Expandable list adapter customized for collaboration list drawer in main menu
+ * A simple {@link BaseExpandableListAdapter} subclass.
+ *
+ * This is an expandable list adapter customized for collaboration list drawer in navigation menu
+ *
  */
-
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<Pair<String, List<ShortCollaboration>>> collaborationList;
 
+    /**
+     * Build a new adapter for expandable list in navigation menu
+     * @param context the application context
+     * @param collaborationList the list to be visualized in navigation menu
+     */
     public CustomExpandableListAdapter(final Context context,
                                        final List<Pair<String, List<ShortCollaboration>>> collaborationList) {
         this.context = context;

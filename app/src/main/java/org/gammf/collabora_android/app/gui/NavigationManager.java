@@ -20,10 +20,10 @@ import android.widget.ImageButton;
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.gui.collaboration.CreateCollaborationDialogFragment;
 import org.gammf.collabora_android.app.utils.IntentConstants;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
-import org.gammf.collabora_android.utils.CollaborationType;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.model.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +31,6 @@ import java.util.List;
  * A class that manages the navigator. The navigator is the left menu, which contains user's
  * collaborations.
  */
-
 public class NavigationManager extends View implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String NEW_COLLABORATION_DIALOG_TAG = "NewCollaborationDialogFragment";
@@ -106,11 +105,11 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
         final CollaborationsManager collaborationsManager = LocalStorageUtils.readShortCollaborationsFromFile(this.context);
         final List<Pair<String, List<ShortCollaboration>>> collaborationsList = new ArrayList<>();
         collaborationsList.add(new Pair<>(getResources().getString(R.string.personal_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.PRIVATE)));
+                collaborationsManager.filterByType(CollaborationType.PRIVATE)));
         collaborationsList.add(new Pair<>(getResources().getString(R.string.groups_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.GROUP)));
+                collaborationsManager.filterByType(CollaborationType.GROUP)));
         collaborationsList.add(new Pair<>(getResources().getString(R.string.project_drawer),
-                collaborationsManager.filterByGroup(CollaborationType.PROJECT)));
+                collaborationsManager.filterByType(CollaborationType.PROJECT)));
 
         this.expandableListView = (ExpandableListView) this.mainActivity.findViewById(R.id.expandableListCollaborations);
         this.expandableListAdapter = new CustomExpandableListAdapter(this.context, collaborationsList);
@@ -138,20 +137,32 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
     }
 
 
+    /**
+     * Opens the navigator
+     */
     public void openNavigator() {
         this.getDrawer().openDrawer(GravityCompat.START);
     }
-    
+
+    /**
+     * Close the navigator
+     */
     public void closeNavigator() {
         this.getDrawer().closeDrawer(GravityCompat.START);
     }
 
+    /**
+     * Expand the list of the collaborations
+     */
     public void expandCollaborations() {
         for (int i = 0; i < this.expandableListAdapter.getGroupCount(); i++) {
             this.expandableListView.expandGroup(i);
         }
     }
 
+    /**
+     * @return the {@link DrawerLayout } associated with the navigator.
+     */
     public DrawerLayout getDrawer() {
         return (DrawerLayout) this.mainActivity.findViewById(R.id.drawer_layout);
     }

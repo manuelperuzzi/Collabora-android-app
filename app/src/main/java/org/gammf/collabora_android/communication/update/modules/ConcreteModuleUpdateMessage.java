@@ -3,11 +3,10 @@ package org.gammf.collabora_android.communication.update.modules;
 import org.gammf.collabora_android.communication.update.general.AbstractUpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageTarget;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
-import org.gammf.collabora_android.modules.Module;
+import org.gammf.collabora_android.model.modules.Module;
 
 /**
- * @author ManuelPeruzzi
- * A concrete message representing an update in a module.
+ * A concrete message representing an update operation carried out on a {@link Module}.
  */
 public class ConcreteModuleUpdateMessage extends AbstractUpdateMessage implements ModuleUpdateMessage {
 

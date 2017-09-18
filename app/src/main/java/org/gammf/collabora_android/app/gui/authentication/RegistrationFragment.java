@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,21 +19,20 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
-import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
-import org.gammf.collabora_android.users.SimpleUser;
-import org.gammf.collabora_android.users.User;
-import org.gammf.collabora_android.utils.AuthenticationUtils;
-import org.gammf.collabora_android.utils.CollaborationUtils;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.MandatoryFieldMissingException;
-import org.gammf.collabora_android.utils.UserUtils;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.model.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.model.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.model.users.SimpleUser;
+import org.gammf.collabora_android.model.users.User;
+import org.gammf.collabora_android.utils.communication.AuthenticationUtils;
+import org.gammf.collabora_android.utils.model.CollaborationUtils;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.model.MandatoryFieldMissingException;
+import org.gammf.collabora_android.utils.model.UserUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
@@ -42,15 +40,12 @@ import java.util.Calendar;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-
-public class    RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    // private UserLoginTask mAuthTask = null;
-
-    // UI references.
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link RegistrationFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private EditText userText;
     private EditText passText;
     private EditText emailText;
@@ -68,7 +63,8 @@ public class    RegistrationFragment extends Fragment implements DatePickerDialo
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @return A new instance of fragment LoginFragment.
+     *
+     * @return A new instance of fragment RegistrationFragment.
      */
     public static RegistrationFragment newInstance() {
         return new RegistrationFragment();
@@ -158,7 +154,7 @@ public class    RegistrationFragment extends Fragment implements DatePickerDialo
                         .email(emailText.getText().toString())
                         .build();
                 final JSONObject jsonUser = UserUtils.userToJson(user);
-                jsonUser.put("hashedPassword", BCrypt.hashpw(passText.getText().toString(), "$2a$10$2wymx/003xT1XIndPwFgPe"));
+                jsonUser.put("hashedPassword", HashingUtils.hashString(passText.getText().toString()));
                 StringEntity entity = new StringEntity(jsonUser.toString());
                 client.post(getContext(), AuthenticationUtils.POST, entity, "application/json", new AsyncHttpResponseHandler() {
                     @Override

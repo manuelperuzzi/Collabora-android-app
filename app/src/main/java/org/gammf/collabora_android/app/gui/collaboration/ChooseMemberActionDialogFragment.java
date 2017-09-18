@@ -12,15 +12,18 @@ import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
 import org.gammf.collabora_android.communication.update.general.UpdateMessage;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.members.ConcreteMemberUpdateMessage;
-import org.gammf.collabora_android.users.CollaborationMember;
-import org.gammf.collabora_android.users.SimpleCollaborationMember;
-import org.gammf.collabora_android.utils.AccessRight;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.users.CollaborationMember;
+import org.gammf.collabora_android.model.users.SimpleCollaborationMember;
+import org.gammf.collabora_android.utils.model.AccessRight;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
- * Created by mperuzzi on 09/09/17.
+ *
+ * A simple {@link DialogFragment} subclass.
+ * Use the {@link ChooseMemberActionDialogFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ *
  */
-
 public class ChooseMemberActionDialogFragment extends DialogFragment {
 
     private static final String EDIT_MEMBER_DIALOG_TAG = "EditMemberDialogTag";
@@ -33,6 +36,16 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
     private String memberUsername;
     private String memberRight;
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param memberRight the right of the member.
+     * @param memberUsername the username of the member.
+     * @param collaborationId collaboration id
+     *
+     * @return A new instance of fragment ChooseMemberActionDialogFragment.
+     */
     public static ChooseMemberActionDialogFragment newInstance(final String collaborationId,
                                                                final String memberUsername,
                                                                final String memberRight) {
@@ -45,6 +58,7 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {

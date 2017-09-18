@@ -17,19 +17,18 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.gammf.collabora_android.app.R;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.short_collaborations.CollaborationsManager;
-import org.gammf.collabora_android.short_collaborations.ConcreteCollaborationManager;
-import org.gammf.collabora_android.short_collaborations.ConcreteShortCollaboration;
-import org.gammf.collabora_android.utils.AuthenticationUtils;
-import org.gammf.collabora_android.utils.CollaborationUtils;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.short_collaborations.CollaborationsManager;
+import org.gammf.collabora_android.model.short_collaborations.ConcreteCollaborationManager;
+import org.gammf.collabora_android.model.short_collaborations.ConcreteShortCollaboration;
+import org.gammf.collabora_android.utils.communication.AuthenticationUtils;
+import org.gammf.collabora_android.utils.model.CollaborationUtils;
 import org.gammf.collabora_android.app.utils.ExceptionManager;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.UserUtils;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.model.UserUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -39,12 +38,7 @@ import cz.msebera.android.httpclient.Header;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
- /*
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    // private UserLoginTask mAuthTask = null;
 
-    // UI references.
     private EditText userText;
     private EditText passText;
 
@@ -109,8 +103,7 @@ public class LoginFragment extends Fragment {
 
     private void attemptLogin(final String username, final String password) {
         AsyncHttpClient client = new AsyncHttpClient();
-        String hash = BCrypt.hashpw(password, "$2a$10$2wymx/003xT1XIndPwFgPe");
-        client.setBasicAuth(username,hash);
+        client.setBasicAuth(username, HashingUtils.hashString(password));
         client.get(AuthenticationUtils.GET, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -154,12 +147,6 @@ public class LoginFragment extends Fragment {
                 intent.putExtra(AuthenticationActivity.INTENT_TAG, "hide-progress-bar");
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
                 Toast.makeText(getContext(), "Username or Password wrong! Retry", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFinish() {
-                /*loginButton.setClickable(true);
-                passToRegister.setClickable(true);*/
             }
         });
     }

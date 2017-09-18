@@ -6,18 +6,28 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
 import org.gammf.collabora_android.app.gui.CollaborationComponentInfo;
 import org.gammf.collabora_android.app.gui.CollaborationComponentType;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.ConcreteProject;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.ConcreteProject;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.utils.model.CollaborationType;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A simple {@link android.support.v4.app.DialogFragment} subclass.
+ * Fragment for note creation user interface
+ *
+ * Use the {@link ChoosePreviousNotesDialogFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.DialogFragment{
 
     private String collaborationId;
@@ -33,7 +43,18 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
     private ArrayList<CollaborationComponentInfo> noteItems;
     private ArrayList<String> previousNotesSelected ;
 
-
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param collaborationId the ID of the collaboration that contains the notes.
+     * @param moduleId the id of the module if the notes is contained in a module.
+     * @param noteItems represents the list of the notes
+     * @param previousNotesSelected the previous notes selected
+     * @param noteId the ID of the note
+     *
+     * @return A new instance of fragment ChoosePreviousNotesDialogFragment.
+     */
     public static ChoosePreviousNotesDialogFragment newInstance(String collaborationId,String moduleId,ArrayList<CollaborationComponentInfo> noteItems,ArrayList<String> previousNotesSelected,String noteId ){
         final ChoosePreviousNotesDialogFragment fragment = new ChoosePreviousNotesDialogFragment();
         final Bundle args = new Bundle();
@@ -68,7 +89,11 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
 
         Collaboration collaboration = LocalStorageUtils.readCollaborationFromFile(getActivity().getApplicationContext(), collaborationId);
         if (moduleId.equals(NOMODULE)) {
-            allNotes.addAll(collaboration.getAllNotes());
+            if(collaboration.getCollaborationType().equals(CollaborationType.PROJECT)){
+                allNotes.addAll(((Project)collaboration).getAllNoteNotInModules());
+            } else {
+                allNotes.addAll(collaboration.getAllNotes());
+            }
         } else {
             for (Module module : ((ConcreteProject) collaboration).getAllModules()) {
                 if (module.getId().equals(moduleId))
@@ -97,7 +122,7 @@ public class ChoosePreviousNotesDialogFragment extends android.support.v4.app.Di
                         previousNotesSelected.clear();
                         for (int position: mSelectedItems) {
                             previousNotesSelected.add(allNotes.get(position).getNoteID());
-                            noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE));
+                            noteItems.add(new CollaborationComponentInfo(allNotes.get(position).getNoteID(), allNotes.get(position).getContent(), CollaborationComponentType.NOTE,allNotes.get(position).getState().getCurrentDefinition()));
                         }
                         Intent intent = new Intent();
                         intent.putExtra(ARG_NOTEITEMS,noteItems);

@@ -21,8 +21,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.gammf.collabora_android.app.R;
 import org.gammf.collabora_android.app.utils.AbstractObservableSource;
-import org.gammf.collabora_android.notes.Location;
-import org.gammf.collabora_android.notes.NoteLocation;
+import org.gammf.collabora_android.model.notes.Location;
+import org.gammf.collabora_android.model.notes.NoteLocation;
 
 /**
  * A class that manages Google Map, used for searching and set location in notes.
@@ -54,6 +54,7 @@ public class MapManager extends AbstractObservableSource<Location> implements Pl
     /**
      * Builds a MapManager, starting with the given start {@link Location}. If no location is known, use MapManager.NO_LOCATION
      * @param initialLocation the initial location, displayed by this map.
+     * @param context the application context.
      */
     public MapManager(final Location initialLocation, final Context context) {
         this.initialLocation = initialLocation;

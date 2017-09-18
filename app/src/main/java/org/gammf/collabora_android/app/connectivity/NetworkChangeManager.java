@@ -10,8 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Alfredo Maffi
- * {@link BroadcastReceiver} meant to manage connectivity changes and notify all the previosly registered {@link NetworkChangeObserver}.
+ * {@link BroadcastReceiver} meant to manage connectivity changes and notify all the previously registered {@link NetworkChangeObserver}.
  */
 
 public class NetworkChangeManager extends BroadcastReceiver implements NetworkChangeObservable{
@@ -35,6 +34,7 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
         return instance;
     }
 
+
     @Override
     public void onReceive(final Context context, final Intent intent) {
         if(intent != null && intent.getExtras() != null) {
@@ -49,10 +49,12 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
         }
     }
 
+    @Override
     public boolean addNetworkChangeObserver(final NetworkChangeObserver observer) {
         return this.observers.add(observer);
     }
 
+    @Override
     public void clearObservers() {
         this.observers.clear();
     }

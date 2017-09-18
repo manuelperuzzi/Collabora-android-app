@@ -9,13 +9,10 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 import org.gammf.collabora_android.app.R;
 
 /**
- * Geofence error codes mapped to error messages.
- * Created by Federico on 07/08/2017.
+ * Class providing mapping from geofence error codes to strings.
  */
 public class GeofenceErrorMessages {
-    /**
-     * Prevents instantiation.
-     */
+
     private GeofenceErrorMessages() {}
 
     /**

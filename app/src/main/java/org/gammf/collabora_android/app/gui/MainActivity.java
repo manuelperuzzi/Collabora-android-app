@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +30,20 @@ import org.gammf.collabora_android.app.rabbitmq.NotificationsSubscriberService;
 import org.gammf.collabora_android.app.utils.IntentConstants;
 import org.gammf.collabora_android.app.utils.PermissionManager;
 import org.gammf.collabora_android.app.utils.TimeoutSender;
-import org.gammf.collabora_android.short_collaborations.ShortCollaboration;
-import org.gammf.collabora_android.users.User;
+import org.gammf.collabora_android.model.users.User;
 import org.gammf.collabora_android.app.utils.ExceptionManager;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
- * Created by @MattiaOriani on 12/08/2017
+ *
+ * Reviewed and updated by all the group components.
+ *
+ * This is the app entry point.
+ *
  */
 public class MainActivity extends AppCompatActivity
         implements NetworkChangeObserver {
@@ -64,13 +66,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("FLUSSOANDROID", "onCreate");
         setContentView(R.layout.activity_main);
-        ExceptionManager.init(this);
-        Log.i("FLUSSOANDROID", "MainActivity; " + getApplicationContext().toString());
+        ExceptionManager.getInstance().init(this);
         try {
             SingletonAppUser.getInstance().loadUser(getApplicationContext());
             user = SingletonAppUser.getInstance().getUser();
+
+            final Fragment fragment = HomePageFragment.newInstance();
+            openFragment(fragment);
 
             final TextView username = (TextView) findViewById(R.id.nameOfUser);
             username.setText(user.getUsername());
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("FLUSSOANDROID", "onStart");
         this.permissionManager = new PermissionManager(this);
         if (!this.permissionManager.checkPermissions()) {
             this.permissionManager.requestPermissions();
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("FLUSSOANDROID", "onResume");
         this.progress = (ProgressBar) findViewById(R.id.progressBar);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
     }
@@ -118,20 +119,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("FLUSSOANDROID", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("FLUSSOANDROID", "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("FLUSSOANDROID", "onDestroy");
         this.networkManager.clearObservers();
         if (isNetworkManagerReceiverRegistered) {
             this.unregisterReceiver(this.networkManager);
@@ -193,7 +191,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkAvailable() {
-        Log.i("FLUSSOANDROID", "onNetworkAvailable");
         final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         notificationIntent.putExtra("username", user.getUsername());
         notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
@@ -206,16 +203,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkUnavailable() {
-        Log.i("FLUSSOANDROID", "onNetworkUnavailable");
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
 
-    private void openCollaborationFragment(final ShortCollaboration collaboration) {
-        final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaboration.getId());
+    private void openFragment(final Fragment fragment){
         final FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
-
-        //fragmentManager.popBackStack(BACKSTACK_FRAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.addToBackStack(BACKSTACK_FRAG);
         fragmentManager.replace(R.id.content_frame, fragment);
         fragmentManager.commit();
@@ -237,7 +230,6 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            Log.i("FLUSSOANDROID", intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG));
             switch (intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG)) {
                 case IntentConstants.NETWORK_ERROR:
                     Toast.makeText(context, intent.getStringExtra(IntentConstants.NETWORK_ERROR), Toast.LENGTH_SHORT).show();
@@ -270,8 +262,8 @@ public class MainActivity extends AppCompatActivity
                             navigationManager.refreshCollaborationLists();
                             navigationManager.openNavigator();
                         } else {
-                            openCollaborationFragment(LocalStorageUtils
-                                    .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
+                            final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
+                            openFragment(fragment);
                         }
                     } else {
                         navigationManager.refreshCollaborationLists();
@@ -281,14 +273,15 @@ public class MainActivity extends AppCompatActivity
                 case IntentConstants.OPEN_FRAGMENT:
                     final String collID = intent.getStringExtra(IntentConstants.OPEN_FRAGMENT);
                     if (collID != null) {
-                        openCollaborationFragment(LocalStorageUtils
-                                .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
+                        final Fragment fragment = CollaborationFragment.newInstance(SENDER, collID);
+                        openFragment(fragment);
                     }
                     break;
-                case IntentConstants.LOCAL_STORAGE_ERROR:
-                    Log.i("FLUSSOANDROID", "local storage error");
-                    Toast.makeText(context, "Local storage corrupted! Logging out.", Toast.LENGTH_SHORT).show();
-                    onUserLogout();
+                case IntentConstants.SERVER_ERROR:
+                    final String errorString = getString(intent.getIntExtra(IntentConstants.SERVER_ERROR, 0));
+                    Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show();
+                    this.messagesReceived++;
+                    progress.setVisibility(View.GONE);
                     break;
             }
         }

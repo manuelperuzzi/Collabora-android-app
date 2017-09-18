@@ -8,16 +8,25 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import org.gammf.collabora_android.app.rabbitmq.SendMessageToServerTask;
-import org.gammf.collabora_android.collaborations.general.Collaboration;
-import org.gammf.collabora_android.collaborations.shared_collaborations.Project;
+import org.gammf.collabora_android.model.collaborations.general.Collaboration;
+import org.gammf.collabora_android.model.collaborations.shared_collaborations.Project;
 import org.gammf.collabora_android.communication.update.general.UpdateMessageType;
 import org.gammf.collabora_android.communication.update.modules.ConcreteModuleUpdateMessage;
 import org.gammf.collabora_android.communication.update.notes.ConcreteNoteUpdateMessage;
-import org.gammf.collabora_android.modules.Module;
-import org.gammf.collabora_android.notes.Note;
-import org.gammf.collabora_android.utils.LocalStorageUtils;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.modules.Module;
+import org.gammf.collabora_android.model.notes.Note;
+import org.gammf.collabora_android.utils.app.LocalStorageUtils;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
+/**
+ *
+ * A simple {@link android.support.v4.app.DialogFragment} subclass.
+ * Use the {@link DeletionDialogFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ *
+ * This fragment is a dialog view for a module or note deletion
+ *
+ */
 public class DeletionDialogFragment  extends android.support.v4.app.DialogFragment{
 
     private String collaborationId,componentId,componentContent;
@@ -28,6 +37,11 @@ public class DeletionDialogFragment  extends android.support.v4.app.DialogFragme
     private static final String ARG_COMPONENTTYPE = "componentType";
     private static final String ARG_COMPONENTCONTENT = "componentContent";
 
+    /**
+     * Use this factory method to create a new instance of this fragment
+     *
+     * @return A new instance of fragment DeletionDialogFragment.
+     */
     public static DeletionDialogFragment newInstance(String collaborationId,String componentId, String componentContent, CollaborationComponentType componentType){
         final DeletionDialogFragment fragment = new DeletionDialogFragment();
         final Bundle args = new Bundle();

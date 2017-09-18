@@ -7,8 +7,8 @@ import android.support.v4.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.gammf.collabora_android.users.User;
-import org.gammf.collabora_android.utils.SingletonAppUser;
+import org.gammf.collabora_android.model.users.User;
+import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
  * Simple class defining a strategy to handle Firebase notifications when the application is in foreground.

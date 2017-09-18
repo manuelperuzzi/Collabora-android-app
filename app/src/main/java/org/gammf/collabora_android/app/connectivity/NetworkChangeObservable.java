@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.app.connectivity;
 
 /**
- * @author Alfredo Maffi
  * This interface represents a network change observable, which is able to intercept network changes inside the application.
  */
 
@@ -12,4 +11,9 @@ public interface NetworkChangeObservable {
      * @return true if the {@link NetworkChangeObserver} is registered with success. False otherwise.
      */
     boolean addNetworkChangeObserver(NetworkChangeObserver observer);
+
+    /**
+     * Cancels all the previously added observers.
+     */
+    void clearObservers();
 }

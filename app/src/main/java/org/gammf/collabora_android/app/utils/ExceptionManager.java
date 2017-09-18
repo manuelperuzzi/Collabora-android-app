@@ -1,36 +1,40 @@
 package org.gammf.collabora_android.app.utils;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
-
 import org.gammf.collabora_android.app.gui.MainActivity;
 
+/**
+ * Exception manger which can be accessed from anywhere.
+ * More in detail, this class is meant to handle fatal exceptions that shouldn't occur while the application
+ * is running (e.g. json parse error).
+ */
 public class ExceptionManager {
 
     private static final ExceptionManager EXCEPTION_MANAGER = new ExceptionManager();
 
-    private static MainActivity mainActivity;
+    private MainActivity mainActivity;
 
     private ExceptionManager() { }
 
+    /**
+     * @return the instance of the Exception Manager
+     */
     public static ExceptionManager getInstance() {
         return EXCEPTION_MANAGER;
     }
 
-    public static void init(final MainActivity mainActivity) {
-        ExceptionManager.mainActivity = mainActivity;
+    /**
+     * Initialize the ExceptionManager of the application. This method have to be called on application startup
+     * @param mainActivity the main activity of the application.
+     */
+    public void init(final MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
+    /**
+     * Handle and exception occurrend in the application.
+     * @param e the exception
+     */
     public void handle(final Exception e) {
-        /*Log.i("FLUSSOANDROID", "exceptionManager");
-        e.printStackTrace();
-        final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
-        intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.LOCAL_STORAGE_ERROR);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);*/
-        //context.onUserLogout();
-        mainActivity.onLocalStorageCorrupted();
+        this.mainActivity.onLocalStorageCorrupted();
     }
 }
