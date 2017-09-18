@@ -10,7 +10,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * @author Alfredo Maffi
  * Simple test used to test a note builder.
  */
 public class SimpleNoteBuilderTest {

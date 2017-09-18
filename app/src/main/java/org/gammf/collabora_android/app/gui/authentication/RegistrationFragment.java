@@ -46,12 +46,6 @@ import cz.msebera.android.httpclient.entity.StringEntity;
  * create an instance of this fragment.
  */
 public class RegistrationFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-
-    // UI references.
     private EditText userText;
     private EditText passText;
     private EditText emailText;

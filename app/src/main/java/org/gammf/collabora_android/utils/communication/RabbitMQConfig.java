@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMQConfig {
 
-    public static final String BROKER_ADDRESS = "192.168.0.19";
+    public static final String BROKER_ADDRESS = "192.168.1.232";
     public static final String NOTIFICATIONS_EXCHANGE_NAME = "notifications";
     public static final String UPDATES_EXCHANGE_NAME = "updates";
     public static final String COLLABORATIONS_EXCHANGE_NAME = "collaborations";

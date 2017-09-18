@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 /**
- * @author Alfredo Maffi
  * Interface representing the contract of an application domain's note.
  */
 

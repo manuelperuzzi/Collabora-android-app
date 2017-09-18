@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by mperuzzi on 07/09/17.
  *
  * A simple {@link DialogFragment} subclass.
  * Use the {@link MemberDialogFragment#addMemberInstance} factory method to
@@ -163,7 +162,7 @@ public class MemberDialogFragment extends DialogFragment {
             this.inputMethodManager.hideSoftInputFromWindow(txtUsername.getWindowToken(), 0);
             if (previousMemberUsername == null) {
                 handleMemberOperation(newUsername, newRight, UpdateMessageType.CREATION);
-            } else if (! previousMemberRight.equals(newRight)) {
+            } else if (! previousMemberRight.equals(newRight.toString())) {
                 handleMemberOperation(newUsername, newRight, UpdateMessageType.UPDATING);
             }
             dismiss();

@@ -9,7 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Mattia Oriani
  * Simple test for collaborations manager.
  */
 

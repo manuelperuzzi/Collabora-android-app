@@ -273,8 +273,6 @@ public class MainActivity extends AppCompatActivity
                             navigationManager.refreshCollaborationLists();
                             navigationManager.openNavigator();
                         } else {
-                            //openCollaborationFragment(LocalStorageUtils
-                             //       .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collaborationId));
                             final Fragment fragment = CollaborationFragment.newInstance(SENDER, collaborationId);
                             openFragment(fragment);
                         }
@@ -286,8 +284,6 @@ public class MainActivity extends AppCompatActivity
                 case IntentConstants.OPEN_FRAGMENT:
                     final String collID = intent.getStringExtra(IntentConstants.OPEN_FRAGMENT);
                     if (collID != null) {
-                        //openCollaborationFragment(LocalStorageUtils
-                         //       .readShortCollaborationsFromFile(getApplicationContext()).getCollaboration(collID));
                         final Fragment fragment = CollaborationFragment.newInstance(SENDER, collID);
                         openFragment(fragment);
                     }

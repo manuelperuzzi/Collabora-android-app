@@ -15,11 +15,13 @@ import org.gammf.collabora_android.utils.app.LocalStorageUtils;
 
 /**
  * Service that manage rebooting procedure
- * Created by Federico on 04/08/2017.
+ *
  */
-
 public class BootService extends IntentService {
 
+    /**
+     * Creates the boot service.
+     */
     public BootService() {
         super("BootService");
     }

@@ -20,7 +20,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author Manuel Peruzzi
  * Simple tests for the update message about collaborations.
  */
 public class ConcreteCollaborationUpdateMessageTest {

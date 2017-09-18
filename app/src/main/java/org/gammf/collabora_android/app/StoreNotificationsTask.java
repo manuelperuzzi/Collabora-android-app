@@ -85,6 +85,23 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
         }
     }
 
+    @Override
+    protected void onPostExecute(final Boolean success) {
+        if(success && SingletonAppUser.getInstance().getUsername().equals(senderUsername)) {
+            Log.i("FLUSSOANDROID", "mandoIntent");
+            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
+            if(collaborationId != null) {
+                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
+                if (updateType == UpdateMessageType.DELETION) {
+                    Log.i("FLUSSOANDROID", updateType.name());
+                    intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
+                }
+            }
+            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+
     private void handleErrorMessage(final ErrorMessage message) {
         final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
         intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.SERVER_ERROR);
@@ -244,24 +261,5 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
 
         LocalStorageUtils.writeShortCollaborationsToFile(context, manager);
         return true;
-    }
-
-
-
-    @Override
-    protected void onPostExecute(final Boolean success) {
-        if(success && SingletonAppUser.getInstance().getUsername().equals(senderUsername)) {
-            Log.i("FLUSSOANDROID", "mandoIntent");
-            final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
-            if(collaborationId != null) {
-                intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
-                if (updateType == UpdateMessageType.DELETION) {
-                    Log.i("FLUSSOANDROID", updateType.name());
-                    intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
-                }
-            }
-            intent.putExtra(IntentConstants.MAIN_ACTIVITY_TAG, IntentConstants.NETWORK_MESSAGE_RECEIVED);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        }
     }
 }

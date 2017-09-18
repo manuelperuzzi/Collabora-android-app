@@ -33,8 +33,6 @@ import org.gammf.collabora_android.utils.app.SingletonAppUser;
 import org.joda.time.format.DateTimeFormat;
 
 /**
- * Created by @MattiaOriani on 12/08/2017
- *
  * A simple {@link Fragment} subclass.
  * Use the {@link NoteFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -130,6 +128,17 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocation), savedInstanceState);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        selectItem(listName);
+    }
+
     private void initializeGuiComponent(final View rootView) {
         ((TextView) rootView.findViewById(R.id.contentNote)).setText(note.getContent());
         progressBarState = rootView.findViewById(R.id.progressBarState);
@@ -155,11 +164,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
         this.mapManager = new MapManager(note.getLocation(), this.getContext());
     }
 
-    @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocation), savedInstanceState);
-    }
-
     private void changeFragment(Fragment fragment){
         if (fragment != null) {
             FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -170,13 +174,6 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemClickLis
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
     }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
-        selectItem(listName);
-    }
-
 
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment = NoteFragment.newInstance(collaborationId, itemSelected.getId(),moduleId);

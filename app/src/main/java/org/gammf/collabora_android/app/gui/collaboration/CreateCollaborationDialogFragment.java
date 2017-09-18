@@ -68,6 +68,24 @@ public class CreateCollaborationDialogFragment extends DialogFragment {
         return rootView;
     }
 
+    @Override
+    @NonNull
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    private void createCollaboration(final String collaborationName, final CollaborationType type) {
+        final SharedCollaboration collaboration = type.equals(CollaborationType.GROUP) ? new ConcreteGroup(null, collaborationName) : new ConcreteProject(null, collaborationName);
+        final User user = SingletonAppUser.getInstance().getUser();
+        collaboration.addMember(new SimpleCollaborationMember(user.getUsername(), AccessRight.ADMIN));
+        final UpdateMessage message = new ConcreteCollaborationUpdateMessage(user.getUsername(),
+                collaboration, UpdateMessageType.CREATION);
+        new SendMessageToServerTask(getContext().getApplicationContext()).execute(message);
+        this.dismiss();
+    }
+
     private void initializeDialogGuiComponent(View rootView) {
         editTextCollaborationName = rootView.findViewById(R.id.txtInsertCollabNameD);
         radioGroupCollaborationType = rootView.findViewById(R.id.radioGroupCollabType);
@@ -87,8 +105,8 @@ public class CreateCollaborationDialogFragment extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            inputMethodManager.hideSoftInputFromWindow(editTextCollaborationName.getWindowToken(), 0);
-            dismiss();
+                inputMethodManager.hideSoftInputFromWindow(editTextCollaborationName.getWindowToken(), 0);
+                dismiss();
             }
         });
     }
@@ -102,23 +120,5 @@ public class CreateCollaborationDialogFragment extends DialogFragment {
             this.inputMethodManager.hideSoftInputFromWindow(this.editTextCollaborationName.getWindowToken(), 0);
             this.createCollaboration(collaborationName, type);
         }
-    }
-
-    @Override
-    @NonNull
-    public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }
-
-    private void createCollaboration(final String collaborationName, final CollaborationType type) {
-        final SharedCollaboration collaboration = type.equals(CollaborationType.GROUP) ? new ConcreteGroup(null, collaborationName) : new ConcreteProject(null, collaborationName);
-        final User user = SingletonAppUser.getInstance().getUser();
-        collaboration.addMember(new SimpleCollaborationMember(user.getUsername(), AccessRight.ADMIN));
-        final UpdateMessage message = new ConcreteCollaborationUpdateMessage(user.getUsername(),
-                collaboration, UpdateMessageType.CREATION);
-        new SendMessageToServerTask(getContext().getApplicationContext()).execute(message);
-        this.dismiss();
     }
 }

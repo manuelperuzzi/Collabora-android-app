@@ -15,7 +15,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author Manuel Peruzzi
  * Simple tests for the group implementation of a collaboration.
  */
 public class ConcreteGroupTest {

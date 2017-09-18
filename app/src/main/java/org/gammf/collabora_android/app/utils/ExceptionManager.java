@@ -15,14 +15,25 @@ public class ExceptionManager {
 
     private ExceptionManager() { }
 
+    /**
+     * @return the instance of the Exception Manager
+     */
     public static ExceptionManager getInstance() {
         return EXCEPTION_MANAGER;
     }
 
+    /**
+     * Initialize the ExceptionManager of the application. This method have to be called on application startup
+     * @param mainActivity the main activity of the application.
+     */
     public void init(final MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 
+    /**
+     * Handle and exception occurrend in the application.
+     * @param e the exception
+     */
     public void handle(final Exception e) {
         this.mainActivity.onLocalStorageCorrupted();
     }

@@ -38,12 +38,7 @@ import cz.msebera.android.httpclient.Header;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
- /*
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    // private UserLoginTask mAuthTask = null;
 
-    // UI references.
     private EditText userText;
     private EditText passText;
 

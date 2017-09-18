@@ -76,7 +76,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     /**
      * Posts a notification in the notification bar when a transition is detected.
      */
-    private void sendNotification(String notificationContent) {
+    private void sendNotification(final String notificationContent) {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);

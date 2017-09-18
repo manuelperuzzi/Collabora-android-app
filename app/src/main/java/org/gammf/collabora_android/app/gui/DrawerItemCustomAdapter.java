@@ -2,6 +2,7 @@ package org.gammf.collabora_android.app.gui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,6 @@ import org.gammf.collabora_android.app.R;
 import java.util.ArrayList;
 
 /**
- * @author @MattiaOriani on 12/08/2017
- *
  * A simple {@link ArrayAdapter} subclass.
  *
  * Use this class as a custom adapter for list view
@@ -43,16 +42,15 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView(final int position, final View convertView, @NonNull final ViewGroup parent) {
 
-        View listItem = convertView;
+        final LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+        final View listItem = inflater.inflate(layoutResourceId, parent, false);
 
-        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        listItem = inflater.inflate(layoutResourceId, parent, false);
-
-        ImageView imageViewIcon = listItem.findViewById(R.id.imageViewIcon);
-        TextView textViewName = listItem.findViewById(R.id.textViewName);
-        TextView textViewAdditionalInfo = listItem.findViewById(R.id.textViewAdditionalInfo);
+        final ImageView imageViewIcon = listItem.findViewById(R.id.imageViewIcon);
+        final TextView textViewName = listItem.findViewById(R.id.textViewName);
+        final TextView textViewAdditionalInfo = listItem.findViewById(R.id.textViewAdditionalInfo);
 
         CollaborationComponentInfo folder = data.get(position);
 
@@ -61,10 +59,6 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
         textViewAdditionalInfo.setText(folder.getAdditionalInfo());
 
         return listItem;
-    }
-
-    public void updateList(CollaborationComponentInfo newItem){
-        this.data.add(newItem);
     }
 }
 

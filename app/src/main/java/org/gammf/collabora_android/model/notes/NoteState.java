@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.model.notes;
 
 /**
- * @author Alfredo Maffi
  * Concrete state representing a note's state.
  */
 

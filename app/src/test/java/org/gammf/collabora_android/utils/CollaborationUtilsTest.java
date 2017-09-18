@@ -18,7 +18,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author ManuelPeruzzi
  * Simple tests for the collaboration/json conversion.
  */
 public class CollaborationUtilsTest {

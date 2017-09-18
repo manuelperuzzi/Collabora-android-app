@@ -69,6 +69,29 @@ public class EditCollaborationDialogFragment extends DialogFragment {
         return rootView;
     }
 
+    @Override
+    @NonNull
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    private void processCollaborationOperation() {
+        final String newCollaborationName = txtCollaborationName.getText().toString();
+        if (newCollaborationName.equals("")) {
+            txtCollaborationName.setError("Field required");
+        } else {
+            this.inputMethodManager.hideSoftInputFromWindow(txtCollaborationName.getWindowToken(), 0);
+            if (! collaboration.getName().equals(newCollaborationName)) {
+                collaboration.setName(newCollaborationName);
+                final UpdateMessage message = new ConcreteCollaborationUpdateMessage(SingletonAppUser.getInstance().getUsername(), collaboration, UpdateMessageType.UPDATING);
+                new SendMessageToServerTask(getContext()).execute(message);
+            }
+            dismiss();
+        }
+    }
+
     private void initializeDialogGuiComponent(final View rootView) {
         txtCollaborationName = rootView.findViewById(R.id.txtInsertCollaborationName);
         txtCollaborationName.setText(collaboration.getName());
@@ -91,28 +114,5 @@ public class EditCollaborationDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
-    }
-
-    @Override
-    @NonNull
-    public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }
-
-    private void processCollaborationOperation() {
-        final String newCollaborationName = txtCollaborationName.getText().toString();
-        if (newCollaborationName.equals("")) {
-            txtCollaborationName.setError("Field required");
-        } else {
-            this.inputMethodManager.hideSoftInputFromWindow(txtCollaborationName.getWindowToken(), 0);
-            if (! collaboration.getName().equals(newCollaborationName)) {
-                collaboration.setName(newCollaborationName);
-                final UpdateMessage message = new ConcreteCollaborationUpdateMessage(SingletonAppUser.getInstance().getUsername(), collaboration, UpdateMessageType.UPDATING);
-                new SendMessageToServerTask(getContext()).execute(message);
-            }
-            dismiss();
-        }
     }
 }

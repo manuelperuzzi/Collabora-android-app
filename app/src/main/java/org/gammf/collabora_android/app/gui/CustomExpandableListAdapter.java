@@ -16,8 +16,6 @@ import org.gammf.collabora_android.model.short_collaborations.ShortCollaboration
 
 /**
  *
- * @author @MattiaOriani on 21/08/2017.
- *
  * A simple {@link BaseExpandableListAdapter} subclass.
  *
  * This is an expandable list adapter customized for collaboration list drawer in navigation menu
