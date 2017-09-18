@@ -12,6 +12,13 @@ public class CollaborationComponentInfo implements CollaborationComponent{
     private final CollaborationComponentType componentType;
     private final String additionalInfo;
 
+    /**
+     * Build a new collaboration component info
+     * @param id the ID of the component
+     * @param content the content of component shown on GUI
+     * @param componentType the type of the component, can be a Note or a Module or a Member
+     * @param additionalInfo the additional info that will be shown on the GUI.
+     */
     public CollaborationComponentInfo(final String id,final String content, final CollaborationComponentType componentType,final String additionalInfo) {
         this.id = id;
         this.content = content;

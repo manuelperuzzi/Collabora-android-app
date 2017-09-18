@@ -49,6 +49,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link CollaborationFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class CollaborationFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
 
     private static final String BACKSTACK_FRAG = "xyz";
@@ -73,9 +79,11 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment ModuleFragment.
+     * @param sender the caller of this fragment.
+     * @param collaborationId collaboration id
+     *
+     * @return A new instance of fragment CollaborationFragment.
      */
-
     public static CollaborationFragment newInstance(String sender, String collaborationId) {
         CollaborationFragment fragment = new CollaborationFragment();
         Bundle arg = new Bundle();

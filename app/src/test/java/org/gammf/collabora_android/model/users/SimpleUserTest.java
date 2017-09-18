@@ -12,42 +12,52 @@ import static org.junit.Assert.*;
  */
 public class SimpleUserTest {
 
+    private static final String USERNAME = "peru";
+    private static final String EMAIL = "manuel.peruzzi@studio.unibo.it";
+    private static final String NAME = "Manuel";
+    private static final String SURNAME = "Peruzzi";
+    private static final Integer BIRTH_YEAR = 1994;
+    private static final Integer BIRTH_MONTH = 3;
+    private static final Integer BIRTH_DAY = 7;
+    private static final Integer NO_HOUR = 0;
+    private static final Integer NO_MINUTE = 0;
+
     private User user;
 
     @Before
     public void setUp() throws Exception {
         user = new SimpleUser.Builder()
-                .username("peru")
-                .email("manuel.peruzzi@studio.unibo.it")
-                .name("Manuel")
-                .surname("Peruzzi")
-                .birthday(new DateTime(1994, 3, 7, 0, 0))
+                .username(USERNAME)
+                .email(EMAIL)
+                .name(NAME)
+                .surname(SURNAME)
+                .birthday(new DateTime(BIRTH_YEAR, BIRTH_MONTH, BIRTH_DAY, NO_HOUR, NO_MINUTE))
                 .build();
     }
 
     @Test
     public void getUsername() throws Exception {
-        assertEquals(user.getUsername(), "peru");
+        assertEquals(user.getUsername(), USERNAME);
     }
 
     @Test
     public void getEmail() throws Exception {
-        assertEquals(user.getEmail(), "manuel.peruzzi@studio.unibo.it");
+        assertEquals(user.getEmail(), EMAIL);
     }
 
     @Test
     public void getName() throws Exception {
-        assertEquals(user.getName(), "Manuel");
+        assertEquals(user.getName(), NAME);
     }
 
     @Test
     public void getSurname() throws Exception {
-        assertEquals(user.getSurname(), "Peruzzi");
+        assertEquals(user.getSurname(), SURNAME);
     }
 
     @Test
     public void getBirthday() throws Exception {
-        assertEquals(user.getBirthday(), new DateTime(1994, 3, 7, 0, 0));
+        assertEquals(user.getBirthday(), new DateTime(BIRTH_YEAR, BIRTH_MONTH, BIRTH_DAY, NO_HOUR, NO_MINUTE));
     }
 
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ import org.gammf.collabora_android.utils.model.CollaborationType;
 import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link DialogFragment} subclass.
  * Use the {@link CreateCollaborationDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -48,6 +47,8 @@ public class CreateCollaborationDialogFragment extends DialogFragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
+     * @return a new istance of CreateCollaborationDialogFragment.
      */
     public static CreateCollaborationDialogFragment newInstance() {
         return new CreateCollaborationDialogFragment();

@@ -40,7 +40,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
- * Created by @MattiaOriani on 12/08/2017
+ *
+ * Reviewed and updated by all the group components.
+ *
+ * This is the app entry point.
+ *
  */
 public class MainActivity extends AppCompatActivity
         implements NetworkChangeObserver {

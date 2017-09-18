@@ -47,6 +47,7 @@ public class EditModuleFragment extends Fragment {
      *
      * @param collaborationId collaboration id where the module will be added
      * @param moduleId module id
+     *
      * @return A new instance of fragment EditModuleFragment.
      */
     public static EditModuleFragment newInstance(String collaborationId, String moduleId) {

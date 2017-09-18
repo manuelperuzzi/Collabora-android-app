@@ -31,8 +31,11 @@ import java.util.List;
 
 /**
  * Created by mperuzzi on 07/09/17.
+ *
+ * A simple {@link DialogFragment} subclass.
+ * Use the {@link MemberDialogFragment#addMemberInstance} factory method to
+ * create an instance of this fragment.
  */
-
 public class MemberDialogFragment extends DialogFragment {
 
     private static final String ARG_COLLABORATION_ID = "collaborationId";
@@ -47,6 +50,14 @@ public class MemberDialogFragment extends DialogFragment {
     private Spinner spinnerRight;
     private EditText txtUsername;
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param collaborationId the id of the collaboration.
+     *
+     * @return a new istance of MemberDialogFragment.
+     */
     public static MemberDialogFragment addMemberInstance(final String collaborationId) {
         final MemberDialogFragment fragment = new MemberDialogFragment();
         final Bundle args = new Bundle();
