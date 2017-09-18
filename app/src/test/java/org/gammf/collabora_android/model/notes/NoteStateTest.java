@@ -7,7 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Mattia on 16/09/2017.
+ * @author Mattia Oriani
+ * This is a simple test for note state.
  */
 
 public class NoteStateTest {
