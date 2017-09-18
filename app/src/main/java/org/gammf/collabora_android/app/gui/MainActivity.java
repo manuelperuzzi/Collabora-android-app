@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,10 +66,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("FLUSSOANDROID", "onCreate");
         setContentView(R.layout.activity_main);
         ExceptionManager.getInstance().init(this);
-        Log.i("FLUSSOANDROID", "MainActivity; " + getApplicationContext().toString());
         try {
             SingletonAppUser.getInstance().loadUser(getApplicationContext());
             user = SingletonAppUser.getInstance().getUser();
@@ -106,7 +103,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("FLUSSOANDROID", "onStart");
         this.permissionManager = new PermissionManager(this);
         if (!this.permissionManager.checkPermissions()) {
             this.permissionManager.requestPermissions();
@@ -116,7 +112,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("FLUSSOANDROID", "onResume");
         this.progress = (ProgressBar) findViewById(R.id.progressBar);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MainActivityReceiver.INTENT_FILTER));
     }
@@ -124,20 +119,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("FLUSSOANDROID", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("FLUSSOANDROID", "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("FLUSSOANDROID", "onDestroy");
         this.networkManager.clearObservers();
         if (isNetworkManagerReceiverRegistered) {
             this.unregisterReceiver(this.networkManager);
@@ -199,7 +191,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkAvailable() {
-        Log.i("FLUSSOANDROID", "onNetworkAvailable");
         final Intent notificationIntent = new Intent(getApplicationContext(), NotificationsSubscriberService.class);
         notificationIntent.putExtra("username", user.getUsername());
         notificationIntent.putStringArrayListExtra("collaborationsIds", new ArrayList<>(LocalStorageUtils.readShortCollaborationsFromFile(getApplicationContext()).getCollaborationsId()));
@@ -212,7 +203,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNetworkUnavailable() {
-        Log.i("FLUSSOANDROID", "onNetworkUnavailable");
         stopService(new Intent(this, CollaborationsSubscriberService.class));
         stopService(new Intent(this, NotificationsSubscriberService.class));
     }
@@ -240,7 +230,6 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            Log.i("FLUSSOANDROID", intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG));
             switch (intent.getStringExtra(IntentConstants.MAIN_ACTIVITY_TAG)) {
                 case IntentConstants.NETWORK_ERROR:
                     Toast.makeText(context, intent.getStringExtra(IntentConstants.NETWORK_ERROR), Toast.LENGTH_SHORT).show();

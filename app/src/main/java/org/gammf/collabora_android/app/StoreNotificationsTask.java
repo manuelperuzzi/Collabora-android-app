@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import org.gammf.collabora_android.app.alarm.AlarmController;
 import org.gammf.collabora_android.app.gui.MainActivity;
@@ -88,12 +87,10 @@ public class StoreNotificationsTask extends AsyncTask<Message, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         if(success && SingletonAppUser.getInstance().getUsername().equals(senderUsername)) {
-            Log.i("FLUSSOANDROID", "mandoIntent");
             final Intent intent = new Intent(MainActivity.getReceiverIntentFilter());
             if(collaborationId != null) {
                 intent.putExtra(IntentConstants.NETWORK_MESSAGE_RECEIVED, collaborationId);
                 if (updateType == UpdateMessageType.DELETION) {
-                    Log.i("FLUSSOANDROID", updateType.name());
                     intent.putExtra(IntentConstants.COLLABORATION_DELETION, "");
                 }
             }
