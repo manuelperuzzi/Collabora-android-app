@@ -5,7 +5,7 @@ package org.gammf.collabora_android.utils.communication;
  */
 public class AuthenticationUtils {
 
-    private static final String SERVER_IP = "http://192.168.0.19";
+    private static final String SERVER_IP = "http://192.168.1.232";
 
     private static final String SERVER_PORT = ":9894";
 

@@ -10,7 +10,6 @@ import org.gammf.collabora_android.app.BootService;
 
 /**
  * BroadcastReceiver called when device is rebooted
- * Created by Federico on 04/08/2017.
  */
 
 public class RestartReceiver extends BroadcastReceiver {

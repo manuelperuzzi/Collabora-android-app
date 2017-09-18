@@ -122,10 +122,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    /*
-        Method for editcollaboration click on toolbar
-        trigger the @CollaborationInfoFragment
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here.
@@ -208,6 +204,22 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         return rootView;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        selectItem(listName);
+    }
+
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        final DeletionDialogFragment dialog = DeletionDialogFragment.newInstance(
+                collaboration.getId(),listName.getId(),listName.getContent(),listName.getType());
+        dialog.show(getActivity().getSupportFragmentManager(), DELETION_DIALOG_TAG);
+        return true;
+    }
+
     private void fillNotesList() {
         final List<Note> allNotes = new ArrayList<>(collaboration.getAllNotes());
         Collections.sort(allNotes, new NoteComparator());
@@ -236,12 +248,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         moduleList.setOnItemLongClickListener(this);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
-        selectItem(listName);
-    }
-
     private void selectItem(CollaborationComponentInfo itemSelected) {
         Fragment openFragment;
         if (itemSelected.getType().equals(CollaborationComponentType.MODULE)) {
@@ -261,15 +267,6 @@ public class CollaborationFragment extends Fragment implements AdapterView.OnIte
         } else {
             Log.e(SENDER, CREATIONERROR_FRAG);
         }
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final CollaborationComponentInfo listName = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
-        final DeletionDialogFragment dialog = DeletionDialogFragment.newInstance(
-                collaboration.getId(),listName.getId(),listName.getContent(),listName.getType());
-        dialog.show(getActivity().getSupportFragmentManager(), DELETION_DIALOG_TAG);
-        return true;
     }
 }
 

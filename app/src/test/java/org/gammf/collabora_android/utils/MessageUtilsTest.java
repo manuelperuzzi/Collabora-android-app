@@ -21,7 +21,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author Alfredo Maffi
  * Simple test of the conversions in MessageUtils class.
  */
 public class MessageUtilsTest {

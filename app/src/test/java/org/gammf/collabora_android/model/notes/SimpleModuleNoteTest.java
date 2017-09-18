@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Mattia Oriani
  * This is a test for Simple Module Note.
  */
 

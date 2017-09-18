@@ -137,20 +137,32 @@ public class NavigationManager extends View implements NavigationView.OnNavigati
     }
 
 
+    /**
+     * Opens the navigator
+     */
     public void openNavigator() {
         this.getDrawer().openDrawer(GravityCompat.START);
     }
-    
+
+    /**
+     * Close the navigator
+     */
     public void closeNavigator() {
         this.getDrawer().closeDrawer(GravityCompat.START);
     }
 
+    /**
+     * Expand the list of the collaborations
+     */
     public void expandCollaborations() {
         for (int i = 0; i < this.expandableListAdapter.getGroupCount(); i++) {
             this.expandableListView.expandGroup(i);
         }
     }
 
+    /**
+     * @return the {@link DrawerLayout } associated with the navigator.
+     */
     public DrawerLayout getDrawer() {
         return (DrawerLayout) this.mainActivity.findViewById(R.id.drawer_layout);
     }

@@ -7,7 +7,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author Manuel Peruzzi
  * Simple tests for collaboration member class.
  */
 public class CollaborationMemberTest {

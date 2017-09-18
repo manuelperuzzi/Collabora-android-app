@@ -9,7 +9,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Mattia Oriani
  * Simple test for short collaboration.
  */
 

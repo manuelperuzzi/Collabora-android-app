@@ -1,7 +1,6 @@
 package org.gammf.collabora_android.app.gui;
 
 /**
- * @author Alfredo Maffi
  * Simple interface used to represent a collaboration component to be visualized on GUI.
  */
 

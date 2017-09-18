@@ -2,7 +2,6 @@ package org.gammf.collabora_android.app.location_geofence;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
@@ -77,7 +76,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     /**
      * Posts a notification in the notification bar when a transition is detected.
      */
-    private void sendNotification(String notificationContent) {
+    private void sendNotification(final String notificationContent) {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -85,9 +84,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
         stackBuilder.addParentStack(MainActivity.class);
 
         stackBuilder.addNextIntent(notificationIntent);
-
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
@@ -99,8 +95,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 .setColor(Color.RED)
                 .setSound(alarmSound)
                 .setContentTitle(notificationContent)
-                .setContentText(getString(R.string.geofence_transition_notification_text))
-                .setContentIntent(notificationPendingIntent);
+                .setContentText(getString(R.string.geofence_transition_notification_text));
 
         builder.setAutoCancel(true);
 

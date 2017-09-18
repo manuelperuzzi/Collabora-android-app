@@ -25,7 +25,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
     public static final String INTENT_TAG = "collabora-login";
 
-    // UI references.
     private View mProgressView;
     private final LoginActivityReceiver receiver = new LoginActivityReceiver();
 
@@ -61,6 +60,9 @@ public class AuthenticationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method that have to be called when the authentcation goes well
+     */
     public void authenticationDone() {
         final Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(mainActivityIntent);

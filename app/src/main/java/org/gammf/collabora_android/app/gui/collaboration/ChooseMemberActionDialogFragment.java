@@ -18,7 +18,6 @@ import org.gammf.collabora_android.utils.model.AccessRight;
 import org.gammf.collabora_android.utils.app.SingletonAppUser;
 
 /**
- * Created by mperuzzi on 09/09/17.
  *
  * A simple {@link DialogFragment} subclass.
  * Use the {@link ChooseMemberActionDialogFragment#newInstance} factory method to
@@ -59,6 +58,7 @@ public class ChooseMemberActionDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {

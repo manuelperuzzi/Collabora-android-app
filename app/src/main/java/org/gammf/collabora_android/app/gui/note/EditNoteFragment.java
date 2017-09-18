@@ -191,6 +191,45 @@ public class EditNoteFragment extends Fragment {
         return rootView;
     }
 
+    /**** Method for Setting the Height of the ListView dynamically.
+     **** Hack to fix the issue of not showing all the items of the ListView
+     **** when placed inside a ScrollView  ****/
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+            setListViewHeightBasedOnChildren(previousNotesList);
+        }
+    }
+
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocationEdit), savedInstanceState);
+    }
+
     private void initializeGuiComponent(final View rootView){
         txtContentNoteEdited = rootView.findViewById(R.id.txtNoteContentEdit);
         txtContentNoteEdited.setText(note.getContent());
@@ -265,39 +304,6 @@ public class EditNoteFragment extends Fragment {
         });
     }
 
-    /**** Method for Setting the Height of the ListView dynamically.
-     **** Hack to fix the issue of not showing all the items of the ListView
-     **** when placed inside a ScrollView  ****/
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
-            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
-            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
-            previousNotesList.setAdapter(noteListAdapter);
-            setListViewHeightBasedOnChildren(previousNotesList);
-        }
-    }
-
     private boolean checkUserNoteUpdate(){
         String insertedNoteName = txtContentNoteEdited.getText().toString();
         if(insertedNoteName.equals("")){
@@ -338,10 +344,6 @@ public class EditNoteFragment extends Fragment {
         return expiration.compareTo(now) > 0;
     }
 
-    @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        this.mapManager.createMap((MapView) view.findViewById(R.id.mapViewLocationEdit), savedInstanceState);
-    }
 
     private void showDate() {
         dateViewEdited.setText(new StringBuilder()

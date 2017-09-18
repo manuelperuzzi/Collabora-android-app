@@ -34,8 +34,6 @@ public class EditModuleFragment extends Fragment {
     private Module module;
     private String collaborationId, moduleId;
     private EditText txtEditContentModule;
-    private String newStateSelected = "";
-
 
     public EditModuleFragment() {
         setHasOptionsMenu(true);

@@ -68,6 +68,16 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
+    @Override
+    public void onClick(View view) {
+        String insertedModuleName = txtContentModule.getText().toString();
+        if (insertedModuleName.equals("")) {
+            txtContentModule.setError(getResources().getString(R.string.fieldempty));
+        } else {
+            addModule(insertedModuleName);
+        }
+    }
+
     private void initializeGuiComponent(View rootView){
         txtContentModule = rootView.findViewById(R.id.txtNewModuleContent);
         FloatingActionButton btnAddModule = rootView.findViewById(R.id.btnAddModule);
@@ -79,15 +89,5 @@ public class CreateModuleFragment extends Fragment implements View.OnClickListen
         final ModuleUpdateMessage message = new ConcreteModuleUpdateMessage(
                 SingletonAppUser.getInstance().getUsername(), module, UpdateMessageType.CREATION, collaborationId);
         new SendMessageToServerTask(getContext()).execute(message);
-    }
-
-    @Override
-    public void onClick(View view) {
-        String insertedModuleName = txtContentModule.getText().toString();
-        if (insertedModuleName.equals("")) {
-            txtContentModule.setError(getResources().getString(R.string.fieldempty));
-        } else {
-            addModule(insertedModuleName);
-        }
     }
 }

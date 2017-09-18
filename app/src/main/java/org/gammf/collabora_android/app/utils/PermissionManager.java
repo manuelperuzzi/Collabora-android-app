@@ -16,7 +16,6 @@ import org.gammf.collabora_android.app.gui.MainActivity;
 
 /**
  * This class manage permissions. It has methods to ask and check permissions.
- * Created by gab on 04/09/17.
  */
 public class PermissionManager {
 

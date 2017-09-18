@@ -59,24 +59,6 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         }
     }
 
-
-    /**
-     * Gets a PendingIntent to send with the request to add or remove Geofences. Location Services
-     * issues the Intent inside this PendingIntent whenever a geofence transition occurs for the
-     * current list of geofences.
-     *
-     * @return A PendingIntent for the IntentService that handles geofence transitions.
-     */
-    private PendingIntent getGeofencePendingIntent(String noteID, String contentToDisplay) {
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
-        }
-        Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
-        intent.putExtra(noteID ,contentToDisplay);
-        final int _id = (int) System.currentTimeMillis();
-        return PendingIntent.getService(this.context, _id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
     /**
      * Adds geofence. This method should be called only after the {@link User} has granted the location
      * permission.
@@ -104,6 +86,23 @@ public class GeofenceManager implements OnCompleteListener<Void> {
         List<String> tmp = new ArrayList<>();
         tmp.add(idNote);
         mGeofencingClient.removeGeofences(tmp).addOnCompleteListener(this);
+    }
+
+    /**
+     * Gets a PendingIntent to send with the request to add or remove Geofences. Location Services
+     * issues the Intent inside this PendingIntent whenever a geofence transition occurs for the
+     * current list of geofences.
+     *
+     * @return A PendingIntent for the IntentService that handles geofence transitions.
+     */
+    private PendingIntent getGeofencePendingIntent(String noteID, String contentToDisplay) {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this.context, GeofenceTransitionsIntentService.class);
+        intent.putExtra(noteID ,contentToDisplay);
+        final int _id = (int) System.currentTimeMillis();
+        return PendingIntent.getService(this.context, _id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**

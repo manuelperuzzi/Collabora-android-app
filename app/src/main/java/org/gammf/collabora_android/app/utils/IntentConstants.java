@@ -35,8 +35,14 @@ public final class IntentConstants {
      */
     public static final String TIMEOUT = "timeout";
 
+    /**
+     * Tag used to notify that a collaboration has been deleted
+     */
     public static final String COLLABORATION_DELETION = "collaboration-deletion";
 
+    /**
+     * Tag used to notify that a server error occured
+     */
     public static final String SERVER_ERROR = "server-error";
 
     private IntentConstants() {}

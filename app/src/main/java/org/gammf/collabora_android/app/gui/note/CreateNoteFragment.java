@@ -160,6 +160,17 @@ public class CreateNoteFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
+            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
+            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
+            previousNotesList.setAdapter(noteListAdapter);
+        }
+    }
+
     private void initializeGuiComponent(View rootView){
         txtContentNote = rootView.findViewById(R.id.txtNoteContent);
         txtContentNote.requestFocus();
@@ -225,17 +236,6 @@ public class CreateNoteFragment extends Fragment {
                 dialog.show(getActivity().getSupportFragmentManager(), CHOOSE_PREVIOUS_NOTE_DIALOG_TAG);
             }
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Make sure fragment codes match up
-        if (requestCode == REQUEST_CODE) {
-            this.noteItems = (ArrayList<CollaborationComponentInfo>) data.getSerializableExtra(ARG_NOTEITEMS);
-            this.previousNotesSelected = (ArrayList<String>) data.getSerializableExtra(ARG_PREVNOTE);
-            final DrawerItemCustomAdapter noteListAdapter = new DrawerItemCustomAdapter(getActivity(), R.layout.list_view_item_row, noteItems);
-            previousNotesList.setAdapter(noteListAdapter);
-        }
     }
 
     private void processInput(){

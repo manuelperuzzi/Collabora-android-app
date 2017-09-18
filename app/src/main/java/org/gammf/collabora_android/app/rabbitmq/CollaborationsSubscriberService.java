@@ -70,12 +70,6 @@ public class CollaborationsSubscriberService extends SubscriberService {
         }
     }
 
-    private void sendBinding(final String routingKey) {
-        final Intent intent = new Intent("new.binding.for.collaboration");
-        intent.putExtra("routing-key", routingKey);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
     @Override
     protected void onConfigurationCompleted(final Intent intent) {
         try {
@@ -89,5 +83,11 @@ public class CollaborationsSubscriberService extends SubscriberService {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private void sendBinding(final String routingKey) {
+        final Intent intent = new Intent("new.binding.for.collaboration");
+        intent.putExtra("routing-key", routingKey);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

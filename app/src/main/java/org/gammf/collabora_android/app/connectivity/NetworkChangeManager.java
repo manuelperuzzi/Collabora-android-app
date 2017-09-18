@@ -49,10 +49,12 @@ public class NetworkChangeManager extends BroadcastReceiver implements NetworkCh
         }
     }
 
+    @Override
     public boolean addNetworkChangeObserver(final NetworkChangeObserver observer) {
         return this.observers.add(observer);
     }
 
+    @Override
     public void clearObservers() {
         this.observers.clear();
     }

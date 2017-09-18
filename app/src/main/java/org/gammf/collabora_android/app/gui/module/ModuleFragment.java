@@ -132,6 +132,18 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         return rootView;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        final CollaborationComponentInfo listItem = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
+        selectItem(listItem.getId());
+    }
+
+    @Override
+    public void onClick(View view) {
+        Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleId);
+        changeFragment(newNoteFragment);
+    }
+
     private void initializeGuiComponent(View rootView) {
         moduleNotesList = rootView.findViewById(R.id.moduleNotesListView);
         listItem = new ArrayList<>();
@@ -155,21 +167,9 @@ public class ModuleFragment extends Fragment implements AdapterView.OnItemClickL
         moduleNotesList.setOnItemLongClickListener(this);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        final CollaborationComponentInfo listItem = (CollaborationComponentInfo) adapterView.getItemAtPosition(position);
-        selectItem(listItem.getId());
-    }
-
     private void selectItem(final String itemId) {
         Fragment openNoteFragment = NoteFragment.newInstance(collaborationId, itemId,moduleId);
         changeFragment(openNoteFragment);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Fragment newNoteFragment = CreateNoteFragment.newInstance(collaborationId, moduleId);
-        changeFragment(newNoteFragment);
     }
 
     private void changeFragment(Fragment fragment){
