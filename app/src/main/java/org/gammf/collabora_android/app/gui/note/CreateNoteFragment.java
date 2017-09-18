@@ -51,6 +51,9 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Fragment for note creation user interface
+ *
+ * Use the {@link CreateNoteFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
 public class CreateNoteFragment extends Fragment {
 

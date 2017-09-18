@@ -51,7 +51,7 @@ public interface CollaborationsManager {
      * @param collaborationType the {@link CollaborationType} to filter with.
      * @return the filtered list.
      */
-    List<ShortCollaboration> filterByGroup(CollaborationType collaborationType);
+    List<ShortCollaboration> filterByType(CollaborationType collaborationType);
 
     /**
      * Get a list of all {@link Collaboration}s id.

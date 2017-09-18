@@ -14,9 +14,12 @@ import org.gammf.collabora_android.app.R;
 import java.util.ArrayList;
 
 /**
- * Created by @MattiaOriani on 12/08/2017
+ * @author @MattiaOriani on 12/08/2017
  *
- * Custom Adapter for list view
+ * A simple {@link ArrayAdapter} subclass.
+ *
+ * Use this class as a custom adapter for list view
+ *
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponentInfo> {
 
@@ -25,6 +28,12 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CollaborationComponent
     private ArrayList<CollaborationComponentInfo> data = null;
 
 
+    /**
+     * Build a new adapter for expandable list in navigation menu
+     * @param mContext the application context
+     * @param layoutResourceId represent the component resource layout id
+     * @param data the collaboration component list, a list can be filled with note(s) or member(s) or module(s)
+     */
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ArrayList<CollaborationComponentInfo> data) {
 
         super(mContext, layoutResourceId, data);
