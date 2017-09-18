@@ -11,7 +11,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by Mattia on 16/09/2017.
+ * @author Mattia Oriani
+ * Simple test for user/json conversion.
  */
 
 public class UserUtilsTest {

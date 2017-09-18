@@ -16,7 +16,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Mattia on 16/09/2017.
+ * @author Mattia Oriani
+ * Simple tests for a concrete private collaborations.
+ *
  */
 
 public class ConcretePrivateCollaborationTest {
